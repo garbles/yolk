@@ -1,0 +1,77 @@
+/** @jsx createElement */
+
+const Bacon = require(`baconjs`)
+const createElement = require(`createElement`)
+const eventHandler = require(`eventHandler`)
+const render = require(`render`)
+
+function VaryingBaseChildrenFromProps (props) {
+  const numbers = props.map(`.numbers`).map(nums => {
+    return nums.map(num => <li>{num}</li>)
+  })
+
+  return (
+    <ul>
+      {numbers}
+    </ul>
+  )
+}
+
+function VaryingWidgetChildrenFromProps (props) {
+  const numbers = props.map(`.numbers`).map(nums => {
+    return nums.map(num => <Stub>{num}</Stub>)
+  })
+
+  return <div>{numbers}</div>
+}
+
+function Stub (props, children) {
+  const handleClick = eventHandler(1)
+  const count = handleClick.scan(0, (acc, next) => acc + next)
+
+  return <p id="stub" onclick={handleClick}>{children}{count}</p>
+}
+
+describe(`A list of children which varies in length`, () => {
+
+  it(`renders a varying number of base children`, () => {
+    const numbersBus = new Bacon.Bus()
+    const numbersObservable = numbersBus.scan([1], (acc, next) => acc.concat(next))
+
+    const component = <VaryingBaseChildrenFromProps numbers={numbersObservable} />
+    const node = document.createElement(`div`)
+    render(component, node)
+
+    assert.equal(node.innerHTML, `<ul><li>1</li></ul>`)
+    numbersBus.push(2)
+    numbersBus.push(3)
+
+    assert.equal(node.innerHTML, `<ul><li>1</li><li>2</li><li>3</li></ul>`)
+  })
+
+  it(`renders a varying number of widget children`, () => {
+    const numbersBus = new Bacon.Bus()
+    const numbersObservable = numbersBus.scan([1], (acc, next) => acc.concat(next))
+
+    const component = <VaryingWidgetChildrenFromProps numbers={numbersObservable} />
+    const node = document.createElement(`div`)
+    render(component, node)
+
+    assert.equal(node.innerHTML, `<div><p id="stub">10</p></div>`)
+
+    const stubDiv = node.querySelector('#stub')
+    stubDiv.click()
+    stubDiv.click()
+    stubDiv.click()
+    stubDiv.click()
+    stubDiv.click()
+
+    assert.equal(node.innerHTML, `<div><p id="stub">15</p></div>`)
+
+    numbersBus.push(2)
+    numbersBus.push(3)
+
+    assert.equal(node.innerHTML, `<div><p id="stub">15</p><p id="stub">20</p><p id="stub">30</p></div>`)
+  })
+
+})

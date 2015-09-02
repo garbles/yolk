@@ -1,0 +1,8 @@
+#!/usr/bin/env bash -e
+
+if [ $WATCH ]
+then
+  mocha $(find test -name '*-test.js') --compilers js:babel/register --require ./test/setup.js --watch --growl
+else
+  mocha $(find test -name '*-test.js') --compilers js:babel/register --require ./test/setup.js
+fi
