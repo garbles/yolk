@@ -9,8 +9,8 @@ function NestedCounter (props) {
   const handleMinus = eventHandler(-1)
   const count =
     handlePlus.merge(handleMinus)
-    .scan(0, (acc, next) => acc + next)
-    .combine(props.map(`.count`), (a, b) => a + b)
+    .scan((acc, next) => acc + next, 0)
+    .combineLatest(props.map(p => p.count), (a, b) => a + b)
 
   return (
     <div>
@@ -28,7 +28,7 @@ function NestedCounter (props) {
 function Counter () {
   const handlePlus = eventHandler(1)
   const handleMinus = eventHandler(-1)
-  const count = handlePlus.merge(handleMinus).scan(0, (acc, next) => acc + next)
+  const count = handlePlus.merge(handleMinus).scan((acc, next) => acc + next, 0)
 
   return (
     <div>

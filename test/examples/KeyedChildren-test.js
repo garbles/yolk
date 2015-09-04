@@ -1,13 +1,13 @@
 /** @jsx createElement */
 
-const Bacon = require(`baconjs`)
+const Rx = require(`rx`)
 const createElement = require(`createElement`)
 const eventHandler = require(`eventHandler`)
 const render = require(`render`)
 
 function Stub (props, children) {
   const handleClick = eventHandler(1)
-  const count = handleClick.scan(0, (acc, next) => acc + next)
+  const count = handleClick.scan((acc, next) => acc + next, 0)
 
   return <p className="stub" onclick={handleClick}>{children}{count}</p>
 }
@@ -15,8 +15,8 @@ function Stub (props, children) {
 describe(`children with keys`, () => {
 
   it(`does not destroy the previous instance of the child`, () => {
-    const flipper = new Bacon.Bus()
-    const children = flipper.scan([<Stub key="first">1</Stub>, <Stub key="second">2</Stub>], acc => [acc[1], acc[0]])
+    const flipper = new Rx.BehaviorSubject()
+    const children = flipper.scan(acc => [acc[1], acc[0]], [<Stub key="second">2</Stub>, <Stub key="first">1</Stub>])
     const component = <div key="wrapper">{children}</div>
     const node = document.createElement(`div`)
     render(component, node)
@@ -31,7 +31,7 @@ describe(`children with keys`, () => {
 
     assert.equal(node.innerHTML, `<div><p class="stub">11</p><p class="stub">20</p></div>`)
 
-    flipper.push(true)
+    flipper.onNext(true)
 
     assert.equal(node.innerHTML, `<div><p class="stub">20</p><p class="stub">11</p></div>`)
 
@@ -40,11 +40,11 @@ describe(`children with keys`, () => {
     first.click()
     second.click()
     second.click()
-    flipper.push(true)
+    flipper.onNext(true)
 
     assert.equal(node.innerHTML, `<div><p class="stub">14</p><p class="stub">22</p></div>`)
 
-    flipper.push(true)
+    flipper.onNext(true)
 
     assert.equal(node.innerHTML, `<div><p class="stub">22</p><p class="stub">14</p></div>`)
 
@@ -52,8 +52,8 @@ describe(`children with keys`, () => {
 
   it(`does not reset children as long as one of them is keyed`, () => {
 
-    const flipper = new Bacon.Bus()
-    const children = flipper.scan([<Stub key="first">1</Stub>, <Stub>2</Stub>, <Stub>3</Stub>, <Stub>4</Stub>], acc => [acc[1], acc[2], acc[3], acc[0]])
+    const flipper = new Rx.BehaviorSubject()
+    const children = flipper.scan(acc => [acc[1], acc[2], acc[3], acc[0]], [<Stub>4</Stub>, <Stub key="first">1</Stub>, <Stub>2</Stub>, <Stub>3</Stub>])
     const component = <div key="wrapper">{children}</div>
     const node = document.createElement(`div`)
     render(component, node)
@@ -73,15 +73,15 @@ describe(`children with keys`, () => {
 
     assert.equal(node.innerHTML, `<div><p class="stub">11</p><p class="stub">21</p><p class="stub">31</p><p class="stub">41</p></div>`)
 
-    flipper.push(true)
+    flipper.onNext(true)
 
     assert.equal(node.innerHTML, `<div><p class="stub">21</p><p class="stub">31</p><p class="stub">41</p><p class="stub">11</p></div>`)
 
   })
 
   it(`resets children if they aren't keyed`, () => {
-    const flipper = new Bacon.Bus()
-    const children = flipper.scan([<Stub>1</Stub>, <Stub>2</Stub>], acc => [acc[1], acc[0]])
+    const flipper = new Rx.BehaviorSubject()
+    const children = flipper.scan(acc => [acc[1], acc[0]], [<Stub>2</Stub>, <Stub>1</Stub>])
     const component = <div key="wrapper">{children}</div>
     const node = document.createElement(`div`)
     render(component, node)
@@ -97,7 +97,7 @@ describe(`children with keys`, () => {
 
     assert.equal(node.innerHTML, `<div><p class="stub">11</p><p class="stub">21</p></div>`)
 
-    flipper.push(true)
+    flipper.onNext(true)
 
     assert.equal(node.innerHTML, `<div><p class="stub">11</p><p class="stub">21</p></div>`)
 

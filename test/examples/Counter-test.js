@@ -7,7 +7,7 @@ const render = require(`render`)
 function Counter (props, children) {
   const handlePlus = eventHandler(1)
   const handleMinus = eventHandler(-1)
-  const count = handlePlus.merge(handleMinus).scan(0, (x, y) => x+y)
+  const count = handlePlus.merge(handleMinus).scan((x, y) => x+y, 0)
 
   return (
     <div>
@@ -24,6 +24,7 @@ describe(`A simple counter`, () => {
     const component = <Counter />
     const node = document.createElement(`div`)
     render(component, node)
+
     assert.equal(node.innerHTML, `<div><button id="plus">+</button><button id="minus">-</button><span>Count: 0</span></div>`)
 
     const plus = node.querySelector(`#plus`)

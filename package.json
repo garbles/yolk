@@ -35,7 +35,7 @@
     "webpack": "1.11.0"
   },
   "dependencies": {
-    "baconjs": "0.7.71",
+    "rx": "3.1.2",
     "virtual-dom": "2.1.1"
   }
 }
