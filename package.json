@@ -1,5 +1,5 @@
 {
-  "name": "Yolk",
+  "name": "yolk",
   "version": "0.0.1",
   "description": "description",
   "main": "dist/Yolk.js",
@@ -10,7 +10,7 @@
     "type": "git",
     "url": "https://github.com/BrewhouseTeam/yolk"
   },
-  "keywords": [],
+  "keywords": ["yolk", "rx", "virtual-dom", "reactive", "async"],
   "author": "Gabe Scholz",
   "license": "MIT",
   "bugs": {
@@ -34,10 +34,12 @@
     "sinon": "1.15.4",
     "webpack": "1.11.0"
   },
+  "peerDependencies": {
+    "rx": "^3"
+  },
   "dependencies": {
     "lodash.flattendeep": "3.0.2",
     "lodash.isplainobject": "3.2.0",
-    "rx": "3.1.2",
     "virtual-dom": "2.1.1"
   }
 }
