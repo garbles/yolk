@@ -65,7 +65,7 @@ describe(`nested observable props`, () => {
 
     assert.equal(node.innerHTML, `<div>hello goodbye!</div>`)
 
-    const anotherSubject = new Rx.BehaviorSubject(`And another`);
+    const anotherSubject = new Rx.BehaviorSubject(`And another`)
 
     b.onNext({
       c: {
