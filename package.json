@@ -35,6 +35,7 @@
     "webpack": "1.11.0"
   },
   "dependencies": {
+    "lodash.flattendeep": "3.0.2",
     "lodash.isplainobject": "3.2.0",
     "rx": "3.1.2",
     "virtual-dom": "2.1.1"
