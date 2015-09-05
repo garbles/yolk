@@ -1,6 +1,6 @@
 # Yolk.js
 
-Library for building fully-reactive UIs.
+A library for rendering asynchronous UIs.
 
 ```js
 /** @jsx Yolk.createElement */

@@ -1,7 +1,7 @@
 {
   "name": "yolk",
-  "version": "0.0.1",
-  "description": "description",
+  "version": "0.0.2",
+  "description": "A library for rendering asynchronous UIs",
   "main": "dist/Yolk.js",
   "scripts": {
     "test": "NODE_PATH=$NODE_PATH:./lib ./scripts/test"
