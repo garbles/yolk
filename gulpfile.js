@@ -20,6 +20,9 @@ var config = {
       }
     ]
   },
+  externals: {
+    rx: 'Rx'
+  },
   output: { library: NAME, libraryTarget: 'umd' },
   resolve: {
     extensions: ['', '.js'],
