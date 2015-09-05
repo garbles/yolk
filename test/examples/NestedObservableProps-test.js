@@ -60,21 +60,28 @@ describe(`nested observable props`, () => {
         }
       })
 
-    const a = {b}
-
-    const component = <DeeplyNestedObservableProps a={a} />
+    const component = <DeeplyNestedObservableProps a={{b}} />
     const node = document.createElement(`div`)
     render(component, node)
 
     assert.equal(node.innerHTML, `<div>hello goodbye!</div>`)
 
+    const anotherSubject = new Rx.BehaviorSubject(`And another`);
+
     b.onNext({
       c: {
-        d: <span>Random Component</span>
+        d: [
+          <span>Random Component</span>,
+          <p>{anotherSubject}</p>
+        ]
       }
     })
 
-    assert.equal(node.innerHTML, `<div><span>Random Component</span></div>`)
+    assert.equal(node.innerHTML, `<div><span>Random Component</span><p>And another</p></div>`)
+
+    anotherSubject.onNext(`Still working`)
+
+    assert.equal(node.innerHTML, `<div><span>Random Component</span><p>Still working</p></div>`)
 
   })
 })
