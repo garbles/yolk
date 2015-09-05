@@ -1,7 +1,0 @@
-#!/usr/bin/env bash -e
-
-echo Cleaning index.js
-rm -f index.js
-echo Building index.js
-webpack
-echo Done!
