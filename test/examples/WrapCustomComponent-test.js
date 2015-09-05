@@ -10,11 +10,11 @@ class CustomStub {
   }
 
   init () {
-    this.node = document.createElement(`strong`)
+    const node = document.createElement(`strong`)
 
-    this.node.innerHTML = `hello world!`
+    node.innerHTML = `hello world!`
 
-    return this.node
+    return node
   }
 
   update (previous, node) {
