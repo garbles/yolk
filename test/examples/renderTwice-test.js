@@ -1,11 +1,11 @@
 /** @jsx createElement */
 
 const createElement = require(`createElement`)
-const eventHandler = require(`eventHandler`)
+const createEventHandler = require(`createEventHandler`)
 const render = require(`render`)
 
 function Counter (props, children) {
-  const handlePlus = eventHandler(1)
+  const handlePlus = createEventHandler(1)
   const propCount = props.map(p => p.count)
   const count = handlePlus.scan((x, y) => x+y, 0).combineLatest(propCount, (a,b) => a+b)
 

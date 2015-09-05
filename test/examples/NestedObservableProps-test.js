@@ -2,7 +2,6 @@
 
 const Rx = require(`rx`)
 const createElement = require(`createElement`)
-const eventHandler = require(`eventHandler`)
 const render = require(`render`)
 
 function NestedObservableProps (props) {

@@ -2,11 +2,11 @@
 
 const Rx = require(`rx`)
 const createElement = require(`createElement`)
-const eventHandler = require(`eventHandler`)
+const createEventHandler = require(`createEventHandler`)
 const render = require(`render`)
 
 function Stub (props, children) {
-  const handleClick = eventHandler(1)
+  const handleClick = createEventHandler(1)
   const count = handleClick.scan((acc, next) => acc + next, 0)
 
   return <p className="stub" onclick={handleClick}>{children}{count}</p>

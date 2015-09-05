@@ -8,8 +8,8 @@ A library for rendering asynchronous UIs.
 import Yolk from `yolk`
 
 function Counter (props, children) {
-  const handlePlus = Yolk.eventHandler()
-  const handleMinus = Yolk.eventHandler()
+  const handlePlus = Yolk.createEventHandler()
+  const handleMinus = Yolk.createEventHandler()
 
   const plusOne = handlePlus.map(() => 1)
   const minusOne = handleMinus.map(() => -1)

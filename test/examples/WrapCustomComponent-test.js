@@ -1,7 +1,6 @@
 /** @jsx createElement */
 
 const createElement = require(`createElement`)
-const eventHandler = require(`eventHandler`)
 const render = require(`render`)
 
 class CustomStub {
