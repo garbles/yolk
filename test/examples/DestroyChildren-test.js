@@ -9,8 +9,6 @@ function DestroyChildren () {
   const handleClick = createEventHandler()
   const children = handleClick.scan(acc => acc.slice(1), [<p />, <p />, <p />, <p />, <p />])
 
-  children.subscribe(a => console.log(a.length))
-
   return (
     <div id="clickme" onclick={handleClick}>
       {children}
