@@ -16,15 +16,11 @@ function NestedCallback () {
       <NestedCallbackChild onClick={handleInc} />
     </div>
   )
-
 }
 
 function NestedCallbackChild (props) {
   const onClick = props.map(p => p.onClick)
-
-  return (
-    <button id="nested-button" onclick={onClick} />
-  )
+  return <button id="nested-button" onclick={onClick} />
 }
 
 describe(`calling nested callbacks`, function () {
