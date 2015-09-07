@@ -5,8 +5,8 @@ const createElement = require(`createElement`)
 const render = require(`render`)
 
 function NestedObservableProps (props) {
-  const height = props.map(p => `${p.height}px`)
-  const width =  props.map(p => `${p.width}px`)
+  const height = props.map(p => p.height)
+  const width =  props.map(p => p.width)
   const style = {color: `blue`, height, width}
 
   return <div style={style} />
