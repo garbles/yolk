@@ -11,8 +11,8 @@ function Counter (props, children) {
 
   return (
     <div>
-      <button id="plus" onclick={handlePlus}>+</button>
-      <button id="minus" onclick={handleMinus}>-</button>
+      <button id="plus" onClick={handlePlus}>+</button>
+      <button id="minus" onClick={handleMinus}>-</button>
       <span>Count: {count}</span>
     </div>
   )

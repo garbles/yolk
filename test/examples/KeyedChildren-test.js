@@ -9,7 +9,7 @@ function Stub (props, children) {
   const handleClick = createEventHandler(1)
   const count = handleClick.scan((acc, next) => acc + next, 0)
 
-  return <p className="stub" onclick={handleClick}>{children}{count}</p>
+  return <p className="stub" onClick={handleClick}>{children}{count}</p>
 }
 
 describe(`children with keys`, () => {

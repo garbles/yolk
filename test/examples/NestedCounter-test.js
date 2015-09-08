@@ -15,8 +15,8 @@ function NestedCounter (props) {
   return (
     <div>
       <div>
-        <button id="nested-plus" onclick={handlePlus}>+</button>
-        <button id="nested-minus" onclick={handleMinus}>-</button>
+        <button id="nested-plus" onClick={handlePlus}>+</button>
+        <button id="nested-minus" onClick={handleMinus}>-</button>
       </div>
       <div id="nested-count">
         {count}
@@ -33,8 +33,8 @@ function Counter () {
   return (
     <div>
       <div>
-        <button id="wrapper-plus" onclick={handlePlus}>+</button>
-        <button id="wrapper-minus" onclick={handleMinus}>-</button>
+        <button id="wrapper-plus" onClick={handlePlus}>+</button>
+        <button id="wrapper-minus" onClick={handleMinus}>-</button>
       </div>
       <div id="wrapper-count">
         {count}

@@ -29,7 +29,7 @@ function Stub (props, children) {
   const handleClick = createEventHandler(1)
   const count = handleClick.scan((acc, next) => acc + next, 0)
 
-  return <p id="stub" onclick={handleClick}>{children}{count}</p>
+  return <p id="stub" onClick={handleClick}>{children}{count}</p>
 }
 
 describe(`A list of children which varies in length`, () => {

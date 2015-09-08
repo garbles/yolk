@@ -17,8 +17,8 @@ function DestroyChildren () {
         {addable}
         {removeable}
       </div>
-      <button onclick={handleAdd} id="add"></button>
-      <button onclick={handleRemove} id="remove"></button>
+      <button onClick={handleAdd} id="add"></button>
+      <button onClick={handleRemove} id="remove"></button>
     </div>
   )
 }
