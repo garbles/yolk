@@ -1,0 +1,27 @@
+/** @jsx createElement */
+
+const Rx = require(`rx`)
+const createElement = require(`createElement`)
+const createEventHandler = require(`createEventHandler`)
+const render = require(`render`)
+
+function HasChildren (props) {
+  const child = props.map(p => p.child)
+
+  return <div>{child}</div>
+}
+
+describe(`when a changed element changes it's list of properties instead of just the values`, () => {
+  it(`should rerender accordingly`, () => {
+    const child = new Rx.BehaviorSubject(<span>Hello!</span>)
+    const component = <HasChildren child={child}/>
+    const node = document.createElement(`div`)
+    render(component, node)
+
+    assert.equal(node.innerHTML, `<div><span>Hello!</span></div>`)
+
+    child.onNext(<span className="stub">Goodbye</span>)
+
+    assert.equal(node.innerHTML, `<div><span class="stub">Goodbye</span></div>`)
+  })
+})
