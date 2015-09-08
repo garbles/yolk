@@ -6,9 +6,8 @@ A library for rendering asynchronous UIs.
 and [RxJS](https://github.com/Reactive-Extensions/RxJS). It exposes a very limited API so that you don't have to spend
 weeks getting up to speed. Like React, Yolk components also use JSX to build markup.
 
-* __Asynchronous__: Yolk components will accept plain values or RxJS observables
-as input for both properties and children. Access to asynchronous data flows is
-a matter of passing them as arguments to a component.
+* __Asynchronous__: Yolk components treat RxJS observables as plain values for both properties and children.
+Access to asynchronous data flows is a matter of passing them as arguments to a component.
 
 * __Stateless__: Describing both user interactions and values as observable event
 streams means that application design becomes entirely declaractive.
