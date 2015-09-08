@@ -4,28 +4,33 @@ const createElement = require(`createElement`)
 const createEventHandler = require(`createEventHandler`)
 const render = require(`render`)
 
-function Counter () {
+function CounterWithMultipleSubscribers (props) {
   const handlePlus = createEventHandler(1)
   const handleMinus = createEventHandler(-1)
   const count = handlePlus.merge(handleMinus).scan((x, y) => x+y, 0)
+
+  const propsCount = props.map(p => p.count)
 
   return (
     <div>
       <button id="plus" onClick={handlePlus}>+</button>
       <button id="minus" onClick={handleMinus}>-</button>
       <span>{count}</span>
+      <span>{count}</span>
+      <span>{propsCount}</span>
+      <span>{propsCount}</span>
     </div>
   )
 }
 
 describe(`A simple counter`, () => {
 
-  it(`increments and decrements a number`, () => {
-    const component = <Counter />
+  it(`can have multiple subscribers listening to the same source`, () => {
+    let component = <CounterWithMultipleSubscribers count={55} />
     const node = document.createElement(`div`)
     render(component, node)
 
-    assert.equal(node.innerHTML, `<div><button id="plus">+</button><button id="minus">-</button><span>0</span></div>`)
+    assert.equal(node.innerHTML, `<div><button id="plus">+</button><button id="minus">-</button><span>0</span><span>0</span><span>55</span><span>55</span></div>`)
 
     const plus = node.querySelector(`#plus`)
     const minus = node.querySelector(`#minus`)
@@ -35,7 +40,10 @@ describe(`A simple counter`, () => {
     plus.click()
     minus.click()
 
-    assert.equal(node.innerHTML, `<div><button id="plus">+</button><button id="minus">-</button><span>2</span></div>`)
+    component = <CounterWithMultipleSubscribers count={77} />
+    render(component, node)
+
+    assert.equal(node.innerHTML, `<div><button id="plus">+</button><button id="minus">-</button><span>2</span><span>2</span><span>77</span><span>77</span></div>`)
   })
 
 })
