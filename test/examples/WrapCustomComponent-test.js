@@ -29,8 +29,8 @@ function WrapCustomComponent () {
   )
 }
 
-describe('wrapping custom virtual dom widgets', () => {
-  it('works just as any other component would', () => {
+describe(`wrapping custom virtual dom widgets`, () => {
+  it(`works just as any other component would`, () => {
     const component = <WrapCustomComponent />
     const node = document.createElement(`div`)
     render(component, node)

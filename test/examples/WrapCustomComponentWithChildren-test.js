@@ -35,8 +35,8 @@ function WrapCustomComponentWithChildren (props) {
   )
 }
 
-describe('wrapping custom virtual dom widgets', () => {
-  it('works just as any other component would', () => {
+describe(`wrapping custom virtual dom widgets`, () => {
+  it(`works just as any other component would`, () => {
     const component = <WrapCustomComponentWithChildren contents="and so does this" />
     const node = document.createElement(`div`)
     render(component, node)

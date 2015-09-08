@@ -32,12 +32,12 @@ describe(`calling nested callbacks`, function () {
     const count = node.querySelector(`#count`)
     const button = node.querySelector(`#nested-button`)
 
-    assert.equal(count.innerHTML, '0')
+    assert.equal(count.innerHTML, `0`)
 
     button.click()
     button.click()
     button.click()
 
-    assert.equal(count.innerHTML, '3')
+    assert.equal(count.innerHTML, `3`)
   })
 })

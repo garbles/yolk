@@ -59,7 +59,7 @@ describe(`A list of children which varies in length`, () => {
 
     assert.equal(node.innerHTML, `<div><p id="stub">10</p></div>`)
 
-    const stubDiv = node.querySelector('#stub')
+    const stubDiv = node.querySelector(`#stub`)
     stubDiv.click()
     stubDiv.click()
     stubDiv.click()
