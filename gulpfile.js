@@ -1,55 +1,74 @@
-var gulp = require('gulp');
-var webpack = require('gulp-webpack');
-var uglify = require('gulp-uglify');
-var concat = require('gulp-concat');
-var del = require('del');
+const gulp = require(`gulp`)
+const webpack = require(`webpack-stream`)
+const uglify = require(`gulp-uglify`)
+const concat = require(`gulp-concat`)
+const mocha = require(`gulp-mocha`)
+const babel = require(`babel/register`)
+const del = require(`del`)
 
-var ENTRY = 'lib/index.js';
-var SRC = 'lib/**';
-var DIST = 'dist/';
-var NAME = 'Yolk';
-var OUTPUT = NAME + '.js';
+const ENTRY = `lib/index.js`
+const SRC = `lib/**`
+const TEST = `test/**/*-test.js`
+const DIST = `dist/`
+const NAME = `Yolk`
+const OUTPUT = NAME + `.js`
 
-var config = {
+const mochaConfig = {
+  compilers: {
+    js: babel
+  },
+  growl: true
+}
+
+const webpackConfig = {
   module: {
     loaders: [
       {
         test: /\.js/,
         exclude: [/node_modules/],
-        loaders: ['babel?stage=0']
+        loaders: [`babel?stage=0`]
       }
     ]
   },
   externals: {
-    rx: 'Rx'
+    rx: `Rx`
   },
-  output: { library: NAME, libraryTarget: 'umd' },
+  output: { library: NAME, libraryTarget: `umd` },
   resolve: {
-    extensions: ['', '.js'],
-    modulesDirectories: ['node_modules', 'lib']
+    extensions: [``, `.js`],
+    modulesDirectories: [`node_modules`, `lib`]
   }
-};
+}
 
-gulp.task('clean', function (cb) {
-  return del.sync(DIST, cb());
-});
+gulp.task(`clean`, function (cb) {
+  return del.sync(DIST, cb())
+})
 
-gulp.task('build.full', function () {
+gulp.task(`build.full`, function () {
   return gulp.src(ENTRY)
-    .pipe(webpack(config))
+    .pipe(webpack(webpackConfig))
     .pipe(concat(OUTPUT))
-    .pipe(gulp.dest(DIST));
-});
+    .pipe(gulp.dest(DIST))
+})
 
-gulp.task('build.min', ['build.full'], function () {
+gulp.task(`build.min`, [`build.full`], function () {
   return gulp.src(DIST + OUTPUT)
     .pipe(uglify())
-    .pipe(concat(NAME+'.min.js'))
-    .pipe(gulp.dest(DIST));
-});
+    .pipe(concat(NAME+`.min.js`))
+    .pipe(gulp.dest(DIST))
+})
 
-gulp.task('build.watch', ['build.full'], function () {
-  return gulp.watch(SRC, ['build.full']);
-});
+gulp.task(`build.watch`, [`build.full`], function () {
+  return gulp.watch(SRC, [`build.full`])
+})
 
-gulp.task('default', ['build.full', 'build.min']);
+gulp.task(`test`, function () {
+  return gulp.src([`test/setup.js`, TEST])
+    .pipe(mocha(mochaConfig))
+})
+
+gulp.task(`test.watch`, [`test`], function () {
+  return gulp.watch([TEST, SRC], [`test`])
+})
+
+gulp.task(`default`, [`build.full`, `build.min`])
