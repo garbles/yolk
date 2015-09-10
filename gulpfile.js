@@ -1,5 +1,6 @@
 const gulp = require(`gulp`)
-const webpack = require(`webpack-stream`)
+const webpack = require(`webpack`)
+const webpackStream = require(`webpack-stream`)
 const uglify = require(`gulp-uglify`)
 const concat = require(`gulp-concat`)
 const mocha = require(`gulp-mocha`)
@@ -26,7 +27,7 @@ const webpackConfig = {
       {
         test: /\.js/,
         exclude: [/node_modules/],
-        loaders: [`babel?stage=0`]
+        loaders: [`babel`]
       }
     ]
   },
@@ -46,7 +47,7 @@ gulp.task(`clean`, function (cb) {
 
 gulp.task(`build.full`, function () {
   return gulp.src(ENTRY)
-    .pipe(webpack(webpackConfig))
+    .pipe(webpackStream(webpackConfig))
     .pipe(concat(OUTPUT))
     .pipe(gulp.dest(DIST))
 })
