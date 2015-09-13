@@ -96,12 +96,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    };
 	  }
 
+	  Rx.internals.addProperties(handler, Rx.ReplaySubject.prototype);
+	  Rx.ReplaySubject.call(handler, 1);
+
 	  if (initIsDefined) {
-	    Rx.internals.addProperties(handler, Rx.BehaviorSubject.prototype);
-	    Rx.BehaviorSubject.call(handler, init);
-	  } else {
-	    Rx.internals.addProperties(handler, Rx.Subject.prototype);
-	    Rx.Subject.call(handler);
+	    handler.onNext(init);
 	  }
 
 	  handler.unhook = handler.dispose;
