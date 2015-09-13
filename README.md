@@ -12,6 +12,10 @@ wrapped as observables before they can be displayed in components.
 * __Stateless__: Describing both user interactions and values as observable event
 streams means that application design becomes entirely declaractive.
 
+### TL;DR
+
+Components are functions that return JSX. Rx observables are treated as plain values.
+
 ### Examples
 
 Consider the following example for a simple counter. We can write JSX by including the `/** @jsx yolk.createElement */`
@@ -59,7 +63,7 @@ By calling `yolk.createEventHandler()`, we return a function which also behaves 
 Notice how the `count` observable object is used in the component template as if it were a plain value.
 The `<span>` will always update itself to display the last observed value from `count`.
 
-All component state is captured in the composition of observable event streams and thus there is not need
+All component state is captured in the composition of observable event streams and thus, there is no need
 make imperative operations such as calling `setState` or mutating variables.
 
 ### Installing
