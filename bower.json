@@ -1,0 +1,30 @@
+{
+  "name": "yolk",
+  "version": "0.1.0",
+  "homepage": "https://github.com/BrewhouseTeam/yolk",
+  "authors": [
+    "Gabe Scholz <gabe@brewhouse.io>"
+  ],
+  "description": "A library for building asynchronous user interfaces.",
+  "main": "dist/yolk.js",
+  "moduleType": [
+    "amd",
+    "globals",
+    "node"
+  ],
+  "keywords": [
+    "yolk",
+    "rx",
+    "virtual-dom",
+    "reactive",
+    "async"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
