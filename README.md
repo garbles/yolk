@@ -15,7 +15,7 @@ streams means that application design becomes entirely declaractive.
 ### Examples
 
 Consider the following example for a simple counter. We can write JSX by including the `/** @jsx yolk.createElement */`
-pragma at the top of the file.
+pragma at the top of the file,
 
 ```js
 /** @jsx yolk.createElement */
@@ -64,8 +64,17 @@ make imperative operations such as calling `setState` or mutating variables.
 
 ### Installing
 
-To install yolk, simply include it in your `package.json`
+To install yolk, simply include it in your `package.json` along with `rx`,
 
 ```
-npm install yolk --save
+npm install yolk rx --save
 ```
+
+Or install it with Bower,
+
+```
+bower install yolk rx --save
+```
+
+[RxJS](https://github.com/Reactive-Extensions/RxJS) is listed as a dependency of this library;
+however, it is not included as part of the bundle file.
