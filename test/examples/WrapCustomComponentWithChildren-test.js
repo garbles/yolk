@@ -1,7 +1,7 @@
 /** @jsx createElement */
 
-const {Rx, virtualDOM, createElement, createEventHandler, render} = Yolk
-const {h, create} = virtualDOM
+const {Rx, createElement, createEventHandler, render} = Yolk
+const {h, create} = require(`virtual-dom`)
 
 class CustomStub {
   constructor (children) {
