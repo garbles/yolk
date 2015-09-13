@@ -169,8 +169,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      this._propSubject = new Rx.BehaviorSubject(this._props);
 	      this._childSubject = new Rx.BehaviorSubject(this._children);
 
-	      var propObservable = wrapObject(this._propSubject);
-	      var childObservable = wrapObject(this._childSubject);
+	      var propObservable = this._propSubject.flatMapLatest(wrapObject);
+	      var childObservable = this._childSubject.asObservable();
 
 	      this._component = this._fn(propObservable, childObservable);
 
@@ -1273,8 +1273,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      var vNode = h(this.id);
 	      var node = create(vNode);
-	      var propObservable = wrapObject(this._propSubject).map(transformProperties);
-	      var childObservable = wrapObject(this._childSubject);
+	      var propObservable = this._propSubject.flatMapLatest(wrapObject).map(transformProperties);
+	      var childObservable = this._childSubject.flatMapLatest(wrapObject);
 
 	      this._patchSubscription = Rx.Observable.combineLatest(propObservable, childObservable, function (p, c) {
 	        return h(_this.id, p, flatten(c));
