@@ -23,7 +23,7 @@ function VaryingWidgetChildrenFromProps (props) {
 }
 
 function Stub (props, children) {
-  const handleClick = createEventHandler(1)
+  const handleClick = createEventHandler(() => 1, 0)
   const count = handleClick.scan((acc, next) => acc + next, 0)
 
   return <p id="stub" onClick={handleClick}>{children}{count}</p>

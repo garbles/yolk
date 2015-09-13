@@ -3,8 +3,8 @@
 const {createElement, createEventHandler, render} = Yolk
 
 function NestedCounter (props) {
-  const handlePlus = createEventHandler(1)
-  const handleMinus = createEventHandler(-1)
+  const handlePlus = createEventHandler(() => 1, 0)
+  const handleMinus = createEventHandler(() => -1, 0)
   const count =
     handlePlus.merge(handleMinus)
     .scan((acc, next) => acc + next, 0)
@@ -24,8 +24,8 @@ function NestedCounter (props) {
 }
 
 function Counter () {
-  const handlePlus = createEventHandler(1)
-  const handleMinus = createEventHandler(-1)
+  const handlePlus = createEventHandler(() => 1, 0)
+  const handleMinus = createEventHandler(() => -1, 0)
   const count = handlePlus.merge(handleMinus).scan((acc, next) => acc + next, 0)
 
   return (

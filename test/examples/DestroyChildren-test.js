@@ -3,8 +3,8 @@
 const {createElement, createEventHandler, render} = Yolk
 
 function DestroyChildren () {
-  const handleAdd = createEventHandler()
-  const handleRemove = createEventHandler()
+  const handleAdd = createEventHandler(null, 0)
+  const handleRemove = createEventHandler(null, 0)
 
   const addable = handleAdd.scan(acc => acc.concat([<b />]), [])
   const removeable = handleRemove.scan(acc => acc.slice(1), [<p />, <p />, <p />, <p />, <p />])

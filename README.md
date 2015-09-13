@@ -27,14 +27,12 @@ pragma at the top of the file,
 import yolk from `yolk`
 
 function Counter (props) {
-  const handlePlus = yolk.createEventHandler()
-  const handleMinus = yolk.createEventHandler()
 
   // map all plus button click events to 1
-  const plusOne = handlePlus.map(() => 1)
+  const handlePlus = yolk.createEventHandler(() => 1, 0)
 
   // map all minus button click events to -1
-  const minusOne = handleMinus.map(() => -1)
+  const handleMinus = yolk.createEventHandler(() => -1, 0)
 
   // merge both event streams together and keep a running count of the result
   const count = plusOne.merge(minusOne).scan((x, y) => x+y, 0)
@@ -59,12 +57,19 @@ function Counter (props) {
 yolk.render(<Counter initialValue={5} />, document.body)
 ```
 
-By calling `yolk.createEventHandler()`, we return a function which also behaves as an observable value.
+By calling `yolk.createEventHandler(<mapFn>, <initialValue>)`, we return a function which also behaves as an observable value.
 Notice how the `count` observable object is used in the component template as if it were a plain value.
 The `<span>` will always update itself to display the last observed value from `count`.
 
 All component state is captured in the composition of observable event streams and thus, there is no need
 make imperative operations such as calling `setState` or mutating variables.
+
+### Creating Event Handlers
+
+Event handlers can be created using `yolk.createEventHandler(<mapFn>, <initialValue>)`. Note that while both `mapFn` and
+`initialValue` are optional values, if you are using the event handler to render your view, failing to provide an
+`initialValue` will prevent any subcomponent relying on it from rendering correctly on the initial load. Initial values
+are not subject to being passed through the `mapFn`.
 
 ### Installing
 

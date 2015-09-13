@@ -58,8 +58,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var Rx = __webpack_require__(1);
 	var createEventHandler = __webpack_require__(2);
-	var createElement = __webpack_require__(3);
-	var render = __webpack_require__(64);
+	var createElement = __webpack_require__(4);
+	var render = __webpack_require__(65);
 
 	function yolk() {}
 	yolk.prototype = { Rx: Rx, createEventHandler: createEventHandler, createElement: createElement, render: render };
@@ -79,26 +79,31 @@ return /******/ (function(modules) { // webpackBootstrap
 	"use strict";
 
 	var Rx = __webpack_require__(1);
+	var isDefined = __webpack_require__(3);
 
-	module.exports = function createEventHandler(mapFn) {
-	  var isFunction = typeof mapFn === "function";
-	  var isDefined = typeof mapFn !== "undefined";
+	module.exports = function createEventHandler(mapFn, init) {
+	  var initIsDefined = isDefined(init);
+	  var mapFnIsDefined = isDefined(mapFn);
+	  var handler = undefined;
 
-	  function handler(value) {
-	    if (isFunction) {
-	      value = mapFn(value);
-	    } else if (isDefined) {
-	      value = mapFn;
-	    }
-
-	    handler.onNext(value);
+	  if (mapFnIsDefined) {
+	    handler = function (value) {
+	      handler.onNext(mapFn(value));
+	    };
+	  } else {
+	    handler = function (value) {
+	      handler.onNext(value);
+	    };
 	  }
 
-	  for (var key in Rx.BehaviorSubject.prototype) {
-	    handler[key] = Rx.BehaviorSubject.prototype[key];
+	  if (initIsDefined) {
+	    Rx.internals.addProperties(handler, Rx.BehaviorSubject.prototype);
+	    Rx.BehaviorSubject.call(handler, init);
+	  } else {
+	    Rx.internals.addProperties(handler, Rx.Subject.prototype);
+	    Rx.Subject.call(handler);
 	  }
 
-	  Rx.BehaviorSubject.call(handler, null);
 	  handler.unhook = handler.dispose;
 
 	  return handler;
@@ -106,13 +111,23 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 3 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	module.exports = function isDefined(value) {
+	  return typeof value !== 'undefined' && value !== null;
+	};
+
+/***/ },
+/* 4 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
-	var YolkCompositeComponent = __webpack_require__(4);
-	var YolkBaseComponent = __webpack_require__(26);
-	var isString = __webpack_require__(63);
+	var YolkCompositeComponent = __webpack_require__(5);
+	var YolkBaseComponent = __webpack_require__(27);
+	var isString = __webpack_require__(64);
 
 	module.exports = function createElement(tag, props) {
 	  props || (props = {});
@@ -129,7 +144,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 4 */
+/* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -141,8 +156,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 	var Rx = __webpack_require__(1);
-	var create = __webpack_require__(5);
-	var wrapObject = __webpack_require__(18);
+	var create = __webpack_require__(6);
+	var wrapObject = __webpack_require__(19);
 
 	module.exports = (function () {
 	  function YolkCompositeComponent(fn, props, children) {
@@ -197,26 +212,26 @@ return /******/ (function(modules) { // webpackBootstrap
 	})();
 
 /***/ },
-/* 5 */
+/* 6 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var createElement = __webpack_require__(6)
+	var createElement = __webpack_require__(7)
 
 	module.exports = createElement
 
 
 /***/ },
-/* 6 */
+/* 7 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var document = __webpack_require__(7)
+	var document = __webpack_require__(8)
 
-	var applyProperties = __webpack_require__(9)
+	var applyProperties = __webpack_require__(10)
 
-	var isVNode = __webpack_require__(12)
-	var isVText = __webpack_require__(14)
-	var isWidget = __webpack_require__(15)
-	var handleThunk = __webpack_require__(16)
+	var isVNode = __webpack_require__(13)
+	var isVText = __webpack_require__(15)
+	var isWidget = __webpack_require__(16)
+	var handleThunk = __webpack_require__(17)
 
 	module.exports = createElement
 
@@ -258,12 +273,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 7 */
+/* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {var topLevel = typeof global !== 'undefined' ? global :
 	    typeof window !== 'undefined' ? window : {}
-	var minDoc = __webpack_require__(8);
+	var minDoc = __webpack_require__(9);
 
 	if (typeof document !== 'undefined') {
 	    module.exports = document;
@@ -280,17 +295,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 8 */
+/* 9 */
 /***/ function(module, exports) {
 
 	/* (ignored) */
 
 /***/ },
-/* 9 */
+/* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isObject = __webpack_require__(10)
-	var isHook = __webpack_require__(11)
+	var isObject = __webpack_require__(11)
+	var isHook = __webpack_require__(12)
 
 	module.exports = applyProperties
 
@@ -389,7 +404,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 10 */
+/* 11 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -400,7 +415,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 11 */
+/* 12 */
 /***/ function(module, exports) {
 
 	module.exports = isHook
@@ -413,10 +428,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 12 */
+/* 13 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var version = __webpack_require__(13)
+	var version = __webpack_require__(14)
 
 	module.exports = isVirtualNode
 
@@ -426,17 +441,17 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 13 */
+/* 14 */
 /***/ function(module, exports) {
 
 	module.exports = "2"
 
 
 /***/ },
-/* 14 */
+/* 15 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var version = __webpack_require__(13)
+	var version = __webpack_require__(14)
 
 	module.exports = isVirtualText
 
@@ -446,7 +461,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 15 */
+/* 16 */
 /***/ function(module, exports) {
 
 	module.exports = isWidget
@@ -457,13 +472,13 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 16 */
+/* 17 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isVNode = __webpack_require__(12)
-	var isVText = __webpack_require__(14)
-	var isWidget = __webpack_require__(15)
-	var isThunk = __webpack_require__(17)
+	var isVNode = __webpack_require__(13)
+	var isVText = __webpack_require__(15)
+	var isWidget = __webpack_require__(16)
+	var isThunk = __webpack_require__(18)
 
 	module.exports = handleThunk
 
@@ -503,7 +518,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 17 */
+/* 18 */
 /***/ function(module, exports) {
 
 	module.exports = isThunk
@@ -514,15 +529,15 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 18 */
+/* 19 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
 	var Rx = __webpack_require__(1);
-	var isPlainObject = __webpack_require__(19);
-	var isObservable = __webpack_require__(24);
-	var isEmpty = __webpack_require__(25);
+	var isPlainObject = __webpack_require__(20);
+	var isObservable = __webpack_require__(25);
+	var isEmpty = __webpack_require__(26);
 
 	module.exports = function wrapObject(obj) {
 	  if (isObservable(obj)) {
@@ -564,7 +579,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 19 */
+/* 20 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -575,9 +590,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * Copyright 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
 	 * Available under MIT license <https://lodash.com/license>
 	 */
-	var baseFor = __webpack_require__(20),
-	    isArguments = __webpack_require__(21),
-	    keysIn = __webpack_require__(22);
+	var baseFor = __webpack_require__(21),
+	    isArguments = __webpack_require__(22),
+	    keysIn = __webpack_require__(23);
 
 	/** `Object#toString` result references. */
 	var objectTag = '[object Object]';
@@ -673,7 +688,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 20 */
+/* 21 */
 /***/ function(module, exports) {
 
 	/**
@@ -765,7 +780,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 21 */
+/* 22 */
 /***/ function(module, exports) {
 
 	/**
@@ -877,7 +892,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 22 */
+/* 23 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -888,8 +903,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * Copyright 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
 	 * Available under MIT license <https://lodash.com/license>
 	 */
-	var isArguments = __webpack_require__(21),
-	    isArray = __webpack_require__(23);
+	var isArguments = __webpack_require__(22),
+	    isArray = __webpack_require__(24);
 
 	/** Used to detect unsigned integer values. */
 	var reIsUint = /^\d+$/;
@@ -1015,7 +1030,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 23 */
+/* 24 */
 /***/ function(module, exports) {
 
 	/**
@@ -1201,7 +1216,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 24 */
+/* 25 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -1213,7 +1228,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 25 */
+/* 26 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -1223,7 +1238,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 26 */
+/* 27 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -1237,13 +1252,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 	var Rx = __webpack_require__(1);
-	var create = __webpack_require__(5);
-	var diff = __webpack_require__(27);
-	var h = __webpack_require__(32);
-	var patch = __webpack_require__(43);
-	var flatten = __webpack_require__(48);
-	var wrapObject = __webpack_require__(18);
-	var transformProperties = __webpack_require__(52);
+	var create = __webpack_require__(6);
+	var diff = __webpack_require__(28);
+	var h = __webpack_require__(33);
+	var patch = __webpack_require__(44);
+	var flatten = __webpack_require__(49);
+	var wrapObject = __webpack_require__(19);
+	var transformProperties = __webpack_require__(53);
 
 	module.exports = (function () {
 	  function YolkBaseComponent(tag, props, children) {
@@ -1314,28 +1329,28 @@ return /******/ (function(modules) { // webpackBootstrap
 	})();
 
 /***/ },
-/* 27 */
+/* 28 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var diff = __webpack_require__(28)
+	var diff = __webpack_require__(29)
 
 	module.exports = diff
 
 
 /***/ },
-/* 28 */
+/* 29 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isArray = __webpack_require__(29)
+	var isArray = __webpack_require__(30)
 
-	var VPatch = __webpack_require__(30)
-	var isVNode = __webpack_require__(12)
-	var isVText = __webpack_require__(14)
-	var isWidget = __webpack_require__(15)
-	var isThunk = __webpack_require__(17)
-	var handleThunk = __webpack_require__(16)
+	var VPatch = __webpack_require__(31)
+	var isVNode = __webpack_require__(13)
+	var isVText = __webpack_require__(15)
+	var isWidget = __webpack_require__(16)
+	var isThunk = __webpack_require__(18)
+	var handleThunk = __webpack_require__(17)
 
-	var diffProps = __webpack_require__(31)
+	var diffProps = __webpack_require__(32)
 
 	module.exports = diff
 
@@ -1756,7 +1771,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 29 */
+/* 30 */
 /***/ function(module, exports) {
 
 	var nativeIsArray = Array.isArray
@@ -1770,10 +1785,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 30 */
+/* 31 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var version = __webpack_require__(13)
+	var version = __webpack_require__(14)
 
 	VirtualPatch.NONE = 0
 	VirtualPatch.VTEXT = 1
@@ -1798,11 +1813,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 31 */
+/* 32 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isObject = __webpack_require__(10)
-	var isHook = __webpack_require__(11)
+	var isObject = __webpack_require__(11)
+	var isHook = __webpack_require__(12)
 
 	module.exports = diffProps
 
@@ -1862,33 +1877,33 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 32 */
+/* 33 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var h = __webpack_require__(33)
+	var h = __webpack_require__(34)
 
 	module.exports = h
 
 
 /***/ },
-/* 33 */
+/* 34 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var isArray = __webpack_require__(29);
+	var isArray = __webpack_require__(30);
 
-	var VNode = __webpack_require__(34);
-	var VText = __webpack_require__(35);
-	var isVNode = __webpack_require__(12);
-	var isVText = __webpack_require__(14);
-	var isWidget = __webpack_require__(15);
-	var isHook = __webpack_require__(11);
-	var isVThunk = __webpack_require__(17);
+	var VNode = __webpack_require__(35);
+	var VText = __webpack_require__(36);
+	var isVNode = __webpack_require__(13);
+	var isVText = __webpack_require__(15);
+	var isWidget = __webpack_require__(16);
+	var isHook = __webpack_require__(12);
+	var isVThunk = __webpack_require__(18);
 
-	var parseTag = __webpack_require__(36);
-	var softSetHook = __webpack_require__(38);
-	var evHook = __webpack_require__(39);
+	var parseTag = __webpack_require__(37);
+	var softSetHook = __webpack_require__(39);
+	var evHook = __webpack_require__(40);
 
 	module.exports = h;
 
@@ -2014,14 +2029,14 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 34 */
+/* 35 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var version = __webpack_require__(13)
-	var isVNode = __webpack_require__(12)
-	var isWidget = __webpack_require__(15)
-	var isThunk = __webpack_require__(17)
-	var isVHook = __webpack_require__(11)
+	var version = __webpack_require__(14)
+	var isVNode = __webpack_require__(13)
+	var isWidget = __webpack_require__(16)
+	var isThunk = __webpack_require__(18)
+	var isVHook = __webpack_require__(12)
 
 	module.exports = VirtualNode
 
@@ -2092,10 +2107,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 35 */
+/* 36 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var version = __webpack_require__(13)
+	var version = __webpack_require__(14)
 
 	module.exports = VirtualText
 
@@ -2108,12 +2123,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 36 */
+/* 37 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var split = __webpack_require__(37);
+	var split = __webpack_require__(38);
 
 	var classIdSplit = /([\.#]?[a-zA-Z0-9\u007F-\uFFFF_:-]+)/;
 	var notClassId = /^\.|#/;
@@ -2168,7 +2183,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 37 */
+/* 38 */
 /***/ function(module, exports) {
 
 	/*!
@@ -2280,7 +2295,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 38 */
+/* 39 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -2303,12 +2318,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 39 */
+/* 40 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var EvStore = __webpack_require__(40);
+	var EvStore = __webpack_require__(41);
 
 	module.exports = EvHook;
 
@@ -2336,12 +2351,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 40 */
+/* 41 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var OneVersionConstraint = __webpack_require__(41);
+	var OneVersionConstraint = __webpack_require__(42);
 
 	var MY_VERSION = '7';
 	OneVersionConstraint('ev-store', MY_VERSION);
@@ -2362,12 +2377,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 41 */
+/* 42 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var Individual = __webpack_require__(42);
+	var Individual = __webpack_require__(43);
 
 	module.exports = OneVersion;
 
@@ -2390,7 +2405,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 42 */
+/* 43 */
 /***/ function(module, exports) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {'use strict';
@@ -2416,24 +2431,24 @@ return /******/ (function(modules) { // webpackBootstrap
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 43 */
+/* 44 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var patch = __webpack_require__(44)
+	var patch = __webpack_require__(45)
 
 	module.exports = patch
 
 
 /***/ },
-/* 44 */
+/* 45 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var document = __webpack_require__(7)
-	var isArray = __webpack_require__(29)
+	var document = __webpack_require__(8)
+	var isArray = __webpack_require__(30)
 
-	var render = __webpack_require__(6)
-	var domIndex = __webpack_require__(45)
-	var patchOp = __webpack_require__(46)
+	var render = __webpack_require__(7)
+	var domIndex = __webpack_require__(46)
+	var patchOp = __webpack_require__(47)
 	module.exports = patch
 
 	function patch(rootNode, patches, renderOptions) {
@@ -2511,7 +2526,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 45 */
+/* 46 */
 /***/ function(module, exports) {
 
 	// Maps a virtual DOM tree onto a real DOM tree in an efficient manner.
@@ -2602,15 +2617,15 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 46 */
+/* 47 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var applyProperties = __webpack_require__(9)
+	var applyProperties = __webpack_require__(10)
 
-	var isWidget = __webpack_require__(15)
-	var VPatch = __webpack_require__(30)
+	var isWidget = __webpack_require__(16)
+	var VPatch = __webpack_require__(31)
 
-	var updateWidget = __webpack_require__(47)
+	var updateWidget = __webpack_require__(48)
 
 	module.exports = applyPatch
 
@@ -2759,10 +2774,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 47 */
+/* 48 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isWidget = __webpack_require__(15)
+	var isWidget = __webpack_require__(16)
 
 	module.exports = updateWidget
 
@@ -2780,7 +2795,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 48 */
+/* 49 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -2791,7 +2806,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * Copyright 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
 	 * Available under MIT license <https://lodash.com/license>
 	 */
-	var baseFlatten = __webpack_require__(49);
+	var baseFlatten = __webpack_require__(50);
 
 	/**
 	 * Recursively flattens a nested array.
@@ -2815,7 +2830,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 49 */
+/* 50 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -2826,8 +2841,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * Copyright 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
 	 * Available under MIT license <https://lodash.com/license>
 	 */
-	var isArguments = __webpack_require__(50),
-	    isArray = __webpack_require__(51);
+	var isArguments = __webpack_require__(51),
+	    isArray = __webpack_require__(52);
 
 	/**
 	 * Checks if `value` is object-like.
@@ -2952,7 +2967,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 50 */
+/* 51 */
 /***/ function(module, exports) {
 
 	/**
@@ -3064,7 +3079,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 51 */
+/* 52 */
 /***/ function(module, exports) {
 
 	/**
@@ -3250,14 +3265,15 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 52 */
+/* 53 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var kababCase = __webpack_require__(53);
-	var DOMProperties = __webpack_require__(60);
-	var transformStyle = __webpack_require__(61);
+	var kababCase = __webpack_require__(54);
+	var DOMProperties = __webpack_require__(61);
+	var transformStyle = __webpack_require__(62);
+	var isDefined = __webpack_require__(3);
 
 	var IS_DATA_MATCHER = /^data[A-Z]/;
 
@@ -3286,6 +3302,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    var isDataAttribute = undefined;
+	    var appendableObject = undefined;
 	    var value = props[key];
 	    var property = DOMProperties[key] || EMPTY_PROP;
 
@@ -3313,7 +3330,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 53 */
+/* 54 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -3324,7 +3341,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * Copyright 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
 	 * Available under MIT license <https://lodash.com/license>
 	 */
-	var createCompounder = __webpack_require__(54);
+	var createCompounder = __webpack_require__(55);
 
 	/**
 	 * Converts `string` to kebab case (a.k.a. spinal case).
@@ -3355,7 +3372,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 54 */
+/* 55 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -3366,8 +3383,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * Copyright 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
 	 * Available under MIT license <https://lodash.com/license>
 	 */
-	var deburr = __webpack_require__(55),
-	    words = __webpack_require__(57);
+	var deburr = __webpack_require__(56),
+	    words = __webpack_require__(58);
 
 	/**
 	 * Creates a function that produces compound words out of the words in a
@@ -3395,7 +3412,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 55 */
+/* 56 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -3406,7 +3423,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * Copyright 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
 	 * Available under MIT license <https://lodash.com/license>
 	 */
-	var baseToString = __webpack_require__(56);
+	var baseToString = __webpack_require__(57);
 
 	/** Used to match [combining diacritical marks](https://en.wikipedia.org/wiki/Combining_Diacritical_Marks). */
 	var reComboMark = /[\u0300-\u036f\ufe20-\ufe23]/g;
@@ -3469,7 +3486,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 56 */
+/* 57 */
 /***/ function(module, exports) {
 
 	/**
@@ -3497,7 +3514,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 57 */
+/* 58 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -3508,8 +3525,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * Copyright 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
 	 * Available under MIT license <https://lodash.com/license>
 	 */
-	var baseToString = __webpack_require__(58),
-	    isIterateeCall = __webpack_require__(59);
+	var baseToString = __webpack_require__(59),
+	    isIterateeCall = __webpack_require__(60);
 
 	/** Used to match words to create compound words. */
 	var reWords = (function() {
@@ -3549,7 +3566,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 58 */
+/* 59 */
 /***/ function(module, exports) {
 
 	/**
@@ -3577,7 +3594,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 59 */
+/* 60 */
 /***/ function(module, exports) {
 
 	/**
@@ -3715,12 +3732,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 60 */
+/* 61 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
-	var kababCase = __webpack_require__(53);
+	var kababCase = __webpack_require__(54);
 
 	var HAS_LOWER_CASE = 0x1;
 	var HAS_DASH_CASE = 0x2;
@@ -3944,12 +3961,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = propertiesWithInfo;
 
 /***/ },
-/* 61 */
+/* 62 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
-	var isNumber = __webpack_require__(62);
+	var isNumber = __webpack_require__(63);
 
 	var unitlessNumberProperties = {
 	  animationIterationCount: true,
@@ -4003,7 +4020,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 62 */
+/* 63 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -4013,7 +4030,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 63 */
+/* 64 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -4023,15 +4040,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 64 */
+/* 65 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
-	var create = __webpack_require__(5);
-	var diff = __webpack_require__(27);
-	var patch = __webpack_require__(43);
-	var RenderCache = __webpack_require__(65);
+	var create = __webpack_require__(6);
+	var diff = __webpack_require__(28);
+	var patch = __webpack_require__(44);
+	var RenderCache = __webpack_require__(66);
 	var cache = new RenderCache();
 
 	module.exports = function render(newInstance, root) {
@@ -4055,7 +4072,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 65 */
+/* 66 */
 /***/ function(module, exports) {
 
 	"use strict";

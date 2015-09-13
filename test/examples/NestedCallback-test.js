@@ -3,7 +3,7 @@
 const {createElement, createEventHandler, render} = Yolk
 
 function NestedCallback () {
-  const handleInc = createEventHandler(1)
+  const handleInc = createEventHandler(() => 1, 0)
   const count = handleInc.scan((x,y) => x+y, 0)
 
   return (
