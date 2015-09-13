@@ -3275,8 +3275,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  var newProps = {
 	    attributes: {},
-	    className: props.className,
-	    id: props.id,
 	    style: transformStyle(props.style)
 	  };
 
@@ -3307,6 +3305,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	      newProps[key] = value;
 	    }
 	  }
+
+	  props.className && (newProps.className = props.className);
+	  props.id && (newProps.id = props.id);
 
 	  return newProps;
 	};
