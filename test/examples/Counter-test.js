@@ -1,8 +1,6 @@
 /** @jsx createElement */
 
-const createElement = require(`createElement`)
-const createEventHandler = require(`createEventHandler`)
-const render = require(`render`)
+const {createElement, createEventHandler, render} = Yolk
 
 function Counter () {
   const handlePlus = createEventHandler(1)

@@ -1,7 +1,6 @@
 /** @jsx createElement */
 
-const createElement = require(`createElement`)
-const render = require(`render`)
+const {createElement, createEventHandler, render} = Yolk
 
 function HasChildren (props, children) {
   return (

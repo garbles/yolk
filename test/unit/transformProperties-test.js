@@ -1,4 +1,4 @@
-const transformProperties = require(`transformProperties`)
+const transformProperties = require(`../../lib/transformProperties`)
 
 describe(`transformProperties`, () => {
   it(`transforms props so that they will work correctly with virtual dom`, () => {

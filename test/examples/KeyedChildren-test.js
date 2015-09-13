@@ -1,9 +1,6 @@
 /** @jsx createElement */
 
-const Rx = require(`rx`)
-const createElement = require(`createElement`)
-const createEventHandler = require(`createEventHandler`)
-const render = require(`render`)
+const {Rx, createElement, createEventHandler, render} = Yolk
 
 function Stub (props, children) {
   const handleClick = createEventHandler(1)

@@ -1,75 +1,54 @@
+const package = require(`./package.json`)
 const gulp = require(`gulp`)
-const webpack = require(`webpack`)
-const webpackStream = require(`webpack-stream`)
-const uglify = require(`gulp-uglify`)
 const concat = require(`gulp-concat`)
 const mocha = require(`gulp-mocha`)
-const babel = require(`babel/register`)
 const del = require(`del`)
+const webpackStream = require(`webpack-stream`)
+const webpackConfig = require(`./webpack.config`)
+const webpackConfigMin = require(`./webpack.config.min`)
+const mochaConfig = require(`./mocha.config`)
 
-const ENTRY = `lib/index.js`
-const SRC = `lib/**`
-const TEST = `test/**/*-test.js`
-const DIST = `dist/`
-const NAME = `Yolk`
-const OUTPUT = NAME + `.js`
+const SRC = `lib`
+const DIST = `dist`
+const TEST_EXAMPLES = `test/examples/*-test.js`
+const TEST_UNIT = `test/unit/*-test.js`
+const TEST = [TEST_EXAMPLES, TEST_UNIT]
 
-const mochaConfig = {
-  compilers: {
-    js: babel
-  },
-  growl: true
-}
+gulp.task(`clean`, cb => del.sync(DIST, cb()))
 
-const webpackConfig = {
-  module: {
-    loaders: [
-      {
-        test: /\.js/,
-        exclude: [/node_modules/],
-        loaders: [`babel`]
-      }
-    ]
-  },
-  externals: {
-    rx: `Rx`
-  },
-  output: { library: NAME, libraryTarget: `umd` },
-  resolve: {
-    extensions: [``, `.js`],
-    modulesDirectories: [`node_modules`, `lib`]
-  }
-}
-
-gulp.task(`clean`, function (cb) {
-  return del.sync(DIST, cb())
-})
-
-gulp.task(`build.full`, function () {
-  return gulp.src(ENTRY)
+gulp.task(`build`, [`clean`], () => {
+  return gulp.src(package.main)
     .pipe(webpackStream(webpackConfig))
-    .pipe(concat(OUTPUT))
+    .pipe(concat(`${package.name}.js`))
     .pipe(gulp.dest(DIST))
 })
 
-gulp.task(`build.min`, [`build.full`], function () {
-  return gulp.src(DIST + OUTPUT)
-    .pipe(uglify())
-    .pipe(concat(NAME+`.min.js`))
+gulp.task(`build.min`, [`clean`], () => {
+  return gulp.src(package.main)
+    .pipe(webpackStream(webpackConfigMin))
+    .pipe(concat(`${package.name}.min.js`))
     .pipe(gulp.dest(DIST))
 })
 
-gulp.task(`build.watch`, [`build.full`], function () {
-  return gulp.watch(SRC, [`build.full`])
-})
-
-gulp.task(`test`, function () {
-  return gulp.src([`test/setup.js`, TEST])
+gulp.task(`test.source`, () => {
+  return gulp.src([`test/setup.js`, `test/source.js`].concat(TEST))
     .pipe(mocha(mochaConfig))
 })
 
-gulp.task(`test.watch`, [`test`], function () {
-  return gulp.watch([TEST, SRC], [`test`])
+gulp.task(`test.watch`, [`test.source`], () => gulp.watch(TEST.concat(`${SRC}/**`), [`test.source`]))
+
+gulp.task(`test.prerelease`, [`build`, `test.source`], () => {
+  return gulp.src([`test/setup.js`, `test/release.js`, TEST_EXAMPLES])
+    .pipe(mocha(mochaConfig))
+    .once('error', () => process.exit(1))
 })
 
-gulp.task(`default`, [`build.full`, `build.min`])
+gulp.task(`test.prerelease.min`, [`build.min`, `test.prerelease`], () => {
+  return gulp.src([`test/setup.js`, `test/release.min.js`, TEST_EXAMPLES])
+    .pipe(mocha(mochaConfig))
+    .once('error', () => process.exit(1))
+})
+
+gulp.task(`build.full`, [`build`, `build.min`])
+gulp.task(`test.full`, [`build.full`, `test.prerelease`, `test.prerelease.min`])
+gulp.task(`prerelease`, [`build.full`, `test.full`])

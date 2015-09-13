@@ -1,7 +1,6 @@
 /** @jsx createElement */
 
-const createElement = require(`createElement`)
-const render = require(`render`)
+const {Rx, createElement, createEventHandler, render} = Yolk
 
 class CustomStub {
   constructor () {

@@ -29,10 +29,3 @@ node_modules
 # vim
 *.swo
 *.swp
-
-# distro files
-dist
-
-# Manual testing
-example
-webpack.config.js

@@ -1,4 +1,4 @@
-const transformStyle = require(`transformStyle`)
+const transformStyle = require(`../../lib/transformStyle`)
 
 describe(`transformStyle`, () => {
   it(`returns nothing if style isn't defined in the props`, () => {
