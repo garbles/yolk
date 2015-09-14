@@ -20,7 +20,6 @@ describe(`transformProperties`, () => {
     const transformedProps = {
       className: `className`,
       id: `id`,
-      style: undefined,
       onclick: onClick,
       attributes: {
         action: `/`,
