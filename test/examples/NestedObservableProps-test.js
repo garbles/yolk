@@ -3,15 +3,14 @@
 const {Rx, createElement, createEventHandler, render} = Yolk
 
 function NestedObservableProps (props) {
-  const height = props.map(p => p.height)
-  const width =  props.map(p => p.width)
+  const {height, width} = props
   const style = {color: `blue`, height, width}
 
   return <div style={style} />
 }
 
 function DeeplyNestedObservableProps (props) {
-  const content = props.map(p => p.a.b.c.d)
+  const content = props.a.map(a => a.b.c.d)
 
   return <div>{content}</div>
 }

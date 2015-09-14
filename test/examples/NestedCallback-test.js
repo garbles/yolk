@@ -17,8 +17,7 @@ function NestedCallback () {
 }
 
 function NestedCallbackChild (props) {
-  const onClick = props.map(p => p.onClick)
-  return <button id="nested-button" onClick={onClick} />
+  return <button id="nested-button" onClick={props.onClick} />
 }
 
 describe(`calling nested callbacks`, function () {

@@ -4,8 +4,7 @@ const {createElement, createEventHandler, render} = Yolk
 
 function Counter (props, children) {
   const handlePlus = createEventHandler(() => 1, 0)
-  const propCount = props.map(p => p.count)
-  const count = handlePlus.scan((x, y) => x+y, 0).combineLatest(propCount, (a,b) => a+b)
+  const count = handlePlus.scan((x, y) => x+y, 0).combineLatest(props.count, (a,b) => a+b)
 
   return (
     <div>

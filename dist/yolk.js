@@ -179,10 +179,23 @@ return /******/ (function(modules) { // webpackBootstrap
 	  _createClass(YolkCompositeComponent, [{
 	    key: "init",
 	    value: function init() {
-	      this._propSubject = new Rx.BehaviorSubject(this._props);
+	      var keys = Object.keys(this._props);
+	      var length = keys.length;
+	      var propsSubject = {};
+	      var i = -1;
+
+	      this._propSubject = {};
+
+	      while (++i < length) {
+	        var key = keys[i];
+	        var value = this._props[key];
+	        this._propSubject[key] = new Rx.BehaviorSubject(value);
+	        propsSubject[key] = this._propSubject[key].flatMapLatest(wrapObject);
+	      }
+
 	      this._childSubject = new Rx.BehaviorSubject(this._children);
 
-	      var propObservable = this._propSubject.flatMapLatest(wrapObject);
+	      var propObservable = propsSubject;
 	      var childObservable = this._childSubject.asObservable();
 
 	      this._component = this._fn(propObservable, childObservable);
@@ -195,9 +208,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	      this._propSubject = previous._propSubject;
 	      this._childSubject = previous._childSubject;
 	      this._component = previous._component;
-
-	      this._propSubject.onNext(this._props);
 	      this._childSubject.onNext(this._children);
+
+	      var keys = Object.keys(this._props);
+	      var length = keys.length;
+	      var i = -1;
+
+	      while (++i < length) {
+	        var key = keys[i];
+	        var value = this._props[key];
+	        this._propSubject[key].onNext(value);
+	      }
 	    }
 	  }, {
 	    key: "destroy",

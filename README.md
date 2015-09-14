@@ -38,8 +38,7 @@ function Counter (props) {
   const count = plusOne.merge(minusOne).scan((x, y) => x+y, 0)
 
   // include the initialValue passed in from props
-  const initialValue = props.map(p => p.initialValue)
-  const fullCount = count.combineLatest(initialValue, (x, y) => x+y)
+  const fullCount = count.combineLatest(props.initialValue, (x, y) => x+y)
 
   return (
     <div>
@@ -63,6 +62,8 @@ The `<span>` will always update itself to display the last observed value from `
 
 All component state is captured in the composition of observable event streams and thus, there is no need
 make imperative operations such as calling `setState` or mutating variables.
+
+Also see the [yolk implementation of TodoMVC](https://github.com/BrewhouseTeam/yolk-todomvc).
 
 ### Creating Event Handlers
 

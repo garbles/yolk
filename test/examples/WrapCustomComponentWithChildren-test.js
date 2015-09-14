@@ -20,14 +20,12 @@ class CustomStub {
 }
 
 function WrapCustomComponentWithChildren (props) {
-  const contents = props.map(p => p.contents)
-
   return (
     <div>
       {
         new CustomStub([
           <div>This works</div>,
-          <p>{contents}</p>
+          <p>{props.contents}</p>
         ])
       }
     </div>

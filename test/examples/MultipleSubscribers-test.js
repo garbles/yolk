@@ -7,16 +7,14 @@ function CounterWithMultipleSubscribers (props) {
   const handleMinus = createEventHandler(() => -1, 0)
   const count = handlePlus.merge(handleMinus).scan((x, y) => x+y, 0)
 
-  const propsCount = props.map(p => p.count)
-
   return (
     <div>
       <button id="plus" onClick={handlePlus}>+</button>
       <button id="minus" onClick={handleMinus}>-</button>
       <span>{count}</span>
       <span>{count}</span>
-      <span>{propsCount}</span>
-      <span>{propsCount}</span>
+      <span>{props.count}</span>
+      <span>{props.count}</span>
     </div>
   )
 }

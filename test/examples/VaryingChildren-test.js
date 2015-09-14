@@ -3,7 +3,7 @@
 const {Rx, createElement, createEventHandler, render} = Yolk
 
 function VaryingBaseChildrenFromProps (props) {
-  const numbers = props.map(p => p.numbers).map(nums => {
+  const numbers = props.numbers.map(nums => {
     return nums.map(num => <li>{num}</li>)
   })
 
@@ -15,7 +15,7 @@ function VaryingBaseChildrenFromProps (props) {
 }
 
 function VaryingWidgetChildrenFromProps (props) {
-  const numbers = props.map(p => p.numbers).map(nums => {
+  const numbers = props.numbers.map(nums => {
     return nums.map(num => <Stub>{num}</Stub>)
   })
 

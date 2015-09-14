@@ -8,7 +8,7 @@ function NestedCounter (props) {
   const count =
     handlePlus.merge(handleMinus)
     .scan((acc, next) => acc + next, 0)
-    .combineLatest(props.map(p => p.count), (a, b) => a + b)
+    .combineLatest(props.count, (a, b) => a + b)
 
   return (
     <div>
