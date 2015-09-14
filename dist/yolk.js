@@ -59,7 +59,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var Rx = __webpack_require__(1);
 	var createEventHandler = __webpack_require__(2);
 	var createElement = __webpack_require__(4);
-	var render = __webpack_require__(65);
+	var render = __webpack_require__(66);
 
 	function yolk() {}
 	yolk.prototype = { Rx: Rx, createEventHandler: createEventHandler, createElement: createElement, render: render };
@@ -87,23 +87,22 @@ return /******/ (function(modules) { // webpackBootstrap
 	  var handler = undefined;
 
 	  if (mapFnIsDefined) {
-	    handler = function (value) {
+	    handler = function handlerWithMap(value) {
 	      handler.onNext(mapFn(value));
 	    };
 	  } else {
-	    handler = function (value) {
+	    handler = function handlerWithoutMap(value) {
 	      handler.onNext(value);
 	    };
 	  }
 
 	  Rx.internals.addProperties(handler, Rx.ReplaySubject.prototype);
 	  Rx.ReplaySubject.call(handler, 1);
+	  handler.unhook = handler.dispose;
 
 	  if (initIsDefined) {
 	    handler.onNext(init);
 	  }
-
-	  handler.unhook = handler.dispose;
 
 	  return handler;
 	};
@@ -112,10 +111,10 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 3 */
 /***/ function(module, exports) {
 
-	'use strict';
+	"use strict";
 
 	module.exports = function isDefined(value) {
-	  return typeof value !== 'undefined' && value !== null;
+	  return typeof value !== "undefined" && value !== null;
 	};
 
 /***/ },
@@ -126,7 +125,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var YolkCompositeComponent = __webpack_require__(5);
 	var YolkBaseComponent = __webpack_require__(27);
-	var isString = __webpack_require__(64);
+	var isString = __webpack_require__(65);
 
 	module.exports = function createElement(tag, props) {
 	  props || (props = {});
@@ -3267,12 +3266,14 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 53 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
+	"use strict";
 
 	var kababCase = __webpack_require__(54);
 	var DOMProperties = __webpack_require__(61);
 	var transformStyle = __webpack_require__(62);
 	var isDefined = __webpack_require__(3);
+	var softSetHook = __webpack_require__(39);
+	var attributeHook = __webpack_require__(64);
 
 	var IS_DATA_MATCHER = /^data[A-Z]/;
 
@@ -3280,30 +3281,27 @@ return /******/ (function(modules) { // webpackBootstrap
 	  hasLowerCase: false,
 	  hasDashCase: false,
 	  isAttribute: false,
-	  isStandard: false
+	  isStandard: false,
+	  usePropertyHook: false,
+	  useAttributeHook: false
 	};
 
 	module.exports = function transformProperties(props) {
 	  var keys = Object.keys(props);
 	  var length = keys.length;
 	  var i = -1;
-
-	  var newProps = {
-	    attributes: {},
-	    style: transformStyle(props.style)
-	  };
+	  var newProps = { attributes: {} };
 
 	  while (++i < length) {
 	    var key = keys[i];
 
-	    if (key === 'style' || key === 'className' || key === 'id') {
+	    if (key === "style" || key === "className" || key === "id") {
 	      continue;
 	    }
 
-	    var isDataAttribute = undefined;
-	    var appendableObject = undefined;
 	    var value = props[key];
 	    var property = DOMProperties[key] || EMPTY_PROP;
+	    var isDataAttribute = false;
 
 	    if (property.isStandard) {
 	      key = property.computed;
@@ -3317,6 +3315,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    if (property.isAttribute || isDataAttribute) {
 	      newProps.attributes[key] = value;
+	    } else if (property.usePropertyHook) {
+	      newProps[key] = softSetHook(value);
+	    } else if (property.useAttributeHook) {
+	      newProps[key] = attributeHook(value);
 	    } else if (property.isStandard) {
 	      newProps[key] = value;
 	    }
@@ -3324,6 +3326,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  props.className && (newProps.className = props.className);
 	  props.id && (newProps.id = props.id);
+	  props.style && (newProps.style = transformStyle(props.style));
 
 	  return newProps;
 	};
@@ -3741,6 +3744,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	var HAS_LOWER_CASE = 0x1;
 	var HAS_DASH_CASE = 0x2;
 	var IS_ATTRIBUTE = 0x4;
+	var USE_PROPERTY_HOOK = 0x8;
+	var USE_ATTRIBUTE_HOOK = 0x16;
 
 	function checkMask(value, bitmask) {
 	  return (value & bitmask) === bitmask;
@@ -3767,26 +3772,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	  bgColor: IS_ATTRIBUTE | HAS_LOWER_CASE,
 	  border: IS_ATTRIBUTE,
 	  buffered: IS_ATTRIBUTE,
-	  challenge: IS_ATTRIBUTE,
-	  charset: IS_ATTRIBUTE,
-	  checked: IS_ATTRIBUTE,
 	  cite: IS_ATTRIBUTE,
 	  code: IS_ATTRIBUTE,
 	  codebase: IS_ATTRIBUTE,
 	  color: IS_ATTRIBUTE,
-	  cols: IS_ATTRIBUTE,
 	  colSpan: IS_ATTRIBUTE | HAS_LOWER_CASE,
 	  content: IS_ATTRIBUTE,
 	  contentEditable: IS_ATTRIBUTE | HAS_LOWER_CASE,
-	  contextMenu: IS_ATTRIBUTE | HAS_LOWER_CASE,
-	  controls: IS_ATTRIBUTE,
 	  coords: IS_ATTRIBUTE,
-	  dateTime: IS_ATTRIBUTE | HAS_LOWER_CASE,
 	  "default": IS_ATTRIBUTE,
 	  defer: IS_ATTRIBUTE,
 	  dir: IS_ATTRIBUTE,
 	  dirName: IS_ATTRIBUTE | HAS_LOWER_CASE,
-	  disabled: IS_ATTRIBUTE,
 	  download: IS_ATTRIBUTE,
 	  draggable: IS_ATTRIBUTE,
 	  dropZone: IS_ATTRIBUTE | HAS_LOWER_CASE,
@@ -3794,8 +3791,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	  encType: IS_ATTRIBUTE | HAS_LOWER_CASE,
 	  file: IS_ATTRIBUTE,
 	  "for": IS_ATTRIBUTE,
-	  form: IS_ATTRIBUTE,
-	  formAction: IS_ATTRIBUTE | HAS_LOWER_CASE,
 	  headers: IS_ATTRIBUTE,
 	  height: IS_ATTRIBUTE,
 	  hidden: IS_ATTRIBUTE,
@@ -3811,16 +3806,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	  label: IS_ATTRIBUTE,
 	  lang: IS_ATTRIBUTE,
 	  language: IS_ATTRIBUTE,
-	  list: IS_ATTRIBUTE,
-	  loop: IS_ATTRIBUTE,
 	  low: IS_ATTRIBUTE,
-	  manifest: IS_ATTRIBUTE,
 	  max: IS_ATTRIBUTE,
-	  maxLength: IS_ATTRIBUTE | HAS_LOWER_CASE,
-	  media: IS_ATTRIBUTE,
 	  method: IS_ATTRIBUTE,
 	  min: IS_ATTRIBUTE,
-	  multiple: IS_ATTRIBUTE,
 	  name: IS_ATTRIBUTE,
 	  noValidate: IS_ATTRIBUTE | HAS_LOWER_CASE,
 	  open: IS_ATTRIBUTE,
@@ -3833,26 +3822,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	  preload: IS_ATTRIBUTE,
 	  pubdate: IS_ATTRIBUTE,
 	  radioGroup: IS_ATTRIBUTE | HAS_LOWER_CASE,
-	  readOnly: IS_ATTRIBUTE | HAS_LOWER_CASE,
 	  rel: IS_ATTRIBUTE,
 	  required: IS_ATTRIBUTE,
 	  reversed: IS_ATTRIBUTE,
-	  rows: IS_ATTRIBUTE,
 	  rowSpan: IS_ATTRIBUTE | HAS_LOWER_CASE,
 	  sandbox: IS_ATTRIBUTE,
 	  scope: IS_ATTRIBUTE,
 	  scoped: IS_ATTRIBUTE,
-	  seamless: IS_ATTRIBUTE,
-	  selected: IS_ATTRIBUTE,
 	  shape: IS_ATTRIBUTE,
-	  size: IS_ATTRIBUTE,
-	  sizes: IS_ATTRIBUTE,
 	  span: IS_ATTRIBUTE,
 	  spellCheck: IS_ATTRIBUTE | HAS_LOWER_CASE,
 	  src: IS_ATTRIBUTE,
-	  srcDoc: IS_ATTRIBUTE | HAS_LOWER_CASE,
 	  srcLang: IS_ATTRIBUTE | HAS_LOWER_CASE,
-	  srcSet: IS_ATTRIBUTE | HAS_LOWER_CASE,
 	  start: IS_ATTRIBUTE,
 	  step: IS_ATTRIBUTE,
 	  summary: IS_ATTRIBUTE,
@@ -3862,9 +3843,49 @@ return /******/ (function(modules) { // webpackBootstrap
 	  title: IS_ATTRIBUTE,
 	  type: IS_ATTRIBUTE,
 	  useMap: IS_ATTRIBUTE | HAS_LOWER_CASE,
-	  value: IS_ATTRIBUTE,
-	  width: IS_ATTRIBUTE,
 	  wrap: IS_ATTRIBUTE,
+
+	  // attributes only accessible via attribute namespace
+	  allowFullScreen: USE_ATTRIBUTE_HOOK | HAS_LOWER_CASE,
+	  allowTransparency: USE_ATTRIBUTE_HOOK, // not downcased?
+	  capture: USE_ATTRIBUTE_HOOK,
+	  charset: USE_ATTRIBUTE_HOOK,
+	  challenge: USE_ATTRIBUTE_HOOK,
+	  cols: USE_ATTRIBUTE_HOOK,
+	  contextMenu: USE_ATTRIBUTE_HOOK | HAS_LOWER_CASE,
+	  dateTime: USE_ATTRIBUTE_HOOK | HAS_LOWER_CASE,
+	  disabled: USE_ATTRIBUTE_HOOK,
+	  form: USE_ATTRIBUTE_HOOK,
+	  formAction: USE_ATTRIBUTE_HOOK | HAS_LOWER_CASE,
+	  formEncType: USE_ATTRIBUTE_HOOK | HAS_LOWER_CASE,
+	  formMethod: USE_ATTRIBUTE_HOOK | HAS_LOWER_CASE,
+	  formTarget: USE_ATTRIBUTE_HOOK | HAS_LOWER_CASE,
+	  frameBorder: USE_ATTRIBUTE_HOOK | HAS_LOWER_CASE,
+	  inputMode: USE_ATTRIBUTE_HOOK | HAS_LOWER_CASE,
+	  is: USE_ATTRIBUTE_HOOK,
+	  list: USE_ATTRIBUTE_HOOK,
+	  manifest: USE_ATTRIBUTE_HOOK,
+	  maxLength: USE_ATTRIBUTE_HOOK | HAS_LOWER_CASE,
+	  media: USE_ATTRIBUTE_HOOK,
+	  minLength: USE_ATTRIBUTE_HOOK | HAS_LOWER_CASE,
+	  role: USE_ATTRIBUTE_HOOK,
+	  rows: USE_ATTRIBUTE_HOOK,
+	  seamless: USE_ATTRIBUTE_HOOK,
+	  size: USE_ATTRIBUTE_HOOK,
+	  sizes: USE_ATTRIBUTE_HOOK,
+	  srcSet: USE_ATTRIBUTE_HOOK | HAS_LOWER_CASE,
+	  width: USE_ATTRIBUTE_HOOK,
+	  wmode: USE_ATTRIBUTE_HOOK,
+
+	  // attributes only accessible via setting property in JS
+	  checked: USE_PROPERTY_HOOK,
+	  controls: USE_PROPERTY_HOOK,
+	  loop: USE_PROPERTY_HOOK,
+	  multiple: USE_PROPERTY_HOOK,
+	  readOnly: USE_PROPERTY_HOOK | HAS_LOWER_CASE,
+	  selected: USE_PROPERTY_HOOK,
+	  srcDoc: USE_PROPERTY_HOOK | HAS_LOWER_CASE,
+	  value: USE_PROPERTY_HOOK,
 
 	  // events
 	  onAbort: HAS_LOWER_CASE,
@@ -3938,6 +3959,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	  var hasLowerCase = checkMask(property, HAS_LOWER_CASE);
 	  var hasDashCase = checkMask(property, HAS_DASH_CASE);
 	  var isAttribute = checkMask(property, IS_ATTRIBUTE);
+	  var usePropertyHook = checkMask(property, USE_PROPERTY_HOOK);
+	  var useAttributeHook = checkMask(property, USE_ATTRIBUTE_HOOK);
 	  var computed = undefined;
 
 	  if (hasLowerCase) {
@@ -3953,6 +3976,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    hasDashCase: hasDashCase,
 	    isAttribute: isAttribute,
 	    isStandard: isStandard,
+	    usePropertyHook: usePropertyHook,
+	    useAttributeHook: useAttributeHook,
 	    computed: computed
 	  };
 	}
@@ -4032,6 +4057,47 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 64 */
 /***/ function(module, exports) {
 
+	'use strict';
+
+	module.exports = AttributeHook;
+
+	function AttributeHook(namespace, value) {
+	    if (!(this instanceof AttributeHook)) {
+	        return new AttributeHook(namespace, value);
+	    }
+
+	    this.namespace = namespace;
+	    this.value = value;
+	}
+
+	AttributeHook.prototype.hook = function (node, prop, prev) {
+	    if (prev && prev.type === 'AttributeHook' &&
+	        prev.value === this.value &&
+	        prev.namespace === this.namespace) {
+	        return;
+	    }
+
+	    node.setAttributeNS(this.namespace, prop, this.value);
+	};
+
+	AttributeHook.prototype.unhook = function (node, prop, next) {
+	    if (next && next.type === 'AttributeHook' &&
+	        next.namespace === this.namespace) {
+	        return;
+	    }
+
+	    var colonPosition = prop.indexOf(':');
+	    var localName = colonPosition > -1 ? prop.substr(colonPosition + 1) : prop;
+	    node.removeAttributeNS(this.namespace, localName);
+	};
+
+	AttributeHook.prototype.type = 'AttributeHook';
+
+
+/***/ },
+/* 65 */
+/***/ function(module, exports) {
+
 	"use strict";
 
 	module.exports = function isString(str) {
@@ -4039,7 +4105,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 65 */
+/* 66 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -4047,7 +4113,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var create = __webpack_require__(6);
 	var diff = __webpack_require__(28);
 	var patch = __webpack_require__(44);
-	var RenderCache = __webpack_require__(66);
+	var RenderCache = __webpack_require__(67);
 	var cache = new RenderCache();
 
 	module.exports = function render(newInstance, root) {
@@ -4071,7 +4137,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 66 */
+/* 67 */
 /***/ function(module, exports) {
 
 	"use strict";
