@@ -53,7 +53,7 @@ gulp.task(`lint.config`, () => {
     .pipe(eslint.failOnError())
 })
 
-gulp.task(`test.source`, [`lint.source`], () => {
+gulp.task(`test.source`, [`lint.source`, `lint.test`], () => {
   return gulp.src([`test/setup.js`, `test/source.js`].concat(TEST))
     .pipe(mocha(mochaConfig))
 })
