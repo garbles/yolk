@@ -1,9 +1,8 @@
-/** @jsx createElement */
+/** @jsx Yolk.createElement */
 
-const {createElement, createEventHandler, render} = Yolk
+const {render} = Yolk
 
 describe(`Using data tags`, () => {
-
   it(`converts camel-cased data attributes to dashed one`, () => {
     const component = <div dataSomething={55} dataOtherReallyCoolThing="123123" />
     const node = document.createElement(`div`)

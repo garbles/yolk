@@ -1,6 +1,6 @@
-/** @jsx createElement */
+/** @jsx Yolk.createElement */
 
-const {Rx, createElement, createEventHandler, render} = Yolk
+const {Rx, render} = Yolk
 
 function NestedObservableProps (props) {
   const {height, width} = props
@@ -51,10 +51,10 @@ describe(`nested observable props`, () => {
 
   it(`works with plain objects that use nested props`, () => {
     const b = new Rx.BehaviorSubject({
-        c: {
-          d: [new Rx.BehaviorSubject(`hello`), ` goodbye!`]
-        }
-      })
+      c: {
+        d: [new Rx.BehaviorSubject(`hello`), ` goodbye!`],
+      },
+    })
 
     const component = <DeeplyNestedObservableProps a={{b}} />
     const node = document.createElement(`div`)
@@ -68,9 +68,9 @@ describe(`nested observable props`, () => {
       c: {
         d: [
           <span>Random Component</span>,
-          <p>{anotherSubject}</p>
-        ]
-      }
+          <p>{anotherSubject}</p>,
+        ],
+      },
     })
 
     assert.equal(node.innerHTML, `<div><span>Random Component</span><p>And another</p></div>`)
@@ -78,6 +78,5 @@ describe(`nested observable props`, () => {
     anotherSubject.onNext(`Still working`)
 
     assert.equal(node.innerHTML, `<div><span>Random Component</span><p>Still working</p></div>`)
-
   })
 })

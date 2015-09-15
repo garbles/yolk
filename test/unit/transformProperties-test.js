@@ -2,7 +2,7 @@ const transformProperties = require(`../../lib/transformProperties`)
 
 describe(`transformProperties`, () => {
   it(`transforms props so that they will work correctly with virtual dom`, () => {
-    const onClick = function(){}
+    const onClick = function onClick () {}
 
     const props = {
       className: `className`,
@@ -13,8 +13,8 @@ describe(`transformProperties`, () => {
       action: `/`,
       rowSpan: 5,
       onClick: onClick,
-      onmouseup: function () {},
-      nonStandardAttr: true
+      onmouseup: function onMouseUp () {},
+      nonStandardAttr: true,
     }
 
     const transformedProps = {
@@ -26,8 +26,8 @@ describe(`transformProperties`, () => {
         rowspan: 5,
         'accept-charset': true,
         'data-tag': true,
-        'data-other-tag': true
-      }
+        'data-other-tag': true,
+      },
     }
 
     assert.deepEqual(transformProperties(props), transformedProps)

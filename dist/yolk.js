@@ -61,10 +61,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	var createElement = __webpack_require__(5);
 	var render = __webpack_require__(69);
 
-	function yolk() {}
-	yolk.prototype = { Rx: Rx, createEventHandler: createEventHandler, createElement: createElement, render: render };
+	function Yolk() {}
+	Yolk.prototype = { Rx: Rx, createEventHandler: createEventHandler, createElement: createElement, render: render };
 
-	module.exports = Object.freeze(new yolk());
+	module.exports = Object.freeze(new Yolk());
 
 /***/ },
 /* 1 */
@@ -144,17 +144,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	var isString = __webpack_require__(66);
 
 	module.exports = function createElement(tag, props) {
-	  props || (props = {});
+	  var _props = props || {};
 
 	  for (var _len = arguments.length, children = Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
 	    children[_key - 2] = arguments[_key];
 	  }
 
 	  if (isString(tag)) {
-	    return new YolkBaseComponent(tag, props, children);
-	  } else {
-	    return new YolkCompositeComponent(tag, props, children);
+	    return new YolkBaseComponent(tag, _props, children);
 	  }
+
+	  return new YolkCompositeComponent(tag, _props, children);
 	};
 
 /***/ },
@@ -177,18 +177,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	  function YolkCompositeComponent(fn, props, children) {
 	    _classCallCheck(this, YolkCompositeComponent);
 
+	    var _props = _extends({}, props);
+
 	    this.name = "YolkCompositeComponent";
 	    this.type = "Widget";
 	    this.id = fn.name;
 
-	    if (props.key) {
-	      props = _extends({}, props);
-	      this.key = props.key;
-	      delete props.key;
+	    if (_props.key) {
+	      this.key = _props.key;
+	      delete _props.key;
 	    }
 
 	    this._fn = fn;
-	    this._props = props;
+	    this._props = _props;
 	    this._children = children;
 	  }
 
@@ -590,7 +591,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 
 	      return {
-	        v: Rx.Observable.combineLatest(values, function () {
+	        v: Rx.Observable.combineLatest(values, function combineLatest() {
 	          var newObj = {};
 	          index = -1;
 
@@ -606,11 +607,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    if (typeof _ret === "object") return _ret.v;
 	  } else if (Array.isArray(obj) && obj.length) {
-	    obj = obj.map(wrapObject);
-	    return Rx.Observable.combineLatest(obj);
-	  } else {
-	    return Rx.Observable.just(obj);
+	    var _obj = obj.map(wrapObject);
+	    return Rx.Observable.combineLatest(_obj);
 	  }
+
+	  return Rx.Observable.just(obj);
 	};
 
 /***/ },
@@ -1299,17 +1300,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	  function YolkBaseComponent(tag, props, children) {
 	    _classCallCheck(this, YolkBaseComponent);
 
+	    var _props = _extends({}, props);
+
 	    this.name = "YolkBaseComponent";
 	    this.type = "Widget";
 	    this.id = tag;
 
-	    if (props.key) {
-	      props = _extends({}, props);
-	      this.key = props.key;
-	      delete props.key;
+	    if (_props.key) {
+	      this.key = _props.key;
+	      delete _props.key;
 	    }
 
-	    this._props = props;
+	    this._props = _props;
 	    this._children = children;
 	  }
 
@@ -1336,7 +1338,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }, [vNode]).subscribe(function (_ref3) {
 	        var _ref32 = _slicedToArray(_ref3, 2);
 
-	        var _ = _ref32[0];
+	        var __ = _ref32[0];
 	        var patches = _ref32[1];
 	        return patch(node, patches);
 	      });
@@ -3309,7 +3311,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	var DOMProperties = __webpack_require__(62);
 	var transformStyle = __webpack_require__(63);
 	var transformClassName = __webpack_require__(65);
-	var isDefined = __webpack_require__(3);
 	var softSetHook = __webpack_require__(40);
 	var attributeHook = __webpack_require__(68);
 
@@ -3327,8 +3328,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = function transformProperties(props) {
 	  var keys = Object.keys(props);
 	  var length = keys.length;
-	  var i = -1;
 	  var newProps = { attributes: {} };
+	  var i = -1;
 
 	  while (++i < length) {
 	    var key = keys[i];
@@ -4060,7 +4061,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 	module.exports = function transformStyle(style) {
-	  if (!style) return;
+	  if (!style) {
+	    return {};
+	  }
 
 	  var keys = Object.keys(style);
 	  var length = keys.length;
@@ -4095,7 +4098,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 65 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
+	"use strict";
 
 	var isString = __webpack_require__(66);
 	var compact = __webpack_require__(67);
@@ -4104,7 +4107,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  if (isString(className)) {
 	    return className;
 	  } else if (Array.isArray(className)) {
-	    return compact(className).join(' ');
+	    return compact(className).join(" ");
 	  }
 	};
 

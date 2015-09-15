@@ -1,4 +1,4 @@
-const package = require(`./package.json`)
+const _package = require(`./package.json`)
 
 module.exports = {
   module: {
@@ -6,19 +6,19 @@ module.exports = {
       {
         test: /\.js/,
         exclude: [/node_modules/],
-        loader: `babel`
-      }
-    ]
+        loader: `babel`,
+      },
+    ],
   },
   externals: {
-    rx: `Rx`
+    rx: `Rx`,
   },
-  output: { library: package.name, libraryTarget: `umd` },
+  output: { library: _package.name, libraryTarget: `umd` },
   resolve: {
     alias: {
-      Rx: `rx`
+      Rx: `rx`,
     },
     extensions: [``, `.js`],
-    modulesDirectories: [`node_modules`, `lib`]
-  }
+    modulesDirectories: [`node_modules`, `lib`],
+  },
 }

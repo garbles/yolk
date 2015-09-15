@@ -2,7 +2,7 @@ const babel = require(`babel/register`)
 
 module.exports = {
   compilers: {
-    js: babel
+    js: babel,
   },
-  growl: true
+  growl: true,
 }

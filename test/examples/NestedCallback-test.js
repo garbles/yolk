@@ -1,10 +1,10 @@
-/** @jsx createElement */
+/** @jsx Yolk.createElement */
 
-const {createElement, createEventHandler, render} = Yolk
+const {createEventHandler, render} = Yolk
 
 function NestedCallback () {
   const handleInc = createEventHandler(() => 1, 0)
-  const count = handleInc.scan((x,y) => x+y, 0)
+  const count = handleInc.scan((x, y) => x + y, 0)
 
   return (
     <div>
@@ -20,7 +20,7 @@ function NestedCallbackChild (props) {
   return <button id="nested-button" onClick={props.onClick} />
 }
 
-describe(`calling nested callbacks`, function () {
+describe(`calling nested callbacks`, () => {
   it(`handles calling callback functions from a child component`, () => {
     const component = <NestedCallback />
     const node = document.createElement(`div`)

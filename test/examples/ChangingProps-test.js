@@ -1,6 +1,6 @@
-/** @jsx createElement */
+/** @jsx Yolk.createElement */
 
-const {Rx, createElement, createEventHandler, render} = Yolk
+const {Rx, render} = Yolk
 
 function HasChildren (props) {
   return <div>{props.child}</div>

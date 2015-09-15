@@ -1,6 +1,6 @@
-/** @jsx createElement */
+/** @jsx Yolk.createElement */
 
-const {Rx, createElement, createEventHandler, render} = Yolk
+const {render} = Yolk
 const {h, create} = require(`virtual-dom`)
 
 class CustomStub {
@@ -25,7 +25,7 @@ function WrapCustomComponentWithChildren (props) {
       {
         new CustomStub([
           <div>This works</div>,
-          <p>{props.contents}</p>
+          <p>{props.contents}</p>,
         ])
       }
     </div>

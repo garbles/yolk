@@ -1,10 +1,10 @@
-/** @jsx createElement */
+/** @jsx Yolk.createElement */
 
-const {createElement, createEventHandler, render} = Yolk
+const {createEventHandler, render} = Yolk
 
-function Counter (props, children) {
+function Counter (props) {
   const handlePlus = createEventHandler(() => 1, 0)
-  const count = handlePlus.scan((x, y) => x+y, 0).combineLatest(props.count, (a,b) => a+b)
+  const count = handlePlus.scan((x, y) => x + y, 0).combineLatest(props.count, (a, b) => a + b)
 
   return (
     <div>
@@ -15,7 +15,6 @@ function Counter (props, children) {
 }
 
 describe(`rendering to the same element twice does not recreate the widget`, () => {
-
   it(`only updates the props and or children`, () => {
     const component = <Counter count={0} />
     const node = document.createElement(`div`)

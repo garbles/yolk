@@ -1,6 +1,6 @@
-/** @jsx createElement */
+/** @jsx Yolk.createElement */
 
-const {Rx, createElement, createEventHandler, render} = Yolk
+const {Rx, createEventHandler, render} = Yolk
 
 function Stub (props, children) {
   const handleClick = createEventHandler(() => 1, 0)
@@ -10,7 +10,6 @@ function Stub (props, children) {
 }
 
 describe(`children with keys`, () => {
-
   it(`does not destroy the previous instance of the child`, () => {
     const flipper = new Rx.BehaviorSubject()
     const children = flipper.scan(acc => [acc[1], acc[0]], [<Stub key="second">2</Stub>, <Stub key="first">1</Stub>])
@@ -44,11 +43,9 @@ describe(`children with keys`, () => {
     flipper.onNext(true)
 
     assert.equal(node.innerHTML, `<div><p class="stub">22</p><p class="stub">14</p></div>`)
-
   })
 
   it(`does not reset children as long as one of them is keyed`, () => {
-
     const flipper = new Rx.BehaviorSubject()
     const children = flipper.scan(acc => [acc[1], acc[2], acc[3], acc[0]], [<Stub>4</Stub>, <Stub key="first">1</Stub>, <Stub>2</Stub>, <Stub>3</Stub>])
     const component = <div key="wrapper">{children}</div>
@@ -73,7 +70,6 @@ describe(`children with keys`, () => {
     flipper.onNext(true)
 
     assert.equal(node.innerHTML, `<div><p class="stub">21</p><p class="stub">31</p><p class="stub">41</p><p class="stub">11</p></div>`)
-
   })
 
   it(`resets children if they aren't keyed`, () => {
@@ -97,7 +93,5 @@ describe(`children with keys`, () => {
     flipper.onNext(true)
 
     assert.equal(node.innerHTML, `<div><p class="stub">11</p><p class="stub">21</p></div>`)
-
   })
-
 })

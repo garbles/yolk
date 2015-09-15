@@ -1,11 +1,11 @@
-/** @jsx createElement */
+/** @jsx Yolk.createElement */
 
-const {createElement, createEventHandler, render} = Yolk
+const {createEventHandler, render} = Yolk
 
 function CounterWithMultipleSubscribers (props) {
   const handlePlus = createEventHandler(() => 1, 0)
   const handleMinus = createEventHandler(() => -1, 0)
-  const count = handlePlus.merge(handleMinus).scan((x, y) => x+y, 0)
+  const count = handlePlus.merge(handleMinus).scan((x, y) => x + y, 0)
 
   return (
     <div>
@@ -20,7 +20,6 @@ function CounterWithMultipleSubscribers (props) {
 }
 
 describe(`A simple counter`, () => {
-
   it(`can have multiple subscribers listening to the same source`, () => {
     let component = <CounterWithMultipleSubscribers count={55} />
     const node = document.createElement(`div`)
@@ -41,5 +40,4 @@ describe(`A simple counter`, () => {
 
     assert.equal(node.innerHTML, `<div><button id="plus">+</button><button id="minus">-</button><span>2</span><span>2</span><span>77</span><span>77</span></div>`)
   })
-
 })

@@ -1,0 +1,11 @@
+{
+  "root": true,
+  "extends": "airbnb",
+  "rules": {
+    "quotes": [2, "backtick"],
+    "semi": [2, "never"],
+    "space-before-function-paren": [2, "always"],
+    "no-unused-vars": [2, {"args": "after-used", "argsIgnorePattern": "__"}],
+    "react/react-in-jsx-scope": 0
+  }
+}

@@ -1,6 +1,6 @@
-/** @jsx createElement */
+/** @jsx Yolk.createElement */
 
-const {createElement, createEventHandler, render} = Yolk
+const {createEventHandler, render} = Yolk
 
 function DestroyChildren () {
   const handleAdd = createEventHandler(null, 0)
@@ -22,7 +22,6 @@ function DestroyChildren () {
 }
 
 describe(`destroying children`, () => {
-
   it(`throws them into an object pool`, () => {
     const component = <DestroyChildren />
     const node = document.createElement(`div`)
@@ -47,7 +46,5 @@ describe(`destroying children`, () => {
     adder.click()
 
     assert.equal(children.innerHTML, `<b></b><b></b><b></b><p></p>`)
-
   })
-
 })

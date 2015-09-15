@@ -1,6 +1,6 @@
-/** @jsx createElement */
+/** @jsx Yolk.createElement */
 
-const {Rx, createElement, createEventHandler, render} = Yolk
+const {Rx, createEventHandler, render} = Yolk
 
 function VaryingBaseChildrenFromProps (props) {
   const numbers = props.numbers.map(nums => {
@@ -30,7 +30,6 @@ function Stub (props, children) {
 }
 
 describe(`A list of children which varies in length`, () => {
-
   it(`renders a varying number of base children`, () => {
     const numbersSubject = new Rx.BehaviorSubject(1)
     const numbersObservable = numbersSubject.scan((acc, next) => acc.concat(next), [])
@@ -70,5 +69,4 @@ describe(`A list of children which varies in length`, () => {
 
     assert.equal(node.innerHTML, `<div><p id="stub">15</p><p id="stub">20</p><p id="stub">30</p></div>`)
   })
-
 })

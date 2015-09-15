@@ -1,6 +1,6 @@
-/** @jsx createElement */
+/** @jsx Yolk.createElement */
 
-const {createElement, createEventHandler, render} = Yolk
+const {createEventHandler, render} = Yolk
 
 function NestedCounter (props) {
   const handlePlus = createEventHandler(() => 1, 0)
@@ -45,7 +45,6 @@ function Counter () {
 }
 
 describe(`A nested counter`, () => {
-
   it(`increments and decrements a wrapper counter and a nested child`, () => {
     const component = <Counter />
     const node = document.createElement(`div`)
@@ -81,5 +80,4 @@ describe(`A nested counter`, () => {
     assert(wrapperCount.innerHTML, `2`)
     assert(nestedCount.innerHTML, `3`)
   })
-
 })

@@ -1,11 +1,11 @@
-/** @jsx createElement */
+/** @jsx Yolk.createElement */
 
-const {createElement, createEventHandler, render} = Yolk
+const {createEventHandler, render} = Yolk
 
 function Counter () {
   const handlePlus = createEventHandler(1)
   const handleMinus = createEventHandler(-1)
-  const count = handlePlus.merge(handleMinus).scan((x, y) => x+y, 0).startWith(0)
+  const count = handlePlus.merge(handleMinus).scan((x, y) => x + y, 0).startWith(0)
 
   return (
     <div>
@@ -17,7 +17,6 @@ function Counter () {
 }
 
 describe(`A simple counter`, () => {
-
   it(`increments and decrements a number`, () => {
     const component = <Counter />
     const node = document.createElement(`div`)
@@ -35,5 +34,4 @@ describe(`A simple counter`, () => {
 
     assert.equal(node.innerHTML, `<div><button id="plus">+</button><button id="minus">-</button><span>2</span></div>`)
   })
-
 })
