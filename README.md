@@ -29,16 +29,16 @@ import yolk from `yolk`
 function Counter (props) {
 
   // map all plus button click events to 1
-  const handlePlus = yolk.createEventHandler((ev) => 1, 0)
+  const handlePlus = yolk.createEventHandler(ev => 1)
 
   // map all minus button click events to -1
-  const handleMinus = yolk.createEventHandler((ev) => -1, 0)
+  const handleMinus = yolk.createEventHandler(ev => -1)
 
   // merge both event streams together and keep a running count of the result
-  const count = handlePlus.merge(handleMinus).scan((x, y) => x+y, 0)
+  const count = handlePlus.merge(handleMinus).scan((x, y) => x + y, 0).startWith(0)
 
   // include the initialValue passed in from props
-  const fullCount = count.combineLatest(props.initialValue, (x, y) => x+y)
+  const fullCount = count.combineLatest(props.initialValue, (x, y) => x + y)
 
   return (
     <div>
