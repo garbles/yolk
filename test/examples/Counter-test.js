@@ -3,9 +3,9 @@
 const {createElement, createEventHandler, render} = Yolk
 
 function Counter () {
-  const handlePlus = createEventHandler(1, 0)
-  const handleMinus = createEventHandler(-1, 0)
-  const count = handlePlus.merge(handleMinus).scan((x, y) => x+y, 0)
+  const handlePlus = createEventHandler(1)
+  const handleMinus = createEventHandler(-1)
+  const count = handlePlus.merge(handleMinus).scan((x, y) => x+y, 0).startWith(0)
 
   return (
     <div>
