@@ -9,7 +9,7 @@ const webpackConfig = require(`./webpack.config`)
 const webpackConfigMin = require(`./webpack.config.min`)
 const mochaConfig = require(`./mocha.config`)
 
-const SRC = `lib/**`
+const SRC = `lib/**/*.js`
 const DIST = `dist`
 const TEST_EXAMPLES = `test/examples/*-test.js`
 const TEST_UNIT = `test/unit/*-test.js`
