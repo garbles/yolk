@@ -4,11 +4,6 @@ const webpackConfig = require(`./webpack.config.base`)
 
 module.exports = Object.assign({}, webpackConfig, {
   plugins: [
-    new webpack.DefinePlugin({__DEV__: false}),
-    new webpack.optimize.DedupePlugin(),
-    new webpack.optimize.UglifyJsPlugin({
-      comments: false,
-      mangle: {except: [_package.name]},
-    }),
+    new webpack.DefinePlugin({__DEV__: true})
   ],
 })

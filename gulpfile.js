@@ -5,7 +5,7 @@ const mocha = require(`gulp-mocha`)
 const eslint = require(`gulp-eslint`)
 const del = require(`del`)
 const webpackStream = require(`webpack-stream`)
-const webpackConfig = require(`./webpack.config`)
+const webpackConfigDev = require(`./webpack.config.dev`)
 const webpackConfigMin = require(`./webpack.config.min`)
 const mochaConfig = require(`./mocha.config`)
 
@@ -20,7 +20,7 @@ gulp.task(`clean`, cb => del.sync(DIST, cb()))
 
 gulp.task(`build`, () => {
   return gulp.src(_package.main)
-    .pipe(webpackStream(webpackConfig))
+    .pipe(webpackStream(webpackConfigDev))
     .pipe(concat(`${_package.name}.js`))
     .pipe(gulp.dest(DIST))
 })
