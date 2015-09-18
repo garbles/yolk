@@ -5,8 +5,8 @@ describe(`transformProperties`, () => {
     const onClick = function onClick () {}
 
     const props = {
-      className: `className`,
-      id: `id`,
+      className: [`someName`, `otherName`],
+      id: [`one`, `two`, `three`],
       acceptCharset: true,
       dataTag: true,
       dataOtherTag: true,
@@ -18,8 +18,8 @@ describe(`transformProperties`, () => {
     }
 
     const transformedProps = {
-      className: `className`,
-      id: `id`,
+      className: `someName otherName`,
+      id: `one two three`,
       onclick: onClick,
       attributes: {
         action: `/`,

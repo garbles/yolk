@@ -59,7 +59,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var Rx = __webpack_require__(1);
 	var createEventHandler = __webpack_require__(2);
 	var createElement = __webpack_require__(5);
-	var render = __webpack_require__(69);
+	var render = __webpack_require__(68);
 
 	function Yolk() {}
 	Yolk.prototype = { Rx: Rx, createEventHandler: createEventHandler, createElement: createElement, render: render };
@@ -104,7 +104,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  Rx.internals.addProperties(handler, Rx.ReplaySubject.prototype);
 	  Rx.ReplaySubject.call(handler, 1);
-	  handler.unhook = handler.dispose;
 
 	  if (initIsDefined) {
 	    handler.onNext(init);
@@ -141,7 +140,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var YolkCompositeComponent = __webpack_require__(6);
 	var YolkBaseComponent = __webpack_require__(28);
-	var isString = __webpack_require__(66);
+	var isString = __webpack_require__(67);
 
 	module.exports = function createElement(tag, props) {
 	  var _props = props || {};
@@ -3308,11 +3307,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	"use strict";
 
 	var kababCase = __webpack_require__(55);
-	var DOMProperties = __webpack_require__(62);
-	var transformStyle = __webpack_require__(63);
-	var transformClassName = __webpack_require__(65);
 	var softSetHook = __webpack_require__(40);
-	var attributeHook = __webpack_require__(68);
+	var attributeHook = __webpack_require__(62);
+	var DOMProperties = __webpack_require__(63);
+	var transformStyle = __webpack_require__(64);
+	var compact = __webpack_require__(66);
 
 	var IS_DATA_MATCHER = /^data[A-Z]/;
 
@@ -3322,7 +3321,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	  isAttribute: false,
 	  isStandard: false,
 	  usePropertyHook: false,
-	  useAttributeHook: false
+	  useAttributeHook: false,
+	  canBeArrayOfStrings: false
 	};
 
 	module.exports = function transformProperties(props) {
@@ -3334,12 +3334,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	  while (++i < length) {
 	    var key = keys[i];
 
-	    if (key === "style" || key === "className" || key === "id") {
+	    if (key === "style") {
 	      continue;
 	    }
 
-	    var value = props[key];
 	    var property = DOMProperties[key] || EMPTY_PROP;
+	    var value = props[key];
 	    var isDataAttribute = false;
 
 	    if (property.isStandard) {
@@ -3350,6 +3350,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	      if (isDataAttribute) {
 	        key = kababCase(key);
 	      }
+	    }
+
+	    if (property.canBeArrayOfStrings && Array.isArray(value)) {
+	      value = compact(value).join(" ");
 	    }
 
 	    if (property.isAttribute || isDataAttribute) {
@@ -3363,8 +3367,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	  }
 
-	  props.className && (newProps.className = transformClassName(props.className));
-	  props.id && (newProps.id = props.id);
 	  props.style && (newProps.style = transformStyle(props.style));
 
 	  return newProps;
@@ -3774,6 +3776,47 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 62 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	module.exports = AttributeHook;
+
+	function AttributeHook(namespace, value) {
+	    if (!(this instanceof AttributeHook)) {
+	        return new AttributeHook(namespace, value);
+	    }
+
+	    this.namespace = namespace;
+	    this.value = value;
+	}
+
+	AttributeHook.prototype.hook = function (node, prop, prev) {
+	    if (prev && prev.type === 'AttributeHook' &&
+	        prev.value === this.value &&
+	        prev.namespace === this.namespace) {
+	        return;
+	    }
+
+	    node.setAttributeNS(this.namespace, prop, this.value);
+	};
+
+	AttributeHook.prototype.unhook = function (node, prop, next) {
+	    if (next && next.type === 'AttributeHook' &&
+	        next.namespace === this.namespace) {
+	        return;
+	    }
+
+	    var colonPosition = prop.indexOf(':');
+	    var localName = colonPosition > -1 ? prop.substr(colonPosition + 1) : prop;
+	    node.removeAttributeNS(this.namespace, localName);
+	};
+
+	AttributeHook.prototype.type = 'AttributeHook';
+
+
+/***/ },
+/* 63 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -3784,7 +3827,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	var HAS_DASH_CASE = 0x2;
 	var IS_ATTRIBUTE = 0x4;
 	var USE_PROPERTY_HOOK = 0x8;
-	var USE_ATTRIBUTE_HOOK = 0x16;
+	var USE_ATTRIBUTE_HOOK = 0x10;
+	var CAN_BE_ARRAY_OF_STRINGS = 0x20;
 
 	function checkMask(value, bitmask) {
 	  return (value & bitmask) === bitmask;
@@ -3792,8 +3836,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var properties = {
 	  // inferred by virtual-dom
-	  className: null,
-	  id: null,
+	  className: CAN_BE_ARRAY_OF_STRINGS,
+	  id: CAN_BE_ARRAY_OF_STRINGS,
 	  style: null,
 
 	  // attributes
@@ -4000,6 +4044,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  var isAttribute = checkMask(property, IS_ATTRIBUTE);
 	  var usePropertyHook = checkMask(property, USE_PROPERTY_HOOK);
 	  var useAttributeHook = checkMask(property, USE_ATTRIBUTE_HOOK);
+	  var canBeArrayOfStrings = checkMask(property, CAN_BE_ARRAY_OF_STRINGS);
 	  var computed = undefined;
 
 	  if (hasLowerCase) {
@@ -4017,6 +4062,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    isStandard: isStandard,
 	    usePropertyHook: usePropertyHook,
 	    useAttributeHook: useAttributeHook,
+	    canBeArrayOfStrings: canBeArrayOfStrings,
 	    computed: computed
 	  };
 	}
@@ -4024,12 +4070,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = propertiesWithInfo;
 
 /***/ },
-/* 63 */
+/* 64 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
-	var isNumber = __webpack_require__(64);
+	var isNumber = __webpack_require__(65);
 
 	var unitlessNumberProperties = {
 	  animationIterationCount: true,
@@ -4085,7 +4131,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 64 */
+/* 65 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -4095,34 +4141,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 65 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	var isString = __webpack_require__(66);
-	var compact = __webpack_require__(67);
-
-	module.exports = function transformClassName(className) {
-	  if (isString(className)) {
-	    return className;
-	  } else if (Array.isArray(className)) {
-	    return compact(className).join(" ");
-	  }
-	};
-
-/***/ },
 /* 66 */
-/***/ function(module, exports) {
-
-	"use strict";
-
-	module.exports = function isString(str) {
-	  return typeof str === "string" || str instanceof String;
-	};
-
-/***/ },
-/* 67 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -4145,48 +4164,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 68 */
+/* 67 */
 /***/ function(module, exports) {
 
-	'use strict';
+	"use strict";
 
-	module.exports = AttributeHook;
-
-	function AttributeHook(namespace, value) {
-	    if (!(this instanceof AttributeHook)) {
-	        return new AttributeHook(namespace, value);
-	    }
-
-	    this.namespace = namespace;
-	    this.value = value;
-	}
-
-	AttributeHook.prototype.hook = function (node, prop, prev) {
-	    if (prev && prev.type === 'AttributeHook' &&
-	        prev.value === this.value &&
-	        prev.namespace === this.namespace) {
-	        return;
-	    }
-
-	    node.setAttributeNS(this.namespace, prop, this.value);
+	module.exports = function isString(str) {
+	  return typeof str === "string" || str instanceof String;
 	};
-
-	AttributeHook.prototype.unhook = function (node, prop, next) {
-	    if (next && next.type === 'AttributeHook' &&
-	        next.namespace === this.namespace) {
-	        return;
-	    }
-
-	    var colonPosition = prop.indexOf(':');
-	    var localName = colonPosition > -1 ? prop.substr(colonPosition + 1) : prop;
-	    node.removeAttributeNS(this.namespace, localName);
-	};
-
-	AttributeHook.prototype.type = 'AttributeHook';
-
 
 /***/ },
-/* 69 */
+/* 68 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -4194,7 +4182,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var create = __webpack_require__(7);
 	var diff = __webpack_require__(29);
 	var patch = __webpack_require__(45);
-	var RenderCache = __webpack_require__(70);
+	var RenderCache = __webpack_require__(69);
 	var cache = new RenderCache();
 
 	module.exports = function render(newInstance, root) {
@@ -4218,7 +4206,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 70 */
+/* 69 */
 /***/ function(module, exports) {
 
 	"use strict";
