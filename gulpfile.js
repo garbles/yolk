@@ -32,6 +32,8 @@ gulp.task(`build.min`, () => {
     .pipe(gulp.dest(DIST))
 })
 
+gulp.task(`build.watch`, [`build`], () => gulp.watch(SRC, [`build`]))
+
 gulp.task(`lint.source`, () => {
   return gulp.src(SRC)
     .pipe(eslint())
