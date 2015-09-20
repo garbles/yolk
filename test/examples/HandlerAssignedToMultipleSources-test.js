@@ -1,37 +1,38 @@
 /** @jsx Yolk.createElement */
 
-const {createEventHandler, render} = Yolk
+const test = require(`tape`)
+const Yolk = require(`../../lib/yolk`)
 
-describe(`assigning a handler to multiple sources`, () => {
-  it(`should dispose of the handler only when it is no longer in use`, () => {
-    const handler = createEventHandler(true, true)
-    const className = handler.map(() => `some-class`)
+test(`assigning a handler to multiple sources`, t => {
+  t.plan(7)
 
-    const component = (
-      <div className={className}>
-        <button onClick={handler} />
-        <button onClick={handler} />
-      </div>
-    )
+  const handler = Yolk.createEventHandler(true, true)
+  const className = handler.map(() => `some-class`)
 
-    const nextComponent = <div className={className} />
-    const lastComponent = <div />
+  const component = (
+    <div className={className}>
+      <button onClick={handler} />
+      <button onClick={handler} />
+    </div>
+  )
 
-    const node = document.createElement(`div`)
-    render(component, node)
+  const nextComponent = <div className={className} />
+  const lastComponent = <div />
 
-    assert.equal(node.innerHTML, `<div class="some-class"><button></button><button></button></div>`)
-    assert.equal(handler.hasObservers(), true)
+  const node = document.createElement(`div`)
+  Yolk.render(component, node)
 
-    render(nextComponent, node)
+  t.equal(node.innerHTML, `<div class="some-class"><button></button><button></button></div>`)
+  t.equal(handler.hasObservers(), true)
 
-    assert.equal(node.innerHTML, `<div class="some-class"></div>`)
-    assert.equal(handler.isDisposed, false)
-    assert.equal(handler.hasObservers(), true)
+  Yolk.render(nextComponent, node)
 
-    render(lastComponent, node)
-    assert.equal(node.innerHTML, `<div></div>`)
+  t.equal(node.innerHTML, `<div class="some-class"></div>`)
+  t.equal(handler.isDisposed, false)
+  t.equal(handler.hasObservers(), true)
 
-    assert.equal(handler.hasObservers(), false)
-  })
+  Yolk.render(lastComponent, node)
+
+  t.equal(node.innerHTML, `<div class=""></div>`)
+  t.equal(handler.hasObservers(), false)
 })

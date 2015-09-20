@@ -1,10 +1,11 @@
 /** @jsx Yolk.createElement */
 
-const {createEventHandler, render} = Yolk
+const test = require(`tape`)
+const Yolk = require(`../../lib/yolk`)
 
 function CounterWithMultipleSubscribers (props) {
-  const handlePlus = createEventHandler(() => 1, 0)
-  const handleMinus = createEventHandler(() => -1, 0)
+  const handlePlus = Yolk.createEventHandler(() => 1, 0)
+  const handleMinus = Yolk.createEventHandler(() => -1, 0)
   const count = handlePlus.merge(handleMinus).scan((x, y) => x + y, 0)
 
   return (
@@ -19,25 +20,25 @@ function CounterWithMultipleSubscribers (props) {
   )
 }
 
-describe(`A simple counter`, () => {
-  it(`can have multiple subscribers listening to the same source`, () => {
-    let component = <CounterWithMultipleSubscribers count={55} />
-    const node = document.createElement(`div`)
-    render(component, node)
+test(`can have multiple subscribers listening to the same source`, t => {
+  t.plan(2)
 
-    assert.equal(node.innerHTML, `<div><button id="plus">+</button><button id="minus">-</button><span>0</span><span>0</span><span>55</span><span>55</span></div>`)
+  let component = <CounterWithMultipleSubscribers count={55} />
+  const node = document.createElement(`div`)
+  Yolk.render(component, node)
 
-    const plus = node.querySelector(`#plus`)
-    const minus = node.querySelector(`#minus`)
+  t.equal(node.innerHTML, `<div><button id="plus">+</button><button id="minus">-</button><span>0</span><span>0</span><span>55</span><span>55</span></div>`)
 
-    plus.click()
-    plus.click()
-    plus.click()
-    minus.click()
+  const plus = node.querySelector(`#plus`)
+  const minus = node.querySelector(`#minus`)
 
-    component = <CounterWithMultipleSubscribers count={77} />
-    render(component, node)
+  plus.click()
+  plus.click()
+  plus.click()
+  minus.click()
 
-    assert.equal(node.innerHTML, `<div><button id="plus">+</button><button id="minus">-</button><span>2</span><span>2</span><span>77</span><span>77</span></div>`)
-  })
+  component = <CounterWithMultipleSubscribers count={77} />
+  Yolk.render(component, node)
+
+  t.equal(node.innerHTML, `<div><button id="plus">+</button><button id="minus">-</button><span>2</span><span>2</span><span>77</span><span>77</span></div>`)
 })

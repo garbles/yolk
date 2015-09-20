@@ -1,6 +1,7 @@
 /** @jsx Yolk.createElement */
 
-const {Rx, render} = Yolk
+const test = require(`tape`)
+const Yolk = require(`../../lib/yolk`)
 
 function NestedObservableProps (props) {
   const {height, width} = props
@@ -15,68 +16,72 @@ function DeeplyNestedObservableProps (props) {
   return <div>{content}</div>
 }
 
-describe(`nested observable props`, () => {
-  it(`properly interpret properties`, () => {
-    const heightSubject = new Rx.BehaviorSubject(1)
-    const widthSubject = new Rx.BehaviorSubject(1)
-    const component = <NestedObservableProps height={heightSubject} width={widthSubject} />
-    const node = document.createElement(`div`)
-    render(component, node)
+test(`properly interpret properties`, t => {
+  t.plan(3)
 
-    assert.equal(node.innerHTML, `<div style="color: blue; height: 1px; width: 1px;"></div>`)
+  const heightSubject = new Yolk.Rx.BehaviorSubject(1)
+  const widthSubject = new Yolk.Rx.BehaviorSubject(1)
+  const component = <NestedObservableProps height={heightSubject} width={widthSubject} />
+  const node = document.createElement(`div`)
+  Yolk.render(component, node)
 
-    heightSubject.onNext(50)
+  t.equal(node.innerHTML, `<div style="color: blue; height: 1px; width: 1px; "></div>`)
 
-    assert.equal(node.innerHTML, `<div style="color: blue; height: 50px; width: 1px;"></div>`)
+  heightSubject.onNext(50)
 
-    widthSubject.onNext(25)
+  t.equal(node.innerHTML, `<div style="color: blue; width: 1px; height: 50px; "></div>`)
 
-    assert.equal(node.innerHTML, `<div style="color: blue; height: 50px; width: 25px;"></div>`)
+  widthSubject.onNext(25)
+
+  t.equal(node.innerHTML, `<div style="color: blue; height: 50px; width: 25px; "></div>`)
+})
+
+test(`works with doubley nested observables`, t => {
+  t.plan(2)
+
+  const deeplyNestedHeightSubject = new Yolk.Rx.BehaviorSubject(1)
+  const nestedHeightSubject = new Yolk.Rx.BehaviorSubject(deeplyNestedHeightSubject.asObservable())
+  const heightSubject = new Yolk.Rx.BehaviorSubject(nestedHeightSubject.asObservable())
+  const component = <NestedObservableProps height={heightSubject} width={1} />
+  const node = document.createElement(`div`)
+  Yolk.render(component, node)
+
+  t.equal(node.innerHTML, `<div style="color: blue; height: 1px; width: 1px; "></div>`)
+
+  deeplyNestedHeightSubject.onNext(44)
+
+  t.equal(node.innerHTML, `<div style="color: blue; width: 1px; height: 44px; "></div>`)
+})
+
+test(`works with plain objects that use nested props`, t => {
+  t.plan(3)
+
+  const b = new Yolk.Rx.BehaviorSubject({
+    c: {
+      d: [new Yolk.Rx.BehaviorSubject(`hello`), ` goodbye!`],
+    },
   })
 
-  it(`works with doubley nested observables`, () => {
-    const deeplyNestedHeightSubject = new Rx.BehaviorSubject(1)
-    const nestedHeightSubject = new Rx.BehaviorSubject(deeplyNestedHeightSubject.asObservable())
-    const heightSubject = new Rx.BehaviorSubject(nestedHeightSubject.asObservable())
-    const component = <NestedObservableProps height={heightSubject} width={1} />
-    const node = document.createElement(`div`)
-    render(component, node)
+  const component = <DeeplyNestedObservableProps a={{b}} />
+  const node = document.createElement(`div`)
+  Yolk.render(component, node)
 
-    assert.equal(node.innerHTML, `<div style="color: blue; height: 1px; width: 1px;"></div>`)
+  t.equal(node.innerHTML, `<div>hello goodbye!</div>`)
 
-    deeplyNestedHeightSubject.onNext(44)
+  const anotherSubject = new Yolk.Rx.BehaviorSubject(`And another`)
 
-    assert.equal(node.innerHTML, `<div style="color: blue; height: 44px; width: 1px;"></div>`)
+  b.onNext({
+    c: {
+      d: [
+        <span>Random Component</span>,
+        <p>{anotherSubject}</p>,
+      ],
+    },
   })
 
-  it(`works with plain objects that use nested props`, () => {
-    const b = new Rx.BehaviorSubject({
-      c: {
-        d: [new Rx.BehaviorSubject(`hello`), ` goodbye!`],
-      },
-    })
+  t.equal(node.innerHTML, `<div><span>Random Component</span><p>And another</p></div>`)
 
-    const component = <DeeplyNestedObservableProps a={{b}} />
-    const node = document.createElement(`div`)
-    render(component, node)
+  anotherSubject.onNext(`Still working`)
 
-    assert.equal(node.innerHTML, `<div>hello goodbye!</div>`)
-
-    const anotherSubject = new Rx.BehaviorSubject(`And another`)
-
-    b.onNext({
-      c: {
-        d: [
-          <span>Random Component</span>,
-          <p>{anotherSubject}</p>,
-        ],
-      },
-    })
-
-    assert.equal(node.innerHTML, `<div><span>Random Component</span><p>And another</p></div>`)
-
-    anotherSubject.onNext(`Still working`)
-
-    assert.equal(node.innerHTML, `<div><span>Random Component</span><p>Still working</p></div>`)
-  })
+  t.equal(node.innerHTML, `<div><span>Random Component</span><p>Still working</p></div>`)
 })

@@ -1,6 +1,7 @@
 /** @jsx Yolk.createElement */
 
-const {Rx, createEventHandler, render} = Yolk
+const test = require(`tape`)
+const Yolk = require(`../../lib/yolk`)
 
 function VaryingBaseChildrenFromProps (props) {
   const numbers = props.numbers.map(nums => {
@@ -23,50 +24,53 @@ function VaryingWidgetChildrenFromProps (props) {
 }
 
 function Stub (props, children) {
-  const handleClick = createEventHandler(() => 1, 0)
+  const handleClick = Yolk.createEventHandler(() => 1, 0)
   const count = handleClick.scan((acc, next) => acc + next, 0)
 
-  return <p id="stub" onClick={handleClick}>{children}{count}</p>
+  return <button id="stub" onClick={handleClick}>{children}{count}</button>
 }
 
-describe(`A list of children which varies in length`, () => {
-  it(`renders a varying number of base children`, () => {
-    const numbersSubject = new Rx.BehaviorSubject(1)
-    const numbersObservable = numbersSubject.scan((acc, next) => acc.concat(next), [])
+test(`renders a varying number of base children`, t => {
+  t.plan(2)
 
-    const component = <VaryingBaseChildrenFromProps numbers={numbersObservable} />
-    const node = document.createElement(`div`)
-    render(component, node)
+  const numbersSubject = new Yolk.Rx.BehaviorSubject(1)
+  const numbersObservable = numbersSubject.scan((acc, next) => acc.concat(next), [])
 
-    assert.equal(node.innerHTML, `<ul><li>1</li></ul>`)
-    numbersSubject.onNext(2)
-    numbersSubject.onNext(3)
+  const component = <VaryingBaseChildrenFromProps numbers={numbersObservable} />
+  const node = document.createElement(`div`)
+  Yolk.render(component, node)
 
-    assert.equal(node.innerHTML, `<ul><li>1</li><li>2</li><li>3</li></ul>`)
-  })
+  t.equal(node.innerHTML, `<ul><li>1</li></ul>`)
 
-  it(`renders a varying number of widget children`, () => {
-    const numbersSubject = new Rx.BehaviorSubject(1)
-    const numbersObservable = numbersSubject.scan((acc, next) => acc.concat(next), [])
+  numbersSubject.onNext(2)
+  numbersSubject.onNext(3)
 
-    const component = <VaryingWidgetChildrenFromProps numbers={numbersObservable} />
-    const node = document.createElement(`div`)
-    render(component, node)
+  t.equal(node.innerHTML, `<ul><li>1</li><li>2</li><li>3</li></ul>`)
+})
 
-    assert.equal(node.innerHTML, `<div><p id="stub">10</p></div>`)
+test(`renders a varying number of widget children`, t => {
+  t.plan(3)
 
-    const stubDiv = node.querySelector(`#stub`)
-    stubDiv.click()
-    stubDiv.click()
-    stubDiv.click()
-    stubDiv.click()
-    stubDiv.click()
+  const numbersSubject = new Yolk.Rx.BehaviorSubject(1)
+  const numbersObservable = numbersSubject.scan((acc, next) => acc.concat(next), [])
 
-    assert.equal(node.innerHTML, `<div><p id="stub">15</p></div>`)
+  const component = <VaryingWidgetChildrenFromProps numbers={numbersObservable} />
+  const node = document.createElement(`div`)
+  Yolk.render(component, node)
 
-    numbersSubject.onNext(2)
-    numbersSubject.onNext(3)
+  t.equal(node.innerHTML, `<div><button id="stub">10</button></div>`)
 
-    assert.equal(node.innerHTML, `<div><p id="stub">15</p><p id="stub">20</p><p id="stub">30</p></div>`)
-  })
+  const stubDiv = node.querySelector(`#stub`)
+  stubDiv.click()
+  stubDiv.click()
+  stubDiv.click()
+  stubDiv.click()
+  stubDiv.click()
+
+  t.equal(node.innerHTML, `<div><button id="stub">15</button></div>`)
+
+  numbersSubject.onNext(2)
+  numbersSubject.onNext(3)
+
+  t.equal(node.innerHTML, `<div><button id="stub">15</button><button id="stub">20</button><button id="stub">30</button></div>`)
 })

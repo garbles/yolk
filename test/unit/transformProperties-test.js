@@ -1,35 +1,35 @@
+const test = require(`tape`)
 const transformProperties = require(`../../lib/transformProperties`)
 
-describe(`transformProperties`, () => {
-  it(`transforms props so that they will work correctly with virtual dom`, () => {
-    const onClick = function onClick () {}
+test(`transformProperties: transforms props so that they will work correctly with virtual dom`, t => {
+  t.plan(1)
+  const onClick = function onClick () {}
 
-    const props = {
-      className: [`someName`, `otherName`],
-      id: [`one`, `two`, `three`],
-      acceptCharset: true,
-      dataTag: true,
-      dataOtherTag: true,
+  const props = {
+    className: [`someName`, `otherName`],
+    id: [`one`, `two`, `three`],
+    acceptCharset: true,
+    dataTag: true,
+    dataOtherTag: true,
+    action: `/`,
+    rowSpan: 5,
+    onClick: onClick,
+    onmouseup: function onMouseUp () {},
+    nonStandardAttr: true,
+  }
+
+  const transformedProps = {
+    className: `someName otherName`,
+    id: `one two three`,
+    onclick: onClick,
+    attributes: {
       action: `/`,
-      rowSpan: 5,
-      onClick: onClick,
-      onmouseup: function onMouseUp () {},
-      nonStandardAttr: true,
-    }
+      rowspan: 5,
+      'accept-charset': true,
+      'data-tag': true,
+      'data-other-tag': true,
+    },
+  }
 
-    const transformedProps = {
-      className: `someName otherName`,
-      id: `one two three`,
-      onclick: onClick,
-      attributes: {
-        action: `/`,
-        rowspan: 5,
-        'accept-charset': true,
-        'data-tag': true,
-        'data-other-tag': true,
-      },
-    }
-
-    assert.deepEqual(transformProperties(props), transformedProps)
-  })
+  t.deepEqual(transformProperties(props), transformedProps)
 })

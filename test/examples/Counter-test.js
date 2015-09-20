@@ -1,10 +1,11 @@
 /** @jsx Yolk.createElement */
 
-const {createEventHandler, render} = Yolk
+const test = require(`tape`)
+const Yolk = require(`../../lib/yolk`)
 
 function Counter () {
-  const handlePlus = createEventHandler(1)
-  const handleMinus = createEventHandler(-1)
+  const handlePlus = Yolk.createEventHandler(1)
+  const handleMinus = Yolk.createEventHandler(-1)
   const count = handlePlus.merge(handleMinus).scan((x, y) => x + y, 0).startWith(0)
 
   return (
@@ -16,22 +17,22 @@ function Counter () {
   )
 }
 
-describe(`A simple counter`, () => {
-  it(`increments and decrements a number`, () => {
-    const component = <Counter />
-    const node = document.createElement(`div`)
-    render(component, node)
+test(`a simple counter`, t => {
+  t.plan(2)
 
-    assert.equal(node.innerHTML, `<div><button id="plus">+</button><button id="minus">-</button><span>0</span></div>`)
+  const component = <Counter />
+  const node = document.createElement(`div`)
+  Yolk.render(component, node)
 
-    const plus = node.querySelector(`#plus`)
-    const minus = node.querySelector(`#minus`)
+  t.equal(node.innerHTML, `<div><button id="plus">+</button><button id="minus">-</button><span>0</span></div>`)
 
-    plus.click()
-    plus.click()
-    plus.click()
-    minus.click()
+  const plus = node.querySelector(`#plus`)
+  const minus = node.querySelector(`#minus`)
 
-    assert.equal(node.innerHTML, `<div><button id="plus">+</button><button id="minus">-</button><span>2</span></div>`)
-  })
+  plus.click()
+  plus.click()
+  plus.click()
+  minus.click()
+
+  t.equal(node.innerHTML, `<div><button id="plus">+</button><button id="minus">-</button><span>2</span></div>`)
 })

@@ -1,9 +1,10 @@
 /** @jsx Yolk.createElement */
 
-const {createEventHandler, render} = Yolk
+const test = require(`tape`)
+const Yolk = require(`../../lib/yolk`)
 
 function Counter (props) {
-  const handlePlus = createEventHandler(() => 1, 0)
+  const handlePlus = Yolk.createEventHandler(() => 1, 0)
   const count = handlePlus.scan((x, y) => x + y, 0).combineLatest(props.count, (a, b) => a + b)
 
   return (
@@ -14,25 +15,24 @@ function Counter (props) {
   )
 }
 
-describe(`rendering to the same element twice does not recreate the widget`, () => {
-  it(`only updates the props and or children`, () => {
-    const component = <Counter count={0} />
-    const node = document.createElement(`div`)
-    render(component, node)
+test(`only updates the props and or children`, t => {
+  t.plan(3)
 
-    assert.equal(node.innerHTML, `<div><button id="plus">+</button><span>Count: 0</span></div>`)
+  const component = <Counter count={0} />
+  const node = document.createElement(`div`)
+  Yolk.render(component, node)
 
-    const plus = node.querySelector(`#plus`)
+  t.equal(node.innerHTML, `<div><button id="plus">+</button><span>Count: 0</span></div>`)
 
-    plus.click()
-    plus.click()
+  const plus = node.querySelector(`#plus`)
 
-    assert.equal(node.innerHTML, `<div><button id="plus">+</button><span>Count: 2</span></div>`)
+  plus.click()
+  plus.click()
 
-    const newComponent = <Counter count={5} />
+  t.equal(node.innerHTML, `<div><button id="plus">+</button><span>Count: 2</span></div>`)
 
-    render(newComponent, node)
+  const newComponent = <Counter count={5} />
+  Yolk.render(newComponent, node)
 
-    assert.equal(node.innerHTML, `<div><button id="plus">+</button><span>Count: 7</span></div>`)
-  })
+  t.equal(node.innerHTML, `<div><button id="plus">+</button><span>Count: 7</span></div>`)
 })

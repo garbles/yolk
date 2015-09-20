@@ -1,37 +1,38 @@
 /** @jsx Yolk.createElement */
 
-const {render} = Yolk
+const test = require(`tape`)
+const Yolk = require(`../../lib/yolk`)
 
-describe(`Lifecycle hooks`, () => {
-  it(`will run code after the component mounts`, (done) => {
-    const node = document.createElement(`div`)
+test(`will run code after the component mounts`, t => {
+  t.plan(3)
 
-    function onMount (event) {
-      assert.equal(node.childElementCount, 1)
-      assert.equal(event.target.outerHTML, `<strong></strong>`)
-      assert.equal(node.outerHTML, `<div><strong></strong></div>`)
-      done()
-    }
+  const node = document.createElement(`div`)
 
-    const component = <strong onMount={onMount} />
+  function onMount (event) {
+    t.equal(node.childElementCount, 1)
+    t.equal(event.target.outerHTML, `<strong></strong>`)
+    t.equal(node.outerHTML, `<div><strong></strong></div>`)
+  }
 
-    render(component, node)
-  })
+  const component = <strong onMount={onMount} />
 
-  it(`will run code when the component unmounts`, (done) => {
-    const node = document.createElement(`div`)
+  Yolk.render(component, node)
+})
 
-    function onUnmount (event) {
-      assert.equal(node.childElementCount, 1)
-      assert.equal(event.target.outerHTML, `<strong></strong>`)
-      assert.equal(node.outerHTML, `<div><b></b></div>`)
-      done()
-    }
+test(`will run code when the component unmounts`, t => {
+  t.plan(3)
 
-    const component = <strong onUnmount={onUnmount} />
-    const otherComponent = <b />
+  const node = document.createElement(`div`)
 
-    render(component, node)
-    render(otherComponent, node)
-  })
+  function onUnmount (event) {
+    t.equal(node.childElementCount, 1)
+    t.equal(event.target.outerHTML, `<strong></strong>`)
+    t.equal(node.outerHTML, `<div><b></b></div>`)
+  }
+
+  const component = <strong onUnmount={onUnmount} />
+  const otherComponent = <b />
+
+  Yolk.render(component, node)
+  Yolk.render(otherComponent, node)
 })

@@ -1,97 +1,102 @@
 /** @jsx Yolk.createElement */
 
-const {Rx, createEventHandler, render} = Yolk
+const test = require(`tape`)
+const Yolk = require(`../../lib/yolk`)
 
 function Stub (props, children) {
-  const handleClick = createEventHandler(() => 1, 0)
+  const handleClick = Yolk.createEventHandler(() => 1, 0)
   const count = handleClick.scan((acc, next) => acc + next, 0)
 
-  return <p className="stub" onClick={handleClick}>{children}{count}</p>
+  return <button className="stub" onClick={handleClick}>{children}{count}</button>
 }
 
-describe(`children with keys`, () => {
-  it(`does not destroy the previous instance of the child`, () => {
-    const flipper = new Rx.BehaviorSubject()
-    const children = flipper.scan(acc => [acc[1], acc[0]], [<Stub key="second">2</Stub>, <Stub key="first">1</Stub>])
-    const component = <div key="wrapper">{children}</div>
-    const node = document.createElement(`div`)
-    render(component, node)
+test(`does not destroy the previous instance of the child`, t => {
+  t.plan(5)
 
-    const stubs = node.querySelectorAll(`.stub`)
-    const first = stubs[0]
-    const second = stubs[1]
+  const flipper = new Yolk.Rx.BehaviorSubject()
+  const children = flipper.scan(acc => [acc[1], acc[0]], [<Stub key="second">2</Stub>, <Stub key="first">1</Stub>])
+  const component = <div key="wrapper">{children}</div>
+  const node = document.createElement(`div`)
+  Yolk.render(component, node)
 
-    assert.equal(node.innerHTML, `<div><p class="stub">10</p><p class="stub">20</p></div>`)
+  const stubs = node.querySelectorAll(`.stub`)
+  const first = stubs[0]
+  const second = stubs[1]
 
-    first.click()
+  t.equal(node.innerHTML, `<div><button class="stub">10</button><button class="stub">20</button></div>`)
 
-    assert.equal(node.innerHTML, `<div><p class="stub">11</p><p class="stub">20</p></div>`)
+  first.click()
 
-    flipper.onNext(true)
+  t.equal(node.innerHTML, `<div><button class="stub">11</button><button class="stub">20</button></div>`)
 
-    assert.equal(node.innerHTML, `<div><p class="stub">20</p><p class="stub">11</p></div>`)
+  flipper.onNext(true)
 
-    first.click()
-    first.click()
-    first.click()
-    second.click()
-    second.click()
-    flipper.onNext(true)
+  t.equal(node.innerHTML, `<div><button class="stub">20</button><button class="stub">11</button></div>`)
 
-    assert.equal(node.innerHTML, `<div><p class="stub">14</p><p class="stub">22</p></div>`)
+  first.click()
+  first.click()
+  first.click()
+  second.click()
+  second.click()
+  flipper.onNext(true)
 
-    flipper.onNext(true)
+  t.equal(node.innerHTML, `<div><button class="stub">14</button><button class="stub">22</button></div>`)
 
-    assert.equal(node.innerHTML, `<div><p class="stub">22</p><p class="stub">14</p></div>`)
-  })
+  flipper.onNext(true)
 
-  it(`does not reset children as long as one of them is keyed`, () => {
-    const flipper = new Rx.BehaviorSubject()
-    const children = flipper.scan(acc => [acc[1], acc[2], acc[3], acc[0]], [<Stub>4</Stub>, <Stub key="first">1</Stub>, <Stub>2</Stub>, <Stub>3</Stub>])
-    const component = <div key="wrapper">{children}</div>
-    const node = document.createElement(`div`)
-    render(component, node)
+  t.equal(node.innerHTML, `<div><button class="stub">22</button><button class="stub">14</button></div>`)
+})
 
-    const stubs = node.querySelectorAll(`.stub`)
-    const first = stubs[0]
-    const second = stubs[1]
-    const third = stubs[2]
-    const fourth = stubs[3]
+test(`does not reset children as long as one of them is keyed`, t => {
+  t.plan(3)
 
-    assert.equal(node.innerHTML, `<div><p class="stub">10</p><p class="stub">20</p><p class="stub">30</p><p class="stub">40</p></div>`)
+  const flipper = new Yolk.Rx.BehaviorSubject()
+  const children = flipper.scan(acc => [acc[1], acc[2], acc[3], acc[0]], [<Stub>4</Stub>, <Stub key="first">1</Stub>, <Stub>2</Stub>, <Stub>3</Stub>])
+  const component = <div key="wrapper">{children}</div>
+  const node = document.createElement(`div`)
+  Yolk.render(component, node)
 
-    first.click()
-    second.click()
-    third.click()
-    fourth.click()
+  const stubs = node.querySelectorAll(`.stub`)
+  const first = stubs[0]
+  const second = stubs[1]
+  const third = stubs[2]
+  const fourth = stubs[3]
 
-    assert.equal(node.innerHTML, `<div><p class="stub">11</p><p class="stub">21</p><p class="stub">31</p><p class="stub">41</p></div>`)
+  t.equal(node.innerHTML, `<div><button class="stub">10</button><button class="stub">20</button><button class="stub">30</button><button class="stub">40</button></div>`)
 
-    flipper.onNext(true)
+  first.click()
+  second.click()
+  third.click()
+  fourth.click()
 
-    assert.equal(node.innerHTML, `<div><p class="stub">21</p><p class="stub">31</p><p class="stub">41</p><p class="stub">11</p></div>`)
-  })
+  t.equal(node.innerHTML, `<div><button class="stub">11</button><button class="stub">21</button><button class="stub">31</button><button class="stub">41</button></div>`)
 
-  it(`resets children if they aren't keyed`, () => {
-    const flipper = new Rx.BehaviorSubject()
-    const children = flipper.scan(acc => [acc[1], acc[0]], [<Stub>2</Stub>, <Stub>1</Stub>])
-    const component = <div key="wrapper">{children}</div>
-    const node = document.createElement(`div`)
-    render(component, node)
+  flipper.onNext(true)
 
-    const stubs = node.querySelectorAll(`.stub`)
-    const first = stubs[0]
-    const second = stubs[1]
+  t.equal(node.innerHTML, `<div><button class="stub">21</button><button class="stub">31</button><button class="stub">41</button><button class="stub">11</button></div>`)
+})
 
-    assert.equal(node.innerHTML, `<div><p class="stub">10</p><p class="stub">20</p></div>`)
+test(`resets children if they aren't keyed`, t => {
+  t.plan(3)
 
-    first.click()
-    second.click()
+  const flipper = new Yolk.Rx.BehaviorSubject()
+  const children = flipper.scan(acc => [acc[1], acc[0]], [<Stub>2</Stub>, <Stub>1</Stub>])
+  const component = <div key="wrapper">{children}</div>
+  const node = document.createElement(`div`)
+  Yolk.render(component, node)
 
-    assert.equal(node.innerHTML, `<div><p class="stub">11</p><p class="stub">21</p></div>`)
+  const stubs = node.querySelectorAll(`.stub`)
+  const first = stubs[0]
+  const second = stubs[1]
 
-    flipper.onNext(true)
+  t.equal(node.innerHTML, `<div><button class="stub">10</button><button class="stub">20</button></div>`)
 
-    assert.equal(node.innerHTML, `<div><p class="stub">11</p><p class="stub">21</p></div>`)
-  })
+  first.click()
+  second.click()
+
+  t.equal(node.innerHTML, `<div><button class="stub">11</button><button class="stub">21</button></div>`)
+
+  flipper.onNext(true)
+
+  t.equal(node.innerHTML, `<div><button class="stub">11</button><button class="stub">21</button></div>`)
 })

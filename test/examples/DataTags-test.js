@@ -1,13 +1,14 @@
 /** @jsx Yolk.createElement */
 
-const {render} = Yolk
+const test = require(`tape`)
+const Yolk = require(`../../lib/yolk`)
 
-describe(`Using data tags`, () => {
-  it(`converts camel-cased data attributes to dashed one`, () => {
-    const component = <div dataSomething={55} dataOtherReallyCoolThing="123123" />
-    const node = document.createElement(`div`)
-    render(component, node)
+test(`using data tags`, t => {
+  t.plan(1)
 
-    assert.equal(node.innerHTML, `<div data-something="55" data-other-really-cool-thing="123123"></div>`)
-  })
+  const component = <div dataSomething={55} dataOtherReallyCoolThing="123123" />
+  const node = document.createElement(`div`)
+  Yolk.render(component, node)
+
+  t.equal(node.innerHTML, `<div data-something="55" data-other-really-cool-thing="123123"></div>`)
 })

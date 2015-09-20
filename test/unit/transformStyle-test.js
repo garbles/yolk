@@ -1,28 +1,29 @@
+const test = require(`tape`)
 const transformStyle = require(`../../lib/transformStyle`)
 
-describe(`transformStyle`, () => {
-  it(`returns an empty object if style isn't defined in the props`, () => {
-    const props = {}
-    transformStyle(props, undefined)
-    assert.deepEqual(props.style, undefined)
-  })
+test(`transformStyle: converts necessary number values in px values`, t => {
+  t.plan(2)
 
-  it(`converts necessary number values in px values`, () => {
-    const props = {}
-    const style = {
-      height: 1,
-      width: 1,
-      lineHeight: 50,
-      zIndex: 1000,
-    }
+  const props = {}
 
-    transformStyle(props, style)
+  transformStyle(props, undefined)
 
-    assert.deepEqual(props.style, {
-      height: `1px`,
-      width: `1px`,
-      lineHeight: 50,
-      zIndex: 1000,
-    })
-  })
+  t.deepEqual(props.style, undefined)
+
+  const style = {
+    height: 1,
+    width: 1,
+    lineHeight: 50,
+    zIndex: 1000,
+  }
+  const transformed = {
+    height: `1px`,
+    width: `1px`,
+    lineHeight: 50,
+    zIndex: 1000,
+  }
+
+  transformStyle(props, style)
+
+  t.deepEqual(props.style, transformed)
 })

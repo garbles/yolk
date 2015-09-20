@@ -1,10 +1,11 @@
 /** @jsx Yolk.createElement */
 
-const {createEventHandler, render} = Yolk
+const test = require(`tape`)
+const Yolk = require(`../../lib/yolk`)
 
 function DestroyChildren () {
-  const handleAdd = createEventHandler(null, 0)
-  const handleRemove = createEventHandler(null, 0)
+  const handleAdd = Yolk.createEventHandler(null, 0)
+  const handleRemove = Yolk.createEventHandler(null, 0)
 
   const addable = handleAdd.scan(acc => acc.concat([<b />]), [])
   const removeable = handleRemove.scan(acc => acc.slice(1), [<p />, <p />, <p />, <p />, <p />])
@@ -21,30 +22,30 @@ function DestroyChildren () {
   )
 }
 
-describe(`destroying children`, () => {
-  it(`throws them into an object pool`, () => {
-    const component = <DestroyChildren />
-    const node = document.createElement(`div`)
-    render(component, node)
+test(`destroying children`, t => {
+  t.plan(4)
 
-    const adder = node.querySelector(`#add`)
-    const remover = node.querySelector(`#remove`)
-    const children = node.querySelector(`#children`)
+  const component = <DestroyChildren />
+  const node = document.createElement(`div`)
+  Yolk.render(component, node)
 
-    assert.equal(children.innerHTML, `<b></b><p></p><p></p><p></p><p></p>`)
+  const adder = node.querySelector(`#add`)
+  const remover = node.querySelector(`#remove`)
+  const children = node.querySelector(`#children`)
 
-    remover.click()
+  t.equal(children.innerHTML, `<b></b><p></p><p></p><p></p><p></p>`)
 
-    assert.equal(children.innerHTML, `<b></b><p></p><p></p><p></p>`)
+  remover.click()
 
-    remover.click()
-    remover.click()
+  t.equal(children.innerHTML, `<b></b><p></p><p></p><p></p>`)
 
-    assert.equal(children.innerHTML, `<b></b><p></p>`)
+  remover.click()
+  remover.click()
 
-    adder.click()
-    adder.click()
+  t.equal(children.innerHTML, `<b></b><p></p>`)
 
-    assert.equal(children.innerHTML, `<b></b><b></b><b></b><p></p>`)
-  })
+  adder.click()
+  adder.click()
+
+  t.equal(children.innerHTML, `<b></b><b></b><b></b><p></p>`)
 })

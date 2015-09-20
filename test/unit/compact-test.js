@@ -1,19 +1,20 @@
+const test = require(`tape`)
 const compact = require(`../../lib/compact`)
 
-describe(`compact`, () => {
-  it(`compacts arrays`, () => {
-    const a = ``
-    const b = function name () {}
-    const c = 123
-    const d = false
-    const e = 0
-    const f = {}
-    const g = null
-    const h = undefined
+test(`compact: compacts arrays`, t => {
+  t.plan(1)
 
-    const arr = [a, b, c, d, e, f, g, h]
-    const compacted = [a, b, c, e, f]
+  const a = ``
+  const b = function name () {}
+  const c = 123
+  const d = false
+  const e = 0
+  const f = {}
+  const g = null
+  const h = undefined
 
-    assert.deepEqual(compact(arr), compacted)
-  })
+  const arr = [a, b, c, d, e, f, g, h]
+  const compacted = [a, b, c, e, f]
+
+  t.deepEqual(compact(arr), compacted)
 })

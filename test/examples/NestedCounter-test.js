@@ -1,10 +1,11 @@
 /** @jsx Yolk.createElement */
 
-const {createEventHandler, render} = Yolk
+const test = require(`tape`)
+const Yolk = require(`../../lib/yolk`)
 
 function NestedCounter (props) {
-  const handlePlus = createEventHandler(() => 1, 0)
-  const handleMinus = createEventHandler(() => -1, 0)
+  const handlePlus = Yolk.createEventHandler(() => 1, 0)
+  const handleMinus = Yolk.createEventHandler(() => -1, 0)
   const count =
     handlePlus.merge(handleMinus)
     .scan((acc, next) => acc + next, 0)
@@ -24,8 +25,8 @@ function NestedCounter (props) {
 }
 
 function Counter () {
-  const handlePlus = createEventHandler(() => 1, 0)
-  const handleMinus = createEventHandler(() => -1, 0)
+  const handlePlus = Yolk.createEventHandler(() => 1, 0)
+  const handleMinus = Yolk.createEventHandler(() => -1, 0)
   const count = handlePlus.merge(handleMinus).scan((acc, next) => acc + next, 0)
 
   return (
@@ -44,40 +45,40 @@ function Counter () {
   )
 }
 
-describe(`A nested counter`, () => {
-  it(`increments and decrements a wrapper counter and a nested child`, () => {
-    const component = <Counter />
-    const node = document.createElement(`div`)
-    render(component, node)
+test(`increments and decrements a wrapper counter and a nested child`, t => {
+  t.plan(8)
 
-    const wrapperPlus = node.querySelector(`#wrapper-plus`)
-    const wrapperMinus = node.querySelector(`#wrapper-minus`)
-    const wrapperCount = node.querySelector(`#wrapper-count`)
-    const nestedPlus = node.querySelector(`#nested-plus`)
-    const nestedMinus = node.querySelector(`#nested-minus`)
-    const nestedCount = node.querySelector(`#nested-count`)
+  const component = <Counter />
+  const node = document.createElement(`div`)
+  Yolk.render(component, node)
 
-    assert(wrapperCount.innerHTML, `0`)
-    assert(nestedCount.innerHTML, `0`)
+  const wrapperPlus = node.querySelector(`#wrapper-plus`)
+  const wrapperMinus = node.querySelector(`#wrapper-minus`)
+  const wrapperCount = node.querySelector(`#wrapper-count`)
+  const nestedPlus = node.querySelector(`#nested-plus`)
+  const nestedMinus = node.querySelector(`#nested-minus`)
+  const nestedCount = node.querySelector(`#nested-count`)
 
-    wrapperPlus.click()
-    wrapperPlus.click()
-    wrapperPlus.click()
-    wrapperMinus.click()
+  t.equal(wrapperCount.innerHTML, `0`)
+  t.equal(nestedCount.innerHTML, `0`)
 
-    assert(wrapperCount.innerHTML, `3`)
-    assert(nestedCount.innerHTML, `3`)
+  wrapperPlus.click()
+  wrapperPlus.click()
+  wrapperPlus.click()
+  wrapperMinus.click()
 
-    nestedPlus.click()
-    nestedPlus.click()
-    nestedMinus.click()
+  t.equal(wrapperCount.innerHTML, `2`)
+  t.equal(nestedCount.innerHTML, `2`)
 
-    assert(wrapperCount.innerHTML, `3`)
-    assert(nestedCount.innerHTML, `4`)
+  nestedPlus.click()
+  nestedPlus.click()
+  nestedMinus.click()
 
-    wrapperMinus.click()
+  t.equal(wrapperCount.innerHTML, `2`)
+  t.equal(nestedCount.innerHTML, `3`)
 
-    assert(wrapperCount.innerHTML, `2`)
-    assert(nestedCount.innerHTML, `3`)
-  })
+  wrapperMinus.click()
+
+  t.equal(wrapperCount.innerHTML, `1`)
+  t.equal(nestedCount.innerHTML, `2`)
 })

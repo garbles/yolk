@@ -1,9 +1,10 @@
 /** @jsx Yolk.createElement */
 
-const {createEventHandler, render} = Yolk
+const test = require(`tape`)
+const Yolk = require(`../../lib/yolk`)
 
 function NestedCallback () {
-  const handleInc = createEventHandler(() => 1, 0)
+  const handleInc = Yolk.createEventHandler(() => 1, 0)
   const count = handleInc.scan((x, y) => x + y, 0)
 
   return (
@@ -20,21 +21,21 @@ function NestedCallbackChild (props) {
   return <button id="nested-button" onClick={props.onClick} />
 }
 
-describe(`calling nested callbacks`, () => {
-  it(`handles calling callback functions from a child component`, () => {
-    const component = <NestedCallback />
-    const node = document.createElement(`div`)
-    render(component, node)
+test(`handles calling callback functions from a child component`, t => {
+  t.plan(2)
 
-    const count = node.querySelector(`#count`)
-    const button = node.querySelector(`#nested-button`)
+  const component = <NestedCallback />
+  const node = document.createElement(`div`)
+  Yolk.render(component, node)
 
-    assert.equal(count.innerHTML, `0`)
+  const count = node.querySelector(`#count`)
+  const button = node.querySelector(`#nested-button`)
 
-    button.click()
-    button.click()
-    button.click()
+  t.equal(count.innerHTML, `0`)
 
-    assert.equal(count.innerHTML, `3`)
-  })
+  button.click()
+  button.click()
+  button.click()
+
+  t.equal(count.innerHTML, `3`)
 })

@@ -1,6 +1,7 @@
 /** @jsx Yolk.createElement */
 
-const {render} = Yolk
+const test = require(`tape`)
+const Yolk = require(`../../lib/yolk`)
 
 function HasChildren (props, children) {
   return (
@@ -10,33 +11,35 @@ function HasChildren (props, children) {
   )
 }
 
-describe(`Passing children as an argument`, () => {
-  it(`renders children`, () => {
-    const component = (
+test(`renders children`, t => {
+  t.plan(1)
+
+  const component = (
+    <HasChildren>
+      <div id="hello" />
+    </HasChildren>
+  )
+  const node = document.createElement(`div`)
+  Yolk.render(component, node)
+
+  t.equal(node.innerHTML, `<div class="wrapper"><div id="hello"></div></div>`)
+})
+
+test(`renders deeply nested children`, t => {
+  t.plan(1)
+
+  const component = (
+    <HasChildren>
       <HasChildren>
         <div id="hello" />
-      </HasChildren>
-    )
-    const node = document.createElement(`div`)
-    render(component, node)
-
-    assert.equal(node.innerHTML, `<div class="wrapper"><div id="hello"></div></div>`)
-  })
-
-  it(`renders deeply nested children`, () => {
-    const component = (
-      <HasChildren>
         <HasChildren>
           <div id="hello" />
-          <HasChildren>
-            <div id="hello" />
-          </HasChildren>
         </HasChildren>
       </HasChildren>
-    )
-    const node = document.createElement(`div`)
-    render(component, node)
+    </HasChildren>
+  )
+  const node = document.createElement(`div`)
+  Yolk.render(component, node)
 
-    assert.equal(node.innerHTML, `<div class="wrapper"><div class="wrapper"><div id="hello"></div><div class="wrapper"><div id="hello"></div></div></div></div>`)
-  })
+  t.equal(node.innerHTML, `<div class="wrapper"><div class="wrapper"><div id="hello"></div><div class="wrapper"><div id="hello"></div></div></div></div>`)
 })

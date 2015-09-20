@@ -1,6 +1,7 @@
 /** @jsx Yolk.createElement */
 
-const {render} = Yolk
+const test = require(`tape`)
+const Yolk = require(`../../lib/yolk`)
 
 class CustomStub {
   constructor () {
@@ -28,12 +29,12 @@ function WrapCustomComponent () {
   )
 }
 
-describe(`wrapping custom virtual dom widgets`, () => {
-  it(`works just as any other component would`, () => {
-    const component = <WrapCustomComponent />
-    const node = document.createElement(`div`)
-    render(component, node)
+test(`works just as any other component would`, t => {
+  t.plan(1)
 
-    assert.equal(node.innerHTML, `<div><strong>hello world!</strong></div>`)
-  })
+  const component = <WrapCustomComponent />
+  const node = document.createElement(`div`)
+  Yolk.render(component, node)
+
+  t.equal(node.innerHTML, `<div><strong>hello world!</strong></div>`)
 })
