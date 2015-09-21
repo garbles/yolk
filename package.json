@@ -28,13 +28,14 @@
     "release-patch": "git checkout master && npm version patch && git push origin master --tags && npm publish",
     "release-minor": "git checkout master && npm version minor && git push origin master --tags && npm publish",
     "release-major": "git checkout master && npm version major && git push origin master --tags && npm publish",
-    "test": "testling | tap-spec"
+    "test": "browserifyinc test/**/*-test.js | testling | tap-spec"
   },
   "homepage": "https://github.com/BrewhouseTeam/yolk",
   "devDependencies": {
     "babel-eslint": "4.1.2",
     "babelify": "6.3.0",
     "browserify": "11.1.0",
+    "browserify-incremental": "3.0.1",
     "eslint": "1.4.1",
     "eslint-config-airbnb": "0.0.8",
     "eslint-plugin-react": "3.3.2",
