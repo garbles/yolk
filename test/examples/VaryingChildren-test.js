@@ -1,6 +1,7 @@
 /** @jsx Yolk.createElement */
 
 const test = require(`tape`)
+const Rx = require(`rx`)
 const Yolk = require(`../../lib/yolk`)
 
 function VaryingBaseChildrenFromProps (props) {
@@ -33,7 +34,7 @@ function Stub (props, children) {
 test(`renders a varying number of base children`, t => {
   t.plan(2)
 
-  const numbersSubject = new Yolk.Rx.BehaviorSubject(1)
+  const numbersSubject = new Rx.BehaviorSubject(1)
   const numbersObservable = numbersSubject.scan((acc, next) => acc.concat(next), [])
 
   const component = <VaryingBaseChildrenFromProps numbers={numbersObservable} />
@@ -51,7 +52,7 @@ test(`renders a varying number of base children`, t => {
 test(`renders a varying number of widget children`, t => {
   t.plan(3)
 
-  const numbersSubject = new Yolk.Rx.BehaviorSubject(1)
+  const numbersSubject = new Rx.BehaviorSubject(1)
   const numbersObservable = numbersSubject.scan((acc, next) => acc.concat(next), [])
 
   const component = <VaryingWidgetChildrenFromProps numbers={numbersObservable} />

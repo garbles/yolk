@@ -1,6 +1,7 @@
 /** @jsx Yolk.createElement */
 
 const test = require(`tape`)
+const Rx = require(`rx`)
 const Yolk = require(`../../lib/yolk`)
 
 function Stub (props, children) {
@@ -13,7 +14,7 @@ function Stub (props, children) {
 test(`does not destroy the previous instance of the child`, t => {
   t.plan(5)
 
-  const flipper = new Yolk.Rx.BehaviorSubject()
+  const flipper = new Rx.BehaviorSubject()
   const children = flipper.scan(acc => [acc[1], acc[0]], [<Stub key="second">2</Stub>, <Stub key="first">1</Stub>])
   const component = <div key="wrapper">{children}</div>
   const node = document.createElement(`div`)
@@ -50,7 +51,7 @@ test(`does not destroy the previous instance of the child`, t => {
 test(`does not reset children as long as one of them is keyed`, t => {
   t.plan(3)
 
-  const flipper = new Yolk.Rx.BehaviorSubject()
+  const flipper = new Rx.BehaviorSubject()
   const children = flipper.scan(acc => [acc[1], acc[2], acc[3], acc[0]], [<Stub>4</Stub>, <Stub key="first">1</Stub>, <Stub>2</Stub>, <Stub>3</Stub>])
   const component = <div key="wrapper">{children}</div>
   const node = document.createElement(`div`)
@@ -79,7 +80,7 @@ test(`does not reset children as long as one of them is keyed`, t => {
 test(`resets children if they aren't keyed`, t => {
   t.plan(3)
 
-  const flipper = new Yolk.Rx.BehaviorSubject()
+  const flipper = new Rx.BehaviorSubject()
   const children = flipper.scan(acc => [acc[1], acc[0]], [<Stub>2</Stub>, <Stub>1</Stub>])
   const component = <div key="wrapper">{children}</div>
   const node = document.createElement(`div`)

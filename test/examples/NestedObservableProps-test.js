@@ -1,6 +1,7 @@
 /** @jsx Yolk.createElement */
 
 const test = require(`tape`)
+const Rx = require(`rx`)
 const Yolk = require(`../../lib/yolk`)
 
 function NestedObservableProps (props) {
@@ -19,8 +20,8 @@ function DeeplyNestedObservableProps (props) {
 test(`properly interpret properties`, t => {
   t.plan(3)
 
-  const heightSubject = new Yolk.Rx.BehaviorSubject(1)
-  const widthSubject = new Yolk.Rx.BehaviorSubject(1)
+  const heightSubject = new Rx.BehaviorSubject(1)
+  const widthSubject = new Rx.BehaviorSubject(1)
   const component = <NestedObservableProps height={heightSubject} width={widthSubject} />
   const node = document.createElement(`div`)
   Yolk.render(component, node)
@@ -39,9 +40,9 @@ test(`properly interpret properties`, t => {
 test(`works with doubley nested observables`, t => {
   t.plan(2)
 
-  const deeplyNestedHeightSubject = new Yolk.Rx.BehaviorSubject(1)
-  const nestedHeightSubject = new Yolk.Rx.BehaviorSubject(deeplyNestedHeightSubject.asObservable())
-  const heightSubject = new Yolk.Rx.BehaviorSubject(nestedHeightSubject.asObservable())
+  const deeplyNestedHeightSubject = new Rx.BehaviorSubject(1)
+  const nestedHeightSubject = new Rx.BehaviorSubject(deeplyNestedHeightSubject.asObservable())
+  const heightSubject = new Rx.BehaviorSubject(nestedHeightSubject.asObservable())
   const component = <NestedObservableProps height={heightSubject} width={1} />
   const node = document.createElement(`div`)
   Yolk.render(component, node)
@@ -56,9 +57,9 @@ test(`works with doubley nested observables`, t => {
 test(`works with plain objects that use nested props`, t => {
   t.plan(3)
 
-  const b = new Yolk.Rx.BehaviorSubject({
+  const b = new Rx.BehaviorSubject({
     c: {
-      d: [new Yolk.Rx.BehaviorSubject(`hello`), ` goodbye!`],
+      d: [new Rx.BehaviorSubject(`hello`), ` goodbye!`],
     },
   })
 
@@ -68,7 +69,7 @@ test(`works with plain objects that use nested props`, t => {
 
   t.equal(node.innerHTML, `<div>hello goodbye!</div>`)
 
-  const anotherSubject = new Yolk.Rx.BehaviorSubject(`And another`)
+  const anotherSubject = new Rx.BehaviorSubject(`And another`)
 
   b.onNext({
     c: {

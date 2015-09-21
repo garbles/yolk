@@ -1,6 +1,7 @@
 /** @jsx Yolk.createElement */
 
 const test = require(`tape`)
+const Rx = require(`rx`)
 const Yolk = require(`../../lib/yolk`)
 
 function HasChildren (props) {
@@ -10,7 +11,7 @@ function HasChildren (props) {
 test(`when a changed element changes it's list of properties instead of just the values`, t => {
   t.plan(2)
 
-  const child = new Yolk.Rx.BehaviorSubject(<span>Hello!</span>)
+  const child = new Rx.BehaviorSubject(<span>Hello!</span>)
   const component = <HasChildren child={child}/>
   const node = document.createElement(`div`)
   Yolk.render(component, node)
