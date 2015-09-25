@@ -7,7 +7,6 @@ test(`transformProperties: transforms props so that they will work correctly wit
 
   const props = {
     className: [`someName`, `otherName`],
-    id: [`one`, `two`, `three`],
     acceptCharset: true,
     dataTag: true,
     dataOtherTag: true,
@@ -21,7 +20,6 @@ test(`transformProperties: transforms props so that they will work correctly wit
 
   const transformedProps = {
     className: `someName otherName`,
-    id: `one two three`,
     onclick: onClick,
     attributes: {
       action: `/`,
