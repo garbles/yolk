@@ -16,6 +16,7 @@ test(`transformProperties: transforms props so that they will work correctly wit
     onClick: onClick,
     onmouseup: function onMouseUp () {},
     nonStandardAttr: true,
+    disabled: false,
   }
 
   const transformedProps = {
