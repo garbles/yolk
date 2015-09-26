@@ -17,7 +17,7 @@ test(`assigning a handler to multiple sources`, t => {
   )
 
   const nextComponent = <div className={className} />
-  const lastComponent = <div />
+  const lastComponent = <div className={null} />
 
   const node = document.createElement(`div`)
   Yolk.render(component, node)
@@ -33,6 +33,6 @@ test(`assigning a handler to multiple sources`, t => {
 
   Yolk.render(lastComponent, node)
 
-  t.equal(node.innerHTML, `<div class=""></div>`)
+  t.equal(node.innerHTML, `<div></div>`)
   t.equal(handler.hasObservers(), false)
 })

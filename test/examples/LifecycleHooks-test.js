@@ -5,6 +5,7 @@ const Yolk = require(`../../lib/yolk`)
 
 test(`will run code after the component mounts`, t => {
   t.plan(3)
+  t.timeoutAfter(500)
 
   const node = document.createElement(`div`)
 
@@ -21,6 +22,7 @@ test(`will run code after the component mounts`, t => {
 
 test(`will run code when the component unmounts`, t => {
   t.plan(3)
+  t.timeoutAfter(500)
 
   const node = document.createElement(`div`)
 
