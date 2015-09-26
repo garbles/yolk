@@ -21,6 +21,7 @@
   },
   "scripts": {
     "build": "browserify -s yolk -u rx lib/yolk.js > dist/yolk.js",
+    "debug": "browserify -s yolk -u rx --debug lib/yolk.js > dist/yolk.js",
     "clean": "rm dist/yolk.js",
     "lint": "eslint lib test",
     "prerelease": "npm run test && npm run lint && npm run clean && npm run build",
