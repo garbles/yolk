@@ -25,7 +25,7 @@ function Counter () {
 
   // map all minus button click events to -1
   const handleMinus = Yolk.createEventHandler()
-  const minusOne = handleMinus.map(() => 1)
+  const minusOne = handleMinus.map(() => -1)
 
   // merge both event streams together and keep a running count of the result
   const count = plusOne.merge(minusOne).scan((x, y) => x + y, 0).startWith(0)
@@ -81,7 +81,7 @@ __`render(instance: YolkComponent, node: HTMLElement): YolkComponent`__
 Renders an instance of a YolkComponent inside of an HTMLElement.
 
 ```js
-Yolk.render(<span>Hello World!</span>, document.getElementById('container')
+Yolk.render(<span>Hello World!</span>, document.getElementById('container'))
 ```
 
 __`createElement(component: Function | string, props: Object, ...children: Array<any>): YolkComponent`__
