@@ -6,7 +6,7 @@ const YolkBaseComponent = require(`../../lib/YolkBaseComponent`)
 test(`composite component raises when it doesn't return an element`, t => {
   t.plan(6)
 
-  const baseInstance = new YolkBaseComponent('div')
+  const baseInstance = new YolkBaseComponent(`div`)
 
   function ComponentReturningNothing () {
     return null
@@ -31,13 +31,13 @@ test(`composite component raises when it doesn't return an element`, t => {
   function ComponentReturningWidgetLike () {
     return {
       type: `Widget`,
-      init: function () {},
+      init () {},
     }
   }
 
   t.throws(() => new YolkCompositeComponent(ComponentReturningNothing).init())
   t.throws(() => new YolkCompositeComponent(ComponentReturningObservable).init())
-  t.throws(() => new YolkCompositeComponent(ComponentReturningObject).init())
+  t.throws(() => new YolkCompositeComponent(ComponentReturningPlainObject).init())
   t.throws(() => new YolkCompositeComponent(ComponentReturningArray).init())
   t.doesNotThrow(() => new YolkCompositeComponent(ComponentReturningBase).init())
   t.doesNotThrow(() => new YolkCompositeComponent(ComponentReturningWidgetLike).init())
