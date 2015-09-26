@@ -301,15 +301,44 @@ while (++i < length) {
 module.exports = propertiesWithInfo;
 
 },{"lodash.kebabcase":36}],4:[function(require,module,exports){
+(function (global){
 "use strict";
 
-try {
-  module.exports = require("rx");
-} catch (e) {
-  module.exports = window.Rx;
+var createCustomError = require("./createCustomError");
+var UnsupportedRxVersionError = createCustomError("UnsupportedRxVersionError");
+var Rx = undefined;
+
+function checkCompatibility(obj, props) {
+  var length = props.length;
+  var i = -1;
+
+  while (++i < length) {
+    var prop = props[i];
+
+    if (!obj[prop]) {
+      throw new UnsupportedRxVersionError(prop + " not supported by the included version of Rx.");
+    }
+  }
 }
 
-},{"rx":undefined}],5:[function(require,module,exports){
+try {
+  Rx = require("rx");
+} catch (e) {
+  Rx = global.Rx;
+}
+
+var RX_PROPERTIES = ["BehaviorSubject", "internals", "ReplaySubject"];
+var OBSERVABLE_CLASS_PROPERTIES = ["combineLatest", "just"];
+var OBSERVABLE_PROTOTYPE_PROPERTIES = ["asObservable", "flatMapLatest", "map", "scan"];
+
+checkCompatibility(Rx, RX_PROPERTIES);
+checkCompatibility(Rx.Observable, OBSERVABLE_CLASS_PROPERTIES);
+checkCompatibility(Rx.Observable.prototype, OBSERVABLE_PROTOTYPE_PROPERTIES);
+
+module.exports = Rx;
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"./createCustomError":9,"rx":undefined}],5:[function(require,module,exports){
 (function (process){
 "use strict";
 
