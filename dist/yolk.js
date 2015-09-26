@@ -22,6 +22,28 @@ module.exports = global.CustomEvent || (function () {
 },{}],2:[function(require,module,exports){
 "use strict";
 
+function CustomEventHook(name, fn) {
+  this.name = name.substr(2);
+  this.fn = fn;
+}
+
+CustomEventHook.prototype = {
+  type: "CustomEventHook",
+
+  hook: function hook(node) {
+    node.addEventListener(this.name, this.fn);
+  },
+
+  unhook: function unhook(node) {
+    node.removeEventListener(this.name, this.fn);
+  }
+};
+
+module.exports = CustomEventHook;
+
+},{}],3:[function(require,module,exports){
+"use strict";
+
 var kababCase = require("lodash.kebabcase");
 
 var HAS_LOWER_CASE = 0x1;
@@ -31,6 +53,7 @@ var USE_PROPERTY_HOOK = 0x8;
 var USE_ATTRIBUTE_HOOK = 0x10;
 var USE_CUSTOM_EVENT_HOOK = 0x20;
 var CAN_BE_ARRAY_OF_STRINGS = 0x40;
+var HAS_BOOLEAN_VALUE = 0x80;
 
 function checkMask(value, bitmask) {
   return (value & bitmask) === bitmask;
@@ -39,7 +62,7 @@ function checkMask(value, bitmask) {
 var properties = {
   // inferred by virtual-dom
   className: CAN_BE_ARRAY_OF_STRINGS,
-  id: CAN_BE_ARRAY_OF_STRINGS,
+  id: null,
   style: null,
 
   // attributes
@@ -49,10 +72,10 @@ var properties = {
   action: IS_ATTRIBUTE,
   align: IS_ATTRIBUTE,
   alt: IS_ATTRIBUTE,
-  async: IS_ATTRIBUTE,
+  async: IS_ATTRIBUTE | HAS_BOOLEAN_VALUE,
   autoComplete: IS_ATTRIBUTE | HAS_LOWER_CASE,
   autoFocus: IS_ATTRIBUTE | HAS_LOWER_CASE,
-  autoPlay: IS_ATTRIBUTE | HAS_LOWER_CASE,
+  autoPlay: IS_ATTRIBUTE | HAS_LOWER_CASE | HAS_BOOLEAN_VALUE,
   autoSave: IS_ATTRIBUTE | HAS_LOWER_CASE,
   bgColor: IS_ATTRIBUTE | HAS_LOWER_CASE,
   border: IS_ATTRIBUTE,
@@ -66,7 +89,7 @@ var properties = {
   contentEditable: IS_ATTRIBUTE | HAS_LOWER_CASE,
   coords: IS_ATTRIBUTE,
   "default": IS_ATTRIBUTE,
-  defer: IS_ATTRIBUTE,
+  defer: IS_ATTRIBUTE | HAS_BOOLEAN_VALUE,
   dir: IS_ATTRIBUTE,
   dirName: IS_ATTRIBUTE | HAS_LOWER_CASE,
   download: IS_ATTRIBUTE,
@@ -78,7 +101,7 @@ var properties = {
   "for": IS_ATTRIBUTE,
   headers: IS_ATTRIBUTE,
   height: IS_ATTRIBUTE,
-  hidden: IS_ATTRIBUTE,
+  hidden: IS_ATTRIBUTE | HAS_BOOLEAN_VALUE,
   high: IS_ATTRIBUTE,
   href: IS_ATTRIBUTE,
   hrefLang: IS_ATTRIBUTE | HAS_LOWER_CASE,
@@ -96,8 +119,8 @@ var properties = {
   method: IS_ATTRIBUTE,
   min: IS_ATTRIBUTE,
   name: IS_ATTRIBUTE,
-  noValidate: IS_ATTRIBUTE | HAS_LOWER_CASE,
-  open: IS_ATTRIBUTE,
+  noValidate: IS_ATTRIBUTE | HAS_LOWER_CASE | HAS_BOOLEAN_VALUE,
+  open: IS_ATTRIBUTE | HAS_BOOLEAN_VALUE,
   optimum: IS_ATTRIBUTE,
   password: IS_ATTRIBUTE,
   pattern: IS_ATTRIBUTE,
@@ -108,12 +131,12 @@ var properties = {
   pubdate: IS_ATTRIBUTE,
   radioGroup: IS_ATTRIBUTE | HAS_LOWER_CASE,
   rel: IS_ATTRIBUTE,
-  required: IS_ATTRIBUTE,
+  required: IS_ATTRIBUTE | HAS_BOOLEAN_VALUE,
   reversed: IS_ATTRIBUTE,
   rowSpan: IS_ATTRIBUTE | HAS_LOWER_CASE,
   sandbox: IS_ATTRIBUTE,
   scope: IS_ATTRIBUTE,
-  scoped: IS_ATTRIBUTE,
+  scoped: IS_ATTRIBUTE | HAS_BOOLEAN_VALUE,
   shape: IS_ATTRIBUTE,
   span: IS_ATTRIBUTE,
   spellCheck: IS_ATTRIBUTE | HAS_LOWER_CASE,
@@ -131,15 +154,15 @@ var properties = {
   wrap: IS_ATTRIBUTE,
 
   // attributes only accessible via attribute namespace
-  allowFullScreen: USE_ATTRIBUTE_HOOK | HAS_LOWER_CASE,
-  allowTransparency: USE_ATTRIBUTE_HOOK, // not downcased?
-  capture: USE_ATTRIBUTE_HOOK,
+  allowFullScreen: USE_ATTRIBUTE_HOOK | HAS_LOWER_CASE | HAS_BOOLEAN_VALUE,
+  allowTransparency: USE_ATTRIBUTE_HOOK, // not downcased
+  capture: USE_ATTRIBUTE_HOOK | HAS_BOOLEAN_VALUE,
   charset: USE_ATTRIBUTE_HOOK,
   challenge: USE_ATTRIBUTE_HOOK,
   cols: USE_ATTRIBUTE_HOOK,
   contextMenu: USE_ATTRIBUTE_HOOK | HAS_LOWER_CASE,
   dateTime: USE_ATTRIBUTE_HOOK | HAS_LOWER_CASE,
-  disabled: USE_ATTRIBUTE_HOOK,
+  disabled: USE_ATTRIBUTE_HOOK | HAS_BOOLEAN_VALUE,
   form: USE_ATTRIBUTE_HOOK,
   formAction: USE_ATTRIBUTE_HOOK | HAS_LOWER_CASE,
   formEncType: USE_ATTRIBUTE_HOOK | HAS_LOWER_CASE,
@@ -155,7 +178,7 @@ var properties = {
   minLength: USE_ATTRIBUTE_HOOK | HAS_LOWER_CASE,
   role: USE_ATTRIBUTE_HOOK,
   rows: USE_ATTRIBUTE_HOOK,
-  seamless: USE_ATTRIBUTE_HOOK,
+  seamless: USE_ATTRIBUTE_HOOK | HAS_BOOLEAN_VALUE,
   size: USE_ATTRIBUTE_HOOK,
   sizes: USE_ATTRIBUTE_HOOK,
   srcSet: USE_ATTRIBUTE_HOOK | HAS_LOWER_CASE,
@@ -163,12 +186,12 @@ var properties = {
   wmode: USE_ATTRIBUTE_HOOK,
 
   // attributes only accessible via setting property in JS
-  checked: USE_PROPERTY_HOOK,
-  controls: USE_PROPERTY_HOOK,
-  loop: USE_PROPERTY_HOOK,
-  multiple: USE_PROPERTY_HOOK,
-  readOnly: USE_PROPERTY_HOOK | HAS_LOWER_CASE,
-  selected: USE_PROPERTY_HOOK,
+  checked: USE_PROPERTY_HOOK | HAS_BOOLEAN_VALUE,
+  controls: USE_PROPERTY_HOOK | HAS_BOOLEAN_VALUE,
+  loop: USE_PROPERTY_HOOK | HAS_BOOLEAN_VALUE,
+  multiple: USE_PROPERTY_HOOK | HAS_BOOLEAN_VALUE,
+  readOnly: USE_PROPERTY_HOOK | HAS_LOWER_CASE | HAS_BOOLEAN_VALUE,
+  selected: USE_PROPERTY_HOOK | HAS_BOOLEAN_VALUE,
   srcDoc: USE_PROPERTY_HOOK | HAS_LOWER_CASE,
   value: USE_PROPERTY_HOOK,
 
@@ -252,6 +275,7 @@ while (++i < length) {
   var useAttributeHook = checkMask(property, USE_ATTRIBUTE_HOOK);
   var useCustomEventHook = checkMask(property, USE_CUSTOM_EVENT_HOOK);
   var canBeArrayOfStrings = checkMask(property, CAN_BE_ARRAY_OF_STRINGS);
+  var hasBooleanValue = checkMask(property, HAS_BOOLEAN_VALUE);
   var computed = undefined;
 
   if (hasLowerCase) {
@@ -269,13 +293,14 @@ while (++i < length) {
     useAttributeHook: useAttributeHook,
     useCustomEventHook: useCustomEventHook,
     canBeArrayOfStrings: canBeArrayOfStrings,
+    hasBooleanValue: hasBooleanValue,
     computed: computed
   };
 }
 
 module.exports = propertiesWithInfo;
 
-},{"lodash.kebabcase":33}],3:[function(require,module,exports){
+},{"lodash.kebabcase":33}],4:[function(require,module,exports){
 "use strict";
 
 try {
@@ -284,7 +309,7 @@ try {
   module.exports = window.Rx;
 }
 
-},{"rx":undefined}],4:[function(require,module,exports){
+},{"rx":undefined}],5:[function(require,module,exports){
 (function (process){
 "use strict";
 
@@ -323,11 +348,26 @@ YolkBaseComponent.prototype = {
   init: function init() {
     var _this = this;
 
-    this._propSubject = new Rx.BehaviorSubject(this._props);
+    var keys = Object.keys(this._props);
+    var length = keys.length;
+    var propsSubject = {};
+    var i = -1;
+
+    this._propSubject = {};
+
+    while (++i < length) {
+      var key = keys[i];
+      var value = this._props[key];
+      this._propSubject[key] = new Rx.BehaviorSubject(value);
+      propsSubject[key] = this._propSubject[key].flatMapLatest(wrapObject);
+    }
+
     this._childSubject = new Rx.BehaviorSubject(this._children);
 
     var vNode = h(this.id);
-    var propObservable = this._propSubject.flatMapLatest(wrapObject).map(transformProperties);
+    var propObservable = wrapObject(this._propSubject).map(function (props) {
+      return transformProperties(_this.id, props);
+    });
     var childObservable = this._childSubject.flatMapLatest(wrapObject);
 
     this.node = create(vNode);
@@ -356,9 +396,17 @@ YolkBaseComponent.prototype = {
     this._propSubject = previous._propSubject;
     this._childSubject = previous._childSubject;
     this._patchSubscription = previous._patchSubscription;
-
-    this._propSubject.onNext(this._props);
     this._childSubject.onNext(this._children);
+
+    var keys = Object.keys(previous._props);
+    var length = keys.length;
+    var i = -1;
+
+    while (++i < length) {
+      var key = keys[i];
+      var value = this._props[key];
+      this._propSubject[key].onNext(value || null);
+    }
   },
 
   destroy: function destroy() {
@@ -408,7 +456,7 @@ YolkBaseComponent.prototype = {
 module.exports = YolkBaseComponent;
 
 }).call(this,require('_process'))
-},{"./CustomEvent":1,"./Rx":3,"./isFunction":12,"./transformProperties":17,"./wrapObject":20,"_process":23,"lodash.flattendeep":24,"virtual-dom/create-element":40,"virtual-dom/diff":41,"virtual-dom/h":42,"virtual-dom/patch":50}],5:[function(require,module,exports){
+},{"./CustomEvent":1,"./Rx":4,"./isFunction":13,"./transformProperties":17,"./wrapObject":20,"_process":23,"lodash.flattendeep":24,"virtual-dom/create-element":40,"virtual-dom/diff":41,"virtual-dom/h":42,"virtual-dom/patch":50}],6:[function(require,module,exports){
 "use strict";
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
@@ -461,20 +509,20 @@ YolkCompositeComponent.prototype = {
   },
 
   update: function update(previous) {
+    this._propSubject = previous._propSubject;
+    this._childSubject = previous._childSubject;
+    this._component = previous._component;
+    this._childSubject.onNext(this._children);
+
     var keys = Object.keys(this._props);
     var length = keys.length;
     var i = -1;
 
-    this._propSubject = previous._propSubject;
-    this._childSubject = previous._childSubject;
-    this._component = previous._component;
-
     while (++i < length) {
       var key = keys[i];
       var value = this._props[key];
-      this._propSubject[key].onNext(value);
+      this._propSubject[key].onNext(value || null);
     }
-    this._childSubject.onNext(this._children);
   },
 
   destroy: function destroy() {
@@ -484,7 +532,57 @@ YolkCompositeComponent.prototype = {
 
 module.exports = YolkCompositeComponent;
 
-},{"./Rx":3,"./wrapObject":20,"virtual-dom/create-element":40}],6:[function(require,module,exports){
+},{"./Rx":4,"./wrapObject":20,"virtual-dom/create-element":40}],7:[function(require,module,exports){
+"use strict";
+
+var create = require("virtual-dom/create-element");
+var diff = require("virtual-dom/diff");
+var patch = require("virtual-dom/patch");
+
+var PREVIOUS_WIDGET_KEY = "__YOLK_PREVIOUS_WIDGET_KEY";
+
+function YolkRootComponent(child) {
+  this._child = child;
+}
+
+YolkRootComponent.prototype = {
+  name: "YolkRootComponent",
+  type: "Widget",
+
+  init: function init() {
+    return create(this._child);
+  },
+
+  update: function update(previous, node) {
+    if (this._child.key !== previous._child.key) {
+      return this.init();
+    }
+
+    var patches = diff(previous._child, this._child);
+    patch(node, patches);
+  }
+};
+
+YolkRootComponent.render = function render(instance, node) {
+  var root = new YolkRootComponent(instance);
+  var child = node.children[0];
+
+  if (child) {
+    var patches = diff(child[PREVIOUS_WIDGET_KEY], root);
+    patch(child, patches);
+  } else {
+    child = create(root);
+    node.appendChild(child);
+  }
+
+  child[PREVIOUS_WIDGET_KEY] = root;
+
+  return root;
+};
+
+module.exports = YolkRootComponent;
+
+},{"virtual-dom/create-element":40,"virtual-dom/diff":41,"virtual-dom/patch":50}],8:[function(require,module,exports){
 "use strict";
 
 var isDefined = require("./isDefined");
@@ -504,7 +602,7 @@ module.exports = function compact(arr) {
   return newArr;
 };
 
-},{"./isDefined":10}],7:[function(require,module,exports){
+},{"./isDefined":11}],9:[function(require,module,exports){
 "use strict";
 
 var YolkCompositeComponent = require("./YolkCompositeComponent");
@@ -525,7 +623,7 @@ module.exports = function createElement(tag, props) {
   return new YolkCompositeComponent(tag, _props, children);
 };
 
-},{"./YolkBaseComponent":4,"./YolkCompositeComponent":5,"./isString":15}],8:[function(require,module,exports){
+},{"./YolkBaseComponent":5,"./YolkCompositeComponent":6,"./isString":16}],10:[function(require,module,exports){
 "use strict";
 
 var Rx = require("./Rx");
@@ -562,61 +660,35 @@ module.exports = function createEventHandler(mapFn, init) {
   return handler;
 };
 
-},{"./Rx":3,"./isDefined":10,"./isFunction":12}],9:[function(require,module,exports){
-"use strict";
-
-function CustomEventHook(name, fn) {
-  if (!(this instanceof CustomEventHook)) {
-    return new CustomEventHook(name, fn);
-  }
-
-  this.name = name.substr(2);
-  this.fn = fn;
-}
-
-CustomEventHook.prototype = {
-  type: "CustomEventHook",
-
-  hook: function hook(node) {
-    node.addEventListener(this.name, this.fn);
-  },
-
-  unhook: function unhook(node) {
-    node.removeEventListener(this.name, this.fn);
-  }
-};
-
-module.exports = CustomEventHook;
-
-},{}],10:[function(require,module,exports){
+},{"./Rx":4,"./isDefined":11,"./isFunction":13}],11:[function(require,module,exports){
 "use strict";
 
 module.exports = function isDefined(obj) {
   return typeof obj !== "undefined" && obj !== null;
 };
 
-},{}],11:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 "use strict";
 
 module.exports = function isEmpty(obj) {
   return Object.keys(obj).length === 0;
 };
 
-},{}],12:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 "use strict";
 
 module.exports = function isFunction(obj) {
   return Object.prototype.toString.call(obj) === "[object Function]";
 };
 
-},{}],13:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 "use strict";
 
 module.exports = function isNumber(num) {
   return typeof num === "number" || num instanceof Number;
 };
 
-},{}],14:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 "use strict";
 
 var Rx = require("./Rx");
@@ -625,74 +697,21 @@ module.exports = function isObservable(obj) {
   return obj instanceof Rx.Observable;
 };
 
-},{"./Rx":3}],15:[function(require,module,exports){
+},{"./Rx":4}],16:[function(require,module,exports){
 "use strict";
 
 module.exports = function isString(str) {
   return typeof str === "string" || str instanceof String;
 };
 
-},{}],16:[function(require,module,exports){
-"use strict";
-
-var create = require("virtual-dom/create-element");
-var diff = require("virtual-dom/diff");
-var patch = require("virtual-dom/patch");
-
-var CACHE_KEY = "__YOLK_NODE_INSTANCE_CACHE_KEY";
-
-function getFromCache(root, name) {
-  var cache = root[CACHE_KEY];
-  return cache ? cache[name] : null;
-}
-
-function setInCache(root, _ref) {
-  var instance = _ref.instance;
-  var node = _ref.node;
-
-  var cache = root[CACHE_KEY];
-
-  if (!cache) {
-    cache = root[CACHE_KEY] = {};
-  }
-
-  cache[instance.name] = { instance: instance, node: node };
-  return instance;
-}
-
-function replaceChild(root, node) {
-  var child = root.children[0];
-
-  if (child) {
-    root.replaceChild(node, child);
-  } else {
-    root.appendChild(node);
-  }
-
-  return node;
-}
-
-function patchChild(node, _old, _new) {
-  var patches = diff(_old, _new);
-  return patch(node, patches);
-}
-
-module.exports = function render(instance, root) {
-  var old = getFromCache(root, instance.name);
-  var node = old ? patchChild(old.node, old.instance, instance) : replaceChild(root, create(instance));
-
-  setInCache(root, { instance: instance, node: node });
-  return node;
-};
-
-},{"virtual-dom/create-element":40,"virtual-dom/diff":41,"virtual-dom/patch":50}],17:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 "use strict";
 
 var DOMProperties = require("./DOMProperties");
 var transformStyle = require("./transformStyle");
 var transformProperty = require("./transformProperty");
 
-module.exports = function transformProperties(props) {
+module.exports = function transformProperties(tag, props) {
   var keys = Object.keys(props);
   var length = keys.length;
   var newProps = { attributes: {} };
@@ -712,13 +731,13 @@ module.exports = function transformProperties(props) {
   return newProps;
 };
 
-},{"./DOMProperties":2,"./transformProperty":18,"./transformStyle":19}],18:[function(require,module,exports){
+},{"./DOMProperties":3,"./transformProperty":18,"./transformStyle":19}],18:[function(require,module,exports){
 "use strict";
 
 var kababCase = require("lodash.kebabcase");
-var softSetHook = require("virtual-dom/virtual-hyperscript/hooks/soft-set-hook");
-var attributeHook = require("virtual-dom/virtual-hyperscript/hooks/attribute-hook");
-var customEventHook = require("./customEventHook");
+var SoftSetHook = require("virtual-dom/virtual-hyperscript/hooks/soft-set-hook");
+var AttributeHook = require("virtual-dom/virtual-hyperscript/hooks/attribute-hook");
+var CustomEventHook = require("./CustomEventHook");
 var compact = require("./compact");
 
 var IS_DATA_MATCHER = /^data[A-Z]/;
@@ -729,7 +748,8 @@ var EMPTY_PROP = {
   usePropertyHook: false,
   useAttributeHook: false,
   useCustomEventHook: false,
-  canBeArrayOfStrings: false
+  canBeArrayOfStrings: false,
+  hasBooleanValue: false
 };
 
 module.exports = function transformProperty(props, key, value, property) {
@@ -750,16 +770,18 @@ module.exports = function transformProperty(props, key, value, property) {
 
   if (_property.canBeArrayOfStrings && Array.isArray(value)) {
     _value = compact(value).join(" ");
+  } else if (_property.hasBooleanValue && !value) {
+    return props;
   }
 
   if (_property.isAttribute || isDataAttribute) {
     props.attributes[_key] = _value;
   } else if (_property.usePropertyHook) {
-    props[_key] = softSetHook(_value);
-  } else if (_property.useAttributeHook) {
-    props[_key] = attributeHook(_value);
+    props[_key] = new SoftSetHook(_value);
   } else if (_property.useCustomEventHook) {
-    props[_key] = customEventHook(_key, _value);
+    props[_key] = new CustomEventHook(_key, _value);
+  } else if (_property.useAttributeHook) {
+    props[_key] = new AttributeHook(_value);
   } else if (_property.isStandard) {
     props[_key] = _value;
   }
@@ -767,7 +789,7 @@ module.exports = function transformProperty(props, key, value, property) {
   return props;
 };
 
-},{"./compact":6,"./customEventHook":9,"lodash.kebabcase":33,"virtual-dom/virtual-hyperscript/hooks/attribute-hook":57,"virtual-dom/virtual-hyperscript/hooks/soft-set-hook":59}],19:[function(require,module,exports){
+},{"./CustomEventHook":2,"./compact":8,"lodash.kebabcase":33,"virtual-dom/virtual-hyperscript/hooks/attribute-hook":57,"virtual-dom/virtual-hyperscript/hooks/soft-set-hook":59}],19:[function(require,module,exports){
 "use strict";
 
 var isNumber = require("./isNumber");
@@ -827,7 +849,7 @@ module.exports = function transformStyle(props, style) {
   return props;
 };
 
-},{"./isNumber":13}],20:[function(require,module,exports){
+},{"./isNumber":14}],20:[function(require,module,exports){
 "use strict";
 
 var Rx = require("./Rx");
@@ -874,19 +896,20 @@ module.exports = function wrapObject(obj) {
   return Rx.Observable.just(obj);
 };
 
-},{"./Rx":3,"./isEmpty":11,"./isObservable":14,"lodash.isplainobject":28}],21:[function(require,module,exports){
+},{"./Rx":4,"./isEmpty":12,"./isObservable":15,"lodash.isplainobject":28}],21:[function(require,module,exports){
 "use strict";
 
 var createEventHandler = require("./createEventHandler");
 var createElement = require("./createElement");
-var render = require("./render");
+var YolkRootComponent = require("./YolkRootComponent");
+var render = YolkRootComponent.render;
 
 function Yolk() {}
 Yolk.prototype = { createEventHandler: createEventHandler, createElement: createElement, render: render };
 
 module.exports = Object.freeze(new Yolk());
 
-},{"./createElement":7,"./createEventHandler":8,"./render":16}],22:[function(require,module,exports){
+},{"./YolkRootComponent":7,"./createElement":9,"./createEventHandler":10}],22:[function(require,module,exports){
 
 },{}],23:[function(require,module,exports){
 // shim for using process in browser
