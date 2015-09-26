@@ -24,7 +24,7 @@
     "debug": "browserify -s yolk -u rx --debug lib/yolk.js > dist/yolk.js",
     "clean": "rm dist/yolk.js",
     "lint": "eslint lib test",
-    "prerelease": "npm run test && npm run lint && npm run clean && npm run build",
+    "prerelease": "npm run test && npm run lint && npm run clean && npm run build && git add dist && git commit -m 'Cut new distro'",
     "release": "npm run release-patch",
     "release-patch": "git checkout master && npm version patch && git push origin master --tags && npm publish",
     "release-minor": "git checkout master && npm version minor && git push origin master --tags && npm publish",
