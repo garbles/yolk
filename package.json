@@ -20,7 +20,7 @@
     "url": "https://github.com/BrewhouseTeam/yolk/issues"
   },
   "scripts": {
-    "build": "browserify -s yolk -u rx lib/yolk.js > dist/yolk.js",
+    "build": "browserify -s Yolk -u rx lib/yolk.js > dist/yolk.js",
     "build-min": "uglifyjs dist/yolk.js -c -m -o ./dist/yolk.min.js",
     "debug": "browserify -s yolk -u rx --debug lib/yolk.js > dist/yolk.js",
     "clean": "rm dist/yolk.js",
