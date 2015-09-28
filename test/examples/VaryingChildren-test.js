@@ -25,7 +25,7 @@ function VaryingWidgetChildrenFromProps (props) {
 }
 
 function Stub (props, children) {
-  const handleClick = Yolk.createEventHandler(() => 1, 0)
+  const handleClick = this.createEventHandler(() => 1, 0)
   const count = handleClick.scan((acc, next) => acc + next, 0)
 
   return <button id="stub" onClick={handleClick}>{children}{count}</button>

@@ -4,8 +4,8 @@ const test = require(`tape`)
 const Yolk = require(`../../lib/yolk`)
 
 function NestedCounter (props) {
-  const handlePlus = Yolk.createEventHandler(() => 1, 0)
-  const handleMinus = Yolk.createEventHandler(() => -1, 0)
+  const handlePlus = this.createEventHandler(() => 1, 0)
+  const handleMinus = this.createEventHandler(() => -1, 0)
   const count =
     handlePlus.merge(handleMinus)
     .scan((acc, next) => acc + next, 0)
@@ -25,8 +25,8 @@ function NestedCounter (props) {
 }
 
 function Counter () {
-  const handlePlus = Yolk.createEventHandler(() => 1, 0)
-  const handleMinus = Yolk.createEventHandler(() => -1, 0)
+  const handlePlus = this.createEventHandler(() => 1, 0)
+  const handleMinus = this.createEventHandler(() => -1, 0)
   const count = handlePlus.merge(handleMinus).scan((acc, next) => acc + next, 0)
 
   return (

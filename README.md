@@ -20,11 +20,11 @@ import Yolk from `yolk`
 function Counter () {
 
   // map all plus button click events to 1
-  const handlePlus = Yolk.createEventHandler()
+  const handlePlus = this.createEventHandler()
   const plusOne = handlePlus.map(() => 1)
 
   // map all minus button click events to -1
-  const handleMinus = Yolk.createEventHandler()
+  const handleMinus = this.createEventHandler()
   const minusOne = handleMinus.map(() => -1)
 
   // merge both event streams together and keep a running count of the result
@@ -74,6 +74,23 @@ const component = (
     <button onClick={handleClick}>Click me!</button>
   </div>
 )
+```
+
+When custom components are destroyed, we want to make sure that all of our event handlers are properly cleaned up.
+That's why, instead of using `Yolk.createEventHandler()`, users should prefer `this.createEventHandler()`. Creating
+an event handler as part of a component instance will ensure that everything is automatically cleaned up for you.
+For example,
+
+```js
+/** @jsx Yolk.createElement */
+
+function CustomComponent (props, children) {
+  const handleClick = this.createEventHandler()
+
+  return (
+    <button onClick={handleClick}>Click Me</button>
+  )
+}
 ```
 
 __`render(instance: YolkComponent, node: HTMLElement): YolkComponent`__

@@ -4,8 +4,8 @@ const test = require(`tape`)
 const Yolk = require(`../../lib/yolk`)
 
 function CounterWithMultipleSubscribers (props) {
-  const handlePlus = Yolk.createEventHandler(() => 1, 0)
-  const handleMinus = Yolk.createEventHandler(() => -1, 0)
+  const handlePlus = this.createEventHandler(() => 1, 0)
+  const handleMinus = this.createEventHandler(() => -1, 0)
   const count = handlePlus.merge(handleMinus).scan((x, y) => x + y, 0)
 
   return (

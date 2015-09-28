@@ -4,7 +4,7 @@ const test = require(`tape`)
 const Yolk = require(`../../lib/yolk`)
 
 function Counter (props) {
-  const handlePlus = Yolk.createEventHandler(() => 1, 0)
+  const handlePlus = this.createEventHandler(() => 1, 0)
   const count = handlePlus.scan((x, y) => x + y, 0).combineLatest(props.count, (a, b) => a + b)
 
   return (

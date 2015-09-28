@@ -4,8 +4,8 @@ const test = require(`tape`)
 const Yolk = require(`../../lib/yolk`)
 
 function DestroyChildren () {
-  const handleAdd = Yolk.createEventHandler(null, 0)
-  const handleRemove = Yolk.createEventHandler(null, 0)
+  const handleAdd = this.createEventHandler(null, 0)
+  const handleRemove = this.createEventHandler(null, 0)
 
   const addable = handleAdd.scan(acc => acc.concat([<b />]), [])
   const removeable = handleRemove.scan(acc => acc.slice(1), [<p />, <p />, <p />, <p />, <p />])

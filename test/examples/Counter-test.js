@@ -4,8 +4,8 @@ const test = require(`tape`)
 const Yolk = require(`../../lib/yolk`)
 
 function Counter () {
-  const handlePlus = Yolk.createEventHandler(1)
-  const handleMinus = Yolk.createEventHandler(-1)
+  const handlePlus = this.createEventHandler(1)
+  const handleMinus = this.createEventHandler(-1)
   const count = handlePlus.merge(handleMinus).scan((x, y) => x + y, 0).startWith(0)
 
   return (

@@ -4,7 +4,7 @@ const test = require(`tape`)
 const Yolk = require(`../../lib/yolk`)
 
 function NestedCallback () {
-  const handleInc = Yolk.createEventHandler(() => 1, 0)
+  const handleInc = this.createEventHandler(() => 1, 0)
   const count = handleInc.scan((x, y) => x + y, 0)
 
   return (
