@@ -135,7 +135,7 @@ Turns into:
 Yolk.createElement(
   "p",
   null,
-  "Hello"
+  "My JSX"
 );
 ```
 
