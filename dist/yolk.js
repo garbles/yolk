@@ -499,11 +499,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 var Rx = require("./Rx");
 var create = require("virtual-dom/create-element");
 var wrapObject = require("./wrapObject");
-var isComponent = require("./isComponent");
 var YolkCompositeFunctionWrapper = require("./YolkCompositeFunctionWrapper");
-var createCustomError = require("./createCustomError");
-
-var NoComponentError = createCustomError("NoComponentError");
 
 function YolkCompositeComponent(fn, props, children) {
   var _props = _extends({}, props);
@@ -547,10 +543,6 @@ YolkCompositeComponent.prototype = {
 
     this._component = new YolkCompositeFunctionWrapper(this._fn, propObservable, childObservable);
 
-    if (!isComponent(this._component._result)) {
-      throw new NoComponentError("Function did not return a valid component. See \"" + this._fn.name + "\".");
-    }
-
     var node = create(this._component._result);
     return node;
   },
@@ -575,20 +567,37 @@ YolkCompositeComponent.prototype = {
 
   destroy: function destroy() {
     this._component.destroy();
+
+    var children = this._children;
+    var length = children.length;
+    var i = -1;
+
+    while (++i < length) {
+      var child = children[i];
+      isFunction(child.destroy) && child.destroy();
+    }
   }
 };
 
 module.exports = YolkCompositeComponent;
 
-},{"./Rx":4,"./YolkCompositeFunctionWrapper":7,"./createCustomError":11,"./isComponent":15,"./wrapObject":25,"virtual-dom/create-element":45}],7:[function(require,module,exports){
+},{"./Rx":4,"./YolkCompositeFunctionWrapper":7,"./wrapObject":25,"virtual-dom/create-element":45}],7:[function(require,module,exports){
 "use strict";
 
 var _createEventHandler = require("./createEventHandler");
+var isComponent = require("./isComponent");
+var createCustomError = require("./createCustomError");
+
+var NoComponentError = createCustomError("NoComponentError");
 
 function YolkCompositeFunctionWrapper(fn, props, children) {
   this._fn = fn;
   this._eventHandlers = [];
   this._result = this._fn(props, children);
+
+  if (!isComponent(this._result)) {
+    throw new NoComponentError("Function did not return a valid component. See \"" + this._fn.name + "\".");
+  }
 }
 
 YolkCompositeFunctionWrapper.prototype = {
@@ -612,7 +621,7 @@ YolkCompositeFunctionWrapper.prototype = {
 
 module.exports = YolkCompositeFunctionWrapper;
 
-},{"./createEventHandler":13}],8:[function(require,module,exports){
+},{"./createCustomError":11,"./createEventHandler":13,"./isComponent":15}],8:[function(require,module,exports){
 "use strict";
 
 var create = require("virtual-dom/create-element");
