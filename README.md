@@ -123,7 +123,7 @@ It is highly suggested that you write Yolk with JSX. This is achieved using the 
 }
 ```
 
-Then anywhere you use jsx it will be transformed into plain JavaScript. For example, this:
+Then anywhere you use JSX it will be transformed into plain JavaScript. For example, this:
 
 ```js
 <p>My JSX</p>
