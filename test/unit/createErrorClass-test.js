@@ -1,10 +1,10 @@
 const test = require(`tape`)
-const createErrorClass = require(`../../lib/createErrorClass`)
+const createCustomError = require(`../../lib/createCustomError`)
 
 test(`creating custom error classes`, t => {
   t.plan(4)
 
-  const StubError = createErrorClass(`StubError`)
+  const StubError = createCustomError(`StubError`)
 
   try {
     throw new StubError(`this is an error`)
