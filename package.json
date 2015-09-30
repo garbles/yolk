@@ -33,7 +33,6 @@
   },
   "homepage": "https://github.com/BrewhouseTeam/yolk",
   "devDependencies": {
-    "aliasify": "1.7.2",
     "babel-eslint": "4.1.2",
     "babelify": "6.3.0",
     "browserify": "11.2.0",
@@ -54,13 +53,7 @@
   },
   "browserify": {
     "transform": [
-      "babelify",
-      "aliasify"
+      "babelify"
     ]
-  },
-  "aliasify": {
-    "aliases": {
-      "rx": "Rx"
-    }
   }
 }
