@@ -30,7 +30,8 @@
     "release-patch": "git checkout master && npm version patch && git push origin master --tags && npm publish",
     "release-minor": "git checkout master && npm version minor && git push origin master --tags && npm publish",
     "release-major": "git checkout master && npm version major && git push origin master --tags && npm publish",
-    "test": "browserifyinc test/**/*-test.js | testling | tap-spec"
+    "test": "browserifyinc test/**/*-test.js | testling | tap-spec",
+    "test-ci": "npm run lint && npm test"
   },
   "homepage": "https://github.com/BrewhouseTeam/yolk",
   "devDependencies": {
