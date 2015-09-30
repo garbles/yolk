@@ -13,8 +13,6 @@ A library for building asynchronous user interfaces.
 The following example renders a component with buttons to increment and decrement a counter.
 
 ```js
-/** @jsx Yolk.createElement */
-
 import Yolk from `yolk`
 
 function Counter () {
@@ -57,8 +55,6 @@ __`createEventHandler(mapping: any, initialValue: any): Function`__
 Creates a special function that can also be used as an observable. If the function is called, the input value is pushed to the observable as it's latest value. In other words, when this function is used as an event handler, the result is an observable stream of events from that handler. For example:
 
 ```js
-/** @jsx Yolk.createElement */
-
 // create an event handler
 const handleClick = Yolk.createEventHandler()
 
@@ -82,8 +78,6 @@ an event handler as part of a component instance will ensure that everything is 
 For example,
 
 ```js
-/** @jsx Yolk.createElement */
-
 function CustomComponent (props, children) {
   const handleClick = this.createEventHandler()
 
@@ -107,12 +101,40 @@ Creates a new instance of a YolkComponent from a function or string.  To make th
 
 ## Using JSX
 
-It is highly suggested that you write Yolk with JSX. This is achieved using the [Babel transpiler](http://babeljs.io/). All of your files that use JSX must have a special pragma at the top of the file. For example:
+It is highly suggested that you write Yolk with JSX. This is achieved using the [Babel transpiler](http://babeljs.io/). You should configure the `jsxPragma` option for Babel either in `.babelrc` or in `package.json`:
+
+`.babelrc`:
+
+```json
+{
+  "jsxPragma": "Yolk.createElement"
+}
+```
+
+`package.json`:
+
+```json
+{
+  "babel": {
+    "jsxPragma": "Yolk.createElement"
+  }
+}
+```
+
+Then anywhere you use jsx it will be transformed into plain JavaScript. For example, this:
 
 ```js
-/** @jsx Yolk.createElement */
-
 <p>My JSX</p>
+```
+
+Turns into:
+
+```js
+Yolk.createElement(
+  "p",
+  null,
+  "Hello"
+);
 ```
 
 Without this pragma, Babel will assume that you mean to write JSX for React and you will receive `React is undefined` errors.
