@@ -30,7 +30,7 @@
     "release-patch": "git checkout master && npm version patch && git push origin master --tags && npm publish",
     "release-minor": "git checkout master && npm version minor && git push origin master --tags && npm publish",
     "release-major": "git checkout master && npm version major && git push origin master --tags && npm publish",
-    "test": "browserify test/**/*-test.js | testling | tap-spec",
+    "test": "browserify test/**/*-test.js | tape-run | tap-spec",
     "test-ci": "npm run lint && npm test"
   },
   "homepage": "https://github.com/BrewhouseTeam/yolk",
@@ -43,7 +43,7 @@
     "eslint-plugin-react": "3.3.2",
     "tap-spec": "4.1.0",
     "tape": "4.2.0",
-    "testling": "1.7.1",
+    "tape-run": "1.1.0",
     "uglify-js": "2.4.24"
   },
   "dependencies": {
