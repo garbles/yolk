@@ -1,5 +1,3 @@
-/** @jsx Yolk.createElement */
-
 const test = require(`tape`)
 const Rx = require(`rx`)
 const Yolk = require(`../../lib/yolk`)
