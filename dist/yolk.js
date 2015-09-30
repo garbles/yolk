@@ -1017,18 +1017,19 @@ module.exports = function wrapObject(obj) {
 },{"./isEmpty":16,"./isObservable":19,"lodash.isplainobject":32,"rx":44}],25:[function(require,module,exports){
 "use strict";
 
+var Rx = require("rx");
 var createEventHandler = require("./createEventHandler");
 var createElement = require("./createElement");
 var YolkRootComponent = require("./YolkRootComponent");
 var render = YolkRootComponent.render;
 
 function Yolk() {}
-Yolk.prototype = { createEventHandler: createEventHandler, createElement: createElement, render: render };
+Yolk.prototype = { Rx: Rx, createEventHandler: createEventHandler, createElement: createElement, render: render };
 Object.freeze(Yolk);
 
 module.exports = new Yolk();
 
-},{"./YolkRootComponent":7,"./createElement":11,"./createEventHandler":12}],26:[function(require,module,exports){
+},{"./YolkRootComponent":7,"./createElement":11,"./createEventHandler":12,"rx":44}],26:[function(require,module,exports){
 
 },{}],27:[function(require,module,exports){
 // shim for using process in browser
