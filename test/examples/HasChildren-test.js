@@ -1,5 +1,5 @@
 const test = require(`tape`)
-const Yolk = require(`../../lib/yolk`)
+const Yolk = require(`yolk`)
 
 function HasChildren (props, children) {
   return (

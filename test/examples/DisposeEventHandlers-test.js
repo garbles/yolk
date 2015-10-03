@@ -1,6 +1,6 @@
 const test = require(`tape`)
 const Rx = require(`rx`)
-const Yolk = require(`../../lib/yolk`)
+const Yolk = require(`yolk`)
 
 test(`disposing of event handlers when a component unmounts`, t => {
   t.plan(8)

@@ -1,5 +1,5 @@
 const test = require(`tape`)
-const Yolk = require(`../../lib/yolk`)
+const Yolk = require(`yolk`)
 
 test(`an arrayed list of classes`, t => {
   t.plan(1)

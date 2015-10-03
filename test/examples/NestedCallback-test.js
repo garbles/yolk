@@ -1,5 +1,5 @@
 const test = require(`tape`)
-const Yolk = require(`../../lib/yolk`)
+const Yolk = require(`yolk`)
 
 function NestedCallback () {
   const handleInc = this.createEventHandler(() => 1, 0)

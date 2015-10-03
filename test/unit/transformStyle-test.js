@@ -1,5 +1,5 @@
 const test = require(`tape`)
-const transformStyle = require(`../../lib/transformStyle`)
+const transformStyle = require(`transformStyle`)
 
 test(`transformStyle: converts necessary number values in px values`, t => {
   t.plan(2)

@@ -1,5 +1,5 @@
 const test = require(`tape`)
-const createCustomError = require(`../../lib/createCustomError`)
+const createCustomError = require(`createCustomError`)
 
 test(`creating custom error classes`, t => {
   t.plan(4)

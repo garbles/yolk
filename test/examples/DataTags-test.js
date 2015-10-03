@@ -1,5 +1,5 @@
 const test = require(`tape`)
-const Yolk = require(`../../lib/yolk`)
+const Yolk = require(`yolk`)
 
 test(`using data tags`, t => {
   t.plan(1)

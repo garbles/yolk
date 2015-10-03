@@ -20,15 +20,16 @@
     "url": "https://github.com/BrewhouseTeam/yolk/issues"
   },
   "scripts": {
-    "build": "browserify -s Yolk -u rx src/yolk.js > dist/yolk.js",
-    "clean": "rm dist/yolk.js",
+    "bundle": "browserify -s Yolk -u rx src/yolk.js > dist/yolk.js",
+    "clean": "rm -rf lib/ dist/ && mkdir lib/ dist/",
+    "build": "babel -d lib/ src/",
     "lint": "eslint src test",
-    "prerelease": "npm run test && npm run lint && npm run clean && npm run build && git add dist && git commit -m 'Cut new distro'",
+    "prerelease": "npm run test && npm run lint && npm run clean && npm run build && npm run bundle && git add dist && git commit -m 'Cut new distro'",
     "release": "npm run release-patch",
     "release-patch": "git checkout master && npm version patch && git push origin master --tags && npm publish",
     "release-minor": "git checkout master && npm version minor && git push origin master --tags && npm publish",
     "release-major": "git checkout master && npm version major && git push origin master --tags && npm publish",
-    "test": "browserify test/**/*-test.js | tape-run --browser=phantom"
+    "test": "NODE_PATH=$NODE_PATH:./src browserify test/**/*-test.js | tape-run --browser=phantom"
   },
   "homepage": "https://github.com/BrewhouseTeam/yolk",
   "devDependencies": {

@@ -1,5 +1,5 @@
 const test = require(`tape`)
-const transformProperties = require(`../../lib/transformProperties`)
+const transformProperties = require(`transformProperties`)
 
 test(`transformProperties: transforms props so that they will work correctly with virtual dom`, t => {
   t.plan(1)

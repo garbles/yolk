@@ -1,6 +1,6 @@
 const test = require(`tape`)
 const Rx = require(`rx`)
-const Yolk = require(`../../lib/yolk`)
+const Yolk = require(`yolk`)
 
 function Stub (props, children) {
   const handleClick = this.createEventHandler(() => 1, 0)

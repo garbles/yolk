@@ -1,5 +1,5 @@
 const test = require(`tape`)
-const Yolk = require(`../../lib/yolk`)
+const Yolk = require(`yolk`)
 const {h, create} = require(`virtual-dom`)
 
 class CustomStub {

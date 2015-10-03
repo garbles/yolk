@@ -1,7 +1,7 @@
 const test = require(`tape`)
 const Rx = require(`rx`)
-const YolkCompositeComponent = require(`../../lib/YolkCompositeComponent`)
-const YolkBaseComponent = require(`../../lib/YolkBaseComponent`)
+const YolkCompositeComponent = require(`YolkCompositeComponent`)
+const YolkBaseComponent = require(`YolkBaseComponent`)
 
 test(`composite component raises when it doesn't return an element`, t => {
   t.plan(6)

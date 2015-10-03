@@ -1,6 +1,6 @@
 const test = require(`tape`)
 const Rx = require(`rx`)
-const Yolk = require(`../../lib/yolk`)
+const Yolk = require(`yolk`)
 
 function NestedObservableProps (props) {
   const {height, width} = props

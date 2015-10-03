@@ -1,5 +1,5 @@
 const test = require(`tape`)
-const compact = require(`../../lib/compact`)
+const compact = require(`compact`)
 
 test(`compact: compacts arrays`, t => {
   t.plan(1)
