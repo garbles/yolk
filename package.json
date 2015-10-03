@@ -20,7 +20,7 @@
     "url": "https://github.com/BrewhouseTeam/yolk/issues"
   },
   "scripts": {
-    "bundle": "browserify -s Yolk -u rx src/yolk.js -t babelify -t browserify-shim > dist/yolk.js",
+    "bundle": "browserify -s Yolk -u rx src/yolk.js -t babelify -t browserify-shim -d | exorcist yolk.js.map > dist/yolk.js",
     "uglify": "uglifyjs --compress --mangle -- dist/yolk.js > dist/yolk.min.js",
     "clean": "rm -rf lib/ dist/ && mkdir lib/ dist/",
     "build": "babel -d lib/ src/",
@@ -44,6 +44,7 @@
     "eslint": "1.4.1",
     "eslint-config-airbnb": "0.0.8",
     "eslint-plugin-react": "3.3.2",
+    "exorcist": "0.4.0",
     "tape": "4.2.0",
     "tape-run": "1.1.0"
   },

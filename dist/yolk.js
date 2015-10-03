@@ -1398,6 +1398,7 @@ function Individual(key, value) {
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+
 },{}],25:[function(require,module,exports){
 'use strict';
 
@@ -1441,6 +1442,7 @@ if (typeof document !== 'undefined') {
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+
 },{"min-document":1}],27:[function(require,module,exports){
 "use strict";
 
@@ -2935,6 +2937,7 @@ module.exports = global.CustomEvent || (function () {
 })();
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+
 },{}],54:[function(require,module,exports){
 "use strict";
 
@@ -3369,6 +3372,7 @@ YolkBaseComponent.prototype = {
 module.exports = YolkBaseComponent;
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+
 },{"./CustomEvent":53,"./createCustomError":62,"./isFunction":69,"./transformProperties":73,"./wrapObject":76,"_process":2,"lodash.flattendeep":3,"virtual-dom/create-element":19,"virtual-dom/diff":20,"virtual-dom/h":21,"virtual-dom/patch":29}],57:[function(require,module,exports){
 (function (global){
 "use strict";
@@ -3461,6 +3465,7 @@ YolkCompositeComponent.prototype = {
 module.exports = YolkCompositeComponent;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+
 },{"./YolkCompositeFunctionWrapper":58,"./wrapObject":76,"virtual-dom/create-element":19}],58:[function(require,module,exports){
 "use strict";
 
@@ -3673,6 +3678,7 @@ module.exports = function createEventHandler(mapFn, init) {
 };
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+
 },{"./addProperties":60,"./isDefined":67,"./isFunction":69}],65:[function(require,module,exports){
 "use strict";
 
@@ -3737,6 +3743,7 @@ module.exports = function isObservable(obj) {
 };
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+
 },{}],72:[function(require,module,exports){
 "use strict";
 
@@ -3938,6 +3945,7 @@ module.exports = function wrapObject(obj) {
 };
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+
 },{"./isEmpty":68,"./isObservable":71,"lodash.isplainobject":7}],77:[function(require,module,exports){
 (function (global){
 "use strict";
@@ -3955,5 +3963,7 @@ Object.freeze(Yolk);
 module.exports = new Yolk();
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+
 },{"./YolkRootComponent":59,"./createElement":63,"./createEventHandler":64}]},{},[77])(77)
 });
+//# sourceMappingURL=yolk.js.map
