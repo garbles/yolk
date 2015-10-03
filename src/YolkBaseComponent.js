@@ -117,7 +117,7 @@ YolkBaseComponent.prototype = {
       const event = new CustomEvent(`mount`)
       this.node.dispatchEvent(event)
     } else {
-      process.nextTick(() => this.onMount())
+      setTimeout(() => this.onMount(), 0)
     }
   },
 }
