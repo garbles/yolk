@@ -1,4 +1,4 @@
-const Rx = require(`./Rx`)
+const Rx = require(`rx`)
 const create = require(`virtual-dom/create-element`)
 const diff = require(`virtual-dom/diff`)
 const h = require(`virtual-dom/h`)

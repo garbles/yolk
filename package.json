@@ -2,7 +2,7 @@
   "name": "yolk",
   "version": "0.5.2",
   "description": "A library for building asynchronous user interfaces.",
-  "main": "dist/yolk.js",
+  "main": "lib/yolk.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/BrewhouseTeam/yolk"
@@ -20,7 +20,7 @@
     "url": "https://github.com/BrewhouseTeam/yolk/issues"
   },
   "scripts": {
-    "bundle": "browserify -s Yolk -u rx src/yolk.js > dist/yolk.js",
+    "bundle": "browserify -s Yolk -u rx src/yolk.js -t babelify -t browserify-shim > dist/yolk.js",
     "clean": "rm -rf lib/ dist/ && mkdir lib/ dist/",
     "build": "babel -d lib/ src/",
     "lint": "eslint src test",
@@ -29,13 +29,14 @@
     "release-patch": "git checkout master && npm version patch && git push origin master --tags && npm publish",
     "release-minor": "git checkout master && npm version minor && git push origin master --tags && npm publish",
     "release-major": "git checkout master && npm version major && git push origin master --tags && npm publish",
-    "test": "NODE_PATH=$NODE_PATH:./src browserify test/**/*-test.js | tape-run --browser=phantom"
+    "test": "NODE_PATH=$NODE_PATH:./src browserify test/**/*-test.js --debug -t babelify | tape-run --browser=phantom"
   },
   "homepage": "https://github.com/BrewhouseTeam/yolk",
   "devDependencies": {
     "babel-eslint": "4.1.2",
     "babelify": "6.3.0",
     "browserify": "11.2.0",
+    "browserify-shim": "3.8.10",
     "eslint": "1.4.1",
     "eslint-config-airbnb": "0.0.8",
     "eslint-plugin-react": "3.3.2",
@@ -49,9 +50,7 @@
     "virtual-dom": "2.1.1",
     "rx": "^4.0.0"
   },
-  "browserify": {
-    "transform": [
-      "babelify"
-    ]
+  "browserify-shim": {
+    "rx": "global:Rx"
   }
 }

@@ -1,4 +1,4 @@
-const Rx = require(`./Rx`)
+const Rx = require(`rx`)
 const isPlainObject = require(`lodash.isplainobject`)
 const isObservable = require(`./isObservable`)
 const isEmpty = require(`./isEmpty`)
