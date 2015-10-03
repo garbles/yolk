@@ -24,5 +24,8 @@
     "node_modules",
     "bower_components",
     "test"
-  ]
+  ],
+  "dependencies": {
+    "rxjs": "~4.0.0"
+  }
 }

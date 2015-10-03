@@ -183,19 +183,17 @@ controls loop multiple readOnly selected srcDoc value
 
 ## Setup
 
-To install Yolk, simply include it in your `package.json` along with your preferred version of `rx`,
+To install Yolk, simply include it in your `package.json`:
 
 ```
-npm install yolk rx --save
+npm install yolk --save
 ```
 
 Or instead with Bower,
 
 ```
-bower install yolk rx --save
+bower install yolk --save
 ```
-
-[RxJS](https://github.com/Reactive-Extensions/RxJS) is listed as a dependency of this library; however, it is not included as part of the bundled file. You must include your own version of `rx`.
 
 ## Contributing
 
