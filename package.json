@@ -21,6 +21,7 @@
   },
   "scripts": {
     "bundle": "browserify -s Yolk -u rx src/yolk.js -t babelify -t browserify-shim > dist/yolk.js",
+    "uglify": "uglifyjs --compress --mangle -- dist/yolk.js > dist/yolk.min.js",
     "clean": "rm -rf lib/ dist/ && mkdir lib/ dist/",
     "build": "babel -d lib/ src/",
     "lint": "eslint src test",
