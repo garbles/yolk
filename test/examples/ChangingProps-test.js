@@ -1,6 +1,6 @@
 const test = require(`tape`)
-const Rx = require(`rx`)
 const Yolk = require(`yolk`)
+const {Rx} = Yolk
 
 function HasChildren (props) {
   return <div>{props.child}</div>
