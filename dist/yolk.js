@@ -3939,18 +3939,21 @@ module.exports = function wrapObject(obj) {
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"./isEmpty":68,"./isObservable":71,"lodash.isplainobject":7}],77:[function(require,module,exports){
+(function (global){
 "use strict";
 
+var Rx = (typeof window !== "undefined" ? window['Rx'] : typeof global !== "undefined" ? global['Rx'] : null);
 var createEventHandler = require("./createEventHandler");
 var createElement = require("./createElement");
 var YolkRootComponent = require("./YolkRootComponent");
 var render = YolkRootComponent.render;
 
 function Yolk() {}
-Yolk.prototype = { createEventHandler: createEventHandler, createElement: createElement, render: render };
+Yolk.prototype = { Rx: Rx, createEventHandler: createEventHandler, createElement: createElement, render: render };
 Object.freeze(Yolk);
 
 module.exports = new Yolk();
 
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"./YolkRootComponent":59,"./createElement":63,"./createEventHandler":64}]},{},[77])(77)
 });
