@@ -1,7 +1,5 @@
 const createEventHandler = require(`./createEventHandler`)
 const isComponent = require(`./isComponent`)
-const createCustomError = require(`./createCustomError`)
-const NoComponentError = createCustomError(`NoComponentError`)
 
 function YolkCompositeFunctionWrapper () {
   this._eventHandlers = []
@@ -32,7 +30,7 @@ YolkCompositeFunctionWrapper.create = (fn, props, children) => {
   const result = fn.call(instance, props, children)
 
   if (!isComponent(result)) {
-    throw new NoComponentError(`Function did not return a valid component. See "${fn.name}".`)
+    throw new Error(`Function did not return a valid component. See "${fn.name}".`)
   }
 
   instance._result = result

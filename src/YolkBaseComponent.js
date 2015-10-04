@@ -8,9 +8,6 @@ const wrapObject = require(`./wrapObject`)
 const transformProperties = require(`./transformProperties`)
 const isFunction = require(`./isFunction`)
 const CustomEvent = require(`./CustomEvent`)
-const createCustomError = require(`./createCustomError`)
-
-const PatchingError = createCustomError(`PatchingError`)
 
 function YolkBaseComponent (tag, props, children) {
   const _props = {...props}
@@ -59,7 +56,7 @@ YolkBaseComponent.prototype = {
       .scan(([old], next) => [next, diff(old, next)], [vNode, null])
       .subscribe(
         ([__, patches]) => patch(this.node, patches),
-        (err) => {throw new PatchingError(err.message)}
+        (err) => {throw new Error(err.message)}
       )
 
     isFunction(this._props.onMount) && this.onMount()
