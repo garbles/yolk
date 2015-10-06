@@ -25,7 +25,7 @@
     "clean": "rm -rf lib/ dist/ && mkdir lib/ dist/",
     "build": "babel -d lib/ src/",
     "lint": "eslint src test",
-    "commit-bundle": "git add dist/ && git commit -m ':tada: new bundle!'",
+    "commit-bundle": "git add dist/ lib/ && git commit -m ':tada: new bundle!'",
     "prerelease": "npm run test && npm run lint && npm run clean && npm run bundle && npm run uglify && npm run build && npm run commit-bundle",
     "postinstall": "npm run build",
     "release": "npm run release-patch",

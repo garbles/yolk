@@ -3144,9 +3144,6 @@ var wrapObject = require("./wrapObject");
 var transformProperties = require("./transformProperties");
 var isFunction = require("./isFunction");
 var CustomEvent = require("./CustomEvent");
-var createCustomError = require("./createCustomError");
-
-var PatchingError = createCustomError("PatchingError");
 
 function YolkBaseComponent(tag, props, children) {
   var _props = _extends({}, props);
@@ -3207,7 +3204,7 @@ YolkBaseComponent.prototype = {
       var patches = _ref32[1];
       return patch(_this.node, patches);
     }, function (err) {
-      throw new PatchingError(err.message);
+      throw new Error(err.message);
     });
 
     isFunction(this._props.onMount) && this.onMount();
@@ -3280,7 +3277,7 @@ module.exports = YolkBaseComponent;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"./CustomEvent":52,"./createCustomError":61,"./isFunction":68,"./transformProperties":72,"./wrapObject":75,"lodash.flattendeep":2,"virtual-dom/create-element":18,"virtual-dom/diff":19,"virtual-dom/h":20,"virtual-dom/patch":28}],56:[function(require,module,exports){
+},{"./CustomEvent":52,"./isFunction":66,"./transformProperties":70,"./wrapObject":73,"lodash.flattendeep":2,"virtual-dom/create-element":18,"virtual-dom/diff":19,"virtual-dom/h":20,"virtual-dom/patch":28}],56:[function(require,module,exports){
 (function (global){
 "use strict";
 
@@ -3373,13 +3370,11 @@ module.exports = YolkCompositeComponent;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"./YolkCompositeFunctionWrapper":57,"./wrapObject":75,"virtual-dom/create-element":18}],57:[function(require,module,exports){
+},{"./YolkCompositeFunctionWrapper":57,"./wrapObject":73,"virtual-dom/create-element":18}],57:[function(require,module,exports){
 "use strict";
 
 var _createEventHandler = require("./createEventHandler");
 var isComponent = require("./isComponent");
-var createCustomError = require("./createCustomError");
-var NoComponentError = createCustomError("NoComponentError");
 
 function YolkCompositeFunctionWrapper() {
   this._eventHandlers = [];
@@ -3410,7 +3405,7 @@ YolkCompositeFunctionWrapper.create = function (fn, props, children) {
   var result = fn.call(instance, props, children);
 
   if (!isComponent(result)) {
-    throw new NoComponentError("Function did not return a valid component. See \"" + fn.name + "\".");
+    throw new Error("Function did not return a valid component. See \"" + fn.name + "\".");
   }
 
   instance._result = result;
@@ -3419,7 +3414,7 @@ YolkCompositeFunctionWrapper.create = function (fn, props, children) {
 
 module.exports = YolkCompositeFunctionWrapper;
 
-},{"./createCustomError":61,"./createEventHandler":63,"./isComponent":65}],58:[function(require,module,exports){
+},{"./createEventHandler":62,"./isComponent":63}],58:[function(require,module,exports){
 "use strict";
 
 var create = require("virtual-dom/create-element");
@@ -3513,18 +3508,7 @@ module.exports = function compact(arr) {
   return newArr;
 };
 
-},{"./isDefined":66}],61:[function(require,module,exports){
-"use strict";
-
-var inherit = require("./inherit");
-
-module.exports = function createCustomError(name) {
-  eval.call(null, "var CustomError = function " + name + " (message) {\n    this.name = '" + name + "';\n    this.message = message;\n    this.stack = (new Error()).stack;\n  }");
-
-  return inherit(CustomError, Error);
-};
-
-},{"./inherit":64}],62:[function(require,module,exports){
+},{"./isDefined":64}],61:[function(require,module,exports){
 "use strict";
 
 var YolkCompositeComponent = require("./YolkCompositeComponent");
@@ -3545,7 +3529,7 @@ module.exports = function createElement(tag, props) {
   return new YolkCompositeComponent(tag, _props, children);
 };
 
-},{"./YolkBaseComponent":55,"./YolkCompositeComponent":56,"./isString":71}],63:[function(require,module,exports){
+},{"./YolkBaseComponent":55,"./YolkCompositeComponent":56,"./isString":69}],62:[function(require,module,exports){
 (function (global){
 "use strict";
 
@@ -3586,20 +3570,7 @@ module.exports = function createEventHandler(mapFn, init) {
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"./addProperties":59,"./isDefined":66,"./isFunction":68}],64:[function(require,module,exports){
-"use strict";
-
-module.exports = function inherit(child, parent) {
-  function __() {
-    this.constructor = child;
-  }
-  __.prototype = parent.prototype;
-  child.prototype = new __();
-
-  return child;
-};
-
-},{}],65:[function(require,module,exports){
+},{"./addProperties":59,"./isDefined":64,"./isFunction":66}],63:[function(require,module,exports){
 "use strict";
 
 var isThunk = require("virtual-dom/vnode/is-thunk");
@@ -3611,35 +3582,35 @@ module.exports = function isComponent(obj) {
   return !!obj && (isWidget(obj) || isThunk(obj) || isVNode(obj) || isVText(obj));
 };
 
-},{"virtual-dom/vnode/is-thunk":41,"virtual-dom/vnode/is-vnode":43,"virtual-dom/vnode/is-vtext":44,"virtual-dom/vnode/is-widget":45}],66:[function(require,module,exports){
+},{"virtual-dom/vnode/is-thunk":41,"virtual-dom/vnode/is-vnode":43,"virtual-dom/vnode/is-vtext":44,"virtual-dom/vnode/is-widget":45}],64:[function(require,module,exports){
 "use strict";
 
 module.exports = function isDefined(obj) {
   return typeof obj !== "undefined" && obj !== null;
 };
 
-},{}],67:[function(require,module,exports){
+},{}],65:[function(require,module,exports){
 "use strict";
 
 module.exports = function isEmpty(obj) {
   return Object.keys(obj).length === 0;
 };
 
-},{}],68:[function(require,module,exports){
+},{}],66:[function(require,module,exports){
 "use strict";
 
 module.exports = function isFunction(obj) {
   return Object.prototype.toString.call(obj) === "[object Function]";
 };
 
-},{}],69:[function(require,module,exports){
+},{}],67:[function(require,module,exports){
 "use strict";
 
 module.exports = function isNumber(num) {
   return typeof num === "number" || num instanceof Number;
 };
 
-},{}],70:[function(require,module,exports){
+},{}],68:[function(require,module,exports){
 (function (global){
 "use strict";
 
@@ -3651,14 +3622,14 @@ module.exports = function isObservable(obj) {
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{}],71:[function(require,module,exports){
+},{}],69:[function(require,module,exports){
 "use strict";
 
 module.exports = function isString(str) {
   return typeof str === "string" || str instanceof String;
 };
 
-},{}],72:[function(require,module,exports){
+},{}],70:[function(require,module,exports){
 "use strict";
 
 var DOMProperties = require("./DOMProperties");
@@ -3685,7 +3656,7 @@ module.exports = function transformProperties(tag, props) {
   return newProps;
 };
 
-},{"./DOMProperties":54,"./transformProperty":73,"./transformStyle":74}],73:[function(require,module,exports){
+},{"./DOMProperties":54,"./transformProperty":71,"./transformStyle":72}],71:[function(require,module,exports){
 "use strict";
 
 var kababCase = require("lodash.kebabcase");
@@ -3743,7 +3714,7 @@ module.exports = function transformProperty(props, key, value, property) {
   return props;
 };
 
-},{"./CustomEventHook":53,"./compact":60,"lodash.kebabcase":11,"virtual-dom/virtual-hyperscript/hooks/attribute-hook":35,"virtual-dom/virtual-hyperscript/hooks/soft-set-hook":37}],74:[function(require,module,exports){
+},{"./CustomEventHook":53,"./compact":60,"lodash.kebabcase":11,"virtual-dom/virtual-hyperscript/hooks/attribute-hook":35,"virtual-dom/virtual-hyperscript/hooks/soft-set-hook":37}],72:[function(require,module,exports){
 "use strict";
 
 var isNumber = require("./isNumber");
@@ -3803,7 +3774,7 @@ module.exports = function transformStyle(props, style) {
   return props;
 };
 
-},{"./isNumber":69}],75:[function(require,module,exports){
+},{"./isNumber":67}],73:[function(require,module,exports){
 (function (global){
 "use strict";
 
@@ -3853,7 +3824,7 @@ module.exports = function wrapObject(obj) {
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"./isEmpty":67,"./isObservable":70,"lodash.isplainobject":6}],76:[function(require,module,exports){
+},{"./isEmpty":65,"./isObservable":68,"lodash.isplainobject":6}],74:[function(require,module,exports){
 (function (global){
 "use strict";
 
@@ -3871,6 +3842,6 @@ module.exports = new Yolk();
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"./YolkRootComponent":58,"./createElement":62,"./createEventHandler":63}]},{},[76])(76)
+},{"./YolkRootComponent":58,"./createElement":61,"./createEventHandler":62}]},{},[74])(74)
 });
 //# sourceMappingURL=yolk.js.map
