@@ -60,7 +60,7 @@ YolkBaseComponent.prototype = {
         (err) => {throw new Error(err.message)}
       )
 
-    isFunction(this._props.onMount) && this.onMount()
+    this.onMount()
 
     return this.node
   },
@@ -98,10 +98,10 @@ YolkBaseComponent.prototype = {
 
   onUnmount () {
     const {onMount, onUnmount} = this._props
+    const event = new CustomEvent(`unmount`)
+    this.node.dispatchEvent(event)
 
     if (isFunction(onUnmount)) {
-      const event = new CustomEvent(`unmount`)
-      this.node.dispatchEvent(event)
       this.node.removeEventListener(`unmount`, onUnmount)
     }
 
