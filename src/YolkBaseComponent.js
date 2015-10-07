@@ -6,6 +6,7 @@ const patch = require(`virtual-dom/patch`)
 const flatten = require(`lodash.flattendeep`)
 const wrapObject = require(`./wrapObject`)
 const transformProperties = require(`./transformProperties`)
+const transformChildren = require(`./transformChildren`)
 const isFunction = require(`./isFunction`)
 const CustomEvent = require(`./CustomEvent`)
 
@@ -44,8 +45,8 @@ YolkBaseComponent.prototype = {
 
     this._childSubject = new Rx.BehaviorSubject(this._children)
 
-    const propObservable = wrapObject(propsSubject).map(props => transformProperties(this.id, props))
-    const childObservable = this._childSubject.flatMapLatest(wrapObject)
+    const propObservable = wrapObject(propsSubject).map(transformProperties)
+    const childObservable = this._childSubject.flatMapLatest(wrapObject).map(transformChildren)
 
     const vNode = h(this.id)
     this.node = create(vNode)

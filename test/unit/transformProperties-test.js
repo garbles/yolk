@@ -30,5 +30,5 @@ test(`transformProperties: transforms props so that they will work correctly wit
     },
   }
 
-  t.deepEqual(transformProperties(`div`, props), transformedProps)
+  t.deepEqual(transformProperties(props), transformedProps)
 })

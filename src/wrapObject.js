@@ -1,13 +1,13 @@
 const Rx = require(`rx`)
 const isPlainObject = require(`lodash.isplainobject`)
 const isObservable = require(`./isObservable`)
-const isFunction = require(`./isFunction`)
 const isEmpty = require(`./isEmpty`)
+const hasToJS = require(`./hasToJS`)
 
 module.exports = function wrapObject (obj) {
   if (isObservable(obj)) {
     return obj.flatMapLatest(wrapObject)
-  } else if (obj && isFunction(obj.toJS)) {
+  } else if (hasToJS(obj)) {
     // fall through if `toJS` is defined
   } else if (isPlainObject(obj) && !isEmpty(obj)) {
     const keys = Object.keys(obj)

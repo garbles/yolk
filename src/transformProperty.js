@@ -16,14 +16,13 @@ const EMPTY_PROP = {
   hasBooleanValue: false,
 }
 
-module.exports = function transformProperty (props, key, value, property) {
-  const _property = property || EMPTY_PROP
+module.exports = function transformProperty (props, key, value, property = EMPTY_PROP) {
   let isDataAttribute = false
   let _value = value
   let _key
 
-  if (_property.isStandard) {
-    _key = _property.computed
+  if (property.isStandard) {
+    _key = property.computed
   } else {
     isDataAttribute = IS_DATA_MATCHER.test(key)
 
@@ -32,21 +31,21 @@ module.exports = function transformProperty (props, key, value, property) {
     }
   }
 
-  if (_property.canBeArrayOfStrings && Array.isArray(value)) {
+  if (property.canBeArrayOfStrings && Array.isArray(value)) {
     _value = compact(value).join(` `)
-  } else if (_property.hasBooleanValue && !value) {
+  } else if (property.hasBooleanValue && !value) {
     return props
   }
 
-  if (_property.isAttribute || isDataAttribute) {
+  if (property.isAttribute || isDataAttribute) {
     props.attributes[_key] = _value
-  } else if (_property.usePropertyHook) {
+  } else if (property.usePropertyHook) {
     props[_key] = new SoftSetHook(_value)
-  } else if (_property.useCustomEventHook) {
+  } else if (property.useCustomEventHook) {
     props[_key] = new CustomEventHook(_key, _value)
-  } else if (_property.useAttributeHook) {
+  } else if (property.useAttributeHook) {
     props[_key] = new AttributeHook(_value)
-  } else if (_property.isStandard) {
+  } else if (property.isStandard) {
     props[_key] = _value
   }
 
