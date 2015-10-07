@@ -60,7 +60,7 @@ YolkBaseComponent.prototype = {
         (err) => {throw new Error(err.message)}
       )
 
-    this.onMount()
+    this.emitMount()
 
     return this.node
   },
@@ -83,7 +83,7 @@ YolkBaseComponent.prototype = {
   },
 
   destroy () {
-    this.onUnmount()
+    this.emitUnmount()
     this._patchSubscription.dispose()
 
     const children = this._children
@@ -96,7 +96,7 @@ YolkBaseComponent.prototype = {
     }
   },
 
-  onUnmount () {
+  emitUnmount () {
     const {onMount, onUnmount} = this._props
     const event = new CustomEvent(`unmount`)
     this.node.dispatchEvent(event)
@@ -110,12 +110,12 @@ YolkBaseComponent.prototype = {
     }
   },
 
-  onMount () {
+  emitMount () {
     if (this.node.parentNode) {
       const event = new CustomEvent(`mount`)
       this.node.dispatchEvent(event)
     } else {
-      setTimeout(() => this.onMount(), 0)
+      setTimeout(() => this.emitMount(), 0)
     }
   },
 }
