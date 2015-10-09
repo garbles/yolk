@@ -3,7 +3,6 @@ const create = require(`virtual-dom/create-element`)
 const diff = require(`virtual-dom/diff`)
 const h = require(`virtual-dom/h`)
 const patch = require(`virtual-dom/patch`)
-const flatten = require(`lodash.flattendeep`)
 const wrapObject = require(`./wrapObject`)
 const transformProperties = require(`./transformProperties`)
 const transformChildren = require(`./transformChildren`)
@@ -53,7 +52,7 @@ YolkBaseComponent.prototype = {
 
     this._patchSubscription =
       Rx.Observable
-      .combineLatest(propObservable, childObservable, (p, c) => h(this.id, p, flatten(c)))
+      .combineLatest(propObservable, childObservable, (p, c) => h(this.id, p, c))
       .scan(([old], next) => [next, diff(old, next)], [vNode, null])
       .subscribe(
         ([__, patches]) => patch(this.node, patches),

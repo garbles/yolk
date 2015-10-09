@@ -1,6 +1,7 @@
 const test = require(`tape`)
 const Rx = require(`rx`)
 const YolkBaseComponent = require(`YolkBaseComponent`)
+const Yolk = require(`yolk`)
 
 test(`returns a base component`, t => {
   t.plan(2)
@@ -82,8 +83,8 @@ test(`does not wrap objects with toJS defined on them`, t => {
 test(`properly wraps children with toJS defined on them`, t => {
   t.plan(2)
 
-  const child1 = new YolkBaseComponent(`p`, null, `hello`)
-  const child2 = new Rx.BehaviorSubject(new YolkBaseComponent(`p`, null, `goodbye`))
+  const child1 = <p>hello</p>
+  const child2 = new Rx.BehaviorSubject(<p>goodbye</p>)
 
   let children = {
     toJS () {
@@ -93,7 +94,7 @@ test(`properly wraps children with toJS defined on them`, t => {
 
   const childrenSubject = new Rx.BehaviorSubject(children)
 
-  const instance = new YolkBaseComponent(`b`, null, childrenSubject)
+  const instance = <b>{childrenSubject}</b>
   const node = instance.init()
   document.body.appendChild(node)
 
@@ -105,7 +106,7 @@ test(`properly wraps children with toJS defined on them`, t => {
     },
   }
 
-  childrenSubject.onNext(children)
+  childrenSubject.onNext([children])
 
   t.equal(node.outerHTML, `<b><p>hello</p><p>goodbye</p></b>`)
 })
