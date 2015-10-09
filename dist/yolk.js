@@ -2,46 +2,19 @@
 
 },{}],2:[function(require,module,exports){
 /**
- * lodash 3.0.2 (Custom Build) <https://lodash.com/>
- * Build: `lodash modern modularize exports="npm" -o ./`
- * Copyright 2012-2015 The Dojo Foundation <http://dojofoundation.org/>
- * Based on Underscore.js 1.8.2 <http://underscorejs.org/LICENSE>
- * Copyright 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
- * Available under MIT license <https://lodash.com/license>
- */
-var baseFlatten = require('lodash._baseflatten');
-
-/**
- * Recursively flattens a nested array.
- *
- * @static
- * @memberOf _
- * @category Array
- * @param {Array} array The array to recursively flatten.
- * @returns {Array} Returns the new flattened array.
- * @example
- *
- * _.flattenDeep([1, [2, 3, [4]]]);
- * // => [1, 2, 3, 4]
- */
-function flattenDeep(array) {
-  var length = array ? array.length : 0;
-  return length ? baseFlatten(array, true) : [];
-}
-
-module.exports = flattenDeep;
-
-},{"lodash._baseflatten":3}],3:[function(require,module,exports){
-/**
- * lodash 3.1.4 (Custom Build) <https://lodash.com/>
+ * lodash 3.2.0 (Custom Build) <https://lodash.com/>
  * Build: `lodash modern modularize exports="npm" -o ./`
  * Copyright 2012-2015 The Dojo Foundation <http://dojofoundation.org/>
  * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
  * Copyright 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
  * Available under MIT license <https://lodash.com/license>
  */
-var isArguments = require('lodash.isarguments'),
-    isArray = require('lodash.isarray');
+var baseFor = require('lodash._basefor'),
+    isArguments = require('lodash.isarguments'),
+    keysIn = require('lodash.keysin');
+
+/** `Object#toString` result references. */
+var objectTag = '[object Object]';
 
 /**
  * Checks if `value` is object-like.
@@ -54,117 +27,173 @@ function isObjectLike(value) {
   return !!value && typeof value == 'object';
 }
 
-/**
- * Used as the [maximum length](http://ecma-international.org/ecma-262/6.0/#sec-number.max_safe_integer)
- * of an array-like value.
- */
-var MAX_SAFE_INTEGER = 9007199254740991;
+/** Used for native method references. */
+var objectProto = Object.prototype;
+
+/** Used to check objects for own properties. */
+var hasOwnProperty = objectProto.hasOwnProperty;
 
 /**
- * Appends the elements of `values` to `array`.
+ * Used to resolve the [`toStringTag`](http://ecma-international.org/ecma-262/6.0/#sec-object.prototype.tostring)
+ * of values.
+ */
+var objToString = objectProto.toString;
+
+/**
+ * The base implementation of `_.forIn` without support for callback
+ * shorthands and `this` binding.
  *
  * @private
- * @param {Array} array The array to modify.
- * @param {Array} values The values to append.
- * @returns {Array} Returns `array`.
+ * @param {Object} object The object to iterate over.
+ * @param {Function} iteratee The function invoked per iteration.
+ * @returns {Object} Returns `object`.
  */
-function arrayPush(array, values) {
-  var index = -1,
-      length = values.length,
-      offset = array.length;
-
-  while (++index < length) {
-    array[offset + index] = values[index];
-  }
-  return array;
+function baseForIn(object, iteratee) {
+  return baseFor(object, iteratee, keysIn);
 }
 
 /**
- * The base implementation of `_.flatten` with added support for restricting
- * flattening and specifying the start index.
+ * Checks if `value` is a plain object, that is, an object created by the
+ * `Object` constructor or one with a `[[Prototype]]` of `null`.
+ *
+ * **Note:** This method assumes objects created by the `Object` constructor
+ * have no inherited enumerable properties.
+ *
+ * @static
+ * @memberOf _
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is a plain object, else `false`.
+ * @example
+ *
+ * function Foo() {
+ *   this.a = 1;
+ * }
+ *
+ * _.isPlainObject(new Foo);
+ * // => false
+ *
+ * _.isPlainObject([1, 2, 3]);
+ * // => false
+ *
+ * _.isPlainObject({ 'x': 0, 'y': 0 });
+ * // => true
+ *
+ * _.isPlainObject(Object.create(null));
+ * // => true
+ */
+function isPlainObject(value) {
+  var Ctor;
+
+  // Exit early for non `Object` objects.
+  if (!(isObjectLike(value) && objToString.call(value) == objectTag && !isArguments(value)) ||
+      (!hasOwnProperty.call(value, 'constructor') && (Ctor = value.constructor, typeof Ctor == 'function' && !(Ctor instanceof Ctor)))) {
+    return false;
+  }
+  // IE < 9 iterates inherited properties before own properties. If the first
+  // iterated property is an object's own property then there are no inherited
+  // enumerable properties.
+  var result;
+  // In most environments an object's own properties are iterated before
+  // its inherited properties. If the last iterated property is an object's
+  // own property then there are no inherited enumerable properties.
+  baseForIn(value, function(subValue, key) {
+    result = key;
+  });
+  return result === undefined || hasOwnProperty.call(value, result);
+}
+
+module.exports = isPlainObject;
+
+},{"lodash._basefor":3,"lodash.isarguments":4,"lodash.keysin":5}],3:[function(require,module,exports){
+/**
+ * lodash 3.0.2 (Custom Build) <https://lodash.com/>
+ * Build: `lodash modern modularize exports="npm" -o ./`
+ * Copyright 2012-2015 The Dojo Foundation <http://dojofoundation.org/>
+ * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
+ * Copyright 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
+ * Available under MIT license <https://lodash.com/license>
+ */
+
+/**
+ * The base implementation of `baseForIn` and `baseForOwn` which iterates
+ * over `object` properties returned by `keysFunc` invoking `iteratee` for
+ * each property. Iteratee functions may exit iteration early by explicitly
+ * returning `false`.
  *
  * @private
- * @param {Array} array The array to flatten.
- * @param {boolean} [isDeep] Specify a deep flatten.
- * @param {boolean} [isStrict] Restrict flattening to arrays-like objects.
- * @param {Array} [result=[]] The initial result value.
- * @returns {Array} Returns the new flattened array.
+ * @param {Object} object The object to iterate over.
+ * @param {Function} iteratee The function invoked per iteration.
+ * @param {Function} keysFunc The function to get the keys of `object`.
+ * @returns {Object} Returns `object`.
  */
-function baseFlatten(array, isDeep, isStrict, result) {
-  result || (result = []);
+var baseFor = createBaseFor();
 
-  var index = -1,
-      length = array.length;
+/**
+ * Creates a base function for `_.forIn` or `_.forInRight`.
+ *
+ * @private
+ * @param {boolean} [fromRight] Specify iterating from right to left.
+ * @returns {Function} Returns the new base function.
+ */
+function createBaseFor(fromRight) {
+  return function(object, iteratee, keysFunc) {
+    var iterable = toObject(object),
+        props = keysFunc(object),
+        length = props.length,
+        index = fromRight ? length : -1;
 
-  while (++index < length) {
-    var value = array[index];
-    if (isObjectLike(value) && isArrayLike(value) &&
-        (isStrict || isArray(value) || isArguments(value))) {
-      if (isDeep) {
-        // Recursively flatten arrays (susceptible to call stack limits).
-        baseFlatten(value, isDeep, isStrict, result);
-      } else {
-        arrayPush(result, value);
+    while ((fromRight ? index-- : ++index < length)) {
+      var key = props[index];
+      if (iteratee(iterable[key], key, iterable) === false) {
+        break;
       }
-    } else if (!isStrict) {
-      result[result.length] = value;
     }
-  }
-  return result;
-}
-
-/**
- * The base implementation of `_.property` without support for deep paths.
- *
- * @private
- * @param {string} key The key of the property to get.
- * @returns {Function} Returns the new function.
- */
-function baseProperty(key) {
-  return function(object) {
-    return object == null ? undefined : object[key];
+    return object;
   };
 }
 
 /**
- * Gets the "length" property value of `object`.
- *
- * **Note:** This function is used to avoid a [JIT bug](https://bugs.webkit.org/show_bug.cgi?id=142792)
- * that affects Safari on at least iOS 8.1-8.3 ARM64.
+ * Converts `value` to an object if it's not one.
  *
  * @private
- * @param {Object} object The object to query.
- * @returns {*} Returns the "length" value.
+ * @param {*} value The value to process.
+ * @returns {Object} Returns the object.
  */
-var getLength = baseProperty('length');
-
-/**
- * Checks if `value` is array-like.
- *
- * @private
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is array-like, else `false`.
- */
-function isArrayLike(value) {
-  return value != null && isLength(getLength(value));
+function toObject(value) {
+  return isObject(value) ? value : Object(value);
 }
 
 /**
- * Checks if `value` is a valid array-like length.
+ * Checks if `value` is the [language type](https://es5.github.io/#x8) of `Object`.
+ * (e.g. arrays, functions, objects, regexes, `new Number(0)`, and `new String('')`)
  *
- * **Note:** This function is based on [`ToLength`](http://ecma-international.org/ecma-262/6.0/#sec-tolength).
- *
- * @private
+ * @static
+ * @memberOf _
+ * @category Lang
  * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is a valid length, else `false`.
+ * @returns {boolean} Returns `true` if `value` is an object, else `false`.
+ * @example
+ *
+ * _.isObject({});
+ * // => true
+ *
+ * _.isObject([1, 2, 3]);
+ * // => true
+ *
+ * _.isObject(1);
+ * // => false
  */
-function isLength(value) {
-  return typeof value == 'number' && value > -1 && value % 1 == 0 && value <= MAX_SAFE_INTEGER;
+function isObject(value) {
+  // Avoid a V8 JIT bug in Chrome 19-20.
+  // See https://code.google.com/p/v8/issues/detail?id=2291 for more details.
+  var type = typeof value;
+  return !!value && (type == 'object' || type == 'function');
 }
 
-module.exports = baseFlatten;
+module.exports = baseFor;
 
-},{"lodash.isarguments":4,"lodash.isarray":5}],4:[function(require,module,exports){
+},{}],4:[function(require,module,exports){
 /**
  * lodash 3.0.4 (Custom Build) <https://lodash.com/>
  * Build: `lodash modern modularize exports="npm" -o ./`
@@ -273,6 +302,140 @@ function isArguments(value) {
 module.exports = isArguments;
 
 },{}],5:[function(require,module,exports){
+/**
+ * lodash 3.0.8 (Custom Build) <https://lodash.com/>
+ * Build: `lodash modern modularize exports="npm" -o ./`
+ * Copyright 2012-2015 The Dojo Foundation <http://dojofoundation.org/>
+ * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
+ * Copyright 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
+ * Available under MIT license <https://lodash.com/license>
+ */
+var isArguments = require('lodash.isarguments'),
+    isArray = require('lodash.isarray');
+
+/** Used to detect unsigned integer values. */
+var reIsUint = /^\d+$/;
+
+/** Used for native method references. */
+var objectProto = Object.prototype;
+
+/** Used to check objects for own properties. */
+var hasOwnProperty = objectProto.hasOwnProperty;
+
+/**
+ * Used as the [maximum length](https://people.mozilla.org/~jorendorff/es6-draft.html#sec-number.max_safe_integer)
+ * of an array-like value.
+ */
+var MAX_SAFE_INTEGER = 9007199254740991;
+
+/**
+ * Checks if `value` is a valid array-like index.
+ *
+ * @private
+ * @param {*} value The value to check.
+ * @param {number} [length=MAX_SAFE_INTEGER] The upper bounds of a valid index.
+ * @returns {boolean} Returns `true` if `value` is a valid index, else `false`.
+ */
+function isIndex(value, length) {
+  value = (typeof value == 'number' || reIsUint.test(value)) ? +value : -1;
+  length = length == null ? MAX_SAFE_INTEGER : length;
+  return value > -1 && value % 1 == 0 && value < length;
+}
+
+/**
+ * Checks if `value` is a valid array-like length.
+ *
+ * **Note:** This function is based on [`ToLength`](https://people.mozilla.org/~jorendorff/es6-draft.html#sec-tolength).
+ *
+ * @private
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is a valid length, else `false`.
+ */
+function isLength(value) {
+  return typeof value == 'number' && value > -1 && value % 1 == 0 && value <= MAX_SAFE_INTEGER;
+}
+
+/**
+ * Checks if `value` is the [language type](https://es5.github.io/#x8) of `Object`.
+ * (e.g. arrays, functions, objects, regexes, `new Number(0)`, and `new String('')`)
+ *
+ * @static
+ * @memberOf _
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is an object, else `false`.
+ * @example
+ *
+ * _.isObject({});
+ * // => true
+ *
+ * _.isObject([1, 2, 3]);
+ * // => true
+ *
+ * _.isObject(1);
+ * // => false
+ */
+function isObject(value) {
+  // Avoid a V8 JIT bug in Chrome 19-20.
+  // See https://code.google.com/p/v8/issues/detail?id=2291 for more details.
+  var type = typeof value;
+  return !!value && (type == 'object' || type == 'function');
+}
+
+/**
+ * Creates an array of the own and inherited enumerable property names of `object`.
+ *
+ * **Note:** Non-object values are coerced to objects.
+ *
+ * @static
+ * @memberOf _
+ * @category Object
+ * @param {Object} object The object to query.
+ * @returns {Array} Returns the array of property names.
+ * @example
+ *
+ * function Foo() {
+ *   this.a = 1;
+ *   this.b = 2;
+ * }
+ *
+ * Foo.prototype.c = 3;
+ *
+ * _.keysIn(new Foo);
+ * // => ['a', 'b', 'c'] (iteration order is not guaranteed)
+ */
+function keysIn(object) {
+  if (object == null) {
+    return [];
+  }
+  if (!isObject(object)) {
+    object = Object(object);
+  }
+  var length = object.length;
+  length = (length && isLength(length) &&
+    (isArray(object) || isArguments(object)) && length) || 0;
+
+  var Ctor = object.constructor,
+      index = -1,
+      isProto = typeof Ctor == 'function' && Ctor.prototype === object,
+      result = Array(length),
+      skipIndexes = length > 0;
+
+  while (++index < length) {
+    result[index] = (index + '');
+  }
+  for (var key in object) {
+    if (!(skipIndexes && isIndex(key, length)) &&
+        !(key == 'constructor' && (isProto || !hasOwnProperty.call(object, key)))) {
+      result.push(key);
+    }
+  }
+  return result;
+}
+
+module.exports = keysIn;
+
+},{"lodash.isarguments":4,"lodash.isarray":6}],6:[function(require,module,exports){
 /**
  * lodash 3.0.4 (Custom Build) <https://lodash.com/>
  * Build: `lodash modern modularize exports="npm" -o ./`
@@ -454,338 +617,7 @@ function isNative(value) {
 
 module.exports = isArray;
 
-},{}],6:[function(require,module,exports){
-/**
- * lodash 3.2.0 (Custom Build) <https://lodash.com/>
- * Build: `lodash modern modularize exports="npm" -o ./`
- * Copyright 2012-2015 The Dojo Foundation <http://dojofoundation.org/>
- * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
- * Copyright 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
- * Available under MIT license <https://lodash.com/license>
- */
-var baseFor = require('lodash._basefor'),
-    isArguments = require('lodash.isarguments'),
-    keysIn = require('lodash.keysin');
-
-/** `Object#toString` result references. */
-var objectTag = '[object Object]';
-
-/**
- * Checks if `value` is object-like.
- *
- * @private
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is object-like, else `false`.
- */
-function isObjectLike(value) {
-  return !!value && typeof value == 'object';
-}
-
-/** Used for native method references. */
-var objectProto = Object.prototype;
-
-/** Used to check objects for own properties. */
-var hasOwnProperty = objectProto.hasOwnProperty;
-
-/**
- * Used to resolve the [`toStringTag`](http://ecma-international.org/ecma-262/6.0/#sec-object.prototype.tostring)
- * of values.
- */
-var objToString = objectProto.toString;
-
-/**
- * The base implementation of `_.forIn` without support for callback
- * shorthands and `this` binding.
- *
- * @private
- * @param {Object} object The object to iterate over.
- * @param {Function} iteratee The function invoked per iteration.
- * @returns {Object} Returns `object`.
- */
-function baseForIn(object, iteratee) {
-  return baseFor(object, iteratee, keysIn);
-}
-
-/**
- * Checks if `value` is a plain object, that is, an object created by the
- * `Object` constructor or one with a `[[Prototype]]` of `null`.
- *
- * **Note:** This method assumes objects created by the `Object` constructor
- * have no inherited enumerable properties.
- *
- * @static
- * @memberOf _
- * @category Lang
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is a plain object, else `false`.
- * @example
- *
- * function Foo() {
- *   this.a = 1;
- * }
- *
- * _.isPlainObject(new Foo);
- * // => false
- *
- * _.isPlainObject([1, 2, 3]);
- * // => false
- *
- * _.isPlainObject({ 'x': 0, 'y': 0 });
- * // => true
- *
- * _.isPlainObject(Object.create(null));
- * // => true
- */
-function isPlainObject(value) {
-  var Ctor;
-
-  // Exit early for non `Object` objects.
-  if (!(isObjectLike(value) && objToString.call(value) == objectTag && !isArguments(value)) ||
-      (!hasOwnProperty.call(value, 'constructor') && (Ctor = value.constructor, typeof Ctor == 'function' && !(Ctor instanceof Ctor)))) {
-    return false;
-  }
-  // IE < 9 iterates inherited properties before own properties. If the first
-  // iterated property is an object's own property then there are no inherited
-  // enumerable properties.
-  var result;
-  // In most environments an object's own properties are iterated before
-  // its inherited properties. If the last iterated property is an object's
-  // own property then there are no inherited enumerable properties.
-  baseForIn(value, function(subValue, key) {
-    result = key;
-  });
-  return result === undefined || hasOwnProperty.call(value, result);
-}
-
-module.exports = isPlainObject;
-
-},{"lodash._basefor":7,"lodash.isarguments":8,"lodash.keysin":9}],7:[function(require,module,exports){
-/**
- * lodash 3.0.2 (Custom Build) <https://lodash.com/>
- * Build: `lodash modern modularize exports="npm" -o ./`
- * Copyright 2012-2015 The Dojo Foundation <http://dojofoundation.org/>
- * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
- * Copyright 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
- * Available under MIT license <https://lodash.com/license>
- */
-
-/**
- * The base implementation of `baseForIn` and `baseForOwn` which iterates
- * over `object` properties returned by `keysFunc` invoking `iteratee` for
- * each property. Iteratee functions may exit iteration early by explicitly
- * returning `false`.
- *
- * @private
- * @param {Object} object The object to iterate over.
- * @param {Function} iteratee The function invoked per iteration.
- * @param {Function} keysFunc The function to get the keys of `object`.
- * @returns {Object} Returns `object`.
- */
-var baseFor = createBaseFor();
-
-/**
- * Creates a base function for `_.forIn` or `_.forInRight`.
- *
- * @private
- * @param {boolean} [fromRight] Specify iterating from right to left.
- * @returns {Function} Returns the new base function.
- */
-function createBaseFor(fromRight) {
-  return function(object, iteratee, keysFunc) {
-    var iterable = toObject(object),
-        props = keysFunc(object),
-        length = props.length,
-        index = fromRight ? length : -1;
-
-    while ((fromRight ? index-- : ++index < length)) {
-      var key = props[index];
-      if (iteratee(iterable[key], key, iterable) === false) {
-        break;
-      }
-    }
-    return object;
-  };
-}
-
-/**
- * Converts `value` to an object if it's not one.
- *
- * @private
- * @param {*} value The value to process.
- * @returns {Object} Returns the object.
- */
-function toObject(value) {
-  return isObject(value) ? value : Object(value);
-}
-
-/**
- * Checks if `value` is the [language type](https://es5.github.io/#x8) of `Object`.
- * (e.g. arrays, functions, objects, regexes, `new Number(0)`, and `new String('')`)
- *
- * @static
- * @memberOf _
- * @category Lang
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is an object, else `false`.
- * @example
- *
- * _.isObject({});
- * // => true
- *
- * _.isObject([1, 2, 3]);
- * // => true
- *
- * _.isObject(1);
- * // => false
- */
-function isObject(value) {
-  // Avoid a V8 JIT bug in Chrome 19-20.
-  // See https://code.google.com/p/v8/issues/detail?id=2291 for more details.
-  var type = typeof value;
-  return !!value && (type == 'object' || type == 'function');
-}
-
-module.exports = baseFor;
-
-},{}],8:[function(require,module,exports){
-arguments[4][4][0].apply(exports,arguments)
-},{"dup":4}],9:[function(require,module,exports){
-/**
- * lodash 3.0.8 (Custom Build) <https://lodash.com/>
- * Build: `lodash modern modularize exports="npm" -o ./`
- * Copyright 2012-2015 The Dojo Foundation <http://dojofoundation.org/>
- * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
- * Copyright 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
- * Available under MIT license <https://lodash.com/license>
- */
-var isArguments = require('lodash.isarguments'),
-    isArray = require('lodash.isarray');
-
-/** Used to detect unsigned integer values. */
-var reIsUint = /^\d+$/;
-
-/** Used for native method references. */
-var objectProto = Object.prototype;
-
-/** Used to check objects for own properties. */
-var hasOwnProperty = objectProto.hasOwnProperty;
-
-/**
- * Used as the [maximum length](https://people.mozilla.org/~jorendorff/es6-draft.html#sec-number.max_safe_integer)
- * of an array-like value.
- */
-var MAX_SAFE_INTEGER = 9007199254740991;
-
-/**
- * Checks if `value` is a valid array-like index.
- *
- * @private
- * @param {*} value The value to check.
- * @param {number} [length=MAX_SAFE_INTEGER] The upper bounds of a valid index.
- * @returns {boolean} Returns `true` if `value` is a valid index, else `false`.
- */
-function isIndex(value, length) {
-  value = (typeof value == 'number' || reIsUint.test(value)) ? +value : -1;
-  length = length == null ? MAX_SAFE_INTEGER : length;
-  return value > -1 && value % 1 == 0 && value < length;
-}
-
-/**
- * Checks if `value` is a valid array-like length.
- *
- * **Note:** This function is based on [`ToLength`](https://people.mozilla.org/~jorendorff/es6-draft.html#sec-tolength).
- *
- * @private
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is a valid length, else `false`.
- */
-function isLength(value) {
-  return typeof value == 'number' && value > -1 && value % 1 == 0 && value <= MAX_SAFE_INTEGER;
-}
-
-/**
- * Checks if `value` is the [language type](https://es5.github.io/#x8) of `Object`.
- * (e.g. arrays, functions, objects, regexes, `new Number(0)`, and `new String('')`)
- *
- * @static
- * @memberOf _
- * @category Lang
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is an object, else `false`.
- * @example
- *
- * _.isObject({});
- * // => true
- *
- * _.isObject([1, 2, 3]);
- * // => true
- *
- * _.isObject(1);
- * // => false
- */
-function isObject(value) {
-  // Avoid a V8 JIT bug in Chrome 19-20.
-  // See https://code.google.com/p/v8/issues/detail?id=2291 for more details.
-  var type = typeof value;
-  return !!value && (type == 'object' || type == 'function');
-}
-
-/**
- * Creates an array of the own and inherited enumerable property names of `object`.
- *
- * **Note:** Non-object values are coerced to objects.
- *
- * @static
- * @memberOf _
- * @category Object
- * @param {Object} object The object to query.
- * @returns {Array} Returns the array of property names.
- * @example
- *
- * function Foo() {
- *   this.a = 1;
- *   this.b = 2;
- * }
- *
- * Foo.prototype.c = 3;
- *
- * _.keysIn(new Foo);
- * // => ['a', 'b', 'c'] (iteration order is not guaranteed)
- */
-function keysIn(object) {
-  if (object == null) {
-    return [];
-  }
-  if (!isObject(object)) {
-    object = Object(object);
-  }
-  var length = object.length;
-  length = (length && isLength(length) &&
-    (isArray(object) || isArguments(object)) && length) || 0;
-
-  var Ctor = object.constructor,
-      index = -1,
-      isProto = typeof Ctor == 'function' && Ctor.prototype === object,
-      result = Array(length),
-      skipIndexes = length > 0;
-
-  while (++index < length) {
-    result[index] = (index + '');
-  }
-  for (var key in object) {
-    if (!(skipIndexes && isIndex(key, length)) &&
-        !(key == 'constructor' && (isProto || !hasOwnProperty.call(object, key)))) {
-      result.push(key);
-    }
-  }
-  return result;
-}
-
-module.exports = keysIn;
-
-},{"lodash.isarguments":8,"lodash.isarray":10}],10:[function(require,module,exports){
-arguments[4][5][0].apply(exports,arguments)
-},{"dup":5}],11:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 /**
  * lodash 3.0.0 (Custom Build) <https://lodash.com/>
  * Build: `lodash modern modularize exports="npm" -o ./`
@@ -823,7 +655,7 @@ var kebabCase = createCompounder(function(result, word, index) {
 
 module.exports = kebabCase;
 
-},{"lodash._createcompounder":12}],12:[function(require,module,exports){
+},{"lodash._createcompounder":8}],8:[function(require,module,exports){
 /**
  * lodash 3.0.0 (Custom Build) <https://lodash.com/>
  * Build: `lodash modern modularize exports="npm" -o ./`
@@ -859,7 +691,7 @@ function createCompounder(callback) {
 
 module.exports = createCompounder;
 
-},{"lodash.deburr":13,"lodash.words":15}],13:[function(require,module,exports){
+},{"lodash.deburr":9,"lodash.words":11}],9:[function(require,module,exports){
 /**
  * lodash 3.0.2 (Custom Build) <https://lodash.com/>
  * Build: `lodash modern modularize exports="npm" -o ./`
@@ -929,7 +761,7 @@ function deburr(string) {
 
 module.exports = deburr;
 
-},{"lodash._basetostring":14}],14:[function(require,module,exports){
+},{"lodash._basetostring":10}],10:[function(require,module,exports){
 /**
  * lodash 3.0.1 (Custom Build) <https://lodash.com/>
  * Build: `lodash modern modularize exports="npm" -o ./`
@@ -953,7 +785,7 @@ function baseToString(value) {
 
 module.exports = baseToString;
 
-},{}],15:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 /**
  * lodash 3.0.2 (Custom Build) <https://lodash.com/>
  * Build: `lodash modern modularize exports="npm" -o ./`
@@ -1001,9 +833,9 @@ function words(string, pattern, guard) {
 
 module.exports = words;
 
-},{"lodash._basetostring":16,"lodash._isiterateecall":17}],16:[function(require,module,exports){
-arguments[4][14][0].apply(exports,arguments)
-},{"dup":14}],17:[function(require,module,exports){
+},{"lodash._basetostring":12,"lodash._isiterateecall":13}],12:[function(require,module,exports){
+arguments[4][10][0].apply(exports,arguments)
+},{"dup":10}],13:[function(require,module,exports){
 /**
  * lodash 3.0.9 (Custom Build) <https://lodash.com/>
  * Build: `lodash modern modularize exports="npm" -o ./`
@@ -1137,22 +969,22 @@ function isObject(value) {
 
 module.exports = isIterateeCall;
 
-},{}],18:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 var createElement = require("./vdom/create-element.js")
 
 module.exports = createElement
 
-},{"./vdom/create-element.js":30}],19:[function(require,module,exports){
+},{"./vdom/create-element.js":26}],15:[function(require,module,exports){
 var diff = require("./vtree/diff.js")
 
 module.exports = diff
 
-},{"./vtree/diff.js":51}],20:[function(require,module,exports){
+},{"./vtree/diff.js":47}],16:[function(require,module,exports){
 var h = require("./virtual-hyperscript/index.js")
 
 module.exports = h
 
-},{"./virtual-hyperscript/index.js":38}],21:[function(require,module,exports){
+},{"./virtual-hyperscript/index.js":34}],17:[function(require,module,exports){
 /*!
  * Cross-Browser Split 1.1.1
  * Copyright 2007-2012 Steven Levithan <stevenlevithan.com>
@@ -1260,7 +1092,7 @@ module.exports = (function split(undef) {
   return self;
 })();
 
-},{}],22:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 'use strict';
 
 var OneVersionConstraint = require('individual/one-version');
@@ -1282,7 +1114,7 @@ function EvStore(elem) {
     return hash;
 }
 
-},{"individual/one-version":24}],23:[function(require,module,exports){
+},{"individual/one-version":20}],19:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -1306,7 +1138,7 @@ function Individual(key, value) {
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{}],24:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 'use strict';
 
 var Individual = require('./index.js');
@@ -1330,7 +1162,7 @@ function OneVersion(moduleName, version, defaultValue) {
     return Individual(key, defaultValue);
 }
 
-},{"./index.js":23}],25:[function(require,module,exports){
+},{"./index.js":19}],21:[function(require,module,exports){
 (function (global){
 var topLevel = typeof global !== 'undefined' ? global :
     typeof window !== 'undefined' ? window : {}
@@ -1350,14 +1182,14 @@ if (typeof document !== 'undefined') {
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"min-document":1}],26:[function(require,module,exports){
+},{"min-document":1}],22:[function(require,module,exports){
 "use strict";
 
 module.exports = function isObject(x) {
 	return typeof x === "object" && x !== null;
 };
 
-},{}],27:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 var nativeIsArray = Array.isArray
 var toString = Object.prototype.toString
 
@@ -1367,12 +1199,12 @@ function isArray(obj) {
     return toString.call(obj) === "[object Array]"
 }
 
-},{}],28:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 var patch = require("./vdom/patch.js")
 
 module.exports = patch
 
-},{"./vdom/patch.js":33}],29:[function(require,module,exports){
+},{"./vdom/patch.js":29}],25:[function(require,module,exports){
 var isObject = require("is-object")
 var isHook = require("../vnode/is-vhook.js")
 
@@ -1471,7 +1303,7 @@ function getPrototype(value) {
     }
 }
 
-},{"../vnode/is-vhook.js":42,"is-object":26}],30:[function(require,module,exports){
+},{"../vnode/is-vhook.js":38,"is-object":22}],26:[function(require,module,exports){
 var document = require("global/document")
 
 var applyProperties = require("./apply-properties")
@@ -1519,7 +1351,7 @@ function createElement(vnode, opts) {
     return node
 }
 
-},{"../vnode/handle-thunk.js":40,"../vnode/is-vnode.js":43,"../vnode/is-vtext.js":44,"../vnode/is-widget.js":45,"./apply-properties":29,"global/document":25}],31:[function(require,module,exports){
+},{"../vnode/handle-thunk.js":36,"../vnode/is-vnode.js":39,"../vnode/is-vtext.js":40,"../vnode/is-widget.js":41,"./apply-properties":25,"global/document":21}],27:[function(require,module,exports){
 // Maps a virtual DOM tree onto a real DOM tree in an efficient manner.
 // We don't want to read all of the DOM nodes in the tree so we use
 // the in-order tree indexing to eliminate recursion down certain branches.
@@ -1606,7 +1438,7 @@ function ascending(a, b) {
     return a > b ? 1 : -1
 }
 
-},{}],32:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
 var applyProperties = require("./apply-properties")
 
 var isWidget = require("../vnode/is-widget.js")
@@ -1759,7 +1591,7 @@ function replaceRoot(oldRoot, newRoot) {
     return newRoot;
 }
 
-},{"../vnode/is-widget.js":45,"../vnode/vpatch.js":48,"./apply-properties":29,"./update-widget":34}],33:[function(require,module,exports){
+},{"../vnode/is-widget.js":41,"../vnode/vpatch.js":44,"./apply-properties":25,"./update-widget":30}],29:[function(require,module,exports){
 var document = require("global/document")
 var isArray = require("x-is-array")
 
@@ -1841,7 +1673,7 @@ function patchIndices(patches) {
     return indices
 }
 
-},{"./create-element":30,"./dom-index":31,"./patch-op":32,"global/document":25,"x-is-array":27}],34:[function(require,module,exports){
+},{"./create-element":26,"./dom-index":27,"./patch-op":28,"global/document":21,"x-is-array":23}],30:[function(require,module,exports){
 var isWidget = require("../vnode/is-widget.js")
 
 module.exports = updateWidget
@@ -1858,7 +1690,7 @@ function updateWidget(a, b) {
     return false
 }
 
-},{"../vnode/is-widget.js":45}],35:[function(require,module,exports){
+},{"../vnode/is-widget.js":41}],31:[function(require,module,exports){
 'use strict';
 
 module.exports = AttributeHook;
@@ -1895,7 +1727,7 @@ AttributeHook.prototype.unhook = function (node, prop, next) {
 
 AttributeHook.prototype.type = 'AttributeHook';
 
-},{}],36:[function(require,module,exports){
+},{}],32:[function(require,module,exports){
 'use strict';
 
 var EvStore = require('ev-store');
@@ -1924,7 +1756,7 @@ EvHook.prototype.unhook = function(node, propertyName) {
     es[propName] = undefined;
 };
 
-},{"ev-store":22}],37:[function(require,module,exports){
+},{"ev-store":18}],33:[function(require,module,exports){
 'use strict';
 
 module.exports = SoftSetHook;
@@ -1943,7 +1775,7 @@ SoftSetHook.prototype.hook = function (node, propertyName) {
     }
 };
 
-},{}],38:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 'use strict';
 
 var isArray = require('x-is-array');
@@ -2082,7 +1914,7 @@ function errorString(obj) {
     }
 }
 
-},{"../vnode/is-thunk":41,"../vnode/is-vhook":42,"../vnode/is-vnode":43,"../vnode/is-vtext":44,"../vnode/is-widget":45,"../vnode/vnode.js":47,"../vnode/vtext.js":49,"./hooks/ev-hook.js":36,"./hooks/soft-set-hook.js":37,"./parse-tag.js":39,"x-is-array":27}],39:[function(require,module,exports){
+},{"../vnode/is-thunk":37,"../vnode/is-vhook":38,"../vnode/is-vnode":39,"../vnode/is-vtext":40,"../vnode/is-widget":41,"../vnode/vnode.js":43,"../vnode/vtext.js":45,"./hooks/ev-hook.js":32,"./hooks/soft-set-hook.js":33,"./parse-tag.js":35,"x-is-array":23}],35:[function(require,module,exports){
 'use strict';
 
 var split = require('browser-split');
@@ -2138,7 +1970,7 @@ function parseTag(tag, props) {
     return props.namespace ? tagName : tagName.toUpperCase();
 }
 
-},{"browser-split":21}],40:[function(require,module,exports){
+},{"browser-split":17}],36:[function(require,module,exports){
 var isVNode = require("./is-vnode")
 var isVText = require("./is-vtext")
 var isWidget = require("./is-widget")
@@ -2180,14 +2012,14 @@ function renderThunk(thunk, previous) {
     return renderedThunk
 }
 
-},{"./is-thunk":41,"./is-vnode":43,"./is-vtext":44,"./is-widget":45}],41:[function(require,module,exports){
+},{"./is-thunk":37,"./is-vnode":39,"./is-vtext":40,"./is-widget":41}],37:[function(require,module,exports){
 module.exports = isThunk
 
 function isThunk(t) {
     return t && t.type === "Thunk"
 }
 
-},{}],42:[function(require,module,exports){
+},{}],38:[function(require,module,exports){
 module.exports = isHook
 
 function isHook(hook) {
@@ -2196,7 +2028,7 @@ function isHook(hook) {
        typeof hook.unhook === "function" && !hook.hasOwnProperty("unhook"))
 }
 
-},{}],43:[function(require,module,exports){
+},{}],39:[function(require,module,exports){
 var version = require("./version")
 
 module.exports = isVirtualNode
@@ -2205,7 +2037,7 @@ function isVirtualNode(x) {
     return x && x.type === "VirtualNode" && x.version === version
 }
 
-},{"./version":46}],44:[function(require,module,exports){
+},{"./version":42}],40:[function(require,module,exports){
 var version = require("./version")
 
 module.exports = isVirtualText
@@ -2214,17 +2046,17 @@ function isVirtualText(x) {
     return x && x.type === "VirtualText" && x.version === version
 }
 
-},{"./version":46}],45:[function(require,module,exports){
+},{"./version":42}],41:[function(require,module,exports){
 module.exports = isWidget
 
 function isWidget(w) {
     return w && w.type === "Widget"
 }
 
-},{}],46:[function(require,module,exports){
+},{}],42:[function(require,module,exports){
 module.exports = "2"
 
-},{}],47:[function(require,module,exports){
+},{}],43:[function(require,module,exports){
 var version = require("./version")
 var isVNode = require("./is-vnode")
 var isWidget = require("./is-widget")
@@ -2298,7 +2130,7 @@ function VirtualNode(tagName, properties, children, key, namespace) {
 VirtualNode.prototype.version = version
 VirtualNode.prototype.type = "VirtualNode"
 
-},{"./is-thunk":41,"./is-vhook":42,"./is-vnode":43,"./is-widget":45,"./version":46}],48:[function(require,module,exports){
+},{"./is-thunk":37,"./is-vhook":38,"./is-vnode":39,"./is-widget":41,"./version":42}],44:[function(require,module,exports){
 var version = require("./version")
 
 VirtualPatch.NONE = 0
@@ -2322,7 +2154,7 @@ function VirtualPatch(type, vNode, patch) {
 VirtualPatch.prototype.version = version
 VirtualPatch.prototype.type = "VirtualPatch"
 
-},{"./version":46}],49:[function(require,module,exports){
+},{"./version":42}],45:[function(require,module,exports){
 var version = require("./version")
 
 module.exports = VirtualText
@@ -2334,7 +2166,7 @@ function VirtualText(text) {
 VirtualText.prototype.version = version
 VirtualText.prototype.type = "VirtualText"
 
-},{"./version":46}],50:[function(require,module,exports){
+},{"./version":42}],46:[function(require,module,exports){
 var isObject = require("is-object")
 var isHook = require("../vnode/is-vhook")
 
@@ -2394,7 +2226,7 @@ function getPrototype(value) {
   }
 }
 
-},{"../vnode/is-vhook":42,"is-object":26}],51:[function(require,module,exports){
+},{"../vnode/is-vhook":38,"is-object":22}],47:[function(require,module,exports){
 var isArray = require("x-is-array")
 
 var VPatch = require("../vnode/vpatch")
@@ -2823,7 +2655,7 @@ function appendPatch(apply, patch) {
     }
 }
 
-},{"../vnode/handle-thunk":40,"../vnode/is-thunk":41,"../vnode/is-vnode":43,"../vnode/is-vtext":44,"../vnode/is-widget":45,"../vnode/vpatch":48,"./diff-props":50,"x-is-array":27}],52:[function(require,module,exports){
+},{"../vnode/handle-thunk":36,"../vnode/is-thunk":37,"../vnode/is-vnode":39,"../vnode/is-vtext":40,"../vnode/is-widget":41,"../vnode/vpatch":44,"./diff-props":46,"x-is-array":23}],48:[function(require,module,exports){
 (function (global){
 "use strict";
 
@@ -2845,7 +2677,7 @@ module.exports = global.CustomEvent || (function () {
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{}],53:[function(require,module,exports){
+},{}],49:[function(require,module,exports){
 "use strict";
 
 function CustomEventHook(name, fn) {
@@ -2867,7 +2699,7 @@ CustomEventHook.prototype = {
 
 module.exports = CustomEventHook;
 
-},{}],54:[function(require,module,exports){
+},{}],50:[function(require,module,exports){
 "use strict";
 
 var kababCase = require("lodash.kebabcase");
@@ -3126,7 +2958,7 @@ while (++i < length) {
 
 module.exports = propertiesWithInfo;
 
-},{"lodash.kebabcase":11}],55:[function(require,module,exports){
+},{"lodash.kebabcase":7}],51:[function(require,module,exports){
 (function (global){
 "use strict";
 
@@ -3139,9 +2971,9 @@ var create = require("virtual-dom/create-element");
 var diff = require("virtual-dom/diff");
 var h = require("virtual-dom/h");
 var patch = require("virtual-dom/patch");
-var flatten = require("lodash.flattendeep");
 var wrapObject = require("./wrapObject");
 var transformProperties = require("./transformProperties");
+var transformChildren = require("./transformChildren");
 var isFunction = require("./isFunction");
 var CustomEvent = require("./CustomEvent");
 
@@ -3182,16 +3014,14 @@ YolkBaseComponent.prototype = {
 
     this._childSubject = new Rx.BehaviorSubject(this._children);
 
-    var propObservable = wrapObject(propsSubject).map(function (props) {
-      return transformProperties(_this.id, props);
-    });
-    var childObservable = this._childSubject.flatMapLatest(wrapObject);
+    var propObservable = wrapObject(propsSubject).map(transformProperties);
+    var childObservable = this._childSubject.flatMapLatest(wrapObject).flatMapLatest(transformChildren);
 
     var vNode = h(this.id);
     this.node = create(vNode);
 
     this._patchSubscription = Rx.Observable.combineLatest(propObservable, childObservable, function (p, c) {
-      return h(_this.id, p, flatten(c));
+      return h(_this.id, p, c);
     }).scan(function (_ref, next) {
       var _ref2 = _slicedToArray(_ref, 1);
 
@@ -3207,7 +3037,7 @@ YolkBaseComponent.prototype = {
       throw new Error(err.message);
     });
 
-    isFunction(this._props.onMount) && this.onMount();
+    this.emitMount();
 
     return this.node;
   },
@@ -3230,7 +3060,7 @@ YolkBaseComponent.prototype = {
   },
 
   destroy: function destroy() {
-    this.onUnmount();
+    this.emitUnmount();
     this._patchSubscription.dispose();
 
     var children = this._children;
@@ -3243,14 +3073,15 @@ YolkBaseComponent.prototype = {
     }
   },
 
-  onUnmount: function onUnmount() {
+  emitUnmount: function emitUnmount() {
     var _props2 = this._props;
     var onMount = _props2.onMount;
     var onUnmount = _props2.onUnmount;
 
+    var event = new CustomEvent("unmount");
+    this.node.dispatchEvent(event);
+
     if (isFunction(onUnmount)) {
-      var _event = new CustomEvent("unmount");
-      this.node.dispatchEvent(_event);
       this.node.removeEventListener("unmount", onUnmount);
     }
 
@@ -3259,15 +3090,15 @@ YolkBaseComponent.prototype = {
     }
   },
 
-  onMount: function onMount() {
+  emitMount: function emitMount() {
     var _this2 = this;
 
     if (this.node.parentNode) {
-      var _event2 = new CustomEvent("mount");
-      this.node.dispatchEvent(_event2);
+      var _event = new CustomEvent("mount");
+      this.node.dispatchEvent(_event);
     } else {
       setTimeout(function () {
-        return _this2.onMount();
+        return _this2.emitMount();
       }, 0);
     }
   }
@@ -3277,7 +3108,7 @@ module.exports = YolkBaseComponent;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"./CustomEvent":52,"./isFunction":66,"./transformProperties":70,"./wrapObject":73,"lodash.flattendeep":2,"virtual-dom/create-element":18,"virtual-dom/diff":19,"virtual-dom/h":20,"virtual-dom/patch":28}],56:[function(require,module,exports){
+},{"./CustomEvent":48,"./isFunction":64,"./transformChildren":68,"./transformProperties":69,"./wrapObject":72,"virtual-dom/create-element":14,"virtual-dom/diff":15,"virtual-dom/h":16,"virtual-dom/patch":24}],52:[function(require,module,exports){
 (function (global){
 "use strict";
 
@@ -3370,7 +3201,7 @@ module.exports = YolkCompositeComponent;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"./YolkCompositeFunctionWrapper":57,"./wrapObject":73,"virtual-dom/create-element":18}],57:[function(require,module,exports){
+},{"./YolkCompositeFunctionWrapper":53,"./wrapObject":72,"virtual-dom/create-element":14}],53:[function(require,module,exports){
 "use strict";
 
 var _createEventHandler = require("./createEventHandler");
@@ -3414,7 +3245,7 @@ YolkCompositeFunctionWrapper.create = function (fn, props, children) {
 
 module.exports = YolkCompositeFunctionWrapper;
 
-},{"./createEventHandler":62,"./isComponent":63}],58:[function(require,module,exports){
+},{"./createEventHandler":58,"./isComponent":61}],54:[function(require,module,exports){
 "use strict";
 
 var create = require("virtual-dom/create-element");
@@ -3464,7 +3295,7 @@ YolkRootComponent.render = function render(instance, node) {
 
 module.exports = YolkRootComponent;
 
-},{"virtual-dom/create-element":18,"virtual-dom/diff":19,"virtual-dom/patch":28}],59:[function(require,module,exports){
+},{"virtual-dom/create-element":14,"virtual-dom/diff":15,"virtual-dom/patch":24}],55:[function(require,module,exports){
 /* eslint-disable guard-for-in */
 
 "use strict";
@@ -3488,7 +3319,7 @@ module.exports = function addProperties(base) {
   return base;
 };
 
-},{}],60:[function(require,module,exports){
+},{}],56:[function(require,module,exports){
 "use strict";
 
 var isDefined = require("./isDefined");
@@ -3508,7 +3339,7 @@ module.exports = function compact(arr) {
   return newArr;
 };
 
-},{"./isDefined":64}],61:[function(require,module,exports){
+},{"./isDefined":62}],57:[function(require,module,exports){
 "use strict";
 
 var YolkCompositeComponent = require("./YolkCompositeComponent");
@@ -3529,7 +3360,7 @@ module.exports = function createElement(tag, props) {
   return new YolkCompositeComponent(tag, _props, children);
 };
 
-},{"./YolkBaseComponent":55,"./YolkCompositeComponent":56,"./isString":69}],62:[function(require,module,exports){
+},{"./YolkBaseComponent":51,"./YolkCompositeComponent":52,"./isString":67}],58:[function(require,module,exports){
 (function (global){
 "use strict";
 
@@ -3570,7 +3401,37 @@ module.exports = function createEventHandler(mapFn, init) {
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"./addProperties":59,"./isDefined":64,"./isFunction":66}],63:[function(require,module,exports){
+},{"./addProperties":55,"./isDefined":62,"./isFunction":64}],59:[function(require,module,exports){
+"use strict";
+
+module.exports = function flatten(arr) {
+  var length = arr.length;
+  var result = [];
+  var index = -1;
+
+  while (++index < length) {
+    var member = arr[index];
+
+    if (Array.isArray(member)) {
+      result = result.concat(flatten(member));
+    } else {
+      result.push(member);
+    }
+  }
+
+  return result;
+};
+
+},{}],60:[function(require,module,exports){
+"use strict";
+
+var isFunction = require("./isFunction");
+
+module.exports = function hasToJS(obj) {
+  return !!obj && isFunction(obj.toJS);
+};
+
+},{"./isFunction":64}],61:[function(require,module,exports){
 "use strict";
 
 var isThunk = require("virtual-dom/vnode/is-thunk");
@@ -3582,35 +3443,35 @@ module.exports = function isComponent(obj) {
   return !!obj && (isWidget(obj) || isThunk(obj) || isVNode(obj) || isVText(obj));
 };
 
-},{"virtual-dom/vnode/is-thunk":41,"virtual-dom/vnode/is-vnode":43,"virtual-dom/vnode/is-vtext":44,"virtual-dom/vnode/is-widget":45}],64:[function(require,module,exports){
+},{"virtual-dom/vnode/is-thunk":37,"virtual-dom/vnode/is-vnode":39,"virtual-dom/vnode/is-vtext":40,"virtual-dom/vnode/is-widget":41}],62:[function(require,module,exports){
 "use strict";
 
 module.exports = function isDefined(obj) {
   return typeof obj !== "undefined" && obj !== null;
 };
 
-},{}],65:[function(require,module,exports){
+},{}],63:[function(require,module,exports){
 "use strict";
 
 module.exports = function isEmpty(obj) {
   return Object.keys(obj).length === 0;
 };
 
-},{}],66:[function(require,module,exports){
+},{}],64:[function(require,module,exports){
 "use strict";
 
 module.exports = function isFunction(obj) {
   return Object.prototype.toString.call(obj) === "[object Function]";
 };
 
-},{}],67:[function(require,module,exports){
+},{}],65:[function(require,module,exports){
 "use strict";
 
 module.exports = function isNumber(num) {
   return typeof num === "number" || num instanceof Number;
 };
 
-},{}],68:[function(require,module,exports){
+},{}],66:[function(require,module,exports){
 (function (global){
 "use strict";
 
@@ -3622,21 +3483,55 @@ module.exports = function isObservable(obj) {
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{}],69:[function(require,module,exports){
+},{}],67:[function(require,module,exports){
 "use strict";
 
 module.exports = function isString(str) {
   return typeof str === "string" || str instanceof String;
 };
 
-},{}],70:[function(require,module,exports){
+},{}],68:[function(require,module,exports){
+"use strict";
+
+var flatten = require("./flatten");
+var wrapObject = require("./wrapObject");
+var hasToJS = require("./hasToJS");
+
+function toJSify(children) {
+  var _children = flatten([children]);
+  var length = _children.length;
+  var mustFlatten = false;
+  var i = -1;
+  var arr = Array(length);
+
+  while (++i < length) {
+    var child = _children[i];
+    var newChild = hasToJS(child) ? child.toJS() : child;
+    arr[i] = newChild;
+    mustFlatten = mustFlatten || child !== newChild;
+  }
+
+  if (mustFlatten) {
+    arr = flatten(arr);
+  }
+
+  return arr;
+}
+
+module.exports = function transformChildren(children) {
+  var _children = toJSify(children);
+  return wrapObject(_children);
+};
+
+},{"./flatten":59,"./hasToJS":60,"./wrapObject":72}],69:[function(require,module,exports){
 "use strict";
 
 var DOMProperties = require("./DOMProperties");
 var transformStyle = require("./transformStyle");
 var transformProperty = require("./transformProperty");
+var hasToJS = require("./hasToJS");
 
-module.exports = function transformProperties(tag, props) {
+module.exports = function transformProperties(props) {
   var keys = Object.keys(props);
   var length = keys.length;
   var newProps = { attributes: {} };
@@ -3645,9 +3540,10 @@ module.exports = function transformProperties(tag, props) {
   while (++i < length) {
     var key = keys[i];
     var value = props[key];
+    value = hasToJS(value) ? value.toJS() : value;
 
     if (key === "style") {
-      transformStyle(newProps, props.style);
+      transformStyle(newProps, value);
     } else {
       transformProperty(newProps, key, value, DOMProperties[key]);
     }
@@ -3656,7 +3552,7 @@ module.exports = function transformProperties(tag, props) {
   return newProps;
 };
 
-},{"./DOMProperties":54,"./transformProperty":71,"./transformStyle":72}],71:[function(require,module,exports){
+},{"./DOMProperties":50,"./hasToJS":60,"./transformProperty":70,"./transformStyle":71}],70:[function(require,module,exports){
 "use strict";
 
 var kababCase = require("lodash.kebabcase");
@@ -3677,14 +3573,15 @@ var EMPTY_PROP = {
   hasBooleanValue: false
 };
 
-module.exports = function transformProperty(props, key, value, property) {
-  var _property = property || EMPTY_PROP;
+module.exports = function transformProperty(props, key, value) {
+  var property = arguments.length <= 3 || arguments[3] === undefined ? EMPTY_PROP : arguments[3];
+
   var isDataAttribute = false;
   var _value = value;
   var _key = undefined;
 
-  if (_property.isStandard) {
-    _key = _property.computed;
+  if (property.isStandard) {
+    _key = property.computed;
   } else {
     isDataAttribute = IS_DATA_MATCHER.test(key);
 
@@ -3693,28 +3590,28 @@ module.exports = function transformProperty(props, key, value, property) {
     }
   }
 
-  if (_property.canBeArrayOfStrings && Array.isArray(value)) {
+  if (property.canBeArrayOfStrings && Array.isArray(value)) {
     _value = compact(value).join(" ");
-  } else if (_property.hasBooleanValue && !value) {
+  } else if (property.hasBooleanValue && !value) {
     return props;
   }
 
-  if (_property.isAttribute || isDataAttribute) {
+  if (property.isAttribute || isDataAttribute) {
     props.attributes[_key] = _value;
-  } else if (_property.usePropertyHook) {
+  } else if (property.usePropertyHook) {
     props[_key] = new SoftSetHook(_value);
-  } else if (_property.useCustomEventHook) {
+  } else if (property.useCustomEventHook) {
     props[_key] = new CustomEventHook(_key, _value);
-  } else if (_property.useAttributeHook) {
+  } else if (property.useAttributeHook) {
     props[_key] = new AttributeHook(_value);
-  } else if (_property.isStandard) {
+  } else if (property.isStandard) {
     props[_key] = _value;
   }
 
   return props;
 };
 
-},{"./CustomEventHook":53,"./compact":60,"lodash.kebabcase":11,"virtual-dom/virtual-hyperscript/hooks/attribute-hook":35,"virtual-dom/virtual-hyperscript/hooks/soft-set-hook":37}],72:[function(require,module,exports){
+},{"./CustomEventHook":49,"./compact":56,"lodash.kebabcase":7,"virtual-dom/virtual-hyperscript/hooks/attribute-hook":31,"virtual-dom/virtual-hyperscript/hooks/soft-set-hook":33}],71:[function(require,module,exports){
 "use strict";
 
 var isNumber = require("./isNumber");
@@ -3774,7 +3671,7 @@ module.exports = function transformStyle(props, style) {
   return props;
 };
 
-},{"./isNumber":67}],73:[function(require,module,exports){
+},{"./isNumber":65}],72:[function(require,module,exports){
 (function (global){
 "use strict";
 
@@ -3782,49 +3679,52 @@ var Rx = (typeof window !== "undefined" ? window['Rx'] : typeof global !== "unde
 var isPlainObject = require("lodash.isplainobject");
 var isObservable = require("./isObservable");
 var isEmpty = require("./isEmpty");
+var hasToJS = require("./hasToJS");
 
 module.exports = function wrapObject(obj) {
   if (isObservable(obj)) {
     return obj.flatMapLatest(wrapObject);
+  } else if (hasToJS(obj)) {
+    // fall through if `toJS` is defined
   } else if (isPlainObject(obj) && !isEmpty(obj)) {
-    var _ret = (function () {
-      var keys = Object.keys(obj);
-      var length = keys.length;
-      var values = Array(length);
-      var index = -1;
+      var _ret = (function () {
+        var keys = Object.keys(obj);
+        var length = keys.length;
+        var values = Array(length);
+        var index = -1;
 
-      while (++index < length) {
-        var key = keys[index];
-        values[index] = wrapObject(obj[key]);
-      }
+        while (++index < length) {
+          var key = keys[index];
+          values[index] = wrapObject(obj[key]);
+        }
 
-      return {
-        v: Rx.Observable.combineLatest(values, function combineLatest() {
-          var newObj = {};
-          index = -1;
+        return {
+          v: Rx.Observable.combineLatest(values, function combineLatest() {
+            var newObj = {};
+            index = -1;
 
-          while (++index < length) {
-            var key = keys[index];
-            newObj[key] = arguments[index];
-          }
+            while (++index < length) {
+              var key = keys[index];
+              newObj[key] = arguments[index];
+            }
 
-          return newObj;
-        })
-      };
-    })();
+            return newObj;
+          })
+        };
+      })();
 
-    if (typeof _ret === "object") return _ret.v;
-  } else if (Array.isArray(obj) && obj.length) {
-    var _obj = obj.map(wrapObject);
-    return Rx.Observable.combineLatest(_obj);
-  }
+      if (typeof _ret === "object") return _ret.v;
+    } else if (Array.isArray(obj) && obj.length) {
+      var _obj = obj.map(wrapObject);
+      return Rx.Observable.combineLatest(_obj);
+    }
 
   return Rx.Observable.just(obj);
 };
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"./isEmpty":65,"./isObservable":68,"lodash.isplainobject":6}],74:[function(require,module,exports){
+},{"./hasToJS":60,"./isEmpty":63,"./isObservable":66,"lodash.isplainobject":2}],73:[function(require,module,exports){
 (function (global){
 "use strict";
 
@@ -3842,6 +3742,6 @@ module.exports = new Yolk();
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"./YolkRootComponent":58,"./createElement":61,"./createEventHandler":62}]},{},[74])(74)
+},{"./YolkRootComponent":54,"./createElement":57,"./createEventHandler":58}]},{},[73])(73)
 });
 //# sourceMappingURL=yolk.js.map
