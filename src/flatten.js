@@ -4,7 +4,7 @@ module.exports = function flatten (arr) {
   let index = -1
 
   while (++index < length) {
-    var member = arr[index]
+    const member = arr[index]
 
     if (Array.isArray(member)) {
       result = result.concat(flatten(member))
