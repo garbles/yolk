@@ -6,6 +6,7 @@ const patch = require(`virtual-dom/patch`)
 const flatten = require(`lodash.flattendeep`)
 const wrapObject = require(`./wrapObject`)
 const transformProperties = require(`./transformProperties`)
+const transformChildren = require(`./transformChildren`)
 const isFunction = require(`./isFunction`)
 const CustomEvent = require(`./CustomEvent`)
 
@@ -44,8 +45,8 @@ YolkBaseComponent.prototype = {
 
     this._childSubject = new Rx.BehaviorSubject(this._children)
 
-    const propObservable = wrapObject(propsSubject).map(props => transformProperties(this.id, props))
-    const childObservable = this._childSubject.flatMapLatest(wrapObject)
+    const propObservable = wrapObject(propsSubject).map(transformProperties)
+    const childObservable = this._childSubject.flatMapLatest(wrapObject).flatMapLatest(transformChildren)
 
     const vNode = h(this.id)
     this.node = create(vNode)
@@ -59,7 +60,7 @@ YolkBaseComponent.prototype = {
         (err) => {throw new Error(err.message)}
       )
 
-    isFunction(this._props.onMount) && this.onMount()
+    this.emitMount()
 
     return this.node
   },
@@ -82,7 +83,7 @@ YolkBaseComponent.prototype = {
   },
 
   destroy () {
-    this.onUnmount()
+    this.emitUnmount()
     this._patchSubscription.dispose()
 
     const children = this._children
@@ -95,12 +96,12 @@ YolkBaseComponent.prototype = {
     }
   },
 
-  onUnmount () {
+  emitUnmount () {
     const {onMount, onUnmount} = this._props
+    const event = new CustomEvent(`unmount`)
+    this.node.dispatchEvent(event)
 
     if (isFunction(onUnmount)) {
-      const event = new CustomEvent(`unmount`)
-      this.node.dispatchEvent(event)
       this.node.removeEventListener(`unmount`, onUnmount)
     }
 
@@ -109,12 +110,12 @@ YolkBaseComponent.prototype = {
     }
   },
 
-  onMount () {
+  emitMount () {
     if (this.node.parentNode) {
       const event = new CustomEvent(`mount`)
       this.node.dispatchEvent(event)
     } else {
-      setTimeout(() => this.onMount(), 0)
+      setTimeout(() => this.emitMount(), 0)
     }
   },
 }
