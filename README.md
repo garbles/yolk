@@ -141,6 +141,12 @@ Yolk.createElement(
 
 Without this pragma, Babel will assume that you mean to write JSX for React and you will receive `React is undefined` errors.
 
+## Support for Immutable Objects and #toJS
+
+Yolk will not attempt to 'unwrap' objects that have a `toJS` function defined on them. This method is only called when a plain
+value is required to render something. It is particularly useful when used with libraries like
+[Immutable.js](https://github.com/facebook/immutable-js/) or [Freezer.js](https://github.com/arqex/freezer).
+
 ## Supported Events
 
 Yolk supports the following list of standard browser events:

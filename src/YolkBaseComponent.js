@@ -46,7 +46,7 @@ YolkBaseComponent.prototype = {
     this._childSubject = new Rx.BehaviorSubject(this._children)
 
     const propObservable = wrapObject(propsSubject).map(transformProperties)
-    const childObservable = this._childSubject.flatMapLatest(wrapObject).map(transformChildren)
+    const childObservable = this._childSubject.flatMapLatest(wrapObject).flatMapLatest(transformChildren)
 
     const vNode = h(this.id)
     this.node = create(vNode)
