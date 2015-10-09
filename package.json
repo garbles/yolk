@@ -5,7 +5,7 @@
   "main": "lib/yolk.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/BrewhouseTeam/yolk"
+    "url": "https://github.com/yolkjs/yolk"
   },
   "keywords": [
     "yolk",
@@ -17,7 +17,7 @@
   "author": "Gabe Scholz",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/BrewhouseTeam/yolk/issues"
+    "url": "https://github.com/yolkjs/yolk/issues"
   },
   "scripts": {
     "bundle": "browserify -s Yolk -u rx src/yolk.js -t babelify -t browserify-shim -d | exorcist dist/yolk.js.map > dist/yolk.js",
@@ -34,7 +34,7 @@
     "test": "NODE_PATH=$NODE_PATH:./src browserify test/**/*-test.js --debug -t babelify --noparse=rx | tape-run --browser=phantom",
     "test-ci": "npm run lint && npm run test"
   },
-  "homepage": "https://github.com/BrewhouseTeam/yolk",
+  "homepage": "https://github.com/yolkjs/yolk",
   "devDependencies": {
     "babel": "5.8.23",
     "babel-eslint": "4.1.2",
