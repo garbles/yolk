@@ -11,8 +11,7 @@ module.exports = function transformProperties (props) {
 
   while (++i < length) {
     const key = keys[i]
-    let value = props[key]
-    value = hasToJS(value) ? value.toJS() : value
+    const value = props[key]
 
     if (key === `style`) {
       transformStyle(newProps, value)

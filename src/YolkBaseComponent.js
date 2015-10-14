@@ -5,9 +5,9 @@ const h = require(`virtual-dom/h`)
 const patch = require(`virtual-dom/patch`)
 const wrapObject = require(`./wrapObject`)
 const transformProperties = require(`./transformProperties`)
-const transformChildren = require(`./transformChildren`)
 const isFunction = require(`./isFunction`)
 const CustomEvent = require(`./CustomEvent`)
+const flatten = require(`./flatten`)
 
 function YolkBaseComponent (tag, props, children) {
   const _props = {...props}
@@ -44,15 +44,15 @@ YolkBaseComponent.prototype = {
 
     this._childSubject = new Rx.BehaviorSubject(this._children)
 
-    const propObservable = wrapObject(propsSubject).map(transformProperties)
-    const childObservable = this._childSubject.flatMapLatest(wrapObject).flatMapLatest(transformChildren)
+    const propObservable = wrapObject(propsSubject, {wrapToJS: true}).map(transformProperties)
+    const childObservable = this._childSubject.flatMapLatest(c => wrapObject(c, {wrapToJS: true}))
 
     const vNode = h(this.id)
     this.node = create(vNode)
 
     this._patchSubscription =
       Rx.Observable
-      .combineLatest(propObservable, childObservable, (p, c) => h(this.id, p, c))
+      .combineLatest(propObservable, childObservable, (p, c) => h(this.id, p, flatten(c)))
       .scan(([old], next) => [next, diff(old, next)], [vNode, null])
       .subscribe(
         ([__, patches]) => patch(this.node, patches),

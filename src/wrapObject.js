@@ -4,11 +4,13 @@ const isObservable = require(`./isObservable`)
 const isEmpty = require(`./isEmpty`)
 const hasToJS = require(`./hasToJS`)
 
-module.exports = function wrapObject (obj) {
+module.exports = function wrapObject (obj, opts = {}) {
   if (isObservable(obj)) {
-    return obj.flatMapLatest(wrapObject)
+    return obj.flatMapLatest(o => wrapObject(o, opts))
   } else if (hasToJS(obj)) {
-    // fall through if `toJS` is defined
+    if (opts.wrapToJS) { // only call toJS if option is set
+      return wrapObject(obj.toJS(), opts)
+    }
   } else if (isPlainObject(obj) && !isEmpty(obj)) {
     const keys = Object.keys(obj)
     const length = keys.length
@@ -17,7 +19,7 @@ module.exports = function wrapObject (obj) {
 
     while (++index < length) {
       const key = keys[index]
-      values[index] = wrapObject(obj[key])
+      values[index] = wrapObject(obj[key], opts)
     }
 
     return Rx.Observable.combineLatest(values, function combineLatest () {
@@ -32,7 +34,7 @@ module.exports = function wrapObject (obj) {
       return newObj
     })
   } else if (Array.isArray(obj) && obj.length) {
-    const _obj = obj.map(wrapObject)
+    const _obj = obj.map(i => wrapObject(i, opts))
     return Rx.Observable.combineLatest(_obj)
   }
 
