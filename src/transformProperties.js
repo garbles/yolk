@@ -1,7 +1,6 @@
 const DOMProperties = require(`./DOMProperties`)
 const transformStyle = require(`./transformStyle`)
 const transformProperty = require(`./transformProperty`)
-const hasToJS = require(`./hasToJS`)
 
 module.exports = function transformProperties (props) {
   const keys = Object.keys(props)
