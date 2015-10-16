@@ -6,8 +6,8 @@ const patch = require(`virtual-dom/patch`)
 const wrapObject = require(`./wrapObject`)
 const transformProperties = require(`./transformProperties`)
 const isFunction = require(`./isFunction`)
-const CustomEvent = require(`./CustomEvent`)
 const flatten = require(`./flatten`)
+const mountable = require(`./mountable`)
 
 function YolkBaseComponent (tag, props, children) {
   const _props = {...props}
@@ -59,7 +59,7 @@ YolkBaseComponent.prototype = {
         (err) => {throw new Error(err.message)}
       )
 
-    this.emitMount()
+    mountable.emitMount(this.node)
 
     return this.node
   },
@@ -82,7 +82,7 @@ YolkBaseComponent.prototype = {
   },
 
   destroy () {
-    this.emitUnmount()
+    mountable.emitUnmount(this.node, this._props)
     this._patchSubscription.dispose()
 
     const children = this._children
@@ -92,29 +92,6 @@ YolkBaseComponent.prototype = {
     while (++i < length) {
       const child = children[i]
       isFunction(child.destroy) && child.destroy()
-    }
-  },
-
-  emitUnmount () {
-    const {onMount, onUnmount} = this._props
-    const event = new CustomEvent(`unmount`)
-    this.node.dispatchEvent(event)
-
-    if (isFunction(onUnmount)) {
-      this.node.removeEventListener(`unmount`, onUnmount)
-    }
-
-    if (isFunction(onMount)) {
-      this.node.removeEventListener(`mount`, onMount)
-    }
-  },
-
-  emitMount () {
-    if (this.node.parentNode) {
-      const event = new CustomEvent(`mount`)
-      this.node.dispatchEvent(event)
-    } else {
-      setTimeout(() => this.emitMount(), 0)
     }
   },
 }
