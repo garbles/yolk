@@ -2973,9 +2973,9 @@ var h = require("virtual-dom/h");
 var patch = require("virtual-dom/patch");
 var wrapObject = require("./wrapObject");
 var transformProperties = require("./transformProperties");
-var transformChildren = require("./transformChildren");
 var isFunction = require("./isFunction");
-var CustomEvent = require("./CustomEvent");
+var flatten = require("./flatten");
+var mountable = require("./mountable");
 
 function YolkBaseComponent(tag, props, children) {
   var _props = _extends({}, props);
@@ -3014,14 +3014,16 @@ YolkBaseComponent.prototype = {
 
     this._childSubject = new Rx.BehaviorSubject(this._children);
 
-    var propObservable = wrapObject(propsSubject).map(transformProperties);
-    var childObservable = this._childSubject.flatMapLatest(wrapObject).flatMapLatest(transformChildren);
+    var propObservable = wrapObject(propsSubject, { wrapToJS: true }).map(transformProperties);
+    var childObservable = this._childSubject.flatMapLatest(function (c) {
+      return wrapObject(c, { wrapToJS: true });
+    });
 
     var vNode = h(this.id);
     this.node = create(vNode);
 
     this._patchSubscription = Rx.Observable.combineLatest(propObservable, childObservable, function (p, c) {
-      return h(_this.id, p, c);
+      return h(_this.id, p, flatten(c));
     }).scan(function (_ref, next) {
       var _ref2 = _slicedToArray(_ref, 1);
 
@@ -3037,7 +3039,7 @@ YolkBaseComponent.prototype = {
       throw new Error(err.message);
     });
 
-    this.emitMount();
+    mountable.emitMount(this.node);
 
     return this.node;
   },
@@ -3060,7 +3062,7 @@ YolkBaseComponent.prototype = {
   },
 
   destroy: function destroy() {
-    this.emitUnmount();
+    mountable.emitUnmount(this.node, this._props);
     this._patchSubscription.dispose();
 
     var children = this._children;
@@ -3071,36 +3073,6 @@ YolkBaseComponent.prototype = {
       var child = children[i];
       isFunction(child.destroy) && child.destroy();
     }
-  },
-
-  emitUnmount: function emitUnmount() {
-    var _props2 = this._props;
-    var onMount = _props2.onMount;
-    var onUnmount = _props2.onUnmount;
-
-    var event = new CustomEvent("unmount");
-    this.node.dispatchEvent(event);
-
-    if (isFunction(onUnmount)) {
-      this.node.removeEventListener("unmount", onUnmount);
-    }
-
-    if (isFunction(onMount)) {
-      this.node.removeEventListener("mount", onMount);
-    }
-  },
-
-  emitMount: function emitMount() {
-    var _this2 = this;
-
-    if (this.node.parentNode) {
-      var _event = new CustomEvent("mount");
-      this.node.dispatchEvent(_event);
-    } else {
-      setTimeout(function () {
-        return _this2.emitMount();
-      }, 0);
-    }
   }
 };
 
@@ -3108,7 +3080,7 @@ module.exports = YolkBaseComponent;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"./CustomEvent":48,"./isFunction":64,"./transformChildren":68,"./transformProperties":69,"./wrapObject":72,"virtual-dom/create-element":14,"virtual-dom/diff":15,"virtual-dom/h":16,"virtual-dom/patch":24}],52:[function(require,module,exports){
+},{"./flatten":59,"./isFunction":64,"./mountable":68,"./transformProperties":69,"./wrapObject":72,"virtual-dom/create-element":14,"virtual-dom/diff":15,"virtual-dom/h":16,"virtual-dom/patch":24}],52:[function(require,module,exports){
 (function (global){
 "use strict";
 
@@ -3493,43 +3465,44 @@ module.exports = function isString(str) {
 },{}],68:[function(require,module,exports){
 "use strict";
 
-var flatten = require("./flatten");
-var wrapObject = require("./wrapObject");
-var hasToJS = require("./hasToJS");
+var isFunction = require("./isFunction");
+var CustomEvent = require("./CustomEvent");
 
-function toJSify(children) {
-  var _children = flatten([children]);
-  var length = _children.length;
-  var mustFlatten = false;
-  var i = -1;
-  var arr = Array(length);
-
-  while (++i < length) {
-    var child = _children[i];
-    var newChild = hasToJS(child) ? child.toJS() : child;
-    arr[i] = newChild;
-    mustFlatten = mustFlatten || child !== newChild;
+function emitMount(node) {
+  if (node.parentNode) {
+    var _event = new CustomEvent("mount");
+    node.dispatchEvent(_event);
+  } else {
+    setTimeout(function () {
+      return emitMount(node);
+    }, 0);
   }
-
-  if (mustFlatten) {
-    arr = flatten(arr);
-  }
-
-  return arr;
 }
 
-module.exports = function transformChildren(children) {
-  var _children = toJSify(children);
-  return wrapObject(_children);
-};
+function emitUnmount(node, _ref) {
+  var onMount = _ref.onMount;
+  var onUnmount = _ref.onUnmount;
 
-},{"./flatten":59,"./hasToJS":60,"./wrapObject":72}],69:[function(require,module,exports){
+  var event = new CustomEvent("unmount");
+  node.dispatchEvent(event);
+
+  if (isFunction(onUnmount)) {
+    node.removeEventListener("unmount", onUnmount);
+  }
+
+  if (isFunction(onMount)) {
+    node.removeEventListener("mount", onMount);
+  }
+}
+
+module.exports = { emitMount: emitMount, emitUnmount: emitUnmount };
+
+},{"./CustomEvent":48,"./isFunction":64}],69:[function(require,module,exports){
 "use strict";
 
 var DOMProperties = require("./DOMProperties");
 var transformStyle = require("./transformStyle");
 var transformProperty = require("./transformProperty");
-var hasToJS = require("./hasToJS");
 
 module.exports = function transformProperties(props) {
   var keys = Object.keys(props);
@@ -3540,7 +3513,6 @@ module.exports = function transformProperties(props) {
   while (++i < length) {
     var key = keys[i];
     var value = props[key];
-    value = hasToJS(value) ? value.toJS() : value;
 
     if (key === "style") {
       transformStyle(newProps, value);
@@ -3552,7 +3524,7 @@ module.exports = function transformProperties(props) {
   return newProps;
 };
 
-},{"./DOMProperties":50,"./hasToJS":60,"./transformProperty":70,"./transformStyle":71}],70:[function(require,module,exports){
+},{"./DOMProperties":50,"./transformProperty":70,"./transformStyle":71}],70:[function(require,module,exports){
 "use strict";
 
 var kababCase = require("lodash.kebabcase");
@@ -3681,12 +3653,28 @@ var isObservable = require("./isObservable");
 var isEmpty = require("./isEmpty");
 var hasToJS = require("./hasToJS");
 
-module.exports = function wrapObject(obj) {
-  if (isObservable(obj)) {
-    return obj.flatMapLatest(wrapObject);
-  } else if (hasToJS(obj)) {
-    // fall through if `toJS` is defined
-  } else if (isPlainObject(obj) && !isEmpty(obj)) {
+module.exports = function wrapObject(_x2) {
+  var _arguments = arguments;
+  var _again = true;
+
+  _function: while (_again) {
+    var obj = _x2;
+    opts = _ret = _obj = undefined;
+    _again = false;
+    var opts = _arguments.length <= 1 || _arguments[1] === undefined ? {} : _arguments[1];
+
+    if (isObservable(obj)) {
+      return obj.flatMapLatest(function (o) {
+        return wrapObject(o, opts);
+      });
+    } else if (hasToJS(obj)) {
+      if (opts.wrapToJS) {
+        // only call toJS if option is set
+        _arguments = [_x2 = obj.toJS(), opts];
+        _again = true;
+        continue _function;
+      }
+    } else if (isPlainObject(obj) && !isEmpty(obj)) {
       var _ret = (function () {
         var keys = Object.keys(obj);
         var length = keys.length;
@@ -3695,7 +3683,7 @@ module.exports = function wrapObject(obj) {
 
         while (++index < length) {
           var key = keys[index];
-          values[index] = wrapObject(obj[key]);
+          values[index] = wrapObject(obj[key], opts);
         }
 
         return {
@@ -3715,11 +3703,14 @@ module.exports = function wrapObject(obj) {
 
       if (typeof _ret === "object") return _ret.v;
     } else if (Array.isArray(obj) && obj.length) {
-      var _obj = obj.map(wrapObject);
+      var _obj = obj.map(function (i) {
+        return wrapObject(i, opts);
+      });
       return Rx.Observable.combineLatest(_obj);
     }
 
-  return Rx.Observable.just(obj);
+    return Rx.Observable.just(obj);
+  }
 };
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
