@@ -54,7 +54,6 @@ YolkCompositeComponent.prototype = {
     this._propSubject = previous._propSubject
     this._childSubject = previous._childSubject
     this._component = previous._component
-    this._eventHandlers = previous._eventHandlers
     this._childSubject.onNext(this._children)
 
     const keys = Object.keys(this._props)
