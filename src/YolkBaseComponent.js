@@ -2,7 +2,6 @@ const Rx = require(`rx`)
 const create = require(`virtual-dom/create-element`)
 const diff = require(`virtual-dom/diff`)
 const h = require(`virtual-dom/h`)
-const Delegator = require(`dom-delegator`)
 const patch = require(`virtual-dom/patch`)
 const wrapObject = require(`./wrapObject`)
 const transformProperties = require(`./transformProperties`)
@@ -50,7 +49,6 @@ YolkBaseComponent.prototype = {
 
     const vNode = h(this.id)
     this._node = create(vNode)
-    Delegator(this._node)
 
     this._patchSubscription =
       Rx.Observable
