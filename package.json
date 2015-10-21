@@ -50,10 +50,11 @@
     "tape-run": "1.1.0"
   },
   "dependencies": {
+    "dom-delegator": "13.1.0",
     "lodash.isplainobject": "3.2.0",
     "lodash.kebabcase": "3.0.1",
-    "virtual-dom": "2.1.1",
-    "rx": "^4.0.0"
+    "rx": "^4.0.0",
+    "virtual-dom": "2.1.1"
   },
   "browserify-shim": {
     "rx": "global:Rx"

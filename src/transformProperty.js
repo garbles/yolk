@@ -1,6 +1,7 @@
 const kababCase = require(`lodash.kebabcase`)
 const SoftSetHook = require(`virtual-dom/virtual-hyperscript/hooks/soft-set-hook`)
 const AttributeHook = require(`virtual-dom/virtual-hyperscript/hooks/attribute-hook`)
+const EventHook = require(`virtual-dom/virtual-hyperscript/hooks/ev-hook`)
 const CustomEventHook = require(`./CustomEventHook`)
 const compact = require(`./compact`)
 
@@ -41,6 +42,8 @@ module.exports = function transformProperty (props, key, value, property = EMPTY
     props.attributes[_key] = _value
   } else if (property.usePropertyHook) {
     props[_key] = new SoftSetHook(_value)
+  } else if (property.useEventHook) {
+    props[_key] = new EventHook(_value)
   } else if (property.useCustomEventHook) {
     props[_key] = new CustomEventHook(_key, _value)
   } else if (property.useAttributeHook) {

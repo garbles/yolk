@@ -5,9 +5,10 @@ const HAS_DASH_CASE = 0x2
 const IS_ATTRIBUTE = 0x4
 const USE_PROPERTY_HOOK = 0x8
 const USE_ATTRIBUTE_HOOK = 0x10
-const USE_CUSTOM_EVENT_HOOK = 0x20
-const CAN_BE_ARRAY_OF_STRINGS = 0x40
-const HAS_BOOLEAN_VALUE = 0x80
+const USE_EVENT_HOOK = 0x20
+const USE_CUSTOM_EVENT_HOOK = 0x40
+const CAN_BE_ARRAY_OF_STRINGS = 0x80
+const HAS_BOOLEAN_VALUE = 0x100
 
 function checkMask (value, bitmask) {
   return (value & bitmask) === bitmask
@@ -150,63 +151,63 @@ const properties = {
   value: USE_PROPERTY_HOOK,
 
   // events
-  onAbort: HAS_LOWER_CASE,
-  onBlur: HAS_LOWER_CASE,
-  onCanPlay: HAS_LOWER_CASE,
-  onCanPlayThrough: HAS_LOWER_CASE,
-  onChange: HAS_LOWER_CASE,
-  onClick: HAS_LOWER_CASE,
-  onContextMenu: HAS_LOWER_CASE,
-  onCopy: HAS_LOWER_CASE,
-  onCueChange: HAS_LOWER_CASE,
-  onCut: HAS_LOWER_CASE,
-  onDblClick: HAS_LOWER_CASE,
-  onDrag: HAS_LOWER_CASE,
-  onDragEnd: HAS_LOWER_CASE,
-  onDragEnter: HAS_LOWER_CASE,
-  onDragLeave: HAS_LOWER_CASE,
-  onDragOver: HAS_LOWER_CASE,
-  onDragStart: HAS_LOWER_CASE,
-  onDrop: HAS_LOWER_CASE,
-  onDurationChange: HAS_LOWER_CASE,
-  onEmptied: HAS_LOWER_CASE,
-  onEnded: HAS_LOWER_CASE,
-  onError: HAS_LOWER_CASE,
-  onFocus: HAS_LOWER_CASE,
-  onInput: HAS_LOWER_CASE,
-  onInvalid: HAS_LOWER_CASE,
-  onKeyDown: HAS_LOWER_CASE,
-  onKeyPress: HAS_LOWER_CASE,
-  onKeyUp: HAS_LOWER_CASE,
-  onLoadedData: HAS_LOWER_CASE,
-  onLoadedMetaData: HAS_LOWER_CASE,
-  onLoadStart: HAS_LOWER_CASE,
-  onMouseDown: HAS_LOWER_CASE,
-  onMouseMove: HAS_LOWER_CASE,
-  onMouseOut: HAS_LOWER_CASE,
-  onMouseOver: HAS_LOWER_CASE,
-  onMouseUp: HAS_LOWER_CASE,
-  onPaste: HAS_LOWER_CASE,
-  onPause: HAS_LOWER_CASE,
-  onPlay: HAS_LOWER_CASE,
-  onPlaying: HAS_LOWER_CASE,
-  onProgress: HAS_LOWER_CASE,
-  onRateChange: HAS_LOWER_CASE,
-  onReset: HAS_LOWER_CASE,
-  onScroll: HAS_LOWER_CASE,
-  onSearch: HAS_LOWER_CASE,
-  onSeeked: HAS_LOWER_CASE,
-  onSeeking: HAS_LOWER_CASE,
-  onSelect: HAS_LOWER_CASE,
-  onShow: HAS_LOWER_CASE,
-  onStalled: HAS_LOWER_CASE,
-  onSubmit: HAS_LOWER_CASE,
-  onSuspend: HAS_LOWER_CASE,
-  onTimeUpdate: HAS_LOWER_CASE,
-  onToggle: HAS_LOWER_CASE,
-  onVolumeChange: HAS_LOWER_CASE,
-  onWaiting: HAS_LOWER_CASE,
-  onWheel: HAS_LOWER_CASE,
+  onAbort: HAS_LOWER_CASE | USE_EVENT_HOOK,
+  onBlur: HAS_LOWER_CASE | USE_EVENT_HOOK,
+  onCanPlay: HAS_LOWER_CASE | USE_EVENT_HOOK,
+  onCanPlayThrough: HAS_LOWER_CASE | USE_EVENT_HOOK,
+  onChange: HAS_LOWER_CASE | USE_EVENT_HOOK,
+  onClick: HAS_LOWER_CASE | USE_EVENT_HOOK,
+  onContextMenu: HAS_LOWER_CASE | USE_EVENT_HOOK,
+  onCopy: HAS_LOWER_CASE | USE_EVENT_HOOK,
+  onCueChange: HAS_LOWER_CASE | USE_EVENT_HOOK,
+  onCut: HAS_LOWER_CASE | USE_EVENT_HOOK,
+  onDblClick: HAS_LOWER_CASE | USE_EVENT_HOOK,
+  onDrag: HAS_LOWER_CASE | USE_EVENT_HOOK,
+  onDragEnd: HAS_LOWER_CASE | USE_EVENT_HOOK,
+  onDragEnter: HAS_LOWER_CASE | USE_EVENT_HOOK,
+  onDragLeave: HAS_LOWER_CASE | USE_EVENT_HOOK,
+  onDragOver: HAS_LOWER_CASE | USE_EVENT_HOOK,
+  onDragStart: HAS_LOWER_CASE | USE_EVENT_HOOK,
+  onDrop: HAS_LOWER_CASE | USE_EVENT_HOOK,
+  onDurationChange: HAS_LOWER_CASE | USE_EVENT_HOOK,
+  onEmptied: HAS_LOWER_CASE | USE_EVENT_HOOK,
+  onEnded: HAS_LOWER_CASE | USE_EVENT_HOOK,
+  onError: HAS_LOWER_CASE | USE_EVENT_HOOK,
+  onFocus: HAS_LOWER_CASE | USE_EVENT_HOOK,
+  onInput: HAS_LOWER_CASE | USE_EVENT_HOOK,
+  onInvalid: HAS_LOWER_CASE | USE_EVENT_HOOK,
+  onKeyDown: HAS_LOWER_CASE | USE_EVENT_HOOK,
+  onKeyPress: HAS_LOWER_CASE | USE_EVENT_HOOK,
+  onKeyUp: HAS_LOWER_CASE | USE_EVENT_HOOK,
+  onLoadedData: HAS_LOWER_CASE | USE_EVENT_HOOK,
+  onLoadedMetaData: HAS_LOWER_CASE | USE_EVENT_HOOK,
+  onLoadStart: HAS_LOWER_CASE | USE_EVENT_HOOK,
+  onMouseDown: HAS_LOWER_CASE | USE_EVENT_HOOK,
+  onMouseMove: HAS_LOWER_CASE | USE_EVENT_HOOK,
+  onMouseOut: HAS_LOWER_CASE | USE_EVENT_HOOK,
+  onMouseOver: HAS_LOWER_CASE | USE_EVENT_HOOK,
+  onMouseUp: HAS_LOWER_CASE | USE_EVENT_HOOK,
+  onPaste: HAS_LOWER_CASE | USE_EVENT_HOOK,
+  onPause: HAS_LOWER_CASE | USE_EVENT_HOOK,
+  onPlay: HAS_LOWER_CASE | USE_EVENT_HOOK,
+  onPlaying: HAS_LOWER_CASE | USE_EVENT_HOOK,
+  onProgress: HAS_LOWER_CASE | USE_EVENT_HOOK,
+  onRateChange: HAS_LOWER_CASE | USE_EVENT_HOOK,
+  onReset: HAS_LOWER_CASE | USE_EVENT_HOOK,
+  onScroll: HAS_LOWER_CASE | USE_EVENT_HOOK,
+  onSearch: HAS_LOWER_CASE | USE_EVENT_HOOK,
+  onSeeked: HAS_LOWER_CASE | USE_EVENT_HOOK,
+  onSeeking: HAS_LOWER_CASE | USE_EVENT_HOOK,
+  onSelect: HAS_LOWER_CASE | USE_EVENT_HOOK,
+  onShow: HAS_LOWER_CASE | USE_EVENT_HOOK,
+  onStalled: HAS_LOWER_CASE | USE_EVENT_HOOK,
+  onSubmit: HAS_LOWER_CASE | USE_EVENT_HOOK,
+  onSuspend: HAS_LOWER_CASE | USE_EVENT_HOOK,
+  onTimeUpdate: HAS_LOWER_CASE | USE_EVENT_HOOK,
+  onToggle: HAS_LOWER_CASE | USE_EVENT_HOOK,
+  onVolumeChange: HAS_LOWER_CASE | USE_EVENT_HOOK,
+  onWaiting: HAS_LOWER_CASE | USE_EVENT_HOOK,
+  onWheel: HAS_LOWER_CASE | USE_EVENT_HOOK,
 
   // custom events
   onMount: USE_CUSTOM_EVENT_HOOK | HAS_LOWER_CASE,
@@ -227,12 +228,15 @@ while (++i < length) {
   const isAttribute = checkMask(property, IS_ATTRIBUTE)
   const usePropertyHook = checkMask(property, USE_PROPERTY_HOOK)
   const useAttributeHook = checkMask(property, USE_ATTRIBUTE_HOOK)
+  const useEventHook = checkMask(property, USE_EVENT_HOOK)
   const useCustomEventHook = checkMask(property, USE_CUSTOM_EVENT_HOOK)
   const canBeArrayOfStrings = checkMask(property, CAN_BE_ARRAY_OF_STRINGS)
   const hasBooleanValue = checkMask(property, HAS_BOOLEAN_VALUE)
   let computed
 
-  if (hasLowerCase) {
+  if (useEventHook) {
+    computed = `ev-${key.substr(2).toLowerCase()}`
+  } else if (hasLowerCase) {
     computed = key.toLowerCase()
   } else if (hasDashCase) {
     computed = kababCase(key)
@@ -245,6 +249,7 @@ while (++i < length) {
     isStandard,
     usePropertyHook,
     useAttributeHook,
+    useEventHook,
     useCustomEventHook,
     canBeArrayOfStrings,
     hasBooleanValue,
