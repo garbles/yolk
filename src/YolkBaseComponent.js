@@ -18,13 +18,13 @@ function YolkBaseComponent (tag, props, children) {
     delete _props.key
   }
 
+  this.name = `YolkBaseComponent_${tag}`
   this.id = tag
   this._props = _props
   this._children = _children
 }
 
 YolkBaseComponent.prototype = {
-  name: `YolkBaseComponent`,
   type: `Widget`,
 
   init () {
@@ -48,23 +48,24 @@ YolkBaseComponent.prototype = {
     const childObservable = this._childSubject.flatMapLatest(c => wrapObject(c, {wrapToJS: true}))
 
     const vNode = h(this.id)
-    this.node = create(vNode)
+    this._node = create(vNode)
 
     this._patchSubscription =
       Rx.Observable
       .combineLatest(propObservable, childObservable, (p, c) => h(this.id, p, flatten(c)))
       .scan(([old], next) => [next, diff(old, next)], [vNode, null])
       .subscribe(
-        ([__, patches]) => patch(this.node, patches),
+        ([__, patches]) => patch(this._node, patches),
         (err) => {throw new Error(err.message)}
       )
 
-    mountable.emitMount(this.node)
+    mountable.emitMount(this._node)
 
-    return this.node
+    return this._node
   },
 
   update (previous) {
+    this._node = previous._node
     this._propSubject = previous._propSubject
     this._childSubject = previous._childSubject
     this._patchSubscription = previous._patchSubscription
@@ -82,7 +83,7 @@ YolkBaseComponent.prototype = {
   },
 
   destroy () {
-    mountable.emitUnmount(this.node, this._props)
+    mountable.emitUnmount(this._node, this._props)
     this._patchSubscription.dispose()
 
     const children = this._children

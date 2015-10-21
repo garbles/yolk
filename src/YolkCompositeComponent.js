@@ -13,6 +13,7 @@ function YolkCompositeComponent (fn, props, children) {
     delete _props.key
   }
 
+  this.name = `YolkCompositeComponent_${fn.name}`
   this.id = fn.name
   this._fn = fn
   this._props = _props
@@ -21,7 +22,6 @@ function YolkCompositeComponent (fn, props, children) {
 }
 
 YolkCompositeComponent.prototype = {
-  name: `YolkCompositeComponent`,
   type: `Widget`,
 
   init () {
