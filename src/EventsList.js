@@ -55,5 +55,9 @@ module.exports = [
   'Toggle',
   'VolumeChange',
   'Waiting',
-  'Wheel'
+  'Wheel',
+
+  // custom
+  'Mount',
+  'Unmount'
 ]

@@ -1,5 +1,5 @@
 const kababCase = require(`lodash.kebabcase`)
-const DOMEventsList = require(`./DOMEventsList`)
+const EventsList = require(`./EventsList`)
 
 const HAS_LOWER_CASE = 0x1
 const HAS_DASH_CASE = 0x2
@@ -7,7 +7,6 @@ const IS_ATTRIBUTE = 0x4
 const USE_PROPERTY_HOOK = 0x8
 const USE_ATTRIBUTE_HOOK = 0x10
 const USE_EVENT_HOOK = 0x20
-const USE_CUSTOM_EVENT_HOOK = 0x40
 const CAN_BE_ARRAY_OF_STRINGS = 0x80
 const HAS_BOOLEAN_VALUE = 0x100
 
@@ -150,18 +149,14 @@ const properties = {
   selected: USE_PROPERTY_HOOK | HAS_BOOLEAN_VALUE,
   srcDoc: USE_PROPERTY_HOOK | HAS_LOWER_CASE,
   value: USE_PROPERTY_HOOK,
-
-  // custom events
-  onMount: USE_CUSTOM_EVENT_HOOK | HAS_LOWER_CASE,
-  onUnmount: USE_CUSTOM_EVENT_HOOK | HAS_LOWER_CASE,
 }
 
 // events
-let length = DOMEventsList.length
+let length = EventsList.length
 let i = -1
 
 while (++i < length) {
-  const event = DOMEventsList[i]
+  const event = EventsList[i]
   properties[`on${event}`] = HAS_LOWER_CASE | USE_EVENT_HOOK
 }
 
@@ -180,7 +175,6 @@ while (++i < length) {
   const usePropertyHook = checkMask(property, USE_PROPERTY_HOOK)
   const useAttributeHook = checkMask(property, USE_ATTRIBUTE_HOOK)
   const useEventHook = checkMask(property, USE_EVENT_HOOK)
-  const useCustomEventHook = checkMask(property, USE_CUSTOM_EVENT_HOOK)
   const canBeArrayOfStrings = checkMask(property, CAN_BE_ARRAY_OF_STRINGS)
   const hasBooleanValue = checkMask(property, HAS_BOOLEAN_VALUE)
   let computed
@@ -199,7 +193,6 @@ while (++i < length) {
     usePropertyHook,
     useAttributeHook,
     useEventHook,
-    useCustomEventHook,
     canBeArrayOfStrings,
     hasBooleanValue,
     computed,

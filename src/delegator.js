@@ -1,12 +1,12 @@
 const domDelegator = require(`dom-delegator`)
-const DOMEventsList = require(`./DOMEventsList`)
+const EventsList = require(`./EventsList`)
 const instance = domDelegator({defaultEvents: false})
 
-const length = DOMEventsList.length
+const length = EventsList.length
 let i = -1
 
 while (++i < length) {
-  instance.listenTo(DOMEventsList[i].toLowerCase())
+  instance.listenTo(EventsList[i].toLowerCase())
 }
 
 module.exports = instance

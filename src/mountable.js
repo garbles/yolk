@@ -1,7 +1,11 @@
 const isFunction = require(`./isFunction`)
 const CustomEvent = require(`./CustomEvent`)
 
-function emitMount (node) {
+function emitMount (node, fn) {
+  if (!isFunction(fn)) {
+    return
+  }
+
   if (node.parentNode) {
     const event = new CustomEvent(`mount`)
     node.dispatchEvent(event)
@@ -10,17 +14,17 @@ function emitMount (node) {
   }
 }
 
-function emitUnmount (node, {onMount, onUnmount}) {
+function emitUnmount (node, fn) {
+  if (!isFunction(fn)) {
+    return
+  }
+
   const event = new CustomEvent(`unmount`)
+
+  // node has already been removed from the DOM, so we can't use delegation
+  node.addEventListener('unmount', fn, true)
   node.dispatchEvent(event)
-
-  if (isFunction(onUnmount)) {
-    node.removeEventListener(`unmount`, onUnmount)
-  }
-
-  if (isFunction(onMount)) {
-    node.removeEventListener(`mount`, onMount)
-  }
+  node.removeEventListener('unmount', fn, true)
 }
 
 module.exports = {emitMount, emitUnmount}
