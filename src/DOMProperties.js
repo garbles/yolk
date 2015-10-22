@@ -1,4 +1,5 @@
 const kababCase = require(`lodash.kebabcase`)
+const DOMEventsList = require(`./DOMEventsList`)
 
 const HAS_LOWER_CASE = 0x1
 const HAS_DASH_CASE = 0x2
@@ -150,75 +151,25 @@ const properties = {
   srcDoc: USE_PROPERTY_HOOK | HAS_LOWER_CASE,
   value: USE_PROPERTY_HOOK,
 
-  // events
-  onAbort: HAS_LOWER_CASE | USE_EVENT_HOOK,
-  onBlur: HAS_LOWER_CASE | USE_EVENT_HOOK,
-  onCanPlay: HAS_LOWER_CASE | USE_EVENT_HOOK,
-  onCanPlayThrough: HAS_LOWER_CASE | USE_EVENT_HOOK,
-  onChange: HAS_LOWER_CASE | USE_EVENT_HOOK,
-  onClick: HAS_LOWER_CASE | USE_EVENT_HOOK,
-  onContextMenu: HAS_LOWER_CASE | USE_EVENT_HOOK,
-  onCopy: HAS_LOWER_CASE | USE_EVENT_HOOK,
-  onCueChange: HAS_LOWER_CASE | USE_EVENT_HOOK,
-  onCut: HAS_LOWER_CASE | USE_EVENT_HOOK,
-  onDblClick: HAS_LOWER_CASE | USE_EVENT_HOOK,
-  onDrag: HAS_LOWER_CASE | USE_EVENT_HOOK,
-  onDragEnd: HAS_LOWER_CASE | USE_EVENT_HOOK,
-  onDragEnter: HAS_LOWER_CASE | USE_EVENT_HOOK,
-  onDragLeave: HAS_LOWER_CASE | USE_EVENT_HOOK,
-  onDragOver: HAS_LOWER_CASE | USE_EVENT_HOOK,
-  onDragStart: HAS_LOWER_CASE | USE_EVENT_HOOK,
-  onDrop: HAS_LOWER_CASE | USE_EVENT_HOOK,
-  onDurationChange: HAS_LOWER_CASE | USE_EVENT_HOOK,
-  onEmptied: HAS_LOWER_CASE | USE_EVENT_HOOK,
-  onEnded: HAS_LOWER_CASE | USE_EVENT_HOOK,
-  onError: HAS_LOWER_CASE | USE_EVENT_HOOK,
-  onFocus: HAS_LOWER_CASE | USE_EVENT_HOOK,
-  onInput: HAS_LOWER_CASE | USE_EVENT_HOOK,
-  onInvalid: HAS_LOWER_CASE | USE_EVENT_HOOK,
-  onKeyDown: HAS_LOWER_CASE | USE_EVENT_HOOK,
-  onKeyPress: HAS_LOWER_CASE | USE_EVENT_HOOK,
-  onKeyUp: HAS_LOWER_CASE | USE_EVENT_HOOK,
-  onLoadedData: HAS_LOWER_CASE | USE_EVENT_HOOK,
-  onLoadedMetaData: HAS_LOWER_CASE | USE_EVENT_HOOK,
-  onLoadStart: HAS_LOWER_CASE | USE_EVENT_HOOK,
-  onMouseDown: HAS_LOWER_CASE | USE_EVENT_HOOK,
-  onMouseMove: HAS_LOWER_CASE | USE_EVENT_HOOK,
-  onMouseOut: HAS_LOWER_CASE | USE_EVENT_HOOK,
-  onMouseOver: HAS_LOWER_CASE | USE_EVENT_HOOK,
-  onMouseUp: HAS_LOWER_CASE | USE_EVENT_HOOK,
-  onPaste: HAS_LOWER_CASE | USE_EVENT_HOOK,
-  onPause: HAS_LOWER_CASE | USE_EVENT_HOOK,
-  onPlay: HAS_LOWER_CASE | USE_EVENT_HOOK,
-  onPlaying: HAS_LOWER_CASE | USE_EVENT_HOOK,
-  onProgress: HAS_LOWER_CASE | USE_EVENT_HOOK,
-  onRateChange: HAS_LOWER_CASE | USE_EVENT_HOOK,
-  onReset: HAS_LOWER_CASE | USE_EVENT_HOOK,
-  onScroll: HAS_LOWER_CASE | USE_EVENT_HOOK,
-  onSearch: HAS_LOWER_CASE | USE_EVENT_HOOK,
-  onSeeked: HAS_LOWER_CASE | USE_EVENT_HOOK,
-  onSeeking: HAS_LOWER_CASE | USE_EVENT_HOOK,
-  onSelect: HAS_LOWER_CASE | USE_EVENT_HOOK,
-  onShow: HAS_LOWER_CASE | USE_EVENT_HOOK,
-  onStalled: HAS_LOWER_CASE | USE_EVENT_HOOK,
-  onSubmit: HAS_LOWER_CASE | USE_EVENT_HOOK,
-  onSuspend: HAS_LOWER_CASE | USE_EVENT_HOOK,
-  onTimeUpdate: HAS_LOWER_CASE | USE_EVENT_HOOK,
-  onToggle: HAS_LOWER_CASE | USE_EVENT_HOOK,
-  onVolumeChange: HAS_LOWER_CASE | USE_EVENT_HOOK,
-  onWaiting: HAS_LOWER_CASE | USE_EVENT_HOOK,
-  onWheel: HAS_LOWER_CASE | USE_EVENT_HOOK,
-
   // custom events
   onMount: USE_CUSTOM_EVENT_HOOK | HAS_LOWER_CASE,
   onUnmount: USE_CUSTOM_EVENT_HOOK | HAS_LOWER_CASE,
 }
 
+// events
+let length = DOMEventsList.length
+let i = -1
+
+while (++i < length) {
+  const event = DOMEventsList[i]
+  properties[`on${event}`] = HAS_LOWER_CASE | USE_EVENT_HOOK
+}
+
 const keys = Object.keys(properties)
-const length = keys.length
 const isStandard = true
 const propertiesWithInfo = {}
-let i = -1
+length = keys.length
+i = -1
 
 while (++i < length) {
   const key = keys[i]
@@ -234,9 +185,7 @@ while (++i < length) {
   const hasBooleanValue = checkMask(property, HAS_BOOLEAN_VALUE)
   let computed
 
-  if (useEventHook) {
-    computed = `ev-${key.substr(2).toLowerCase()}`
-  } else if (hasLowerCase) {
+  if (hasLowerCase) {
     computed = key.toLowerCase()
   } else if (hasDashCase) {
     computed = kababCase(key)

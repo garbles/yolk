@@ -1,7 +1,7 @@
 const kababCase = require(`lodash.kebabcase`)
 const SoftSetHook = require(`virtual-dom/virtual-hyperscript/hooks/soft-set-hook`)
 const AttributeHook = require(`virtual-dom/virtual-hyperscript/hooks/attribute-hook`)
-const EventHook = require(`virtual-dom/virtual-hyperscript/hooks/ev-hook`)
+const EventHook = require(`./EventHook`)
 const CustomEventHook = require(`./CustomEventHook`)
 const compact = require(`./compact`)
 

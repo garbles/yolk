@@ -8,6 +8,7 @@ const transformProperties = require(`./transformProperties`)
 const isFunction = require(`./isFunction`)
 const flatten = require(`./flatten`)
 const mountable = require(`./mountable`)
+const delegator = require(`./delegator`)
 
 function YolkBaseComponent (tag, props, children) {
   const _props = {...props}
