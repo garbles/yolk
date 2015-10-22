@@ -18,6 +18,7 @@ test(`only updates the props and or children`, t => {
 
   const component = <Counter count={0} />
   const node = document.createElement(`div`)
+  document.body.appendChild(node)
   Yolk.render(component, node)
 
   t.equal(node.innerHTML, `<div><button id="plus">+</button><span>Count: 0</span></div>`)

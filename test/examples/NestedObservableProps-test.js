@@ -22,6 +22,7 @@ test(`properly interpret properties`, t => {
   const widthSubject = new Rx.BehaviorSubject(1)
   const component = <NestedObservableProps height={heightSubject} width={widthSubject} />
   const node = document.createElement(`div`)
+  document.body.appendChild(node)
   Yolk.render(component, node)
 
   t.equal(node.innerHTML, `<div style="color: blue; height: 1px; width: 1px; "></div>`)
@@ -43,6 +44,7 @@ test(`works with doubley nested observables`, t => {
   const heightSubject = new Rx.BehaviorSubject(nestedHeightSubject.asObservable())
   const component = <NestedObservableProps height={heightSubject} width={1} />
   const node = document.createElement(`div`)
+  document.body.appendChild(node)
   Yolk.render(component, node)
 
   t.equal(node.innerHTML, `<div style="color: blue; height: 1px; width: 1px; "></div>`)
@@ -63,6 +65,7 @@ test(`works with plain objects that use nested props`, t => {
 
   const component = <DeeplyNestedObservableProps a={{b}} />
   const node = document.createElement(`div`)
+  document.body.appendChild(node)
   Yolk.render(component, node)
 
   t.equal(node.innerHTML, `<div>hello goodbye!</div>`)

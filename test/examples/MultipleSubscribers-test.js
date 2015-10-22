@@ -23,6 +23,7 @@ test(`can have multiple subscribers listening to the same source`, t => {
 
   let component = <CounterWithMultipleSubscribers count={55} />
   const node = document.createElement(`div`)
+  document.body.appendChild(node)
   Yolk.render(component, node)
 
   t.equal(node.innerHTML, `<div><button id="plus">+</button><button id="minus">-</button><span>0</span><span>0</span><span>55</span><span>55</span></div>`)

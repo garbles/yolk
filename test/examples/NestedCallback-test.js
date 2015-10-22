@@ -24,6 +24,7 @@ test(`handles calling callback functions from a child component`, t => {
 
   const component = <NestedCallback />
   const node = document.createElement(`div`)
+  document.body.appendChild(node)
   Yolk.render(component, node)
 
   const count = node.querySelector(`#count`)

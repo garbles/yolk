@@ -18,6 +18,7 @@ test(`renders children`, t => {
     </HasChildren>
   )
   const node = document.createElement(`div`)
+  document.body.appendChild(node)
   Yolk.render(component, node)
 
   t.equal(node.innerHTML, `<div class="wrapper"><div id="hello"></div></div>`)
@@ -37,6 +38,7 @@ test(`renders deeply nested children`, t => {
     </HasChildren>
   )
   const node = document.createElement(`div`)
+  document.body.appendChild(node)
   Yolk.render(component, node)
 
   t.equal(node.innerHTML, `<div class="wrapper"><div class="wrapper"><div id="hello"></div><div class="wrapper"><div id="hello"></div></div></div></div>`)

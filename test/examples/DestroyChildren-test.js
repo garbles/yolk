@@ -25,6 +25,7 @@ test(`destroying children`, t => {
 
   const component = <DestroyChildren />
   const node = document.createElement(`div`)
+  document.body.appendChild(node)
   Yolk.render(component, node)
 
   const adder = node.querySelector(`#add`)

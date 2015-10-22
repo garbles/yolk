@@ -18,6 +18,7 @@ test(`assigning a handler to multiple sources`, t => {
   const lastComponent = <div className={null} />
 
   const node = document.createElement(`div`)
+  document.body.appendChild(node)
   Yolk.render(component, node)
 
   t.equal(node.innerHTML, `<div class="some-class"><button></button><button></button></div>`)

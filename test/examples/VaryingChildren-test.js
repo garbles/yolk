@@ -37,6 +37,7 @@ test(`renders a varying number of base children`, t => {
 
   const component = <VaryingBaseChildrenFromProps numbers={numbersObservable} />
   const node = document.createElement(`div`)
+  document.body.appendChild(node)
   Yolk.render(component, node)
 
   t.equal(node.innerHTML, `<ul><li>1</li></ul>`)
@@ -55,6 +56,7 @@ test(`renders a varying number of widget children`, t => {
 
   const component = <VaryingWidgetChildrenFromProps numbers={numbersObservable} />
   const node = document.createElement(`div`)
+  document.body.appendChild(node)
   Yolk.render(component, node)
 
   t.equal(node.innerHTML, `<div><button id="stub">10</button></div>`)

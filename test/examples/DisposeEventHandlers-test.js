@@ -6,6 +6,7 @@ test(`disposing of event handlers when a component unmounts`, t => {
   t.plan(8)
 
   const node = document.createElement(`div`)
+  document.body.appendChild(node)
   const handlers = []
   const subject1 = new Rx.Subject()
   const subject2 = new Rx.Subject()

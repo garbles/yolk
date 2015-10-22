@@ -20,6 +20,7 @@ test(`a simple counter`, t => {
 
   const component = <Counter />
   const node = document.createElement(`div`)
+  document.body.appendChild(node)
   Yolk.render(component, node)
 
   t.equal(node.innerHTML, `<div><button id="plus">+</button><button id="minus">-</button><span>0</span></div>`)

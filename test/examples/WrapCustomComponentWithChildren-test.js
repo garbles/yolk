@@ -36,6 +36,7 @@ test(`wrapping custom virtual dom widgets`, t => {
 
   const component = <WrapCustomComponentWithChildren contents="and so does this" />
   const node = document.createElement(`div`)
+  document.body.appendChild(node)
   Yolk.render(component, node)
 
   t.equal(node.innerHTML, `<div><div><div>This works</div><p>and so does this</p></div></div>`)

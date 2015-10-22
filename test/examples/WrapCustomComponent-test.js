@@ -32,6 +32,7 @@ test(`works just as any other component would`, t => {
 
   const component = <WrapCustomComponent />
   const node = document.createElement(`div`)
+  document.body.appendChild(node)
   Yolk.render(component, node)
 
   t.equal(node.innerHTML, `<div><strong>hello world!</strong></div>`)

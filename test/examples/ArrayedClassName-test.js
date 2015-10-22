@@ -6,6 +6,7 @@ test(`an arrayed list of classes`, t => {
 
   const component = <div className={[`a`, `b`, `c`, undefined, false, null, `g`]} />
   const node = document.createElement(`div`)
+  document.body.appendChild(node)
   Yolk.render(component, node)
 
   t.equal(node.innerHTML, `<div class="a b c g"></div>`)

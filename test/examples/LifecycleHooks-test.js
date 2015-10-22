@@ -6,6 +6,7 @@ test(`will run code after the component mounts`, t => {
   t.timeoutAfter(500)
 
   const node = document.createElement(`div`)
+  document.body.appendChild(node)
 
   function onMount (event) {
     t.equal(node.childElementCount, 1)
@@ -23,6 +24,7 @@ test(`will run code when the component unmounts`, t => {
   t.timeoutAfter(500)
 
   const node = document.createElement(`div`)
+  document.body.appendChild(node)
 
   function onUnmount (event) {
     t.equal(node.childElementCount, 1)

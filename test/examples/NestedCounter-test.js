@@ -48,6 +48,7 @@ test(`increments and decrements a wrapper counter and a nested child`, t => {
 
   const component = <Counter />
   const node = document.createElement(`div`)
+  document.body.appendChild(node)
   Yolk.render(component, node)
 
   const wrapperPlus = node.querySelector(`#wrapper-plus`)

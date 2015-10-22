@@ -16,6 +16,7 @@ test(`does not destroy the previous instance of the child`, t => {
   const children = flipper.scan(acc => [acc[1], acc[0]], [<Stub key="second">2</Stub>, <Stub key="first">1</Stub>])
   const component = <div key="wrapper">{children}</div>
   const node = document.createElement(`div`)
+  document.body.appendChild(node)
   Yolk.render(component, node)
 
   const stubs = node.querySelectorAll(`.stub`)
@@ -53,6 +54,7 @@ test(`does not reset children as long as one of them is keyed`, t => {
   const children = flipper.scan(acc => [acc[1], acc[2], acc[3], acc[0]], [<Stub>4</Stub>, <Stub key="first">1</Stub>, <Stub>2</Stub>, <Stub>3</Stub>])
   const component = <div key="wrapper">{children}</div>
   const node = document.createElement(`div`)
+  document.body.appendChild(node)
   Yolk.render(component, node)
 
   const stubs = node.querySelectorAll(`.stub`)
@@ -82,6 +84,7 @@ test(`resets children if they aren't keyed`, t => {
   const children = flipper.scan(acc => [acc[1], acc[0]], [<Stub>2</Stub>, <Stub>1</Stub>])
   const component = <div key="wrapper">{children}</div>
   const node = document.createElement(`div`)
+  document.body.appendChild(node)
   Yolk.render(component, node)
 
   const stubs = node.querySelectorAll(`.stub`)
