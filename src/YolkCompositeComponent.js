@@ -1,5 +1,5 @@
 const Rx = require(`rx`)
-const create = require(`virtual-dom/create-element`)
+const create = require(`yolk-virtual-dom/create-element`)
 const wrapObject = require(`./wrapObject`)
 const YolkCompositeFunctionWrapper = require(`./YolkCompositeFunctionWrapper`)
 

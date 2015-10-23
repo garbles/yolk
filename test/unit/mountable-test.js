@@ -6,19 +6,19 @@ test(`mounting and unmounting an instance`, t => {
   t.timeoutAfter(100)
 
   const node = document.createElement(`div`)
-  const onMount = () => t.pass(`emits mount event`)
-  const onUnmount = () => t.pass(`emits unmount event`)
+  const handler = () => t.pass(`emits event`)
 
-  node.addEventListener(`mount`, onMount)
+  node.addEventListener(`mount`, handler)
+  node.addEventListener(`unmount`, handler)
 
   document.body.appendChild(node)
 
-  mountable.emitMount(node, onMount)
-  mountable.emitUnmount(node, onUnmount)
+  mountable.emitMount(node, handler)
+  mountable.emitUnmount(node, handler)
 
   setTimeout(() => {
-    node.removeEventListener(`mount`, onMount)
-    node.removeEventListener(`unmount`, onUnmount)
+    node.removeEventListener(`mount`, handler)
+    node.removeEventListener(`unmount`, handler)
     document.body.removeChild(node)
   }, 0)
 })

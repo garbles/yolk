@@ -23,13 +23,14 @@ test(`will run code when the component unmounts`, t => {
   function onUnmount () {
     t.equal(node.childElementCount, 1)
     t.equal(event.target.outerHTML, `<strong></strong>`)
-    t.equal(node.outerHTML, `<div><b></b></div>`)
-    cleanup()
+
+    setTimeout(function () {
+      t.equal(node.innerHTML, `<b></b>`)
+      cleanup()
+    }, 0)
   }
 
-  const component = <strong onUnmount={onUnmount} />
-  const otherComponent = <b />
-  const [node, cleanup] = renderInDoc(component)
+  const [node, cleanup] = renderInDoc(<strong onUnmount={onUnmount} />)
 
-  Yolk.render(otherComponent, node)
+  Yolk.render(<b />, node)
 })

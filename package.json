@@ -55,7 +55,7 @@
     "lodash.isplainobject": "3.2.0",
     "lodash.kebabcase": "3.0.1",
     "rx": "^4.0.0",
-    "virtual-dom": "2.1.1"
+    "yolk-virtual-dom": "3.0.2"
   },
   "browserify-shim": {
     "rx": "global:Rx"

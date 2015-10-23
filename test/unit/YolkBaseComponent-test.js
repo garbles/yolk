@@ -30,22 +30,22 @@ test(`does not apply new prop keys`, t => {
 
 test(`listens for mount and umount when defined`, t => {
   t.plan(2)
+  t.timeoutAfter(100)
 
   const instance = new YolkBaseComponent(`p`, {onMount: () => {}, onUnmount: () => {}}, [])
   const node = instance.init()
 
-  const onMount = () => t.pass(`emits mount event`)
-  const onUnmount = () => t.pass(`emits unmount event`)
+  const handler = () => t.pass(`emits event`)
 
-  node.addEventListener(`mount`, onMount)
-  node.addEventListener(`unmount`, onUnmount)
+  node.addEventListener(`mount`, handler)
+  node.addEventListener(`unmount`, handler)
   document.body.appendChild(node)
 
   setTimeout(() => {
-    instance.destroy()
+    instance.predestroy()
     document.body.removeChild(node)
-    node.removeEventListener(`mount`, onMount)
-    node.removeEventListener(`unmount`, onUnmount)
+    node.removeEventListener(`mount`, handler)
+    node.removeEventListener(`unmount`, handler)
   }, 0)
 })
 

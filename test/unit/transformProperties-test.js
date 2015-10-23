@@ -1,7 +1,7 @@
 const test = require(`tape`)
 const transformProperties = require(`transformProperties`)
 const EventHook = require(`EventHook`)
-const AttributeHook = require(`virtual-dom/virtual-hyperscript/hooks/attribute-hook`)
+const AttributeHook = require(`yolk-virtual-dom/virtual-hyperscript/hooks/attribute-hook`)
 
 test(`transformProperties: transforms props so that they will work correctly with virtual dom`, t => {
   t.plan(1)

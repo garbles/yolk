@@ -1,8 +1,8 @@
 const Rx = require(`rx`)
-const create = require(`virtual-dom/create-element`)
-const diff = require(`virtual-dom/diff`)
-const h = require(`virtual-dom/h`)
-const patch = require(`virtual-dom/patch`)
+const create = require(`yolk-virtual-dom/create-element`)
+const diff = require(`yolk-virtual-dom/diff`)
+const h = require(`yolk-virtual-dom/h`)
+const patch = require(`yolk-virtual-dom/patch`)
 const wrapObject = require(`./wrapObject`)
 const transformProperties = require(`./transformProperties`)
 const isFunction = require(`./isFunction`)
@@ -82,9 +82,11 @@ YolkBaseComponent.prototype = {
     }
   },
 
-  destroy () {
+  predestroy () {
     mountable.emitUnmount(this._node, this._props.onUnmount)
+  },
 
+  destroy () {
     this._patchSubscription.dispose()
 
     const children = this._children

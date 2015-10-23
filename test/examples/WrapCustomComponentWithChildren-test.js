@@ -1,6 +1,6 @@
 const test = require(`tape`)
 const Yolk = require(`yolk`)
-const {h, create} = require(`virtual-dom`)
+const {h, create} = require(`yolk-virtual-dom`)
 const renderInDoc = require(`../helpers/renderInDoc`)
 
 class CustomStub {

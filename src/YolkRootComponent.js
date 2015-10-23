@@ -1,6 +1,6 @@
-const create = require(`virtual-dom/create-element`)
-const diff = require(`virtual-dom/diff`)
-const patch = require(`virtual-dom/patch`)
+const create = require(`yolk-virtual-dom/create-element`)
+const diff = require(`yolk-virtual-dom/diff`)
+const patch = require(`yolk-virtual-dom/patch`)
 const delegator = require(`./delegator`)
 
 const PREVIOUS_WIDGET_KEY = `__YOLK_PREVIOUS_WIDGET_KEY__`
