@@ -1,7 +1,7 @@
 const test = require(`tape`)
 const mountable = require(`mountable`)
 
-test.only(`mounting and unmounting an instance`, t => {
+test(`mounting and unmounting an instance`, t => {
   t.plan(2)
   t.timeoutAfter(100)
 
