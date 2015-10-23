@@ -1,5 +1,6 @@
 const test = require(`tape`)
 const Yolk = require(`yolk`)
+const renderInDoc = require(`../helpers/renderInDoc`)
 
 function NestedCallback () {
   const handleInc = this.createEventHandler(() => 1, 0)
@@ -23,8 +24,7 @@ test(`handles calling callback functions from a child component`, t => {
   t.plan(2)
 
   const component = <NestedCallback />
-  const node = document.createElement(`div`)
-  Yolk.render(component, node)
+  const [node, cleanup] = renderInDoc(component)
 
   const count = node.querySelector(`#count`)
   const button = node.querySelector(`#nested-button`)
@@ -36,4 +36,6 @@ test(`handles calling callback functions from a child component`, t => {
   button.click()
 
   t.equal(count.innerHTML, `3`)
+
+  cleanup()
 })

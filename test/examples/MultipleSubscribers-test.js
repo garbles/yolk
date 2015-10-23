@@ -1,5 +1,6 @@
 const test = require(`tape`)
 const Yolk = require(`yolk`)
+const renderInDoc = require(`../helpers/renderInDoc`)
 
 function CounterWithMultipleSubscribers (props) {
   const handlePlus = this.createEventHandler(() => 1, 0)
@@ -22,8 +23,7 @@ test(`can have multiple subscribers listening to the same source`, t => {
   t.plan(2)
 
   let component = <CounterWithMultipleSubscribers count={55} />
-  const node = document.createElement(`div`)
-  Yolk.render(component, node)
+  const [node, cleanup] = renderInDoc(component)
 
   t.equal(node.innerHTML, `<div><button id="plus">+</button><button id="minus">-</button><span>0</span><span>0</span><span>55</span><span>55</span></div>`)
 
@@ -39,4 +39,6 @@ test(`can have multiple subscribers listening to the same source`, t => {
   Yolk.render(component, node)
 
   t.equal(node.innerHTML, `<div><button id="plus">+</button><button id="minus">-</button><span>2</span><span>2</span><span>77</span><span>77</span></div>`)
+
+  cleanup()
 })

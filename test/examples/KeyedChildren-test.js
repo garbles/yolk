@@ -1,6 +1,7 @@
 const test = require(`tape`)
 const Yolk = require(`yolk`)
 const {Rx} = Yolk
+const renderInDoc = require(`../helpers/renderInDoc`)
 
 function Stub (props, children) {
   const handleClick = this.createEventHandler(() => 1, 0)
@@ -15,8 +16,7 @@ test(`does not destroy the previous instance of the child`, t => {
   const flipper = new Rx.BehaviorSubject()
   const children = flipper.scan(acc => [acc[1], acc[0]], [<Stub key="second">2</Stub>, <Stub key="first">1</Stub>])
   const component = <div key="wrapper">{children}</div>
-  const node = document.createElement(`div`)
-  Yolk.render(component, node)
+  const [node, cleanup] = renderInDoc(component)
 
   const stubs = node.querySelectorAll(`.stub`)
   const first = stubs[0]
@@ -44,6 +44,8 @@ test(`does not destroy the previous instance of the child`, t => {
   flipper.onNext(true)
 
   t.equal(node.innerHTML, `<div><button class="stub">22</button><button class="stub">14</button></div>`)
+
+  cleanup()
 })
 
 test(`does not reset children as long as one of them is keyed`, t => {
@@ -52,8 +54,7 @@ test(`does not reset children as long as one of them is keyed`, t => {
   const flipper = new Rx.BehaviorSubject()
   const children = flipper.scan(acc => [acc[1], acc[2], acc[3], acc[0]], [<Stub>4</Stub>, <Stub key="first">1</Stub>, <Stub>2</Stub>, <Stub>3</Stub>])
   const component = <div key="wrapper">{children}</div>
-  const node = document.createElement(`div`)
-  Yolk.render(component, node)
+  const [node, cleanup] = renderInDoc(component)
 
   const stubs = node.querySelectorAll(`.stub`)
   const first = stubs[0]
@@ -73,6 +74,8 @@ test(`does not reset children as long as one of them is keyed`, t => {
   flipper.onNext(true)
 
   t.equal(node.innerHTML, `<div><button class="stub">21</button><button class="stub">31</button><button class="stub">41</button><button class="stub">11</button></div>`)
+
+  cleanup()
 })
 
 test(`resets children if they aren't keyed`, t => {
@@ -81,8 +84,7 @@ test(`resets children if they aren't keyed`, t => {
   const flipper = new Rx.BehaviorSubject()
   const children = flipper.scan(acc => [acc[1], acc[0]], [<Stub>2</Stub>, <Stub>1</Stub>])
   const component = <div key="wrapper">{children}</div>
-  const node = document.createElement(`div`)
-  Yolk.render(component, node)
+  const [node, cleanup] = renderInDoc(component)
 
   const stubs = node.querySelectorAll(`.stub`)
   const first = stubs[0]
@@ -98,4 +100,6 @@ test(`resets children if they aren't keyed`, t => {
   flipper.onNext(true)
 
   t.equal(node.innerHTML, `<div><button class="stub">11</button><button class="stub">21</button></div>`)
+
+  cleanup()
 })

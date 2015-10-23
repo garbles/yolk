@@ -1,5 +1,6 @@
 const test = require(`tape`)
 const Yolk = require(`yolk`)
+const renderInDoc = require(`../helpers/renderInDoc`)
 
 function DestroyChildren () {
   const handleAdd = this.createEventHandler(null, 0)
@@ -24,8 +25,7 @@ test(`destroying children`, t => {
   t.plan(4)
 
   const component = <DestroyChildren />
-  const node = document.createElement(`div`)
-  Yolk.render(component, node)
+  const [node, cleanup] = renderInDoc(component)
 
   const adder = node.querySelector(`#add`)
   const remover = node.querySelector(`#remove`)
@@ -46,4 +46,6 @@ test(`destroying children`, t => {
   adder.click()
 
   t.equal(children.innerHTML, `<b></b><b></b><b></b><p></p>`)
+
+  cleanup()
 })

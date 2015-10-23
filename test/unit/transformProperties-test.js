@@ -1,5 +1,6 @@
 const test = require(`tape`)
 const transformProperties = require(`transformProperties`)
+const EventHook = require(`EventHook`)
 
 test(`transformProperties: transforms props so that they will work correctly with virtual dom`, t => {
   t.plan(1)
@@ -20,7 +21,7 @@ test(`transformProperties: transforms props so that they will work correctly wit
 
   const transformedProps = {
     className: `someName otherName`,
-    onclick: onClick,
+    onclick: new EventHook(onClick),
     attributes: {
       action: `/`,
       rowspan: 5,

@@ -1,8 +1,9 @@
 const create = require(`virtual-dom/create-element`)
 const diff = require(`virtual-dom/diff`)
 const patch = require(`virtual-dom/patch`)
+const delegator = require(`./delegator`)
 
-const PREVIOUS_WIDGET_KEY = `__YOLK_PREVIOUS_WIDGET_KEY`
+const PREVIOUS_WIDGET_KEY = `__YOLK_PREVIOUS_WIDGET_KEY__`
 
 function YolkRootComponent (child) {
   this._child = child
@@ -36,6 +37,7 @@ YolkRootComponent.render = function render (instance, node) {
   } else {
     child = create(root)
     node.appendChild(child)
+    delegator(node)
   }
 
   child[PREVIOUS_WIDGET_KEY] = root

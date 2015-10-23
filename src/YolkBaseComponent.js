@@ -59,7 +59,7 @@ YolkBaseComponent.prototype = {
         (err) => {throw new Error(err.message)}
       )
 
-    mountable.emitMount(this._node)
+    mountable.emitMount(this._node, this._props.onMount)
 
     return this._node
   },
@@ -83,7 +83,8 @@ YolkBaseComponent.prototype = {
   },
 
   destroy () {
-    mountable.emitUnmount(this._node, this._props)
+    mountable.emitUnmount(this._node, this._props.onUnmount)
+
     this._patchSubscription.dispose()
 
     const children = this._children

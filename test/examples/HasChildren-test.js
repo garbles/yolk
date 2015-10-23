@@ -1,5 +1,6 @@
 const test = require(`tape`)
 const Yolk = require(`yolk`)
+const renderInDoc = require(`../helpers/renderInDoc`)
 
 function HasChildren (props, children) {
   return (
@@ -17,10 +18,11 @@ test(`renders children`, t => {
       <div id="hello" />
     </HasChildren>
   )
-  const node = document.createElement(`div`)
-  Yolk.render(component, node)
+  const [node, cleanup] = renderInDoc(component)
 
   t.equal(node.innerHTML, `<div class="wrapper"><div id="hello"></div></div>`)
+
+  cleanup()
 })
 
 test(`renders deeply nested children`, t => {
@@ -36,8 +38,10 @@ test(`renders deeply nested children`, t => {
       </HasChildren>
     </HasChildren>
   )
-  const node = document.createElement(`div`)
-  Yolk.render(component, node)
+
+  const [node, cleanup] = renderInDoc(component)
 
   t.equal(node.innerHTML, `<div class="wrapper"><div class="wrapper"><div id="hello"></div><div class="wrapper"><div id="hello"></div></div></div></div>`)
+
+  cleanup()
 })

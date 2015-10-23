@@ -1,5 +1,6 @@
 const test = require(`tape`)
 const Yolk = require(`yolk`)
+const renderInDoc = require(`../helpers/renderInDoc`)
 
 function Counter () {
   const handlePlus = this.createEventHandler(1)
@@ -19,8 +20,7 @@ test(`a simple counter`, t => {
   t.plan(2)
 
   const component = <Counter />
-  const node = document.createElement(`div`)
-  Yolk.render(component, node)
+  const [node, cleanup] = renderInDoc(component)
 
   t.equal(node.innerHTML, `<div><button id="plus">+</button><button id="minus">-</button><span>0</span></div>`)
 
@@ -33,4 +33,6 @@ test(`a simple counter`, t => {
   minus.click()
 
   t.equal(node.innerHTML, `<div><button id="plus">+</button><button id="minus">-</button><span>2</span></div>`)
+
+  cleanup()
 })
