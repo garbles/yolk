@@ -1,5 +1,6 @@
 const test = require(`tape`)
 const Yolk = require(`yolk`)
+const renderInDoc = require(`../helpers/renderInDoc`)
 
 function Counter (props) {
   const handlePlus = this.createEventHandler(() => 1, 0)
@@ -17,9 +18,7 @@ test(`only updates the props and or children`, t => {
   t.plan(3)
 
   const component = <Counter count={0} />
-  const node = document.createElement(`div`)
-  document.body.appendChild(node)
-  Yolk.render(component, node)
+  const [node, cleanup] = renderInDoc(component)
 
   t.equal(node.innerHTML, `<div><button id="plus">+</button><span>Count: 0</span></div>`)
 
@@ -34,4 +33,6 @@ test(`only updates the props and or children`, t => {
   Yolk.render(newComponent, node)
 
   t.equal(node.innerHTML, `<div><button id="plus">+</button><span>Count: 7</span></div>`)
+
+  cleanup()
 })

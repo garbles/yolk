@@ -10,7 +10,7 @@ function emitMount (node, fn) {
     const event = new CustomEvent(`mount`)
     node.dispatchEvent(event)
   } else {
-    setTimeout(() => emitMount(node), 0)
+    setTimeout(() => emitMount(node, fn), 0)
   }
 }
 
@@ -21,10 +21,10 @@ function emitUnmount (node, fn) {
 
   const event = new CustomEvent(`unmount`)
 
-  // node has already been removed from the DOM, so we can't use delegation
-  node.addEventListener('unmount', fn, true)
+  // node has already been removed from the DOM, so we can`t use delegation
+  node.addEventListener(`unmount`, fn, true)
   node.dispatchEvent(event)
-  node.removeEventListener('unmount', fn, true)
+  node.removeEventListener(`unmount`, fn, true)
 }
 
 module.exports = {emitMount, emitUnmount}

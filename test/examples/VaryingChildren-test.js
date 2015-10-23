@@ -1,6 +1,7 @@
 const test = require(`tape`)
 const Yolk = require(`yolk`)
 const {Rx} = Yolk
+const renderInDoc = require(`../helpers/renderInDoc`)
 
 function VaryingBaseChildrenFromProps (props) {
   const numbers = props.numbers.map(nums => {
@@ -36,9 +37,7 @@ test(`renders a varying number of base children`, t => {
   const numbersObservable = numbersSubject.scan((acc, next) => acc.concat(next), [])
 
   const component = <VaryingBaseChildrenFromProps numbers={numbersObservable} />
-  const node = document.createElement(`div`)
-  document.body.appendChild(node)
-  Yolk.render(component, node)
+  const [node, cleanup] = renderInDoc(component)
 
   t.equal(node.innerHTML, `<ul><li>1</li></ul>`)
 
@@ -46,6 +45,8 @@ test(`renders a varying number of base children`, t => {
   numbersSubject.onNext(3)
 
   t.equal(node.innerHTML, `<ul><li>1</li><li>2</li><li>3</li></ul>`)
+
+  cleanup()
 })
 
 test(`renders a varying number of widget children`, t => {
@@ -55,9 +56,7 @@ test(`renders a varying number of widget children`, t => {
   const numbersObservable = numbersSubject.scan((acc, next) => acc.concat(next), [])
 
   const component = <VaryingWidgetChildrenFromProps numbers={numbersObservable} />
-  const node = document.createElement(`div`)
-  document.body.appendChild(node)
-  Yolk.render(component, node)
+  const [node, cleanup] = renderInDoc(component)
 
   t.equal(node.innerHTML, `<div><button id="stub">10</button></div>`)
 
@@ -74,4 +73,6 @@ test(`renders a varying number of widget children`, t => {
   numbersSubject.onNext(3)
 
   t.equal(node.innerHTML, `<div><button id="stub">15</button><button id="stub">20</button><button id="stub">30</button></div>`)
+
+  cleanup()
 })

@@ -1,5 +1,6 @@
 const test = require(`tape`)
 const Yolk = require(`yolk`)
+const renderInDoc = require(`../helpers/renderInDoc`)
 
 test(`assigning a handler to multiple sources`, t => {
   t.plan(7)
@@ -17,9 +18,7 @@ test(`assigning a handler to multiple sources`, t => {
   const nextComponent = <div className={className} />
   const lastComponent = <div className={null} />
 
-  const node = document.createElement(`div`)
-  document.body.appendChild(node)
-  Yolk.render(component, node)
+  const [node, cleanup] = renderInDoc(component)
 
   t.equal(node.innerHTML, `<div class="some-class"><button></button><button></button></div>`)
   t.equal(handler.hasObservers(), true)
@@ -34,4 +33,6 @@ test(`assigning a handler to multiple sources`, t => {
 
   t.equal(node.innerHTML, `<div></div>`)
   t.equal(handler.hasObservers(), false)
+
+  cleanup()
 })

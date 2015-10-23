@@ -1,5 +1,6 @@
 const test = require(`tape`)
 const Yolk = require(`yolk`)
+const renderInDoc = require(`../helpers/renderInDoc`)
 
 function NestedCounter (props) {
   const handlePlus = this.createEventHandler(() => 1, 0)
@@ -47,9 +48,7 @@ test(`increments and decrements a wrapper counter and a nested child`, t => {
   t.plan(8)
 
   const component = <Counter />
-  const node = document.createElement(`div`)
-  document.body.appendChild(node)
-  Yolk.render(component, node)
+  const [node, cleanup] = renderInDoc(component)
 
   const wrapperPlus = node.querySelector(`#wrapper-plus`)
   const wrapperMinus = node.querySelector(`#wrapper-minus`)
@@ -80,4 +79,6 @@ test(`increments and decrements a wrapper counter and a nested child`, t => {
 
   t.equal(wrapperCount.innerHTML, `1`)
   t.equal(nestedCount.innerHTML, `2`)
+
+  cleanup()
 })

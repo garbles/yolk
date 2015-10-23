@@ -1,12 +1,11 @@
 const test = require(`tape`)
 const Yolk = require(`yolk`)
 const {Rx} = Yolk
+const renderInDoc = require(`../helpers/renderInDoc`)
 
 test(`disposing of event handlers when a component unmounts`, t => {
   t.plan(8)
 
-  const node = document.createElement(`div`)
-  document.body.appendChild(node)
   const handlers = []
   const subject1 = new Rx.Subject()
   const subject2 = new Rx.Subject()
@@ -24,7 +23,7 @@ test(`disposing of event handlers when a component unmounts`, t => {
     return <div />
   }
 
-  Yolk.render(<DisposeEventHandlers />, node)
+  const [node, cleanup] = renderInDoc(<DisposeEventHandlers />)
 
   t.equal(handlers[0].isDisposed, false)
   t.equal(handlers[0].observers.length, 2)

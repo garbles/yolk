@@ -1,5 +1,6 @@
 const test = require(`tape`)
 const Yolk = require(`yolk`)
+const renderInDoc = require(`../helpers/renderInDoc`)
 
 class CustomStub {
   constructor () {
@@ -31,9 +32,9 @@ test(`works just as any other component would`, t => {
   t.plan(1)
 
   const component = <WrapCustomComponent />
-  const node = document.createElement(`div`)
-  document.body.appendChild(node)
-  Yolk.render(component, node)
+  const [node, cleanup] = renderInDoc(component)
 
   t.equal(node.innerHTML, `<div><strong>hello world!</strong></div>`)
+
+  cleanup()
 })

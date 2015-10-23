@@ -24,7 +24,7 @@
     "uglify": "uglifyjs --compress --mangle -- dist/yolk.js > dist/yolk.min.js",
     "clean": "rm -rf lib/ dist/ && mkdir lib/ dist/",
     "build": "babel -d lib/ src/",
-    "lint": "eslint src test",
+    "lint": "eslint src",
     "commit-bundle": "git add dist/ lib/ && git commit -m ':tada: new bundle!'",
     "prerelease": "npm run test && npm run lint && npm run clean && npm run bundle && npm run uglify && npm run build && npm run commit-bundle",
     "release": "npm run release-patch",

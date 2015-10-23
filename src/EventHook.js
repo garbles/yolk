@@ -1,6 +1,6 @@
-const evStore = require('ev-store');
+const evStore = require(`ev-store`)
 
-function EventHook(value) {
+function EventHook (value) {
   this.value = value
 }
 
@@ -17,7 +17,7 @@ EventHook.prototype = {
     const propName = propertyName.substr(2).toLowerCase()
 
     es[propName] = undefined
-  }
+  },
 }
 
 module.exports = EventHook

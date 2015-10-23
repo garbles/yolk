@@ -1,6 +1,7 @@
 const test = require(`tape`)
 const Yolk = require(`yolk`)
 const {h, create} = require(`virtual-dom`)
+const renderInDoc = require(`../helpers/renderInDoc`)
 
 class CustomStub {
   constructor (children) {
@@ -35,9 +36,9 @@ test(`wrapping custom virtual dom widgets`, t => {
   t.plan(1)
 
   const component = <WrapCustomComponentWithChildren contents="and so does this" />
-  const node = document.createElement(`div`)
-  document.body.appendChild(node)
-  Yolk.render(component, node)
+  const [node, cleanup] = renderInDoc(component)
 
   t.equal(node.innerHTML, `<div><div><div>This works</div><p>and so does this</p></div></div>`)
+
+  cleanup()
 })

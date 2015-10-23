@@ -30,21 +30,23 @@ test(`does not apply new prop keys`, t => {
 
 test(`listens for mount and umount when defined`, t => {
   t.plan(2)
-  t.timeoutAfter(100)
 
-  const instance = new YolkBaseComponent(`p`, {}, [])
+  const instance = new YolkBaseComponent(`p`, {onMount: () => {}, onUnmount: () => {}}, [])
   const node = instance.init()
 
-  node.addEventListener(`mount`, () => {
-    t.pass(`emits mount event`)
-  })
+  const onMount = () => t.pass(`emits mount event`)
+  const onUnmount = () => t.pass(`emits unmount event`)
 
-  node.addEventListener(`unmount`, () => {
-    t.pass(`emits unmount event`)
-  })
+  node.addEventListener(`mount`, onMount)
+  node.addEventListener(`unmount`, onUnmount)
   document.body.appendChild(node)
 
-  instance.destroy()
+  setTimeout(() => {
+    instance.destroy()
+    document.body.removeChild(node)
+    node.removeEventListener(`mount`, onMount)
+    node.removeEventListener(`unmount`, onUnmount)
+  }, 0)
 })
 
 test(`accepts observables as props`, t => {
@@ -61,6 +63,8 @@ test(`accepts observables as props`, t => {
   height.onNext(10)
 
   t.equal(node.outerHTML, `<p height="10"></p>`)
+
+  document.body.removeChild(node)
 })
 
 test(`does not wrap objects with toJS defined on them`, t => {
