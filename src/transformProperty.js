@@ -30,9 +30,9 @@ module.exports = function transformProperty (props, key, value, property = EMPTY
     }
   }
 
-  if (property.canBeArrayOfStrings && Array.isArray(value)) {
-    _value = compact(value).join(` `)
-  } else if (property.hasBooleanValue && !value) {
+  if (property.canBeArrayOfStrings && Array.isArray(_value)) {
+    _value = compact(_value).join(` `)
+  } else if (property.hasBooleanValue && (_value !== true && _value !== false)) {
     return props
   }
 
