@@ -1,5 +1,6 @@
 const test = require(`tape`)
-const Yolk = require(`yolk`)
+const Yolk = require(`yolk`) // eslint-disable-line no-unused-vars
+
 const {h, create} = require(`yolk-virtual-dom`)
 const renderInDoc = require(`../helpers/renderInDoc`)
 

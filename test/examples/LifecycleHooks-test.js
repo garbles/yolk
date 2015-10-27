@@ -1,3 +1,5 @@
+/* eslint-disable no-use-before-define */
+
 const test = require(`tape`)
 const Yolk = require(`yolk`)
 const renderInDoc = require(`../helpers/renderInDoc`)
@@ -24,7 +26,7 @@ test(`will run code when the component unmounts`, t => {
     t.equal(node.childElementCount, 1)
     t.equal(event.target.outerHTML, `<strong></strong>`)
 
-    setTimeout(function () {
+    setTimeout(() => {
       t.equal(node.innerHTML, `<b></b>`)
       cleanup()
     }, 0)

@@ -1,5 +1,5 @@
 const test = require(`tape`)
-const Yolk = require(`yolk`)
+const Yolk = require(`yolk`) // eslint-disable-line no-unused-vars
 const renderInDoc = require(`../helpers/renderInDoc`)
 
 test(`an arrayed list of classes`, t => {

@@ -4,6 +4,7 @@ const renderInDoc = require(`../helpers/renderInDoc`)
 
 test(`assigning a handler to multiple sources`, t => {
   t.plan(7)
+  t.timeoutAfter(100)
 
   const handler = Yolk.createEventHandler(true, true)
   const className = handler.map(() => `some-class`)

@@ -36,4 +36,6 @@ test(`disposing of event handlers when a component unmounts`, t => {
   t.equal(handlers[0].observers, null)
   t.equal(handlers[1].isDisposed, true)
   t.equal(handlers[0].observers, null)
+
+  cleanup()
 })
