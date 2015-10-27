@@ -51,7 +51,7 @@ test(`createEventHandler: with both arguments defined`, t => {
 
   const init = Math.random()
   const val = Math.random()
-  const handler = createEventHandler((val) => val + 2, init)
+  const handler = createEventHandler((_val) => _val + 2, init)
 
   const disposable = handler.subscribe(_val => t.equal(init, _val))
 
@@ -62,5 +62,4 @@ test(`createEventHandler: with both arguments defined`, t => {
   const disposable2 = handler.subscribe(_val => t.equal(val + 2, _val))
 
   disposable2.dispose()
-
 })
