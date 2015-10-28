@@ -1,4 +1,4 @@
-const DOMProperties = require(`./DOMProperties`)
+const DOMAttributeDescriptors = require(`./DOMAttributeDescriptors`)
 const transformStyle = require(`./transformStyle`)
 const transformProperty = require(`./transformProperty`)
 
@@ -15,7 +15,7 @@ module.exports = function transformProperties (props) {
     if (key === `style`) {
       transformStyle(newProps, value)
     } else {
-      transformProperty(newProps, key, value, DOMProperties[key])
+      transformProperty(newProps, key, value, DOMAttributeDescriptors[key])
     }
   }
 

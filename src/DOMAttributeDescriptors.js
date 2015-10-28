@@ -14,7 +14,7 @@ function checkMask (value, bitmask) {
   return (value & bitmask) === bitmask
 }
 
-const properties = {
+const attributes = {
   // inferred by virtual-dom
   className: CAN_BE_ARRAY_OF_STRINGS,
   id: null,
@@ -157,26 +157,26 @@ let i = -1
 
 while (++i < length) {
   const event = EventsList[i]
-  properties[`on${event}`] = HAS_LOWER_CASE | USE_EVENT_HOOK
+  attributes[`on${event}`] = HAS_LOWER_CASE | USE_EVENT_HOOK
 }
 
-const keys = Object.keys(properties)
+const keys = Object.keys(attributes)
 const isStandard = true
-const propertiesWithInfo = {}
+const DOMAttributeDescriptors = {}
 length = keys.length
 i = -1
 
 while (++i < length) {
   const key = keys[i]
-  const property = properties[key]
-  const hasLowerCase = checkMask(property, HAS_LOWER_CASE)
-  const hasDashCase = checkMask(property, HAS_DASH_CASE)
-  const isAttribute = checkMask(property, IS_ATTRIBUTE)
-  const usePropertyHook = checkMask(property, USE_PROPERTY_HOOK)
-  const useAttributeHook = checkMask(property, USE_ATTRIBUTE_HOOK)
-  const useEventHook = checkMask(property, USE_EVENT_HOOK)
-  const canBeArrayOfStrings = checkMask(property, CAN_BE_ARRAY_OF_STRINGS)
-  const hasBooleanValue = checkMask(property, HAS_BOOLEAN_VALUE)
+  const attr = attributes[key]
+  const hasLowerCase = checkMask(attr, HAS_LOWER_CASE)
+  const hasDashCase = checkMask(attr, HAS_DASH_CASE)
+  const isAttribute = checkMask(attr, IS_ATTRIBUTE)
+  const usePropertyHook = checkMask(attr, USE_PROPERTY_HOOK)
+  const useAttributeHook = checkMask(attr, USE_ATTRIBUTE_HOOK)
+  const useEventHook = checkMask(attr, USE_EVENT_HOOK)
+  const canBeArrayOfStrings = checkMask(attr, CAN_BE_ARRAY_OF_STRINGS)
+  const hasBooleanValue = checkMask(attr, HAS_BOOLEAN_VALUE)
   let computed
 
   if (hasLowerCase) {
@@ -187,7 +187,7 @@ while (++i < length) {
     computed = key
   }
 
-  propertiesWithInfo[key] = {
+  DOMAttributeDescriptors[key] = {
     isAttribute,
     isStandard,
     usePropertyHook,
@@ -199,4 +199,4 @@ while (++i < length) {
   }
 }
 
-module.exports = propertiesWithInfo
+module.exports = DOMAttributeDescriptors
