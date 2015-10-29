@@ -3,7 +3,7 @@ const Rx = require(`rx`)
 const YolkCompositeComponent = require(`YolkCompositeComponent`)
 const YolkBaseComponent = require(`YolkBaseComponent`)
 
-test(`composite component raises when it doesn't return an element`, t => {
+test(`YolkCompositeComponent: raises when it doesn't return an element`, t => {
   t.plan(6)
 
   const baseInstance = new YolkBaseComponent(`div`)

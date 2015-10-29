@@ -9,6 +9,7 @@ const USE_ATTRIBUTE_HOOK = 0x10
 const USE_EVENT_HOOK = 0x20
 const CAN_BE_ARRAY_OF_STRINGS = 0x80
 const HAS_BOOLEAN_VALUE = 0x100
+const IS_STAR = 0x200
 
 function checkMask (value, bitmask) {
   return (value & bitmask) === bitmask
@@ -149,6 +150,9 @@ const attributes = {
   selected: USE_PROPERTY_HOOK | HAS_BOOLEAN_VALUE,
   srcDoc: USE_PROPERTY_HOOK | HAS_LOWER_CASE,
   value: USE_PROPERTY_HOOK,
+
+  // X-* attributes
+  data: IS_STAR,
 }
 
 // events
@@ -177,14 +181,13 @@ while (++i < length) {
   const useEventHook = checkMask(attr, USE_EVENT_HOOK)
   const canBeArrayOfStrings = checkMask(attr, CAN_BE_ARRAY_OF_STRINGS)
   const hasBooleanValue = checkMask(attr, HAS_BOOLEAN_VALUE)
+  const isStar = checkMask(attr, IS_STAR)
   let computed
 
   if (hasLowerCase) {
     computed = key.toLowerCase()
   } else if (hasDashCase) {
     computed = kababCase(key)
-  } else {
-    computed = key
   }
 
   DOMAttributeDescriptors[key] = {
@@ -195,6 +198,7 @@ while (++i < length) {
     useEventHook,
     canBeArrayOfStrings,
     hasBooleanValue,
+    isStar,
     computed,
   }
 }

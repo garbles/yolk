@@ -4,47 +4,61 @@ const AttributeHook = require(`yolk-virtual-dom/virtual-hyperscript/hooks/attrib
 const EventHook = require(`./EventHook`)
 const compact = require(`./compact`)
 
-const IS_DATA_MATCHER = /^data[A-Z]/
-
-const EMPTY_PROP = {
+const NULL_DESCRIPTOR = {
   isAttribute: false,
   isStandard: false,
   usePropertyHook: false,
+  useEventHook: false,
   useAttributeHook: false,
   canBeArrayOfStrings: false,
   hasBooleanValue: false,
+  isStar: false,
+  computed: undefined,
 }
 
-module.exports = function transformProperty (props, key, value, property = EMPTY_PROP) {
-  let isDataAttribute = false
+const STAR_DESCRIPTOR = {...NULL_DESCRIPTOR, isAttribute: true, isStandard: true}
+
+module.exports = function transformProperty (props, key, value, descriptor = NULL_DESCRIPTOR) {
   let _value = value
   let _key
 
-  if (property.isStandard) {
-    _key = property.computed
-  } else {
-    isDataAttribute = IS_DATA_MATCHER.test(key)
-
-    if (isDataAttribute) {
-      _key = kababCase(key)
-    }
-  }
-
-  if (property.canBeArrayOfStrings && Array.isArray(_value)) {
-    _value = compact(_value).join(` `)
-  } else if (property.hasBooleanValue && (_value !== true && _value !== false)) {
+  if (!descriptor.isStandard) {
     return props
   }
 
-  if (property.isAttribute || isDataAttribute) {
+  if (descriptor.hasBooleanValue && (_value !== true && _value !== false)) {
+    return props
+  }
+
+  if (descriptor.isStar) {
+    const keys = Object.keys(value)
+    const length = keys.length
+    let i = -1
+
+    while (++i < length) {
+      const __key = keys[i]
+      const __value = value[__key]
+      transformProperty(props, `${key}-${kababCase(__key)}`, __value, STAR_DESCRIPTOR)
+    }
+
+    return props
+  }
+
+  _key = descriptor.computed || key
+
+  if (descriptor.canBeArrayOfStrings && Array.isArray(_value)) {
+    _value = compact(_value).join(` `)
+  }
+
+  if (descriptor.isAttribute) {
     props.attributes[_key] = _value
-  } else if (property.usePropertyHook) {
+  } else if (descriptor.usePropertyHook) {
     props[_key] = new SoftSetHook(_value)
-  } else if (property.useEventHook) {
+  } else if (descriptor.useEventHook) {
     props[_key] = new EventHook(_value)
-  } else if (property.useAttributeHook) {
+  } else if (descriptor.useAttributeHook) {
     props[_key] = new AttributeHook(_value)
-  } else if (property.isStandard) {
+  } else if (descriptor.isStandard) {
     props[_key] = _value
   }
 

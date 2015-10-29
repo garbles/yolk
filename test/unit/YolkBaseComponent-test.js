@@ -2,7 +2,7 @@ const test = require(`tape`)
 const Rx = require(`rx`)
 const YolkBaseComponent = require(`YolkBaseComponent`)
 
-test(`returns a base component`, t => {
+test(`YolkBaseComponent: returns a base component`, t => {
   t.plan(2)
 
   const instance = new YolkBaseComponent(`p`, {height: 5}, [])
@@ -28,7 +28,7 @@ test(`does not apply new prop keys`, t => {
   t.equal(node.outerHTML, `<p height="null">hello</p>`)
 })
 
-test(`listens for mount and umount when defined`, t => {
+test(`YolkBaseComponent: listens for mount and umount when defined`, t => {
   t.plan(2)
   t.timeoutAfter(100)
 
@@ -49,7 +49,7 @@ test(`listens for mount and umount when defined`, t => {
   }, 0)
 })
 
-test(`accepts observables as props`, t => {
+test(`YolkBaseComponent: accepts observables as props`, t => {
   t.plan(2)
 
   const height = new Rx.BehaviorSubject(5)
@@ -67,7 +67,7 @@ test(`accepts observables as props`, t => {
   document.body.removeChild(node)
 })
 
-test(`does not wrap objects with toJS defined on them`, t => {
+test(`YolkBaseComponent: does not wrap objects with toJS defined on them`, t => {
   t.plan(1)
 
   const style = {
@@ -83,7 +83,7 @@ test(`does not wrap objects with toJS defined on them`, t => {
   t.equal(node.outerHTML, `<p style="height: 5px; width: 10px; "></p>`)
 })
 
-test(`properly wraps children with toJS defined on them`, t => {
+test(`YolkBaseComponent: properly wraps children with toJS defined on them`, t => {
   t.plan(2)
 
   const child1 = new YolkBaseComponent(`p`, null, [`hello`])

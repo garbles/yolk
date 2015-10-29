@@ -1,14 +1,13 @@
 const test = require(`tape`)
 const Yolk = require(`yolk`)
-const {Rx} = Yolk
+const evStore = require(`ev-store`)
 const renderInDoc = require(`../helpers/renderInDoc`)
 
 test(`disposing of event handlers when a component unmounts`, t => {
   t.plan(8)
+  t.timeoutAfter(100)
 
   const handlers = []
-  const subject1 = new Rx.Subject()
-  const subject2 = new Rx.Subject()
 
   function DisposeEventHandlers () {
     const handler = this.createEventHandler()
@@ -16,19 +15,16 @@ test(`disposing of event handlers when a component unmounts`, t => {
     handlers.push(handler)
     handlers.push(handler2)
 
-    handler.subscribe(subject1)
-    handler.subscribe(subject2)
-    handler2.subscribe(subject1)
-
-    return <div />
+    return <div onClick={handler} onBlur={handler2} />
   }
 
   const [node, cleanup] = renderInDoc(<DisposeEventHandlers />)
+  const div = node.firstChild
 
+  t.equal(evStore(div).click, handlers[0])
+  t.equal(evStore(div).blur, handlers[1])
   t.equal(handlers[0].isDisposed, false)
-  t.equal(handlers[0].observers.length, 2)
   t.equal(handlers[1].isDisposed, false)
-  t.equal(handlers[1].observers.length, 1)
 
   Yolk.render(<p />, node)
 

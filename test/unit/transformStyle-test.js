@@ -1,14 +1,21 @@
 const test = require(`tape`)
 const transformStyle = require(`transformStyle`)
 
-test(`transformStyle: converts necessary number values in px values`, t => {
-  t.plan(2)
+test(`transformStyle: returns nothing if style is nothing`, t => {
+  t.plan(1)
+  t.timeoutAfter(100)
 
   const props = {}
 
   transformStyle(props, undefined)
-
   t.deepEqual(props.style, undefined)
+})
+
+test(`transformStyle: converts necessary number values in px values`, t => {
+  t.plan(1)
+  t.timeoutAfter(100)
+
+  const props = {}
 
   const style = {
     height: 1,

@@ -56,7 +56,7 @@ YolkBaseComponent.prototype = {
       .scan(([old], next) => [next, diff(old, next)], [vNode, null])
       .subscribe(
         ([__, patches]) => patch(this._node, patches),
-        (err) => {throw new Error(err.message)}
+        (err) => {throw err}
       )
 
     mountable.emitMount(this._node, this._props.onMount)

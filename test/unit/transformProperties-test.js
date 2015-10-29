@@ -10,8 +10,7 @@ test(`transformProperties: transforms props so that they will work correctly wit
   const props = {
     className: [`someName`, `otherName`],
     acceptCharset: true,
-    dataTag: true,
-    dataOtherTag: true,
+    data: {tag: true, otherTag: true},
     action: `/`,
     rowSpan: 5,
     onClick: onClick,
