@@ -112,7 +112,7 @@ Yolk.registerElement(`big-red-text`, BigRedText)
 
 will allow you to use `<big-red-text content="Hello!"></big-red-text>` in your `.html` files and will render out to
 
-```
+```html
 <big-red-text content="Hello!">
   <h1 style="color: red;">Hello!</h1>
 </big-red-text>
@@ -202,6 +202,20 @@ allowTransparency capture charset challenge cols contextMenu dateTime disabled f
 formAction formEncType formMethod formTarget frameBorder inputMode is list manifest
 maxLength media minLength role rows seamless size sizes srcSet width wmode checked
 controls loop multiple readOnly selected srcDoc value
+```
+
+Adding `data-*` attributes requires passing an object to the `data` attribute. For example,
+
+```js
+const data = {cool: `dude`, veryRad: `gal`}
+
+<div data={data} />
+```
+
+will render
+
+```html
+<div data-cool="dude" data-very-red="gal"></div>
 ```
 
 ## Setup
