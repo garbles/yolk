@@ -52,44 +52,40 @@ Also see the [Yolk implementation of TodoMVC](https://github.com/yolkjs/yolk-tod
 
 The Yolk API is intentionally very limited so that you don't have to spend weeks getting up to speed. With an understanding of [RxJS](https://github.com/Reactive-Extensions/RxJS), you can begin building with Yolk immediately.
 
-__`createEventHandler(mapping: any, initialValue: any): Function`__
+### Instance API
 
-Creates a special function that can also be used as an observable. If the function is called, the input value is pushed to the observable as it's latest value. In other words, when this function is used as an event handler, the result is an observable stream of events from that handler. For example:
+The API for a component instance is a _single method_.
 
-```js
-// create an event handler
-const handleClick = Yolk.createEventHandler()
+__`this.createEventHandler(mapping: any, initialValue: any): Function`__
 
-// use event handler to count the number of clicks
-const numberOfClicks =
-  handleClick.scan((acc, ev) => acc + 1, 0).startWith(0)
-
-// create an element that displays the number of clicks
-// and a button to increment it
-const component = (
-  <div>
-    <span>Number of clicks: {numberOfClicks}</span>
-    <button onClick={handleClick}>Click me!</button>
-  </div>
-)
-```
-
-When custom components are destroyed, we want to make sure that all of our event handlers are properly cleaned up.
-That's why, instead of using `Yolk.createEventHandler()`, users should prefer `this.createEventHandler()`. Creating
-an event handler as part of a component instance will ensure that everything is automatically cleaned up for you.
-For example,
+Creates an exotic function that can also be used as an observable. If the function is called, the input value is pushed to the observable as it's latest value.
+In other words, when this function is used as an event handler, the result is an observable stream of events from that handler. For example:
 
 ```js
-function CustomComponent (props, children) {
+function CustomComponent () {
+  // create an event handler
   const handleClick = this.createEventHandler()
 
+  // use event handler to count the number of clicks
+  const numberOfClicks =
+    handleClick.scan((acc, ev) => acc + 1, 0).startWith(0)
+
+  // create an element that displays the number of clicks
+  // and a button to increment it
   return (
-    <button onClick={handleClick}>Click Me</button>
+    <div>
+      <span>Number of clicks: {numberOfClicks}</span>
+      <button onClick={handleClick}>Click me!</button>
+    </div>
   )
 }
 ```
 
-__`render(instance: YolkComponent, node: HTMLElement): YolkComponent`__
+When custom components are destroyed, we want to make sure that all of our event handlers are properly cleaned up.
+
+### Top Level API
+
+__`Yolk.render(instance: YolkComponent, node: HTMLElement): YolkComponent`__
 
 Renders an instance of a YolkComponent inside of an HTMLElement.
 
@@ -97,7 +93,7 @@ Renders an instance of a YolkComponent inside of an HTMLElement.
 Yolk.render(<span>Hello World!</span>, document.getElementById('container'))
 ```
 
-__`registerElement(name: string, fn: Function): void`__
+__`Yolk.registerElement(name: string, fn: Function): void`__
 
 Registers a [custom HTML element](http://www.html5rocks.com/en/tutorials/webcomponents/customelements/) using `document.registerElement` (polyfill included).
 This is especially useful if you're not building a single page application. For example,
