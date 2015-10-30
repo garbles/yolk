@@ -97,10 +97,6 @@ Renders an instance of a YolkComponent inside of an HTMLElement.
 Yolk.render(<span>Hello World!</span>, document.getElementById('container'))
 ```
 
-__`createElement(component: Function | string, props: Object, ...children: Array<any>): YolkComponent`__
-
-Creates a new instance of a YolkComponent from a function or string.  To make this less verbose, you should write JSX instead (see below).
-
 ## Using JSX
 
 It is highly suggested that you write Yolk with JSX. This is achieved using the [Babel transpiler](http://babeljs.io/). You should configure the `jsxPragma` option for Babel either in `.babelrc` or in `package.json`:
