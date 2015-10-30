@@ -51,8 +51,10 @@
     "tape-run": "1.1.0"
   },
   "dependencies": {
+    "document-register-element": "0.5.0",
     "dom-delegator": "13.1.0",
     "ev-store": "7.0.0",
+    "lodash.camelcase": "3.0.1",
     "lodash.isplainobject": "3.2.0",
     "lodash.kebabcase": "3.0.1",
     "rx": "^4.0.0",
