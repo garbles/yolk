@@ -44,7 +44,8 @@ YolkCompositeComponent.prototype = {
     const propObservable = propsSubject
     const childObservable = this._childSubject.asObservable()
 
-    this._component = YolkCompositeFunctionWrapper.create(this._fn, propObservable, childObservable)
+    const fn = this._fn
+    this._component = YolkCompositeFunctionWrapper.create(fn, propObservable, childObservable)
 
     const node = create(this._component._result)
     return node

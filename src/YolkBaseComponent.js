@@ -48,19 +48,21 @@ YolkBaseComponent.prototype = {
     const childObservable = this._childSubject.flatMapLatest(c => wrapObject(c, {wrapToJS: true}))
 
     const vNode = h(this.id)
-    this._node = create(vNode)
+    const id = this.id
+    const node = create(vNode)
 
     this._patchSubscription =
       Rx.Observable
-      .combineLatest(propObservable, childObservable, (p, c) => h(this.id, p, flatten(c)))
+      .combineLatest(propObservable, childObservable, (p, c) => h(id, p, flatten(c)))
       .scan(([old], next) => [next, diff(old, next)], [vNode, null])
       .subscribe(
-        ([__, patches]) => patch(this._node, patches),
+        ([__, patches]) => patch(node, patches),
         (err) => {throw err}
       )
 
-    mountable.emitMount(this._node, this._props.onMount)
+    mountable.emitMount(node, this._props.onMount)
 
+    this._node = node
     return this._node
   },
 
