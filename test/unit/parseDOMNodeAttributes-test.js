@@ -65,7 +65,7 @@ test(`parseDOMNodeAttributes: with a node attributes object`, t => {
   t.deepEqual(parseDOMNodeAttributes(attributes1), {someProp: 55, someOtherProp: [{}]})
 })
 
-test.only(`parseDOMNodeAttributes: with a singleton value`, t => {
+test(`parseDOMNodeAttributes: with a singleton value`, t => {
   t.plan(3)
 
   const attributes1 = [{name: `name`, value: `true`}]
