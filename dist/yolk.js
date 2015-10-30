@@ -1,6 +1,9 @@
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.Yolk = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 
 },{}],2:[function(require,module,exports){
+/*! (C) WebReflection Mit Style License */
+(function(e,t,n,r){"use strict";function rt(e,t){for(var n=0,r=e.length;n<r;n++)dt(e[n],t)}function it(e){for(var t=0,n=e.length,r;t<n;t++)r=e[t],nt(r,b[ot(r)])}function st(e){return function(t){j(t)&&(dt(t,e),rt(t.querySelectorAll(w),e))}}function ot(e){var t=e.getAttribute("is"),n=e.nodeName.toUpperCase(),r=S.call(y,t?v+t.toUpperCase():d+n);return t&&-1<r&&!ut(n,t)?-1:r}function ut(e,t){return-1<w.indexOf(e+'[is="'+t+'"]')}function at(e){var t=e.currentTarget,n=e.attrChange,r=e.attrName,i=e.target;Q&&(!i||i===t)&&t.attributeChangedCallback&&r!=="style"&&t.attributeChangedCallback(r,n===e[a]?null:e.prevValue,n===e[l]?null:e.newValue)}function ft(e){var t=st(e);return function(e){X.push(t,e.target)}}function lt(e){K&&(K=!1,e.currentTarget.removeEventListener(h,lt)),rt((e.target||t).querySelectorAll(w),e.detail===o?o:s),B&&pt()}function ct(e,t){var n=this;q.call(n,e,t),G.call(n,{target:n})}function ht(e,t){D(e,t),et?et.observe(e,z):(J&&(e.setAttribute=ct,e[i]=Z(e),e.addEventListener(p,G)),e.addEventListener(c,at)),e.createdCallback&&Q&&(e.created=!0,e.createdCallback(),e.created=!1)}function pt(){for(var e,t=0,n=F.length;t<n;t++)e=F[t],E.contains(e)||(F.splice(t,1),dt(e,o))}function dt(e,t){var n,r=ot(e);-1<r&&(tt(e,b[r]),r=0,t===s&&!e[s]?(e[o]=!1,e[s]=!0,r=1,B&&S.call(F,e)<0&&F.push(e)):t===o&&!e[o]&&(e[s]=!1,e[o]=!0,r=1),r&&(n=e[t+"Callback"])&&n.call(e))}if(r in t)return;var i="__"+r+(Math.random()*1e5>>0),s="attached",o="detached",u="extends",a="ADDITION",f="MODIFICATION",l="REMOVAL",c="DOMAttrModified",h="DOMContentLoaded",p="DOMSubtreeModified",d="<",v="=",m=/^[A-Z][A-Z0-9]*(?:-[A-Z0-9]+)+$/,g=["ANNOTATION-XML","COLOR-PROFILE","FONT-FACE","FONT-FACE-SRC","FONT-FACE-URI","FONT-FACE-FORMAT","FONT-FACE-NAME","MISSING-GLYPH"],y=[],b=[],w="",E=t.documentElement,S=y.indexOf||function(e){for(var t=this.length;t--&&this[t]!==e;);return t},x=n.prototype,T=x.hasOwnProperty,N=x.isPrototypeOf,C=n.defineProperty,k=n.getOwnPropertyDescriptor,L=n.getOwnPropertyNames,A=n.getPrototypeOf,O=n.setPrototypeOf,M=!!n.__proto__,_=n.create||function vt(e){return e?(vt.prototype=e,new vt):this},D=O||(M?function(e,t){return e.__proto__=t,e}:L&&k?function(){function e(e,t){for(var n,r=L(t),i=0,s=r.length;i<s;i++)n=r[i],T.call(e,n)||C(e,n,k(t,n))}return function(t,n){do e(t,n);while((n=A(n))&&!N.call(n,t));return t}}():function(e,t){for(var n in t)e[n]=t[n];return e}),P=e.MutationObserver||e.WebKitMutationObserver,H=(e.HTMLElement||e.Element||e.Node).prototype,B=!N.call(H,E),j=B?function(e){return e.nodeType===1}:function(e){return N.call(H,e)},F=B&&[],I=H.cloneNode,q=H.setAttribute,R=H.removeAttribute,U=t.createElement,z=P&&{attributes:!0,characterData:!0,attributeOldValue:!0},W=P||function(e){J=!1,E.removeEventListener(c,W)},X,V=e.requestAnimationFrame||e.webkitRequestAnimationFrame||e.mozRequestAnimationFrame||e.msRequestAnimationFrame||function(e){setTimeout(e,10)},$=!1,J=!0,K=!0,Q=!0,G,Y,Z,et,tt,nt;O||M?(tt=function(e,t){N.call(t,e)||ht(e,t)},nt=ht):(tt=function(e,t){e[i]||(e[i]=n(!0),ht(e,t))},nt=tt),B?(J=!1,function(){var e=k(H,"addEventListener"),t=e.value,n=function(e){var t=new CustomEvent(c,{bubbles:!0});t.attrName=e,t.prevValue=this.getAttribute(e),t.newValue=null,t[l]=t.attrChange=2,R.call(this,e),this.dispatchEvent(t)},r=function(e,t){var n=this.hasAttribute(e),r=n&&this.getAttribute(e),i=new CustomEvent(c,{bubbles:!0});q.call(this,e,t),i.attrName=e,i.prevValue=n?r:null,i.newValue=t,n?i[f]=i.attrChange=1:i[a]=i.attrChange=0,this.dispatchEvent(i)},s=function(e){var t=e.currentTarget,n=t[i],r=e.propertyName,s;n.hasOwnProperty(r)&&(n=n[r],s=new CustomEvent(c,{bubbles:!0}),s.attrName=n.name,s.prevValue=n.value||null,s.newValue=n.value=t[r]||null,s.prevValue==null?s[a]=s.attrChange=0:s[f]=s.attrChange=1,t.dispatchEvent(s))};e.value=function(e,o,u){e===c&&this.attributeChangedCallback&&this.setAttribute!==r&&(this[i]={className:{name:"class",value:this.className}},this.setAttribute=r,this.removeAttribute=n,t.call(this,"propertychange",s)),t.call(this,e,o,u)},C(H,"addEventListener",e)}()):P||(E.addEventListener(c,W),E.setAttribute(i,1),E.removeAttribute(i),J&&(G=function(e){var t=this,n,r,s;if(t===e.target){n=t[i],t[i]=r=Z(t);for(s in r){if(!(s in n))return Y(0,t,s,n[s],r[s],a);if(r[s]!==n[s])return Y(1,t,s,n[s],r[s],f)}for(s in n)if(!(s in r))return Y(2,t,s,n[s],r[s],l)}},Y=function(e,t,n,r,i,s){var o={attrChange:e,currentTarget:t,attrName:n,prevValue:r,newValue:i};o[s]=e,at(o)},Z=function(e){for(var t,n,r={},i=e.attributes,s=0,o=i.length;s<o;s++)t=i[s],n=t.name,n!=="setAttribute"&&(r[n]=t.value);return r})),t[r]=function(n,r){p=n.toUpperCase(),$||($=!0,P?(et=function(e,t){function n(e,t){for(var n=0,r=e.length;n<r;t(e[n++]));}return new P(function(r){for(var i,s,o=0,u=r.length;o<u;o++)i=r[o],i.type==="childList"?(n(i.addedNodes,e),n(i.removedNodes,t)):(s=i.target,Q&&s.attributeChangedCallback&&i.attributeName!=="style"&&s.attributeChangedCallback(i.attributeName,i.oldValue,s.getAttribute(i.attributeName)))})}(st(s),st(o)),et.observe(t,{childList:!0,subtree:!0})):(X=[],V(function E(){while(X.length)X.shift().call(null,X.shift());V(E)}),t.addEventListener("DOMNodeInserted",ft(s)),t.addEventListener("DOMNodeRemoved",ft(o))),t.addEventListener(h,lt),t.addEventListener("readystatechange",lt),t.createElement=function(e,n){var r=U.apply(t,arguments),i=""+e,s=S.call(y,(n?v:d)+(n||i).toUpperCase()),o=-1<s;return n&&(r.setAttribute("is",n=n.toLowerCase()),o&&(o=ut(i.toUpperCase(),n))),Q=!t.createElement.innerHTMLHelper,o&&nt(r,b[s]),r},H.cloneNode=function(e){var t=I.call(this,!!e),n=ot(t);return-1<n&&nt(t,b[n]),e&&it(t.querySelectorAll(w)),t});if(-2<S.call(y,v+p)+S.call(y,d+p))throw new Error("A "+n+" type is already registered");if(!m.test(p)||-1<S.call(g,p))throw new Error("The type "+n+" is invalid");var i=function(){return f?t.createElement(l,p):t.createElement(l)},a=r||x,f=T.call(a,u),l=f?r[u].toUpperCase():p,c=y.push((f?v:d)+p)-1,p;return w=w.concat(w.length?",":"",f?l+'[is="'+n.toLowerCase()+'"]':l),i.prototype=b[c]=T.call(a,"prototype")?a.prototype:_(H),rt(t.querySelectorAll(w),s),i}})(window,document,Object,"registerElement");
+},{}],3:[function(require,module,exports){
 var EvStore = require("ev-store")
 
 module.exports = addEvent
@@ -20,7 +23,7 @@ function addEvent(target, type, handler) {
     }
 }
 
-},{"ev-store":6}],3:[function(require,module,exports){
+},{"ev-store":14}],4:[function(require,module,exports){
 var globalDocument = require("global/document")
 var EvStore = require("ev-store")
 var createStore = require("weakmap-shim/create-store")
@@ -209,7 +212,7 @@ function Handle() {
     this.type = "dom-delegator-handle"
 }
 
-},{"./add-event.js":2,"./proxy-event.js":14,"./remove-event.js":15,"ev-store":6,"global/document":9,"weakmap-shim/create-store":12}],4:[function(require,module,exports){
+},{"./add-event.js":3,"./proxy-event.js":12,"./remove-event.js":13,"ev-store":14,"global/document":7,"weakmap-shim/create-store":10}],5:[function(require,module,exports){
 var Individual = require("individual")
 var cuid = require("cuid")
 var globalDocument = require("global/document")
@@ -271,7 +274,7 @@ function Delegator(opts) {
 Delegator.allocateHandle = DOMDelegator.allocateHandle;
 Delegator.transformHandle = DOMDelegator.transformHandle;
 
-},{"./dom-delegator.js":3,"cuid":5,"global/document":9,"individual":10}],5:[function(require,module,exports){
+},{"./dom-delegator.js":4,"cuid":6,"global/document":7,"individual":8}],6:[function(require,module,exports){
 /**
  * cuid.js
  * Collision-resistant UID generator for browsers and node.
@@ -383,77 +386,7 @@ Delegator.transformHandle = DOMDelegator.transformHandle;
 
 }(this.applitude || this));
 
-},{}],6:[function(require,module,exports){
-'use strict';
-
-var OneVersionConstraint = require('individual/one-version');
-
-var MY_VERSION = '7';
-OneVersionConstraint('ev-store', MY_VERSION);
-
-var hashKey = '__EV_STORE_KEY@' + MY_VERSION;
-
-module.exports = EvStore;
-
-function EvStore(elem) {
-    var hash = elem[hashKey];
-
-    if (!hash) {
-        hash = elem[hashKey] = {};
-    }
-
-    return hash;
-}
-
-},{"individual/one-version":8}],7:[function(require,module,exports){
-(function (global){
-'use strict';
-
-/*global window, global*/
-
-var root = typeof window !== 'undefined' ?
-    window : typeof global !== 'undefined' ?
-    global : {};
-
-module.exports = Individual;
-
-function Individual(key, value) {
-    if (key in root) {
-        return root[key];
-    }
-
-    root[key] = value;
-
-    return value;
-}
-
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-
-},{}],8:[function(require,module,exports){
-'use strict';
-
-var Individual = require('./index.js');
-
-module.exports = OneVersion;
-
-function OneVersion(moduleName, version, defaultValue) {
-    var key = '__INDIVIDUAL_ONE_VERSION_' + moduleName;
-    var enforceKey = key + '_ENFORCE_SINGLETON';
-
-    var versionValue = Individual(enforceKey, version);
-
-    if (versionValue !== version) {
-        throw new Error('Can only have one copy of ' +
-            moduleName + '.\n' +
-            'You already have version ' + versionValue +
-            ' installed.\n' +
-            'This means you cannot install version ' + version);
-    }
-
-    return Individual(key, defaultValue);
-}
-
-},{"./index.js":7}],9:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 (function (global){
 var topLevel = typeof global !== 'undefined' ? global :
     typeof window !== 'undefined' ? window : {}
@@ -473,7 +406,7 @@ if (typeof document !== 'undefined') {
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"min-document":1}],10:[function(require,module,exports){
+},{"min-document":1}],8:[function(require,module,exports){
 (function (global){
 var root = typeof window !== 'undefined' ?
     window : typeof global !== 'undefined' ?
@@ -496,7 +429,7 @@ function Individual(key, value) {
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{}],11:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -521,7 +454,7 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],12:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 var hiddenStore = require('./hidden-store.js');
 
 module.exports = createStore;
@@ -542,7 +475,7 @@ function createStore() {
     };
 }
 
-},{"./hidden-store.js":13}],13:[function(require,module,exports){
+},{"./hidden-store.js":11}],11:[function(require,module,exports){
 module.exports = hiddenStore;
 
 function hiddenStore(obj, key) {
@@ -560,7 +493,7 @@ function hiddenStore(obj, key) {
     return store;
 }
 
-},{}],14:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 var inherits = require("inherits")
 
 var ALL_PROPS = [
@@ -640,7 +573,7 @@ function KeyEvent(ev) {
 
 inherits(KeyEvent, ProxyEvent)
 
-},{"inherits":11}],15:[function(require,module,exports){
+},{"inherits":9}],13:[function(require,module,exports){
 var EvStore = require("ev-store")
 
 module.exports = removeEvent
@@ -661,9 +594,29 @@ function removeEvent(target, type, handler) {
     }
 }
 
-},{"ev-store":6}],16:[function(require,module,exports){
-arguments[4][6][0].apply(exports,arguments)
-},{"dup":6,"individual/one-version":18}],17:[function(require,module,exports){
+},{"ev-store":14}],14:[function(require,module,exports){
+'use strict';
+
+var OneVersionConstraint = require('individual/one-version');
+
+var MY_VERSION = '7';
+OneVersionConstraint('ev-store', MY_VERSION);
+
+var hashKey = '__EV_STORE_KEY@' + MY_VERSION;
+
+module.exports = EvStore;
+
+function EvStore(elem) {
+    var hash = elem[hashKey];
+
+    if (!hash) {
+        hash = elem[hashKey] = {};
+    }
+
+    return hash;
+}
+
+},{"individual/one-version":16}],15:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -687,9 +640,383 @@ function Individual(key, value) {
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{}],18:[function(require,module,exports){
-arguments[4][8][0].apply(exports,arguments)
-},{"./index.js":17,"dup":8}],19:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
+'use strict';
+
+var Individual = require('./index.js');
+
+module.exports = OneVersion;
+
+function OneVersion(moduleName, version, defaultValue) {
+    var key = '__INDIVIDUAL_ONE_VERSION_' + moduleName;
+    var enforceKey = key + '_ENFORCE_SINGLETON';
+
+    var versionValue = Individual(enforceKey, version);
+
+    if (versionValue !== version) {
+        throw new Error('Can only have one copy of ' +
+            moduleName + '.\n' +
+            'You already have version ' + versionValue +
+            ' installed.\n' +
+            'This means you cannot install version ' + version);
+    }
+
+    return Individual(key, defaultValue);
+}
+
+},{"./index.js":15}],17:[function(require,module,exports){
+/**
+ * lodash 3.0.1 (Custom Build) <https://lodash.com/>
+ * Build: `lodash modern modularize exports="npm" -o ./`
+ * Copyright 2012-2015 The Dojo Foundation <http://dojofoundation.org/>
+ * Based on Underscore.js 1.7.0 <http://underscorejs.org/LICENSE>
+ * Copyright 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
+ * Available under MIT license <https://lodash.com/license>
+ */
+var createCompounder = require('lodash._createcompounder');
+
+/**
+ * Converts `string` to camel case.
+ * See [Wikipedia](https://en.wikipedia.org/wiki/CamelCase) for more details.
+ *
+ * @static
+ * @memberOf _
+ * @category String
+ * @param {string} [string=''] The string to convert.
+ * @returns {string} Returns the camel cased string.
+ * @example
+ *
+ * _.camelCase('Foo Bar');
+ * // => 'fooBar'
+ *
+ * _.camelCase('--foo-bar');
+ * // => 'fooBar'
+ *
+ * _.camelCase('__foo_bar__');
+ * // => 'fooBar'
+ */
+var camelCase = createCompounder(function(result, word, index) {
+  word = word.toLowerCase();
+  return result + (index ? (word.charAt(0).toUpperCase() + word.slice(1)) : word);
+});
+
+module.exports = camelCase;
+
+},{"lodash._createcompounder":18}],18:[function(require,module,exports){
+/**
+ * lodash 3.0.0 (Custom Build) <https://lodash.com/>
+ * Build: `lodash modern modularize exports="npm" -o ./`
+ * Copyright 2012-2015 The Dojo Foundation <http://dojofoundation.org/>
+ * Based on Underscore.js 1.7.0 <http://underscorejs.org/LICENSE>
+ * Copyright 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
+ * Available under MIT license <https://lodash.com/license>
+ */
+var deburr = require('lodash.deburr'),
+    words = require('lodash.words');
+
+/**
+ * Creates a function that produces compound words out of the words in a
+ * given string.
+ *
+ * @private
+ * @param {Function} callback The function to combine each word.
+ * @returns {Function} Returns the new compounder function.
+ */
+function createCompounder(callback) {
+  return function(string) {
+    var index = -1,
+        array = words(deburr(string)),
+        length = array.length,
+        result = '';
+
+    while (++index < length) {
+      result = callback(result, array[index], index);
+    }
+    return result;
+  };
+}
+
+module.exports = createCompounder;
+
+},{"lodash.deburr":19,"lodash.words":21}],19:[function(require,module,exports){
+/**
+ * lodash 3.0.2 (Custom Build) <https://lodash.com/>
+ * Build: `lodash modern modularize exports="npm" -o ./`
+ * Copyright 2012-2015 The Dojo Foundation <http://dojofoundation.org/>
+ * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
+ * Copyright 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
+ * Available under MIT license <https://lodash.com/license>
+ */
+var baseToString = require('lodash._basetostring');
+
+/** Used to match [combining diacritical marks](https://en.wikipedia.org/wiki/Combining_Diacritical_Marks). */
+var reComboMark = /[\u0300-\u036f\ufe20-\ufe23]/g;
+
+/** Used to match latin-1 supplementary letters (excluding mathematical operators). */
+var reLatin1 = /[\xc0-\xd6\xd8-\xde\xdf-\xf6\xf8-\xff]/g;
+
+/** Used to map latin-1 supplementary letters to basic latin letters. */
+var deburredLetters = {
+  '\xc0': 'A',  '\xc1': 'A', '\xc2': 'A', '\xc3': 'A', '\xc4': 'A', '\xc5': 'A',
+  '\xe0': 'a',  '\xe1': 'a', '\xe2': 'a', '\xe3': 'a', '\xe4': 'a', '\xe5': 'a',
+  '\xc7': 'C',  '\xe7': 'c',
+  '\xd0': 'D',  '\xf0': 'd',
+  '\xc8': 'E',  '\xc9': 'E', '\xca': 'E', '\xcb': 'E',
+  '\xe8': 'e',  '\xe9': 'e', '\xea': 'e', '\xeb': 'e',
+  '\xcC': 'I',  '\xcd': 'I', '\xce': 'I', '\xcf': 'I',
+  '\xeC': 'i',  '\xed': 'i', '\xee': 'i', '\xef': 'i',
+  '\xd1': 'N',  '\xf1': 'n',
+  '\xd2': 'O',  '\xd3': 'O', '\xd4': 'O', '\xd5': 'O', '\xd6': 'O', '\xd8': 'O',
+  '\xf2': 'o',  '\xf3': 'o', '\xf4': 'o', '\xf5': 'o', '\xf6': 'o', '\xf8': 'o',
+  '\xd9': 'U',  '\xda': 'U', '\xdb': 'U', '\xdc': 'U',
+  '\xf9': 'u',  '\xfa': 'u', '\xfb': 'u', '\xfc': 'u',
+  '\xdd': 'Y',  '\xfd': 'y', '\xff': 'y',
+  '\xc6': 'Ae', '\xe6': 'ae',
+  '\xde': 'Th', '\xfe': 'th',
+  '\xdf': 'ss'
+};
+
+/**
+ * Used by `_.deburr` to convert latin-1 supplementary letters to basic latin letters.
+ *
+ * @private
+ * @param {string} letter The matched letter to deburr.
+ * @returns {string} Returns the deburred letter.
+ */
+function deburrLetter(letter) {
+  return deburredLetters[letter];
+}
+
+/**
+ * Deburrs `string` by converting [latin-1 supplementary letters](https://en.wikipedia.org/wiki/Latin-1_Supplement_(Unicode_block)#Character_table)
+ * to basic latin letters and removing [combining diacritical marks](https://en.wikipedia.org/wiki/Combining_Diacritical_Marks).
+ *
+ * @static
+ * @memberOf _
+ * @category String
+ * @param {string} [string=''] The string to deburr.
+ * @returns {string} Returns the deburred string.
+ * @example
+ *
+ * _.deburr('déjà vu');
+ * // => 'deja vu'
+ */
+function deburr(string) {
+  string = baseToString(string);
+  return string && string.replace(reLatin1, deburrLetter).replace(reComboMark, '');
+}
+
+module.exports = deburr;
+
+},{"lodash._basetostring":20}],20:[function(require,module,exports){
+/**
+ * lodash 3.0.1 (Custom Build) <https://lodash.com/>
+ * Build: `lodash modern modularize exports="npm" -o ./`
+ * Copyright 2012-2015 The Dojo Foundation <http://dojofoundation.org/>
+ * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
+ * Copyright 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
+ * Available under MIT license <https://lodash.com/license>
+ */
+
+/**
+ * Converts `value` to a string if it's not one. An empty string is returned
+ * for `null` or `undefined` values.
+ *
+ * @private
+ * @param {*} value The value to process.
+ * @returns {string} Returns the string.
+ */
+function baseToString(value) {
+  return value == null ? '' : (value + '');
+}
+
+module.exports = baseToString;
+
+},{}],21:[function(require,module,exports){
+/**
+ * lodash 3.0.2 (Custom Build) <https://lodash.com/>
+ * Build: `lodash modern modularize exports="npm" -o ./`
+ * Copyright 2012-2015 The Dojo Foundation <http://dojofoundation.org/>
+ * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
+ * Copyright 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
+ * Available under MIT license <https://lodash.com/license>
+ */
+var baseToString = require('lodash._basetostring'),
+    isIterateeCall = require('lodash._isiterateecall');
+
+/** Used to match words to create compound words. */
+var reWords = (function() {
+  var upper = '[A-Z\\xc0-\\xd6\\xd8-\\xde]',
+      lower = '[a-z\\xdf-\\xf6\\xf8-\\xff]+';
+
+  return RegExp(upper + '+(?=' + upper + lower + ')|' + upper + '?' + lower + '|' + upper + '+|[0-9]+', 'g');
+}());
+
+/**
+ * Splits `string` into an array of its words.
+ *
+ * @static
+ * @memberOf _
+ * @category String
+ * @param {string} [string=''] The string to inspect.
+ * @param {RegExp|string} [pattern] The pattern to match words.
+ * @param- {Object} [guard] Enables use as a callback for functions like `_.map`.
+ * @returns {Array} Returns the words of `string`.
+ * @example
+ *
+ * _.words('fred, barney, & pebbles');
+ * // => ['fred', 'barney', 'pebbles']
+ *
+ * _.words('fred, barney, & pebbles', /[^, ]+/g);
+ * // => ['fred', 'barney', '&', 'pebbles']
+ */
+function words(string, pattern, guard) {
+  if (guard && isIterateeCall(string, pattern, guard)) {
+    pattern = undefined;
+  }
+  string = baseToString(string);
+  return string.match(pattern || reWords) || [];
+}
+
+module.exports = words;
+
+},{"lodash._basetostring":22,"lodash._isiterateecall":23}],22:[function(require,module,exports){
+arguments[4][20][0].apply(exports,arguments)
+},{"dup":20}],23:[function(require,module,exports){
+/**
+ * lodash 3.0.9 (Custom Build) <https://lodash.com/>
+ * Build: `lodash modern modularize exports="npm" -o ./`
+ * Copyright 2012-2015 The Dojo Foundation <http://dojofoundation.org/>
+ * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
+ * Copyright 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
+ * Available under MIT license <https://lodash.com/license>
+ */
+
+/** Used to detect unsigned integer values. */
+var reIsUint = /^\d+$/;
+
+/**
+ * Used as the [maximum length](https://people.mozilla.org/~jorendorff/es6-draft.html#sec-number.max_safe_integer)
+ * of an array-like value.
+ */
+var MAX_SAFE_INTEGER = 9007199254740991;
+
+/**
+ * The base implementation of `_.property` without support for deep paths.
+ *
+ * @private
+ * @param {string} key The key of the property to get.
+ * @returns {Function} Returns the new function.
+ */
+function baseProperty(key) {
+  return function(object) {
+    return object == null ? undefined : object[key];
+  };
+}
+
+/**
+ * Gets the "length" property value of `object`.
+ *
+ * **Note:** This function is used to avoid a [JIT bug](https://bugs.webkit.org/show_bug.cgi?id=142792)
+ * that affects Safari on at least iOS 8.1-8.3 ARM64.
+ *
+ * @private
+ * @param {Object} object The object to query.
+ * @returns {*} Returns the "length" value.
+ */
+var getLength = baseProperty('length');
+
+/**
+ * Checks if `value` is array-like.
+ *
+ * @private
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is array-like, else `false`.
+ */
+function isArrayLike(value) {
+  return value != null && isLength(getLength(value));
+}
+
+/**
+ * Checks if `value` is a valid array-like index.
+ *
+ * @private
+ * @param {*} value The value to check.
+ * @param {number} [length=MAX_SAFE_INTEGER] The upper bounds of a valid index.
+ * @returns {boolean} Returns `true` if `value` is a valid index, else `false`.
+ */
+function isIndex(value, length) {
+  value = (typeof value == 'number' || reIsUint.test(value)) ? +value : -1;
+  length = length == null ? MAX_SAFE_INTEGER : length;
+  return value > -1 && value % 1 == 0 && value < length;
+}
+
+/**
+ * Checks if the provided arguments are from an iteratee call.
+ *
+ * @private
+ * @param {*} value The potential iteratee value argument.
+ * @param {*} index The potential iteratee index or key argument.
+ * @param {*} object The potential iteratee object argument.
+ * @returns {boolean} Returns `true` if the arguments are from an iteratee call, else `false`.
+ */
+function isIterateeCall(value, index, object) {
+  if (!isObject(object)) {
+    return false;
+  }
+  var type = typeof index;
+  if (type == 'number'
+      ? (isArrayLike(object) && isIndex(index, object.length))
+      : (type == 'string' && index in object)) {
+    var other = object[index];
+    return value === value ? (value === other) : (other !== other);
+  }
+  return false;
+}
+
+/**
+ * Checks if `value` is a valid array-like length.
+ *
+ * **Note:** This function is based on [`ToLength`](https://people.mozilla.org/~jorendorff/es6-draft.html#sec-tolength).
+ *
+ * @private
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is a valid length, else `false`.
+ */
+function isLength(value) {
+  return typeof value == 'number' && value > -1 && value % 1 == 0 && value <= MAX_SAFE_INTEGER;
+}
+
+/**
+ * Checks if `value` is the [language type](https://es5.github.io/#x8) of `Object`.
+ * (e.g. arrays, functions, objects, regexes, `new Number(0)`, and `new String('')`)
+ *
+ * @static
+ * @memberOf _
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is an object, else `false`.
+ * @example
+ *
+ * _.isObject({});
+ * // => true
+ *
+ * _.isObject([1, 2, 3]);
+ * // => true
+ *
+ * _.isObject(1);
+ * // => false
+ */
+function isObject(value) {
+  // Avoid a V8 JIT bug in Chrome 19-20.
+  // See https://code.google.com/p/v8/issues/detail?id=2291 for more details.
+  var type = typeof value;
+  return !!value && (type == 'object' || type == 'function');
+}
+
+module.exports = isIterateeCall;
+
+},{}],24:[function(require,module,exports){
 /**
  * lodash 3.2.0 (Custom Build) <https://lodash.com/>
  * Build: `lodash modern modularize exports="npm" -o ./`
@@ -794,7 +1121,7 @@ function isPlainObject(value) {
 
 module.exports = isPlainObject;
 
-},{"lodash._basefor":20,"lodash.isarguments":21,"lodash.keysin":22}],20:[function(require,module,exports){
+},{"lodash._basefor":25,"lodash.isarguments":26,"lodash.keysin":27}],25:[function(require,module,exports){
 /**
  * lodash 3.0.2 (Custom Build) <https://lodash.com/>
  * Build: `lodash modern modularize exports="npm" -o ./`
@@ -882,7 +1209,7 @@ function isObject(value) {
 
 module.exports = baseFor;
 
-},{}],21:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 /**
  * lodash 3.0.4 (Custom Build) <https://lodash.com/>
  * Build: `lodash modern modularize exports="npm" -o ./`
@@ -990,7 +1317,7 @@ function isArguments(value) {
 
 module.exports = isArguments;
 
-},{}],22:[function(require,module,exports){
+},{}],27:[function(require,module,exports){
 /**
  * lodash 3.0.8 (Custom Build) <https://lodash.com/>
  * Build: `lodash modern modularize exports="npm" -o ./`
@@ -1124,7 +1451,7 @@ function keysIn(object) {
 
 module.exports = keysIn;
 
-},{"lodash.isarguments":21,"lodash.isarray":23}],23:[function(require,module,exports){
+},{"lodash.isarguments":26,"lodash.isarray":28}],28:[function(require,module,exports){
 /**
  * lodash 3.0.4 (Custom Build) <https://lodash.com/>
  * Build: `lodash modern modularize exports="npm" -o ./`
@@ -1306,7 +1633,7 @@ function isNative(value) {
 
 module.exports = isArray;
 
-},{}],24:[function(require,module,exports){
+},{}],29:[function(require,module,exports){
 /**
  * lodash 3.0.0 (Custom Build) <https://lodash.com/>
  * Build: `lodash modern modularize exports="npm" -o ./`
@@ -1344,336 +1671,34 @@ var kebabCase = createCompounder(function(result, word, index) {
 
 module.exports = kebabCase;
 
-},{"lodash._createcompounder":25}],25:[function(require,module,exports){
-/**
- * lodash 3.0.0 (Custom Build) <https://lodash.com/>
- * Build: `lodash modern modularize exports="npm" -o ./`
- * Copyright 2012-2015 The Dojo Foundation <http://dojofoundation.org/>
- * Based on Underscore.js 1.7.0 <http://underscorejs.org/LICENSE>
- * Copyright 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
- * Available under MIT license <https://lodash.com/license>
- */
-var deburr = require('lodash.deburr'),
-    words = require('lodash.words');
-
-/**
- * Creates a function that produces compound words out of the words in a
- * given string.
- *
- * @private
- * @param {Function} callback The function to combine each word.
- * @returns {Function} Returns the new compounder function.
- */
-function createCompounder(callback) {
-  return function(string) {
-    var index = -1,
-        array = words(deburr(string)),
-        length = array.length,
-        result = '';
-
-    while (++index < length) {
-      result = callback(result, array[index], index);
-    }
-    return result;
-  };
-}
-
-module.exports = createCompounder;
-
-},{"lodash.deburr":26,"lodash.words":28}],26:[function(require,module,exports){
-/**
- * lodash 3.0.2 (Custom Build) <https://lodash.com/>
- * Build: `lodash modern modularize exports="npm" -o ./`
- * Copyright 2012-2015 The Dojo Foundation <http://dojofoundation.org/>
- * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
- * Copyright 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
- * Available under MIT license <https://lodash.com/license>
- */
-var baseToString = require('lodash._basetostring');
-
-/** Used to match [combining diacritical marks](https://en.wikipedia.org/wiki/Combining_Diacritical_Marks). */
-var reComboMark = /[\u0300-\u036f\ufe20-\ufe23]/g;
-
-/** Used to match latin-1 supplementary letters (excluding mathematical operators). */
-var reLatin1 = /[\xc0-\xd6\xd8-\xde\xdf-\xf6\xf8-\xff]/g;
-
-/** Used to map latin-1 supplementary letters to basic latin letters. */
-var deburredLetters = {
-  '\xc0': 'A',  '\xc1': 'A', '\xc2': 'A', '\xc3': 'A', '\xc4': 'A', '\xc5': 'A',
-  '\xe0': 'a',  '\xe1': 'a', '\xe2': 'a', '\xe3': 'a', '\xe4': 'a', '\xe5': 'a',
-  '\xc7': 'C',  '\xe7': 'c',
-  '\xd0': 'D',  '\xf0': 'd',
-  '\xc8': 'E',  '\xc9': 'E', '\xca': 'E', '\xcb': 'E',
-  '\xe8': 'e',  '\xe9': 'e', '\xea': 'e', '\xeb': 'e',
-  '\xcC': 'I',  '\xcd': 'I', '\xce': 'I', '\xcf': 'I',
-  '\xeC': 'i',  '\xed': 'i', '\xee': 'i', '\xef': 'i',
-  '\xd1': 'N',  '\xf1': 'n',
-  '\xd2': 'O',  '\xd3': 'O', '\xd4': 'O', '\xd5': 'O', '\xd6': 'O', '\xd8': 'O',
-  '\xf2': 'o',  '\xf3': 'o', '\xf4': 'o', '\xf5': 'o', '\xf6': 'o', '\xf8': 'o',
-  '\xd9': 'U',  '\xda': 'U', '\xdb': 'U', '\xdc': 'U',
-  '\xf9': 'u',  '\xfa': 'u', '\xfb': 'u', '\xfc': 'u',
-  '\xdd': 'Y',  '\xfd': 'y', '\xff': 'y',
-  '\xc6': 'Ae', '\xe6': 'ae',
-  '\xde': 'Th', '\xfe': 'th',
-  '\xdf': 'ss'
-};
-
-/**
- * Used by `_.deburr` to convert latin-1 supplementary letters to basic latin letters.
- *
- * @private
- * @param {string} letter The matched letter to deburr.
- * @returns {string} Returns the deburred letter.
- */
-function deburrLetter(letter) {
-  return deburredLetters[letter];
-}
-
-/**
- * Deburrs `string` by converting [latin-1 supplementary letters](https://en.wikipedia.org/wiki/Latin-1_Supplement_(Unicode_block)#Character_table)
- * to basic latin letters and removing [combining diacritical marks](https://en.wikipedia.org/wiki/Combining_Diacritical_Marks).
- *
- * @static
- * @memberOf _
- * @category String
- * @param {string} [string=''] The string to deburr.
- * @returns {string} Returns the deburred string.
- * @example
- *
- * _.deburr('déjà vu');
- * // => 'deja vu'
- */
-function deburr(string) {
-  string = baseToString(string);
-  return string && string.replace(reLatin1, deburrLetter).replace(reComboMark, '');
-}
-
-module.exports = deburr;
-
-},{"lodash._basetostring":27}],27:[function(require,module,exports){
-/**
- * lodash 3.0.1 (Custom Build) <https://lodash.com/>
- * Build: `lodash modern modularize exports="npm" -o ./`
- * Copyright 2012-2015 The Dojo Foundation <http://dojofoundation.org/>
- * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
- * Copyright 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
- * Available under MIT license <https://lodash.com/license>
- */
-
-/**
- * Converts `value` to a string if it's not one. An empty string is returned
- * for `null` or `undefined` values.
- *
- * @private
- * @param {*} value The value to process.
- * @returns {string} Returns the string.
- */
-function baseToString(value) {
-  return value == null ? '' : (value + '');
-}
-
-module.exports = baseToString;
-
-},{}],28:[function(require,module,exports){
-/**
- * lodash 3.0.2 (Custom Build) <https://lodash.com/>
- * Build: `lodash modern modularize exports="npm" -o ./`
- * Copyright 2012-2015 The Dojo Foundation <http://dojofoundation.org/>
- * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
- * Copyright 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
- * Available under MIT license <https://lodash.com/license>
- */
-var baseToString = require('lodash._basetostring'),
-    isIterateeCall = require('lodash._isiterateecall');
-
-/** Used to match words to create compound words. */
-var reWords = (function() {
-  var upper = '[A-Z\\xc0-\\xd6\\xd8-\\xde]',
-      lower = '[a-z\\xdf-\\xf6\\xf8-\\xff]+';
-
-  return RegExp(upper + '+(?=' + upper + lower + ')|' + upper + '?' + lower + '|' + upper + '+|[0-9]+', 'g');
-}());
-
-/**
- * Splits `string` into an array of its words.
- *
- * @static
- * @memberOf _
- * @category String
- * @param {string} [string=''] The string to inspect.
- * @param {RegExp|string} [pattern] The pattern to match words.
- * @param- {Object} [guard] Enables use as a callback for functions like `_.map`.
- * @returns {Array} Returns the words of `string`.
- * @example
- *
- * _.words('fred, barney, & pebbles');
- * // => ['fred', 'barney', 'pebbles']
- *
- * _.words('fred, barney, & pebbles', /[^, ]+/g);
- * // => ['fred', 'barney', '&', 'pebbles']
- */
-function words(string, pattern, guard) {
-  if (guard && isIterateeCall(string, pattern, guard)) {
-    pattern = undefined;
-  }
-  string = baseToString(string);
-  return string.match(pattern || reWords) || [];
-}
-
-module.exports = words;
-
-},{"lodash._basetostring":29,"lodash._isiterateecall":30}],29:[function(require,module,exports){
-arguments[4][27][0].apply(exports,arguments)
-},{"dup":27}],30:[function(require,module,exports){
-/**
- * lodash 3.0.9 (Custom Build) <https://lodash.com/>
- * Build: `lodash modern modularize exports="npm" -o ./`
- * Copyright 2012-2015 The Dojo Foundation <http://dojofoundation.org/>
- * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
- * Copyright 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
- * Available under MIT license <https://lodash.com/license>
- */
-
-/** Used to detect unsigned integer values. */
-var reIsUint = /^\d+$/;
-
-/**
- * Used as the [maximum length](https://people.mozilla.org/~jorendorff/es6-draft.html#sec-number.max_safe_integer)
- * of an array-like value.
- */
-var MAX_SAFE_INTEGER = 9007199254740991;
-
-/**
- * The base implementation of `_.property` without support for deep paths.
- *
- * @private
- * @param {string} key The key of the property to get.
- * @returns {Function} Returns the new function.
- */
-function baseProperty(key) {
-  return function(object) {
-    return object == null ? undefined : object[key];
-  };
-}
-
-/**
- * Gets the "length" property value of `object`.
- *
- * **Note:** This function is used to avoid a [JIT bug](https://bugs.webkit.org/show_bug.cgi?id=142792)
- * that affects Safari on at least iOS 8.1-8.3 ARM64.
- *
- * @private
- * @param {Object} object The object to query.
- * @returns {*} Returns the "length" value.
- */
-var getLength = baseProperty('length');
-
-/**
- * Checks if `value` is array-like.
- *
- * @private
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is array-like, else `false`.
- */
-function isArrayLike(value) {
-  return value != null && isLength(getLength(value));
-}
-
-/**
- * Checks if `value` is a valid array-like index.
- *
- * @private
- * @param {*} value The value to check.
- * @param {number} [length=MAX_SAFE_INTEGER] The upper bounds of a valid index.
- * @returns {boolean} Returns `true` if `value` is a valid index, else `false`.
- */
-function isIndex(value, length) {
-  value = (typeof value == 'number' || reIsUint.test(value)) ? +value : -1;
-  length = length == null ? MAX_SAFE_INTEGER : length;
-  return value > -1 && value % 1 == 0 && value < length;
-}
-
-/**
- * Checks if the provided arguments are from an iteratee call.
- *
- * @private
- * @param {*} value The potential iteratee value argument.
- * @param {*} index The potential iteratee index or key argument.
- * @param {*} object The potential iteratee object argument.
- * @returns {boolean} Returns `true` if the arguments are from an iteratee call, else `false`.
- */
-function isIterateeCall(value, index, object) {
-  if (!isObject(object)) {
-    return false;
-  }
-  var type = typeof index;
-  if (type == 'number'
-      ? (isArrayLike(object) && isIndex(index, object.length))
-      : (type == 'string' && index in object)) {
-    var other = object[index];
-    return value === value ? (value === other) : (other !== other);
-  }
-  return false;
-}
-
-/**
- * Checks if `value` is a valid array-like length.
- *
- * **Note:** This function is based on [`ToLength`](https://people.mozilla.org/~jorendorff/es6-draft.html#sec-tolength).
- *
- * @private
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is a valid length, else `false`.
- */
-function isLength(value) {
-  return typeof value == 'number' && value > -1 && value % 1 == 0 && value <= MAX_SAFE_INTEGER;
-}
-
-/**
- * Checks if `value` is the [language type](https://es5.github.io/#x8) of `Object`.
- * (e.g. arrays, functions, objects, regexes, `new Number(0)`, and `new String('')`)
- *
- * @static
- * @memberOf _
- * @category Lang
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is an object, else `false`.
- * @example
- *
- * _.isObject({});
- * // => true
- *
- * _.isObject([1, 2, 3]);
- * // => true
- *
- * _.isObject(1);
- * // => false
- */
-function isObject(value) {
-  // Avoid a V8 JIT bug in Chrome 19-20.
-  // See https://code.google.com/p/v8/issues/detail?id=2291 for more details.
-  var type = typeof value;
-  return !!value && (type == 'object' || type == 'function');
-}
-
-module.exports = isIterateeCall;
-
-},{}],31:[function(require,module,exports){
+},{"lodash._createcompounder":30}],30:[function(require,module,exports){
+arguments[4][18][0].apply(exports,arguments)
+},{"dup":18,"lodash.deburr":31,"lodash.words":33}],31:[function(require,module,exports){
+arguments[4][19][0].apply(exports,arguments)
+},{"dup":19,"lodash._basetostring":32}],32:[function(require,module,exports){
+arguments[4][20][0].apply(exports,arguments)
+},{"dup":20}],33:[function(require,module,exports){
+arguments[4][21][0].apply(exports,arguments)
+},{"dup":21,"lodash._basetostring":34,"lodash._isiterateecall":35}],34:[function(require,module,exports){
+arguments[4][20][0].apply(exports,arguments)
+},{"dup":20}],35:[function(require,module,exports){
+arguments[4][23][0].apply(exports,arguments)
+},{"dup":23}],36:[function(require,module,exports){
 var createElement = require("./vdom/create-element.js")
 
 module.exports = createElement
 
-},{"./vdom/create-element.js":38}],32:[function(require,module,exports){
+},{"./vdom/create-element.js":43}],37:[function(require,module,exports){
 var diff = require("./vtree/diff.js")
 
 module.exports = diff
 
-},{"./vtree/diff.js":55}],33:[function(require,module,exports){
+},{"./vtree/diff.js":60}],38:[function(require,module,exports){
 var h = require("./virtual-hyperscript/index.js")
 
 module.exports = h
 
-},{"./virtual-hyperscript/index.js":45}],34:[function(require,module,exports){
+},{"./virtual-hyperscript/index.js":50}],39:[function(require,module,exports){
 (function (global){
 var topLevel = typeof global !== 'undefined' ? global :
     typeof window !== 'undefined' ? window : {}
@@ -1693,19 +1718,19 @@ if (typeof document !== 'undefined') {
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"min-document":1}],35:[function(require,module,exports){
+},{"min-document":1}],40:[function(require,module,exports){
 "use strict";
 
 module.exports = function isObject(x) {
 	return typeof x === "object" && x !== null;
 };
 
-},{}],36:[function(require,module,exports){
+},{}],41:[function(require,module,exports){
 var patch = require("./vdom/patch.js")
 
 module.exports = patch
 
-},{"./vdom/patch.js":41}],37:[function(require,module,exports){
+},{"./vdom/patch.js":46}],42:[function(require,module,exports){
 var isObject = require("is-object")
 var isHook = require("../vnode/is-vhook.js")
 
@@ -1804,7 +1829,7 @@ function getPrototype(value) {
     }
 }
 
-},{"../vnode/is-vhook.js":46,"is-object":35}],38:[function(require,module,exports){
+},{"../vnode/is-vhook.js":51,"is-object":40}],43:[function(require,module,exports){
 var document = require("global/document")
 
 var applyProperties = require("./apply-properties")
@@ -1849,7 +1874,7 @@ function createElement(vnode, opts) {
     return node
 }
 
-},{"../vnode/is-vnode.js":47,"../vnode/is-vtext.js":48,"../vnode/is-widget.js":49,"./apply-properties":37,"global/document":34}],39:[function(require,module,exports){
+},{"../vnode/is-vnode.js":52,"../vnode/is-vtext.js":53,"../vnode/is-widget.js":54,"./apply-properties":42,"global/document":39}],44:[function(require,module,exports){
 // Maps a virtual DOM tree onto a real DOM tree in an efficient manner.
 // We don't want to read all of the DOM nodes in the tree so we use
 // the in-order tree indexing to eliminate recursion down certain branches.
@@ -1936,7 +1961,7 @@ function ascending(a, b) {
     return a > b ? 1 : -1
 }
 
-},{}],40:[function(require,module,exports){
+},{}],45:[function(require,module,exports){
 var applyProperties = require("./apply-properties")
 
 var isWidget = require("../vnode/is-widget.js")
@@ -2098,7 +2123,7 @@ function replaceRoot(oldRoot, newRoot) {
     return newRoot;
 }
 
-},{"../vnode/is-widget.js":49,"../vnode/vpatch.js":52,"./apply-properties":37,"./update-widget":42}],41:[function(require,module,exports){
+},{"../vnode/is-widget.js":54,"../vnode/vpatch.js":57,"./apply-properties":42,"./update-widget":47}],46:[function(require,module,exports){
 var document = require("global/document")
 
 var render = require("./create-element")
@@ -2179,7 +2204,7 @@ function patchIndices(patches) {
     return indices
 }
 
-},{"./create-element":38,"./dom-index":39,"./patch-op":40,"global/document":34}],42:[function(require,module,exports){
+},{"./create-element":43,"./dom-index":44,"./patch-op":45,"global/document":39}],47:[function(require,module,exports){
 var isWidget = require("../vnode/is-widget.js")
 
 module.exports = updateWidget
@@ -2196,7 +2221,7 @@ function updateWidget(a, b) {
     return false
 }
 
-},{"../vnode/is-widget.js":49}],43:[function(require,module,exports){
+},{"../vnode/is-widget.js":54}],48:[function(require,module,exports){
 'use strict';
 
 module.exports = AttributeHook;
@@ -2233,7 +2258,7 @@ AttributeHook.prototype.unhook = function (node, prop, next) {
 
 AttributeHook.prototype.type = 'AttributeHook';
 
-},{}],44:[function(require,module,exports){
+},{}],49:[function(require,module,exports){
 'use strict';
 
 module.exports = SoftSetHook;
@@ -2252,7 +2277,7 @@ SoftSetHook.prototype.hook = function (node, propertyName) {
     }
 };
 
-},{}],45:[function(require,module,exports){
+},{}],50:[function(require,module,exports){
 'use strict';
 
 var VNode = require('../vnode/vnode.js');
@@ -2372,7 +2397,7 @@ function errorString(obj) {
     }
 }
 
-},{"../vnode/is-vhook":46,"../vnode/is-vnode":47,"../vnode/is-vtext":48,"../vnode/is-widget":49,"../vnode/vnode.js":51,"../vnode/vtext.js":53,"./hooks/soft-set-hook.js":44}],46:[function(require,module,exports){
+},{"../vnode/is-vhook":51,"../vnode/is-vnode":52,"../vnode/is-vtext":53,"../vnode/is-widget":54,"../vnode/vnode.js":56,"../vnode/vtext.js":58,"./hooks/soft-set-hook.js":49}],51:[function(require,module,exports){
 module.exports = isHook
 
 function isHook(hook) {
@@ -2381,7 +2406,7 @@ function isHook(hook) {
        typeof hook.unhook === "function" && !hook.hasOwnProperty("unhook"))
 }
 
-},{}],47:[function(require,module,exports){
+},{}],52:[function(require,module,exports){
 var version = require("./version")
 
 module.exports = isVirtualNode
@@ -2390,7 +2415,7 @@ function isVirtualNode(x) {
     return x && x.type === "VirtualNode" && x.version === version
 }
 
-},{"./version":50}],48:[function(require,module,exports){
+},{"./version":55}],53:[function(require,module,exports){
 var version = require("./version")
 
 module.exports = isVirtualText
@@ -2399,17 +2424,17 @@ function isVirtualText(x) {
     return x && x.type === "VirtualText" && x.version === version
 }
 
-},{"./version":50}],49:[function(require,module,exports){
+},{"./version":55}],54:[function(require,module,exports){
 module.exports = isWidget
 
 function isWidget(w) {
     return w && w.type === "Widget"
 }
 
-},{}],50:[function(require,module,exports){
+},{}],55:[function(require,module,exports){
 module.exports = "2"
 
-},{}],51:[function(require,module,exports){
+},{}],56:[function(require,module,exports){
 var version = require("./version")
 var isVNode = require("./is-vnode")
 var isWidget = require("./is-widget")
@@ -2479,7 +2504,7 @@ function VirtualNode(tagName, properties, children, key, namespace) {
 VirtualNode.prototype.version = version
 VirtualNode.prototype.type = "VirtualNode"
 
-},{"./is-vhook":46,"./is-vnode":47,"./is-widget":49,"./version":50}],52:[function(require,module,exports){
+},{"./is-vhook":51,"./is-vnode":52,"./is-widget":54,"./version":55}],57:[function(require,module,exports){
 var version = require("./version")
 
 VirtualPatch.NONE = 0
@@ -2502,7 +2527,7 @@ function VirtualPatch(type, vNode, patch) {
 VirtualPatch.prototype.version = version
 VirtualPatch.prototype.type = "VirtualPatch"
 
-},{"./version":50}],53:[function(require,module,exports){
+},{"./version":55}],58:[function(require,module,exports){
 var version = require("./version")
 
 module.exports = VirtualText
@@ -2514,7 +2539,7 @@ function VirtualText(text) {
 VirtualText.prototype.version = version
 VirtualText.prototype.type = "VirtualText"
 
-},{"./version":50}],54:[function(require,module,exports){
+},{"./version":55}],59:[function(require,module,exports){
 var isObject = require("is-object")
 var isHook = require("../vnode/is-vhook")
 
@@ -2574,7 +2599,7 @@ function getPrototype(value) {
   }
 }
 
-},{"../vnode/is-vhook":46,"is-object":35}],55:[function(require,module,exports){
+},{"../vnode/is-vhook":51,"is-object":40}],60:[function(require,module,exports){
 var VPatch = require("../vnode/vpatch")
 var isVNode = require("../vnode/is-vnode")
 var isVText = require("../vnode/is-vtext")
@@ -2984,7 +3009,7 @@ function appendPatch(apply, patch) {
     }
 }
 
-},{"../vnode/is-vnode":47,"../vnode/is-vtext":48,"../vnode/is-widget":49,"../vnode/vpatch":52,"./diff-props":54}],56:[function(require,module,exports){
+},{"../vnode/is-vnode":52,"../vnode/is-vtext":53,"../vnode/is-widget":54,"../vnode/vpatch":57,"./diff-props":59}],61:[function(require,module,exports){
 (function (global){
 "use strict";
 
@@ -3006,7 +3031,7 @@ module.exports = global.CustomEvent || (function () {
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{}],57:[function(require,module,exports){
+},{}],62:[function(require,module,exports){
 "use strict";
 
 var kababCase = require("lodash.kebabcase");
@@ -3020,12 +3045,13 @@ var USE_ATTRIBUTE_HOOK = 0x10;
 var USE_EVENT_HOOK = 0x20;
 var CAN_BE_ARRAY_OF_STRINGS = 0x80;
 var HAS_BOOLEAN_VALUE = 0x100;
+var IS_STAR = 0x200;
 
 function checkMask(value, bitmask) {
   return (value & bitmask) === bitmask;
 }
 
-var properties = {
+var attributes = {
   // inferred by virtual-dom
   className: CAN_BE_ARRAY_OF_STRINGS,
   id: null,
@@ -3159,7 +3185,10 @@ var properties = {
   readOnly: USE_PROPERTY_HOOK | HAS_LOWER_CASE | HAS_BOOLEAN_VALUE,
   selected: USE_PROPERTY_HOOK | HAS_BOOLEAN_VALUE,
   srcDoc: USE_PROPERTY_HOOK | HAS_LOWER_CASE,
-  value: USE_PROPERTY_HOOK
+  value: USE_PROPERTY_HOOK,
+
+  // X-* attributes
+  data: IS_STAR
 };
 
 // events
@@ -3168,37 +3197,36 @@ var i = -1;
 
 while (++i < length) {
   var _event = EventsList[i];
-  properties["on" + _event] = HAS_LOWER_CASE | USE_EVENT_HOOK;
+  attributes["on" + _event] = HAS_LOWER_CASE | USE_EVENT_HOOK;
 }
 
-var keys = Object.keys(properties);
+var keys = Object.keys(attributes);
 var isStandard = true;
-var propertiesWithInfo = {};
+var DOMAttributeDescriptors = {};
 length = keys.length;
 i = -1;
 
 while (++i < length) {
   var key = keys[i];
-  var property = properties[key];
-  var hasLowerCase = checkMask(property, HAS_LOWER_CASE);
-  var hasDashCase = checkMask(property, HAS_DASH_CASE);
-  var isAttribute = checkMask(property, IS_ATTRIBUTE);
-  var usePropertyHook = checkMask(property, USE_PROPERTY_HOOK);
-  var useAttributeHook = checkMask(property, USE_ATTRIBUTE_HOOK);
-  var useEventHook = checkMask(property, USE_EVENT_HOOK);
-  var canBeArrayOfStrings = checkMask(property, CAN_BE_ARRAY_OF_STRINGS);
-  var hasBooleanValue = checkMask(property, HAS_BOOLEAN_VALUE);
+  var attr = attributes[key];
+  var hasLowerCase = checkMask(attr, HAS_LOWER_CASE);
+  var hasDashCase = checkMask(attr, HAS_DASH_CASE);
+  var isAttribute = checkMask(attr, IS_ATTRIBUTE);
+  var usePropertyHook = checkMask(attr, USE_PROPERTY_HOOK);
+  var useAttributeHook = checkMask(attr, USE_ATTRIBUTE_HOOK);
+  var useEventHook = checkMask(attr, USE_EVENT_HOOK);
+  var canBeArrayOfStrings = checkMask(attr, CAN_BE_ARRAY_OF_STRINGS);
+  var hasBooleanValue = checkMask(attr, HAS_BOOLEAN_VALUE);
+  var isStar = checkMask(attr, IS_STAR);
   var computed = undefined;
 
   if (hasLowerCase) {
     computed = key.toLowerCase();
   } else if (hasDashCase) {
     computed = kababCase(key);
-  } else {
-    computed = key;
   }
 
-  propertiesWithInfo[key] = {
+  DOMAttributeDescriptors[key] = {
     isAttribute: isAttribute,
     isStandard: isStandard,
     usePropertyHook: usePropertyHook,
@@ -3206,13 +3234,14 @@ while (++i < length) {
     useEventHook: useEventHook,
     canBeArrayOfStrings: canBeArrayOfStrings,
     hasBooleanValue: hasBooleanValue,
+    isStar: isStar,
     computed: computed
   };
 }
 
-module.exports = propertiesWithInfo;
+module.exports = DOMAttributeDescriptors;
 
-},{"./EventsList":59,"lodash.kebabcase":24}],58:[function(require,module,exports){
+},{"./EventsList":64,"lodash.kebabcase":29}],63:[function(require,module,exports){
 "use strict";
 
 var evStore = require("ev-store");
@@ -3239,7 +3268,7 @@ EventHook.prototype = {
 
 module.exports = EventHook;
 
-},{"ev-store":16}],59:[function(require,module,exports){
+},{"ev-store":14}],64:[function(require,module,exports){
 "use strict";
 
 module.exports = ["Abort", "Blur", "CanPlay", "CanPlayThrough", "Change", "Click", "ContextMenu", "Copy", "CueChange", "Cut", "DblClick", "Drag", "DragEnd", "DragEnter", "DragLeave", "DragOver", "DragStart", "Drop", "DurationChange", "Emptied", "Ended", "Error", "Focus", "Input", "Invalid", "KeyDown", "KeyPress", "KeyUp", "LoadedData", "LoadedMetaData", "LoadStart", "MouseDown", "MouseMove", "MouseOut", "MouseOver", "MouseUp", "Paste", "Pause", "Play", "Playing", "Progress", "RateChange", "Reset", "Scroll", "Search", "Seeked", "Seeking", "Select", "Show", "Stalled", "Submit", "Suspend", "TimeUpdate", "Toggle", "VolumeChange", "Waiting", "Wheel",
@@ -3247,7 +3276,7 @@ module.exports = ["Abort", "Blur", "CanPlay", "CanPlayThrough", "Change", "Click
 // custom
 "Mount", "Unmount"];
 
-},{}],60:[function(require,module,exports){
+},{}],65:[function(require,module,exports){
 (function (global){
 "use strict";
 
@@ -3285,8 +3314,6 @@ YolkBaseComponent.prototype = {
   type: "Widget",
 
   init: function init() {
-    var _this = this;
-
     var keys = Object.keys(this._props);
     var length = keys.length;
     var propsSubject = {};
@@ -3309,10 +3336,11 @@ YolkBaseComponent.prototype = {
     });
 
     var vNode = h(this.id);
-    this._node = create(vNode);
+    var id = this.id;
+    var node = create(vNode);
 
     this._patchSubscription = Rx.Observable.combineLatest(propObservable, childObservable, function (p, c) {
-      return h(_this.id, p, flatten(c));
+      return h(id, p, flatten(c));
     }).scan(function (_ref, next) {
       var _ref2 = _slicedToArray(_ref, 1);
 
@@ -3323,13 +3351,14 @@ YolkBaseComponent.prototype = {
 
       var __ = _ref32[0];
       var patches = _ref32[1];
-      return patch(_this._node, patches);
+      return patch(node, patches);
     }, function (err) {
-      throw new Error(err.message);
+      throw err;
     });
 
-    mountable.emitMount(this._node, this._props.onMount);
+    mountable.emitMount(node, this._props.onMount);
 
+    this._node = node;
     return this._node;
   },
 
@@ -3373,7 +3402,7 @@ module.exports = YolkBaseComponent;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"./flatten":69,"./isFunction":74,"./mountable":78,"./transformProperties":79,"./wrapObject":82,"yolk-virtual-dom/create-element":31,"yolk-virtual-dom/diff":32,"yolk-virtual-dom/h":33,"yolk-virtual-dom/patch":36}],61:[function(require,module,exports){
+},{"./flatten":74,"./isFunction":79,"./mountable":83,"./transformProperties":86,"./wrapObject":89,"yolk-virtual-dom/create-element":36,"yolk-virtual-dom/diff":37,"yolk-virtual-dom/h":38,"yolk-virtual-dom/patch":41}],66:[function(require,module,exports){
 (function (global){
 "use strict";
 
@@ -3424,7 +3453,8 @@ YolkCompositeComponent.prototype = {
     var propObservable = propsSubject;
     var childObservable = this._childSubject.asObservable();
 
-    this._component = YolkCompositeFunctionWrapper.create(this._fn, propObservable, childObservable);
+    var fn = this._fn;
+    this._component = YolkCompositeFunctionWrapper.create(fn, propObservable, childObservable);
 
     var node = create(this._component._result);
     return node;
@@ -3465,7 +3495,7 @@ module.exports = YolkCompositeComponent;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"./YolkCompositeFunctionWrapper":62,"./wrapObject":82,"yolk-virtual-dom/create-element":31}],62:[function(require,module,exports){
+},{"./YolkCompositeFunctionWrapper":67,"./wrapObject":89,"yolk-virtual-dom/create-element":36}],67:[function(require,module,exports){
 "use strict";
 
 var _createEventHandler = require("./createEventHandler");
@@ -3509,7 +3539,7 @@ YolkCompositeFunctionWrapper.create = function (fn, props, children) {
 
 module.exports = YolkCompositeFunctionWrapper;
 
-},{"./createEventHandler":67,"./isComponent":71}],63:[function(require,module,exports){
+},{"./createEventHandler":72,"./isComponent":76}],68:[function(require,module,exports){
 "use strict";
 
 var create = require("yolk-virtual-dom/create-element");
@@ -3561,7 +3591,7 @@ YolkRootComponent.render = function render(instance, node) {
 
 module.exports = YolkRootComponent;
 
-},{"./delegator":68,"yolk-virtual-dom/create-element":31,"yolk-virtual-dom/diff":32,"yolk-virtual-dom/patch":36}],64:[function(require,module,exports){
+},{"./delegator":73,"yolk-virtual-dom/create-element":36,"yolk-virtual-dom/diff":37,"yolk-virtual-dom/patch":41}],69:[function(require,module,exports){
 /* eslint-disable guard-for-in */
 
 "use strict";
@@ -3585,7 +3615,7 @@ module.exports = function addProperties(base) {
   return base;
 };
 
-},{}],65:[function(require,module,exports){
+},{}],70:[function(require,module,exports){
 "use strict";
 
 var isDefined = require("./isDefined");
@@ -3605,7 +3635,7 @@ module.exports = function compact(arr) {
   return newArr;
 };
 
-},{"./isDefined":72}],66:[function(require,module,exports){
+},{"./isDefined":77}],71:[function(require,module,exports){
 "use strict";
 
 var YolkCompositeComponent = require("./YolkCompositeComponent");
@@ -3626,7 +3656,7 @@ module.exports = function createElement(tag, props) {
   return new YolkCompositeComponent(tag, _props, children);
 };
 
-},{"./YolkBaseComponent":60,"./YolkCompositeComponent":61,"./isString":77}],67:[function(require,module,exports){
+},{"./YolkBaseComponent":65,"./YolkCompositeComponent":66,"./isString":82}],72:[function(require,module,exports){
 (function (global){
 "use strict";
 
@@ -3667,7 +3697,7 @@ module.exports = function createEventHandler(mapFn, init) {
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"./addProperties":64,"./isDefined":72,"./isFunction":74}],68:[function(require,module,exports){
+},{"./addProperties":69,"./isDefined":77,"./isFunction":79}],73:[function(require,module,exports){
 "use strict";
 
 var domDelegator = require("dom-delegator");
@@ -3686,7 +3716,7 @@ module.exports = function delegator(node) {
   return instance;
 };
 
-},{"./EventsList":59,"dom-delegator":4}],69:[function(require,module,exports){
+},{"./EventsList":64,"dom-delegator":5}],74:[function(require,module,exports){
 "use strict";
 
 module.exports = function flatten(arr) {
@@ -3707,7 +3737,7 @@ module.exports = function flatten(arr) {
   return result;
 };
 
-},{}],70:[function(require,module,exports){
+},{}],75:[function(require,module,exports){
 "use strict";
 
 var isFunction = require("./isFunction");
@@ -3716,7 +3746,7 @@ module.exports = function hasToJS(obj) {
   return !!obj && isFunction(obj.toJS);
 };
 
-},{"./isFunction":74}],71:[function(require,module,exports){
+},{"./isFunction":79}],76:[function(require,module,exports){
 "use strict";
 
 var isWidget = require("yolk-virtual-dom/vnode/is-widget");
@@ -3727,35 +3757,35 @@ module.exports = function isComponent(obj) {
   return !!obj && (isWidget(obj) || isThunk(obj) || isVNode(obj) || isVText(obj));
 };
 
-},{"yolk-virtual-dom/vnode/is-vnode":47,"yolk-virtual-dom/vnode/is-vtext":48,"yolk-virtual-dom/vnode/is-widget":49}],72:[function(require,module,exports){
+},{"yolk-virtual-dom/vnode/is-vnode":52,"yolk-virtual-dom/vnode/is-vtext":53,"yolk-virtual-dom/vnode/is-widget":54}],77:[function(require,module,exports){
 "use strict";
 
 module.exports = function isDefined(obj) {
   return typeof obj !== "undefined" && obj !== null;
 };
 
-},{}],73:[function(require,module,exports){
+},{}],78:[function(require,module,exports){
 "use strict";
 
 module.exports = function isEmpty(obj) {
   return Object.keys(obj).length === 0;
 };
 
-},{}],74:[function(require,module,exports){
+},{}],79:[function(require,module,exports){
 "use strict";
 
 module.exports = function isFunction(obj) {
   return Object.prototype.toString.call(obj) === "[object Function]";
 };
 
-},{}],75:[function(require,module,exports){
+},{}],80:[function(require,module,exports){
 "use strict";
 
 module.exports = function isNumber(num) {
   return typeof num === "number" || num instanceof Number;
 };
 
-},{}],76:[function(require,module,exports){
+},{}],81:[function(require,module,exports){
 (function (global){
 "use strict";
 
@@ -3767,14 +3797,14 @@ module.exports = function isObservable(obj) {
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{}],77:[function(require,module,exports){
+},{}],82:[function(require,module,exports){
 "use strict";
 
 module.exports = function isString(str) {
   return typeof str === "string" || str instanceof String;
 };
 
-},{}],78:[function(require,module,exports){
+},{}],83:[function(require,module,exports){
 "use strict";
 
 var isFunction = require("./isFunction");
@@ -3804,10 +3834,79 @@ function emitUnmount(node, fn) {
 
 module.exports = { emitMount: emitMount, emitUnmount: emitUnmount };
 
-},{"./CustomEvent":56,"./isFunction":74}],79:[function(require,module,exports){
+},{"./CustomEvent":61,"./isFunction":79}],84:[function(require,module,exports){
 "use strict";
 
-var DOMProperties = require("./DOMProperties");
+var camelCase = require("lodash.camelcase");
+
+var ALL_CHARS_ARE_DIGITS_REGEX = /^\d*$/;
+var DOES_NOT_LEAD_WITH_ENCLOSING_CHAR_REGEX = /^[^\{\[\"\']/;
+
+function isSingleton(value) {
+  return value === "true" || value === "false" || value === "null";
+}
+
+module.exports = function parseDOMNodeAttributes(attributes) {
+  var attrs = {};
+  var length = attributes.length;
+  var i = -1;
+
+  while (++i < length) {
+    var attr = attributes[i];
+    var _name = camelCase(attr.name);
+    var value = attr.value;
+
+    if (!ALL_CHARS_ARE_DIGITS_REGEX.test(value) && !isSingleton(value) && DOES_NOT_LEAD_WITH_ENCLOSING_CHAR_REGEX.test(value)) {
+      value = "\"" + value + "\"";
+    }
+
+    attrs[_name] = JSON.parse(value);
+  }
+
+  return attrs;
+};
+
+},{"lodash.camelcase":17}],85:[function(require,module,exports){
+"use strict";
+
+var YolkRootComponent = require("./YolkRootComponent");
+var createElement = require("./createElement");
+var parseDOMNodeAttributes = require("./parseDOMNodeAttributes");
+
+var INSTANCE_KEY = "__YOLK_INSTANCE_KEY__";
+
+module.exports = function registerElement(name, Component) {
+  var prototype = Object.create(HTMLElement.prototype);
+
+  prototype.createdCallback = function createdCallback() {
+    var attrs = parseDOMNodeAttributes(this.attributes);
+    var instance = createElement(Component, attrs);
+
+    this[INSTANCE_KEY] = instance;
+  };
+
+  prototype.attachedCallback = function attachedCallback() {
+    YolkRootComponent.render(this[INSTANCE_KEY], this);
+  };
+
+  prototype.detachedCallback = function detachedCallback() {
+    this[INSTANCE_KEY].destroy();
+  };
+
+  prototype.attributeChangedCallback = function attributeChangedCallback() {
+    var attrs = parseDOMNodeAttributes(this.attributes);
+    var instance = createElement(Component, attrs);
+    instance.update(this[INSTANCE_KEY]);
+    this[INSTANCE_KEY] = instance;
+  };
+
+  document.registerElement(name, { prototype: prototype });
+};
+
+},{"./YolkRootComponent":68,"./createElement":71,"./parseDOMNodeAttributes":84}],86:[function(require,module,exports){
+"use strict";
+
+var DOMAttributeDescriptors = require("./DOMAttributeDescriptors");
 var transformStyle = require("./transformStyle");
 var transformProperty = require("./transformProperty");
 
@@ -3824,15 +3923,17 @@ module.exports = function transformProperties(props) {
     if (key === "style") {
       transformStyle(newProps, value);
     } else {
-      transformProperty(newProps, key, value, DOMProperties[key]);
+      transformProperty(newProps, key, value, DOMAttributeDescriptors[key]);
     }
   }
 
   return newProps;
 };
 
-},{"./DOMProperties":57,"./transformProperty":80,"./transformStyle":81}],80:[function(require,module,exports){
+},{"./DOMAttributeDescriptors":62,"./transformProperty":87,"./transformStyle":88}],87:[function(require,module,exports){
 "use strict";
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 var kababCase = require("lodash.kebabcase");
 var SoftSetHook = require("yolk-virtual-dom/virtual-hyperscript/hooks/soft-set-hook");
@@ -3840,56 +3941,70 @@ var AttributeHook = require("yolk-virtual-dom/virtual-hyperscript/hooks/attribut
 var EventHook = require("./EventHook");
 var compact = require("./compact");
 
-var IS_DATA_MATCHER = /^data[A-Z]/;
-
-var EMPTY_PROP = {
+var NULL_DESCRIPTOR = {
   isAttribute: false,
   isStandard: false,
   usePropertyHook: false,
+  useEventHook: false,
   useAttributeHook: false,
   canBeArrayOfStrings: false,
-  hasBooleanValue: false
+  hasBooleanValue: false,
+  isStar: false,
+  computed: undefined
 };
 
-module.exports = function transformProperty(props, key, value) {
-  var property = arguments.length <= 3 || arguments[3] === undefined ? EMPTY_PROP : arguments[3];
+var STAR_DESCRIPTOR = _extends({}, NULL_DESCRIPTOR, { isAttribute: true, isStandard: true });
 
-  var isDataAttribute = false;
+module.exports = function transformProperty(props, key, value) {
+  var descriptor = arguments.length <= 3 || arguments[3] === undefined ? NULL_DESCRIPTOR : arguments[3];
+
   var _value = value;
   var _key = undefined;
 
-  if (property.isStandard) {
-    _key = property.computed;
-  } else {
-    isDataAttribute = IS_DATA_MATCHER.test(key);
-
-    if (isDataAttribute) {
-      _key = kababCase(key);
-    }
-  }
-
-  if (property.canBeArrayOfStrings && Array.isArray(_value)) {
-    _value = compact(_value).join(" ");
-  } else if (property.hasBooleanValue && (_value !== true && _value !== false)) {
+  if (!descriptor.isStandard) {
     return props;
   }
 
-  if (property.isAttribute || isDataAttribute) {
+  if (descriptor.hasBooleanValue && _value !== true && _value !== false) {
+    return props;
+  }
+
+  if (descriptor.isStar) {
+    var keys = Object.keys(value);
+    var _length = keys.length;
+    var i = -1;
+
+    while (++i < _length) {
+      var __key = keys[i];
+      var __value = value[__key];
+      transformProperty(props, key + "-" + kababCase(__key), __value, STAR_DESCRIPTOR);
+    }
+
+    return props;
+  }
+
+  _key = descriptor.computed || key;
+
+  if (descriptor.canBeArrayOfStrings && Array.isArray(_value)) {
+    _value = compact(_value).join(" ");
+  }
+
+  if (descriptor.isAttribute) {
     props.attributes[_key] = _value;
-  } else if (property.usePropertyHook) {
+  } else if (descriptor.usePropertyHook) {
     props[_key] = new SoftSetHook(_value);
-  } else if (property.useEventHook) {
+  } else if (descriptor.useEventHook) {
     props[_key] = new EventHook(_value);
-  } else if (property.useAttributeHook) {
+  } else if (descriptor.useAttributeHook) {
     props[_key] = new AttributeHook(_value);
-  } else if (property.isStandard) {
+  } else if (descriptor.isStandard) {
     props[_key] = _value;
   }
 
   return props;
 };
 
-},{"./EventHook":58,"./compact":65,"lodash.kebabcase":24,"yolk-virtual-dom/virtual-hyperscript/hooks/attribute-hook":43,"yolk-virtual-dom/virtual-hyperscript/hooks/soft-set-hook":44}],81:[function(require,module,exports){
+},{"./EventHook":63,"./compact":70,"lodash.kebabcase":29,"yolk-virtual-dom/virtual-hyperscript/hooks/attribute-hook":48,"yolk-virtual-dom/virtual-hyperscript/hooks/soft-set-hook":49}],88:[function(require,module,exports){
 "use strict";
 
 var isNumber = require("./isNumber");
@@ -3949,7 +4064,7 @@ module.exports = function transformStyle(props, style) {
   return props;
 };
 
-},{"./isNumber":75}],82:[function(require,module,exports){
+},{"./isNumber":80}],89:[function(require,module,exports){
 (function (global){
 "use strict";
 
@@ -3965,7 +4080,6 @@ module.exports = function wrapObject(_x2) {
 
   _function: while (_again) {
     var obj = _x2;
-    opts = _ret = _obj = undefined;
     _again = false;
     var opts = _arguments.length <= 1 || _arguments[1] === undefined ? {} : _arguments[1];
 
@@ -3978,6 +4092,7 @@ module.exports = function wrapObject(_x2) {
         // only call toJS if option is set
         _arguments = [_x2 = obj.toJS(), opts];
         _again = true;
+        opts = undefined;
         continue _function;
       }
     } else if (isPlainObject(obj) && !isEmpty(obj)) {
@@ -4021,24 +4136,26 @@ module.exports = function wrapObject(_x2) {
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"./hasToJS":70,"./isEmpty":73,"./isObservable":76,"lodash.isplainobject":19}],83:[function(require,module,exports){
+},{"./hasToJS":75,"./isEmpty":78,"./isObservable":81,"lodash.isplainobject":24}],90:[function(require,module,exports){
 (function (global){
 "use strict";
 
+require("document-register-element");
+
 var Rx = (typeof window !== "undefined" ? window['Rx'] : typeof global !== "undefined" ? global['Rx'] : null);
-var createEventHandler = require("./createEventHandler");
 var createElement = require("./createElement");
+var registerElement = require("./registerElement");
 var YolkRootComponent = require("./YolkRootComponent");
 var render = YolkRootComponent.render;
 
 function Yolk() {}
-Yolk.prototype = { Rx: Rx, createEventHandler: createEventHandler, createElement: createElement, render: render };
+Yolk.prototype = { Rx: Rx, createElement: createElement, registerElement: registerElement, render: render };
 Object.freeze(Yolk);
 
 module.exports = new Yolk();
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"./YolkRootComponent":63,"./createElement":66,"./createEventHandler":67}]},{},[83])(83)
+},{"./YolkRootComponent":68,"./createElement":71,"./registerElement":85,"document-register-element":2}]},{},[90])(90)
 });
 //# sourceMappingURL=yolk.js.map
