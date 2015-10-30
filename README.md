@@ -97,6 +97,27 @@ Renders an instance of a YolkComponent inside of an HTMLElement.
 Yolk.render(<span>Hello World!</span>, document.getElementById('container'))
 ```
 
+__`registerElement(name: string, fn: Function): void`__
+
+Registers a [custom HTML element](http://www.html5rocks.com/en/tutorials/webcomponents/customelements/) using `document.registerElement` (polyfill included).
+This is especially useful if you're not building a single page application. For example,
+
+```js
+function BigRedText (props) {
+  return <h1 style={{color: 'red'}}>{props.content}</h1>
+}
+
+Yolk.registerElement(`big-red-text`, BigRedText)
+```
+
+will allow you to use `<big-red-text content="Hello!"></big-red-text>` in your `.html` files and will render out to
+
+```
+<big-red-text content="Hello!">
+  <h1 style="color: red;">Hello!</h1>
+</big-red-text>
+```
+
 ## Using JSX
 
 It is highly suggested that you write Yolk with JSX. This is achieved using the [Babel transpiler](http://babeljs.io/). You should configure the `jsxPragma` option for Babel either in `.babelrc` or in `package.json`:
