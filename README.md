@@ -211,7 +211,7 @@ const data = {cool: `dude`, veryRad: `gal`}
 will render
 
 ```html
-<div data-cool="dude" data-very-red="gal"></div>
+<div data-cool="dude" data-very-rad="gal"></div>
 ```
 
 ## Setup
