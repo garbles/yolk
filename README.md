@@ -2,7 +2,7 @@
 
 A library for building asynchronous user interfaces.
 
-[![travis-ci](https://travis-ci.org/yolkjs/yolk.svg)](https://travis-ci.org/yolkjs/yolk)
+[![travis-ci](https://travis-ci.org/yolkjs/yolk.svg?branch=master)](https://travis-ci.org/yolkjs/yolk)
 
 * __Familiar__: Yolk is a small library built on top of [Virtual DOM](https://github.com/Matt-Esch/virtual-dom) and [RxJS](https://github.com/Reactive-Extensions/RxJS). It exposes a very limited API so that you don't have to spend weeks getting up to speed. Yolk components are just plain functions that return JSX.
 
