@@ -1,58 +1,71 @@
+const Rx = require(`rx`)
 const test = require(`tape`)
 const Yolk = require(`yolk`)
-const YolkCompositeComponent = require(`YolkCompositeComponent`)
+const renderInDoc = require(`../helpers/renderInDoc`)
 
-function CreateCustom () {
-  return <h1>hello world</h1>
-}
-
-Yolk.registerElement(`create-custom`, CreateCustom)
-
-function createInstance () {
-  const div = document.createElement(`div`)
-  div.innerHTML = `<create-custom height="10"></create-custom>`
-  const node = div.firstChild
-  document.body.appendChild(node)
-
-  const cleanup = () => document.body.removeChild(node)
-
-  return [node, cleanup]
-}
-
-test(`creating a custom HTML5 element`, t => {
-  t.plan(1)
+test(`YolkCustomComponent: a component that has livecycle hooks`, t => {
+  t.plan(3)
   t.timeoutAfter(100)
 
-  const [node, cleanup] = createInstance()
+  class CustomOnlyMount extends Yolk.CustomComponent {
+    onMount (props, node) {
+      const className = props.className.join(` `)
+      node.setAttribute(`class`, className)
+    }
 
-  // document.registerElement polyfill uses setTimeout(fn, 10) if requestAnimationFrame
-  // is not present. phantomJS does not use requestionAnimationFrame (?) so timeout for
-  // at least one frame
-  setTimeout(() => {
-    t.equal(node.outerHTML, `<create-custom height="10"><h1>hello world</h1></create-custom>`)
-    cleanup()
-  }, 17)
+    onUpdate (props, node) {
+      const className = props.className.join(` `)
+      node.setAttribute(`class`, className)
+    }
+
+    onUnmount () {
+      t.pass(`custom component unmounts`)
+    }
+  }
+
+  const names = new Rx.BehaviorSubject([`a`, `b`, `c`, `d`])
+
+  const instance = <CustomOnlyMount className={names}><p /></CustomOnlyMount>
+  const [node, cleanup] = renderInDoc(instance)
+
+  t.equal(node.innerHTML, `<p class="a b c d"></p>`)
+
+  names.onNext([`e`, `ee`, `eee`, `eeee`])
+
+  t.equal(node.innerHTML, `<p class="e ee eee eeee"></p>`)
+
+  Yolk.render(<div />, node)
+
+  cleanup()
 })
 
-test(`changing an attribute of a node should change internal Yolk instance`, t => {
-  t.plan(4)
+test(`YolkCustomComponent: uses a div if no child is passed in`, t => {
+  t.plan(2)
   t.timeoutAfter(100)
 
-  const [node, cleanup] = createInstance()
-  let instance
+  class CC extends Yolk.CustomComponent {}
+  const [node, cleanup] = renderInDoc(<CC />)
 
-  setTimeout(() => {
-    instance = node.__YOLK_INSTANCE_KEY__
-    t.ok(instance instanceof YolkCompositeComponent)
-    node.setAttribute(`height`, 500)
-  }, 17)
+  t.equal(node.firstChild.tagName, `DIV`)
 
+  const [node2, cleanup2] = renderInDoc(<CC><p /></CC>)
 
-  setTimeout(() => {
-    const newInstance = node.__YOLK_INSTANCE_KEY__
-    t.ok(newInstance instanceof YolkCompositeComponent)
-    t.notEqual(instance, newInstance)
-    t.equal(node.outerHTML, `<create-custom height="500"><h1>hello world</h1></create-custom>`)
-    cleanup()
-  }, 17)
+  t.equal(node2.firstChild.tagName, `P`)
+
+  cleanup()
+  cleanup2()
+})
+
+test(`YolkCustomComponent: should raise when there is more than one child`, t => {
+  class CC extends Yolk.CustomComponent {}
+
+  t.plan(6)
+  t.timeoutAfter(100)
+
+  t.throws(() => <CC><p /><p /></CC>)
+  t.throws(() => <CC><p><p /></p><p /></CC>)
+  t.doesNotThrow(() => <CC><p /></CC>)
+  t.doesNotThrow(() => <CC><p><p /></p></CC>)
+  t.doesNotThrow(() => <CC><p><p /><p /></p></CC>)
+  t.doesNotThrow(() => <CC />)
 })

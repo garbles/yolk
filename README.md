@@ -59,10 +59,10 @@ The API for a component instance is a _single method_.
 __`this.createEventHandler(mapping: any, initialValue: any): Function`__
 
 Creates an exotic function that can also be used as an observable. If the function is called, the input value is pushed to the observable as it's latest value.
-In other words, when this function is used as an event handler, the result is an observable stream of events from that handler. For example:
+In other words, when this function is used as an event handler, the result is an observable stream of events from that handler. For example,
 
 ```js
-function CustomComponent () {
+function MyComponent () {
   // create an event handler
   const handleClick = this.createEventHandler()
 
@@ -114,9 +114,71 @@ will allow you to use `<big-red-text content="Hello!"></big-red-text>` in your `
 </big-red-text>
 ```
 
+__`Yolk.CustomComponent`__
+
+Yolk.CustomComponent makes it easy to wrap non-Yolk behavior as a component, e.g. jQuery plugin or React component.
+Each component expects three (optional) methods,
+
+- `onMount(props: object, node: HTMLElement): void`
+- `onUpdate(props: object, node: HTMLElement): void`
+- `onUnmount (node: HTMLElement): void`
+
+These methods pass in the latest values of your props so that you don't need to deal with subscribing to and disposing of Observables. For example,
+
+```js
+class MyjQueryWrapper extends Yolk.CustomComponent {
+  onMount (props, node) {
+    this._instance = $(node).myjQueryThing(props)
+  }
+
+  onUpdate (props, node) {
+    this._instance.update(props)
+  }
+
+  onUnmount () {
+    this._instance.destroy()
+  }
+}
+```
+
+And then in your component markup,
+
+```js
+function MyComponent () {
+  const handleClick = this.createEventHandler()
+
+  return (
+    <div>
+      <MyjQueryWrapper onClick={handleClick} />
+    </div>
+  )
+}
+```
+
+CustomComponent expects a single child element to use as the node; otherwise, it will default to an empty `div`.
+For example, you can specify the child like so,
+
+```js
+function MyComponent () {
+  const handleClick = this.createEventHandler()
+
+  return (
+    <div>
+      <MyjQueryWrapper onClick={handleClick}>
+        <ul className="my-child-node">
+          <li>Point 1</li>
+          <li>Point 2</li>
+          <li>Point 3</li>
+        </ul>
+      </MyjQueryWrapper>
+    </div>
+  )
+}
+```
+
 ## Using JSX
 
-It is highly suggested that you write Yolk with JSX. This is achieved using the [Babel transpiler](http://babeljs.io/). You should configure the `jsxPragma` option for Babel either in `.babelrc` or in `package.json`:
+It is highly suggested that you write Yolk with JSX. This is achieved using the [Babel transpiler](http://babeljs.io/). You should configure the `jsxPragma` option for Babel either in `.babelrc` or in `package.json`,
 
 `.babelrc`:
 
@@ -136,13 +198,13 @@ It is highly suggested that you write Yolk with JSX. This is achieved using the 
 }
 ```
 
-Then anywhere you use JSX it will be transformed into plain JavaScript. For example, this:
+Then anywhere you use JSX it will be transformed into plain JavaScript. For example this,
 
 ```js
 <p>My JSX</p>
 ```
 
-Turns into:
+Turns into,
 
 ```js
 Yolk.createElement(
@@ -162,7 +224,7 @@ value is required to render something. It is particularly useful when used with 
 
 ## Supported Events
 
-Yolk supports the following list of standard browser events:
+Yolk supports the following list of standard browser events,
 
 ```
 onAbort onBlur onCanPlay onCanPlayThrough onChange onClick onContextMenu onCopy
@@ -175,7 +237,7 @@ onSelect onShow onStalled onSubmit onSuspend onTimeUpdate onToggle onVolumeChang
 onWaiting onWheel
 ```
 
-In addition, Yolk supports the following custom browser events:
+In addition, Yolk supports the following custom browser events,
 
 ```
 onMount onUnmount
@@ -183,7 +245,7 @@ onMount onUnmount
 
 ## Supported Attributes
 
-Yolk supports the following list of standard element attributes:
+Yolk supports the following list of standard element attributes,
 
 ```
 accept acceptCharset accessKey action align alt async autoComplete autoFocus autoPlay
@@ -216,7 +278,7 @@ will render
 
 ## Setup
 
-To install Yolk, simply include it in your `package.json`:
+To install Yolk, simply include it in your `package.json`,
 
 ```
 npm install yolk --save

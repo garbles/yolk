@@ -9,5 +9,9 @@ module.exports = function createElement (tag, props, ...children) {
     return new YolkBaseComponent(tag, _props, children)
   }
 
+  if (tag._isCustomComponent) {
+    return tag.create(_props, children)
+  }
+
   return new YolkCompositeComponent(tag, _props, children)
 }

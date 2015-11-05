@@ -1,6 +1,7 @@
 const test = require(`tape`)
 const Rx = require(`rx`)
 const YolkBaseComponent = require(`YolkBaseComponent`)
+const renderInDoc = require(`../helpers/renderInDoc`)
 
 test(`YolkBaseComponent: returns a base component`, t => {
   t.plan(2)
@@ -16,7 +17,7 @@ test(`YolkBaseComponent: returns a base component`, t => {
   t.equal(node.outerHTML, `<p height="10">hello</p>`)
 })
 
-test(`does not apply new prop keys`, t => {
+test(`YolkBaseComponent: does not apply new prop keys`, t => {
   t.plan(1)
 
   const instance = new YolkBaseComponent(`p`, {height: 5}, [])
@@ -33,19 +34,19 @@ test(`YolkBaseComponent: listens for mount and umount when defined`, t => {
   t.timeoutAfter(100)
 
   const instance = new YolkBaseComponent(`p`, {onMount: () => {}, onUnmount: () => {}}, [])
-  const node = instance.init()
+  const [node, cleanup] = renderInDoc(instance)
+  const child = node.firstChild
 
   const handler = () => t.pass(`emits event`)
 
-  node.addEventListener(`mount`, handler)
-  node.addEventListener(`unmount`, handler)
-  document.body.appendChild(node)
+  child.addEventListener(`mount`, handler)
+  child.addEventListener(`unmount`, handler)
 
   setTimeout(() => {
     instance.predestroy()
-    document.body.removeChild(node)
-    node.removeEventListener(`mount`, handler)
-    node.removeEventListener(`unmount`, handler)
+    child.removeEventListener(`mount`, handler)
+    child.removeEventListener(`unmount`, handler)
+    cleanup()
   }, 0)
 })
 
@@ -55,20 +56,20 @@ test(`YolkBaseComponent: accepts observables as props`, t => {
   const height = new Rx.BehaviorSubject(5)
 
   const instance = new YolkBaseComponent(`p`, {height}, [])
-  const node = instance.init()
-  document.body.appendChild(node)
+  const [node, cleanup] = renderInDoc(instance)
 
-  t.equal(node.outerHTML, `<p height="5"></p>`)
+  t.equal(node.innerHTML, `<p height="5"></p>`)
 
   height.onNext(10)
 
-  t.equal(node.outerHTML, `<p height="10"></p>`)
+  t.equal(node.innerHTML, `<p height="10"></p>`)
 
-  document.body.removeChild(node)
+  cleanup()
 })
 
 test(`YolkBaseComponent: does not wrap objects with toJS defined on them`, t => {
   t.plan(1)
+  t.timeoutAfter(100)
 
   const style = {
     toJS () {
@@ -77,14 +78,16 @@ test(`YolkBaseComponent: does not wrap objects with toJS defined on them`, t => 
   }
 
   const instance = new YolkBaseComponent(`p`, {style}, [])
-  const node = instance.init()
-  document.body.appendChild(node)
+  const [node, cleanup] = renderInDoc(instance)
 
-  t.equal(node.outerHTML, `<p style="height: 5px; width: 10px; "></p>`)
+  t.equal(node.innerHTML, `<p style="height: 5px; width: 10px; "></p>`)
+
+  cleanup()
 })
 
 test(`YolkBaseComponent: properly wraps children with toJS defined on them`, t => {
   t.plan(2)
+  t.timeoutAfter(100)
 
   const child1 = new YolkBaseComponent(`p`, null, [`hello`])
   const child2 = new Rx.BehaviorSubject(new YolkBaseComponent(`p`, null, [`goodbye`]))
@@ -98,10 +101,9 @@ test(`YolkBaseComponent: properly wraps children with toJS defined on them`, t =
   const childrenSubject = new Rx.BehaviorSubject(children)
 
   const instance = new YolkBaseComponent(`b`, null, [childrenSubject])
-  const node = instance.init()
-  document.body.appendChild(node)
+  const [node, cleanup] = renderInDoc(instance)
 
-  t.equal(node.outerHTML, `<b><p>hello</p></b>`)
+  t.equal(node.innerHTML, `<b><p>hello</p></b>`)
 
   children = {
     toJS () {
@@ -111,5 +113,7 @@ test(`YolkBaseComponent: properly wraps children with toJS defined on them`, t =
 
   childrenSubject.onNext([children])
 
-  t.equal(node.outerHTML, `<b><p>hello</p><p>goodbye</p></b>`)
+  t.equal(node.innerHTML, `<b><p>hello</p><p>goodbye</p></b>`)
+
+  cleanup()
 })
