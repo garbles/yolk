@@ -39,6 +39,23 @@ test(`YolkCustomComponent: a component that has livecycle hooks`, t => {
   cleanup()
 })
 
+test(`YolkCustomComponent: uses a div if no child is passed in`, t => {
+  t.plan(2)
+  t.timeoutAfter(100)
+
+  class CC extends Yolk.CustomComponent {}
+  const [node, cleanup] = renderInDoc(<CC />)
+
+  t.equal(node.firstChild.tagName, `DIV`)
+
+  const [node2, cleanup2] = renderInDoc(<CC><p /></CC>)
+
+  t.equal(node2.firstChild.tagName, `P`)
+
+  cleanup()
+  cleanup2()
+})
+
 test(`YolkCustomComponent: should raise when there is more than one child`, t => {
   class CC extends Yolk.CustomComponent {}
 
