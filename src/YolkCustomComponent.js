@@ -1,3 +1,4 @@
+const Rx = require(`rx`)
 const h = require(`yolk-virtual-dom/h`)
 const create = require(`yolk-virtual-dom/create-element`)
 const wrapObject = require(`./wrapObject`)
@@ -13,6 +14,7 @@ YolkCustomComponent.prototype = {
 
   _initialize (props, children) {
     this._props = props
+    this._propsSubject$ = null
 
     switch (children.length) {
     case 1:
@@ -27,8 +29,10 @@ YolkCustomComponent.prototype = {
   },
 
   init () {
+    this._propsSubject$ = new Rx.BehaviorSubject(this._props)
+
     const node = create(this._child)
-    const props$ = wrapObject(this._props)
+    const props$ = wrapObject(this._propsSubject$)
     const mountDisposable = props$.take(1).subscribe(props => this.onMount(props, node))
     const updateDisposable = props$.skip(1).subscribe(props => this.onUpdate(props, node))
 
@@ -38,6 +42,11 @@ YolkCustomComponent.prototype = {
     }
 
     return node
+  },
+
+  update (previous) {
+    this._propsSubject$ = previous._propsSubject$
+    this._propsSubject$.onNext(this._props)
   },
 
   predestroy (node) {
