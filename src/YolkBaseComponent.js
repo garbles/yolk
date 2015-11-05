@@ -8,6 +8,7 @@ const transformProperties = require(`./transformProperties`)
 const isFunction = require(`./isFunction`)
 const flatten = require(`./flatten`)
 const mountable = require(`./mountable`)
+const requestAnimationFrameScheduler = require(`./requestAnimationFrameScheduler`)
 
 function YolkBaseComponent (tag, props, children) {
   const _props = {...props}
@@ -55,6 +56,7 @@ YolkBaseComponent.prototype = {
       Rx.Observable
       .combineLatest(propObservable, childObservable, (p, c) => h(id, p, flatten(c)))
       .scan(([old], next) => [next, diff(old, next)], [vNode, null])
+      .observeOn(requestAnimationFrameScheduler)
       .subscribe(
         ([__, patches]) => patch(node, patches),
         (err) => {throw err}
