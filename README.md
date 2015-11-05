@@ -62,7 +62,7 @@ Creates an exotic function that can also be used as an observable. If the functi
 In other words, when this function is used as an event handler, the result is an observable stream of events from that handler. For example:
 
 ```js
-function CustomComponent () {
+function MyComponent () {
   // create an event handler
   const handleClick = this.createEventHandler()
 
@@ -112,6 +112,63 @@ will allow you to use `<big-red-text content="Hello!"></big-red-text>` in your `
 <big-red-text content="Hello!">
   <h1 style="color: red;">Hello!</h1>
 </big-red-text>
+```
+
+__`Yolk.CustomComponent`__
+
+Yolk.CustomComponent makes it easy to wrap non-Yolk behavior as a component, e.g. jQuery plugin or React component.
+Each component expects three (optional) methods: `onMount`, `onUpdate`, and `onUnmount`. Yolk automatically unwraps
+your props so that you don't need to deal with subscribing and disposing of Observables. For example,
+
+```js
+class MyjQueryWrapper extends Yolk.CustomComponent {
+  onMount (props, node) {
+    this._instance = $(node).myjQueryThing(props)
+  }
+
+  onUpdate (props, node) {
+    this._instance.update(props)
+  }
+
+  onUnmount () {
+    this._instance.destroy()
+  }
+}
+```
+
+And then in your component markup:
+
+```js
+function MyComponent () {
+  const handleClick = this.createEventHandler()
+
+  return (
+    <div>
+      <MyjQueryWrapper onClick={handleClick} />
+    </div>
+  )
+}
+```
+
+CustomComponent expects a single child element to use as the node; otherwise, it will default to an empty `div`.
+For example, you can specify the child like so:
+
+```js
+function MyComponent () {
+  const handleClick = this.createEventHandler()
+
+  return (
+    <div>
+      <MyjQueryWrapper onClick={handleClick}>
+        <ul className="my-child-node">
+          <li>Point 1</li>
+          <li>Point 2</li>
+          <li>Point 3</li>
+        </ul>
+      </MyjQueryWrapper>
+    </div>
+  )
+}
 ```
 
 ## Using JSX
