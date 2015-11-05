@@ -3402,7 +3402,7 @@ module.exports = YolkBaseComponent;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"./flatten":74,"./isFunction":79,"./mountable":83,"./transformProperties":86,"./wrapObject":89,"yolk-virtual-dom/create-element":36,"yolk-virtual-dom/diff":37,"yolk-virtual-dom/h":38,"yolk-virtual-dom/patch":41}],66:[function(require,module,exports){
+},{"./flatten":75,"./isFunction":80,"./mountable":84,"./transformProperties":87,"./wrapObject":90,"yolk-virtual-dom/create-element":36,"yolk-virtual-dom/diff":37,"yolk-virtual-dom/h":38,"yolk-virtual-dom/patch":41}],66:[function(require,module,exports){
 (function (global){
 "use strict";
 
@@ -3495,7 +3495,7 @@ module.exports = YolkCompositeComponent;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"./YolkCompositeFunctionWrapper":67,"./wrapObject":89,"yolk-virtual-dom/create-element":36}],67:[function(require,module,exports){
+},{"./YolkCompositeFunctionWrapper":67,"./wrapObject":90,"yolk-virtual-dom/create-element":36}],67:[function(require,module,exports){
 "use strict";
 
 var _createEventHandler = require("./createEventHandler");
@@ -3539,7 +3539,98 @@ YolkCompositeFunctionWrapper.create = function (fn, props, children) {
 
 module.exports = YolkCompositeFunctionWrapper;
 
-},{"./createEventHandler":72,"./isComponent":76}],68:[function(require,module,exports){
+},{"./createEventHandler":73,"./isComponent":77}],68:[function(require,module,exports){
+(function (global){
+"use strict";
+
+var Rx = (typeof window !== "undefined" ? window['Rx'] : typeof global !== "undefined" ? global['Rx'] : null);
+var h = require("yolk-virtual-dom/h");
+var create = require("yolk-virtual-dom/create-element");
+var wrapObject = require("./wrapObject");
+var addProperties = require("./addProperties");
+
+function YolkCustomComponent() {}
+
+YolkCustomComponent.prototype = {
+  type: "Widget",
+  onMount: function onMount() {},
+  onUpdate: function onUpdate() {},
+  onUnmount: function onUnmount() {},
+
+  _initialize: function _initialize(props, children) {
+    this._props = props;
+    this._propsSubject$ = null;
+
+    switch (children.length) {
+      case 1:
+        this._child = children[0];
+        break;
+      case 0:
+        this._child = h("div");
+        break;
+      default:
+        throw new Error(this.constructor.name + " may not have more than one child");
+    }
+  },
+
+  init: function init() {
+    var _this = this;
+
+    this._propsSubject$ = new Rx.BehaviorSubject(this._props);
+
+    var node = create(this._child);
+    var props$ = wrapObject(this._propsSubject$);
+    var mountDisposable = props$.take(1).subscribe(function (props) {
+      return _this.onMount(props, node);
+    });
+    var updateDisposable = props$.skip(1).subscribe(function (props) {
+      return _this.onUpdate(props, node);
+    });
+
+    this._onDestroy = function () {
+      mountDisposable.dispose();
+      updateDisposable.dispose();
+    };
+
+    return node;
+  },
+
+  update: function update(previous) {
+    this._propsSubject$ = previous._propsSubject$;
+    this._propsSubject$.onNext(this._props);
+  },
+
+  predestroy: function predestroy(node) {
+    this.onUnmount(node);
+  },
+
+  destroy: function destroy() {
+    this._onDestroy && this._onDestroy();
+  }
+};
+
+YolkCustomComponent._isCustomComponent = true;
+
+YolkCustomComponent.create = function createInstance(props, children) {
+  var instance = new this(props, children);
+  instance._initialize(props, children);
+
+  return instance;
+};
+
+YolkCustomComponent.extend = function extend(obj) {
+  function Component() {}
+  Component.prototype = Object.create(YolkCustomComponent.prototype);
+  addProperties(Component.prototype, obj);
+
+  return Component;
+};
+
+module.exports = YolkCustomComponent;
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+
+},{"./addProperties":70,"./wrapObject":90,"yolk-virtual-dom/create-element":36,"yolk-virtual-dom/h":38}],69:[function(require,module,exports){
 "use strict";
 
 var create = require("yolk-virtual-dom/create-element");
@@ -3591,7 +3682,7 @@ YolkRootComponent.render = function render(instance, node) {
 
 module.exports = YolkRootComponent;
 
-},{"./delegator":73,"yolk-virtual-dom/create-element":36,"yolk-virtual-dom/diff":37,"yolk-virtual-dom/patch":41}],69:[function(require,module,exports){
+},{"./delegator":74,"yolk-virtual-dom/create-element":36,"yolk-virtual-dom/diff":37,"yolk-virtual-dom/patch":41}],70:[function(require,module,exports){
 /* eslint-disable guard-for-in */
 
 "use strict";
@@ -3615,7 +3706,7 @@ module.exports = function addProperties(base) {
   return base;
 };
 
-},{}],70:[function(require,module,exports){
+},{}],71:[function(require,module,exports){
 "use strict";
 
 var isDefined = require("./isDefined");
@@ -3635,7 +3726,7 @@ module.exports = function compact(arr) {
   return newArr;
 };
 
-},{"./isDefined":77}],71:[function(require,module,exports){
+},{"./isDefined":78}],72:[function(require,module,exports){
 "use strict";
 
 var YolkCompositeComponent = require("./YolkCompositeComponent");
@@ -3653,10 +3744,14 @@ module.exports = function createElement(tag, props) {
     return new YolkBaseComponent(tag, _props, children);
   }
 
+  if (tag._isCustomComponent) {
+    return tag.create(_props, children);
+  }
+
   return new YolkCompositeComponent(tag, _props, children);
 };
 
-},{"./YolkBaseComponent":65,"./YolkCompositeComponent":66,"./isString":82}],72:[function(require,module,exports){
+},{"./YolkBaseComponent":65,"./YolkCompositeComponent":66,"./isString":83}],73:[function(require,module,exports){
 (function (global){
 "use strict";
 
@@ -3697,7 +3792,7 @@ module.exports = function createEventHandler(mapFn, init) {
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"./addProperties":69,"./isDefined":77,"./isFunction":79}],73:[function(require,module,exports){
+},{"./addProperties":70,"./isDefined":78,"./isFunction":80}],74:[function(require,module,exports){
 "use strict";
 
 var domDelegator = require("dom-delegator");
@@ -3716,7 +3811,7 @@ module.exports = function delegator(node) {
   return instance;
 };
 
-},{"./EventsList":64,"dom-delegator":5}],74:[function(require,module,exports){
+},{"./EventsList":64,"dom-delegator":5}],75:[function(require,module,exports){
 "use strict";
 
 module.exports = function flatten(arr) {
@@ -3737,7 +3832,7 @@ module.exports = function flatten(arr) {
   return result;
 };
 
-},{}],75:[function(require,module,exports){
+},{}],76:[function(require,module,exports){
 "use strict";
 
 var isFunction = require("./isFunction");
@@ -3746,7 +3841,7 @@ module.exports = function hasToJS(obj) {
   return !!obj && isFunction(obj.toJS);
 };
 
-},{"./isFunction":79}],76:[function(require,module,exports){
+},{"./isFunction":80}],77:[function(require,module,exports){
 "use strict";
 
 var isWidget = require("yolk-virtual-dom/vnode/is-widget");
@@ -3757,35 +3852,35 @@ module.exports = function isComponent(obj) {
   return !!obj && (isWidget(obj) || isThunk(obj) || isVNode(obj) || isVText(obj));
 };
 
-},{"yolk-virtual-dom/vnode/is-vnode":52,"yolk-virtual-dom/vnode/is-vtext":53,"yolk-virtual-dom/vnode/is-widget":54}],77:[function(require,module,exports){
+},{"yolk-virtual-dom/vnode/is-vnode":52,"yolk-virtual-dom/vnode/is-vtext":53,"yolk-virtual-dom/vnode/is-widget":54}],78:[function(require,module,exports){
 "use strict";
 
 module.exports = function isDefined(obj) {
   return typeof obj !== "undefined" && obj !== null;
 };
 
-},{}],78:[function(require,module,exports){
+},{}],79:[function(require,module,exports){
 "use strict";
 
 module.exports = function isEmpty(obj) {
   return Object.keys(obj).length === 0;
 };
 
-},{}],79:[function(require,module,exports){
+},{}],80:[function(require,module,exports){
 "use strict";
 
 module.exports = function isFunction(obj) {
   return Object.prototype.toString.call(obj) === "[object Function]";
 };
 
-},{}],80:[function(require,module,exports){
+},{}],81:[function(require,module,exports){
 "use strict";
 
 module.exports = function isNumber(num) {
   return typeof num === "number" || num instanceof Number;
 };
 
-},{}],81:[function(require,module,exports){
+},{}],82:[function(require,module,exports){
 (function (global){
 "use strict";
 
@@ -3797,14 +3892,14 @@ module.exports = function isObservable(obj) {
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{}],82:[function(require,module,exports){
+},{}],83:[function(require,module,exports){
 "use strict";
 
 module.exports = function isString(str) {
   return typeof str === "string" || str instanceof String;
 };
 
-},{}],83:[function(require,module,exports){
+},{}],84:[function(require,module,exports){
 "use strict";
 
 var isFunction = require("./isFunction");
@@ -3834,7 +3929,7 @@ function emitUnmount(node, fn) {
 
 module.exports = { emitMount: emitMount, emitUnmount: emitUnmount };
 
-},{"./CustomEvent":61,"./isFunction":79}],84:[function(require,module,exports){
+},{"./CustomEvent":61,"./isFunction":80}],85:[function(require,module,exports){
 "use strict";
 
 var camelCase = require("lodash.camelcase");
@@ -3866,7 +3961,7 @@ module.exports = function parseDOMNodeAttributes(attributes) {
   return attrs;
 };
 
-},{"lodash.camelcase":17}],85:[function(require,module,exports){
+},{"lodash.camelcase":17}],86:[function(require,module,exports){
 "use strict";
 
 var YolkRootComponent = require("./YolkRootComponent");
@@ -3903,7 +3998,7 @@ module.exports = function registerElement(name, Component) {
   document.registerElement(name, { prototype: prototype });
 };
 
-},{"./YolkRootComponent":68,"./createElement":71,"./parseDOMNodeAttributes":84}],86:[function(require,module,exports){
+},{"./YolkRootComponent":69,"./createElement":72,"./parseDOMNodeAttributes":85}],87:[function(require,module,exports){
 "use strict";
 
 var DOMAttributeDescriptors = require("./DOMAttributeDescriptors");
@@ -3930,7 +4025,7 @@ module.exports = function transformProperties(props) {
   return newProps;
 };
 
-},{"./DOMAttributeDescriptors":62,"./transformProperty":87,"./transformStyle":88}],87:[function(require,module,exports){
+},{"./DOMAttributeDescriptors":62,"./transformProperty":88,"./transformStyle":89}],88:[function(require,module,exports){
 "use strict";
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
@@ -4004,7 +4099,7 @@ module.exports = function transformProperty(props, key, value) {
   return props;
 };
 
-},{"./EventHook":63,"./compact":70,"lodash.kebabcase":29,"yolk-virtual-dom/virtual-hyperscript/hooks/attribute-hook":48,"yolk-virtual-dom/virtual-hyperscript/hooks/soft-set-hook":49}],88:[function(require,module,exports){
+},{"./EventHook":63,"./compact":71,"lodash.kebabcase":29,"yolk-virtual-dom/virtual-hyperscript/hooks/attribute-hook":48,"yolk-virtual-dom/virtual-hyperscript/hooks/soft-set-hook":49}],89:[function(require,module,exports){
 "use strict";
 
 var isNumber = require("./isNumber");
@@ -4064,7 +4159,7 @@ module.exports = function transformStyle(props, style) {
   return props;
 };
 
-},{"./isNumber":80}],89:[function(require,module,exports){
+},{"./isNumber":81}],90:[function(require,module,exports){
 (function (global){
 "use strict";
 
@@ -4136,7 +4231,7 @@ module.exports = function wrapObject(_x2) {
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"./hasToJS":75,"./isEmpty":78,"./isObservable":81,"lodash.isplainobject":24}],90:[function(require,module,exports){
+},{"./hasToJS":76,"./isEmpty":79,"./isObservable":82,"lodash.isplainobject":24}],91:[function(require,module,exports){
 (function (global){
 "use strict";
 
@@ -4145,17 +4240,17 @@ require("document-register-element");
 var Rx = (typeof window !== "undefined" ? window['Rx'] : typeof global !== "undefined" ? global['Rx'] : null);
 var createElement = require("./createElement");
 var registerElement = require("./registerElement");
-var YolkRootComponent = require("./YolkRootComponent");
-var render = YolkRootComponent.render;
+var CustomComponent = require("./YolkCustomComponent");
+var render = require("./YolkRootComponent").render;
 
 function Yolk() {}
-Yolk.prototype = { Rx: Rx, createElement: createElement, registerElement: registerElement, render: render };
+Yolk.prototype = { Rx: Rx, CustomComponent: CustomComponent, createElement: createElement, registerElement: registerElement, render: render };
 Object.freeze(Yolk);
 
 module.exports = new Yolk();
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"./YolkRootComponent":68,"./createElement":71,"./registerElement":85,"document-register-element":2}]},{},[90])(90)
+},{"./YolkCustomComponent":68,"./YolkRootComponent":69,"./createElement":72,"./registerElement":86,"document-register-element":2}]},{},[91])(91)
 });
 //# sourceMappingURL=yolk.js.map
