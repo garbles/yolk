@@ -1,3 +1,11 @@
+# 0.7.0 (November 4, 2015)
+
+- Add Yolk.CustomComponent to wrap custom JavaScript behaviors as Yolk components
+
+# 0.6.1 (October 31, 2015)
+
+- Fix bug where some attributes wouldn't be set
+
 # 0.6.0 (October 31, 2015)
 
 - Remove Yolk.createEventHandler from top level API
