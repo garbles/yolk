@@ -1,16 +1,10 @@
 const createEventHandler = require(`./createEventHandler`)
 const isComponent = require(`./isComponent`)
+const addProperties = require(`./addProperties`)
 
-function YolkCompositeFunctionWrapper () {
-  this._eventHandlers = []
-  this._result = null
-}
-
-YolkCompositeFunctionWrapper.prototype = {
-  createEventHandler (mapFn, init) {
-    const handler = createEventHandler(mapFn, init)
-    this._eventHandlers.push(handler)
-    return handler
+const publicInterface = {
+  getVirtualNode () {
+    return this._result
   },
 
   destroy () {
@@ -25,15 +19,27 @@ YolkCompositeFunctionWrapper.prototype = {
   },
 }
 
-YolkCompositeFunctionWrapper.create = (fn, props, children) => {
-  const instance = new YolkCompositeFunctionWrapper()
-  const result = fn.call(instance, props, children)
+function YolkCompositeFunctionWrapper (fn, props, children) {
+  this._eventHandlers = []
+  this._result = fn.call(this, props, children)
+  addProperties(this, publicInterface)
+}
 
-  if (!isComponent(result)) {
+YolkCompositeFunctionWrapper.prototype = {
+  createEventHandler (mapFn, init) {
+    const handler = createEventHandler(mapFn, init)
+    this._eventHandlers.push(handler)
+    return handler
+  },
+}
+
+YolkCompositeFunctionWrapper.create = (fn, props, children) => {
+  const instance = new YolkCompositeFunctionWrapper(fn, props, children)
+
+  if (!isComponent(instance.getVirtualNode())) {
     throw new Error(`Function did not return a valid component. See "${fn.name}".`)
   }
 
-  instance._result = result
   return instance
 }
 

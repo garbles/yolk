@@ -33,8 +33,7 @@ YolkCompositeComponent.prototype = {
     const fn = this._fn
     this._component = YolkCompositeFunctionWrapper.create(fn, propObservable, childObservable)
 
-    const node = create(this._component._result)
-    return node
+    return create(this._component.getVirtualNode())
   },
 
   update (previous) {
