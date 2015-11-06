@@ -16,47 +16,58 @@ function DeeplyNestedObservableProps (props) {
   return <div>{content}</div>
 }
 
-test(`properly interpret properties`, t => {
-  t.plan(3)
+test(`NestedObservableProps: properly interpret properties`, t => {
+  t.plan(9)
+  t.timeoutAfter(100)
 
   const heightSubject = new Rx.BehaviorSubject(1)
   const widthSubject = new Rx.BehaviorSubject(1)
   const component = <NestedObservableProps height={heightSubject} width={widthSubject} />
-  const [node, cleanup] = renderInDoc(component)
+  const [wrapper, cleanup] = renderInDoc(component)
+  const node = wrapper.firstChild
 
-  t.equal(node.innerHTML, `<div style="color: blue; height: 1px; width: 1px; "></div>`)
+  t.equal(node.style.color, `blue`)
+  t.equal(node.style.height, `1px`)
+  t.equal(node.style.width, `1px`)
 
   heightSubject.onNext(50)
 
-  t.equal(node.innerHTML, `<div style="color: blue; width: 1px; height: 50px; "></div>`)
+  t.equal(node.style.color, `blue`)
+  t.equal(node.style.height, `50px`)
+  t.equal(node.style.width, `1px`)
 
   widthSubject.onNext(25)
 
-  t.equal(node.innerHTML, `<div style="color: blue; height: 50px; width: 25px; "></div>`)
+  t.equal(node.style.color, `blue`)
+  t.equal(node.style.height, `50px`)
+  t.equal(node.style.width, `25px`)
 
   cleanup()
 })
 
-test(`works with doubley nested observables`, t => {
+test(`NestedObservableProps: works with doubley nested observables`, t => {
   t.plan(2)
+  t.timeoutAfter(100)
 
   const deeplyNestedHeightSubject = new Rx.BehaviorSubject(1)
   const nestedHeightSubject = new Rx.BehaviorSubject(deeplyNestedHeightSubject.asObservable())
   const heightSubject = new Rx.BehaviorSubject(nestedHeightSubject.asObservable())
   const component = <NestedObservableProps height={heightSubject} width={1} />
-  const [node, cleanup] = renderInDoc(component)
+  const [wrapper, cleanup] = renderInDoc(component)
+  const node = wrapper.firstChild
 
-  t.equal(node.innerHTML, `<div style="color: blue; height: 1px; width: 1px; "></div>`)
+  t.equal(node.style.height, `1px`)
 
   deeplyNestedHeightSubject.onNext(44)
 
-  t.equal(node.innerHTML, `<div style="color: blue; width: 1px; height: 44px; "></div>`)
+  t.equal(node.style.height, `44px`)
 
   cleanup()
 })
 
-test(`works with plain objects that use nested props`, t => {
+test(`NestedObservableProps: works with plain objects that use nested props`, t => {
   t.plan(3)
+  t.timeoutAfter(100)
 
   const b = new Rx.BehaviorSubject({
     c: {

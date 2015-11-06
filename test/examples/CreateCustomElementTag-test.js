@@ -19,9 +19,9 @@ function createInstance () {
   return [node, cleanup]
 }
 
-test(`creating a custom HTML5 element`, t => {
+test(`CreateCustomElementTag: creating a custom HTML5 element`, t => {
   t.plan(1)
-  t.timeoutAfter(100)
+  t.timeoutAfter(2000)
 
   const [node, cleanup] = createInstance()
 
@@ -34,9 +34,9 @@ test(`creating a custom HTML5 element`, t => {
   }, 17)
 })
 
-test(`changing an attribute of a node should change internal Yolk instance`, t => {
+test(`CreateCustomElementTag: changing an attribute of a node should change internal Yolk instance`, t => {
   t.plan(4)
-  t.timeoutAfter(100)
+  t.timeoutAfter(2000)
 
   const [node, cleanup] = createInstance()
   let instance

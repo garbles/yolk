@@ -3,12 +3,15 @@ const Yolk = require(`yolk`) // eslint-disable-line no-unused-vars
 const renderInDoc = require(`../helpers/renderInDoc`)
 
 test(`using data tags`, t => {
-  t.plan(1)
+  t.plan(2)
+  t.timeoutAfter(100)
 
   const component = <div data={{something: 55, otherReallyCoolThing: `123123`}} />
-  const [node, cleanup] = renderInDoc(component)
+  const [wrapper, cleanup] = renderInDoc(component)
+  const node = wrapper.firstChild
 
-  t.equal(node.innerHTML, `<div data-something="55" data-other-really-cool-thing="123123"></div>`)
+  t.equal(node.dataset.something, `55`)
+  t.equal(node.dataset.otherReallyCoolThing, `123123`)
 
   cleanup()
 })

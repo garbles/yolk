@@ -5,6 +5,7 @@ const renderInDoc = require(`../helpers/renderInDoc`)
 
 test(`YolkBaseComponent: returns a base component`, t => {
   t.plan(2)
+  t.timeoutAfter(100)
 
   const instance = new YolkBaseComponent(`p`, {height: 5}, [])
   const node = instance.init()
@@ -19,6 +20,7 @@ test(`YolkBaseComponent: returns a base component`, t => {
 
 test(`YolkBaseComponent: does not apply new prop keys`, t => {
   t.plan(1)
+  t.timeoutAfter(100)
 
   const instance = new YolkBaseComponent(`p`, {height: 5}, [])
   const node = instance.init()
@@ -31,27 +33,28 @@ test(`YolkBaseComponent: does not apply new prop keys`, t => {
 
 test(`YolkBaseComponent: listens for mount and umount when defined`, t => {
   t.plan(2)
-  t.timeoutAfter(100)
+  t.timeoutAfter(2000)
 
   const instance = new YolkBaseComponent(`p`, {onMount: () => {}, onUnmount: () => {}}, [])
-  const [node, cleanup] = renderInDoc(instance)
-  const child = node.firstChild
+  const [wrapper, cleanup] = renderInDoc(instance)
+  const node = wrapper.firstChild
 
   const handler = () => t.pass(`emits event`)
 
-  child.addEventListener(`mount`, handler)
-  child.addEventListener(`unmount`, handler)
+  node.addEventListener(`mount`, handler)
+  node.addEventListener(`unmount`, handler)
 
   setTimeout(() => {
     instance.predestroy()
-    child.removeEventListener(`mount`, handler)
-    child.removeEventListener(`unmount`, handler)
+    node.removeEventListener(`mount`, handler)
+    node.removeEventListener(`unmount`, handler)
     cleanup()
   }, 0)
 })
 
 test(`YolkBaseComponent: accepts observables as props`, t => {
   t.plan(2)
+  t.timeoutAfter(100)
 
   const height = new Rx.BehaviorSubject(5)
 
@@ -68,7 +71,7 @@ test(`YolkBaseComponent: accepts observables as props`, t => {
 })
 
 test(`YolkBaseComponent: does not wrap objects with toJS defined on them`, t => {
-  t.plan(1)
+  t.plan(2)
   t.timeoutAfter(100)
 
   const style = {
@@ -78,9 +81,11 @@ test(`YolkBaseComponent: does not wrap objects with toJS defined on them`, t => 
   }
 
   const instance = new YolkBaseComponent(`p`, {style}, [])
-  const [node, cleanup] = renderInDoc(instance)
+  const [wrapper, cleanup] = renderInDoc(instance)
+  const node = wrapper.firstChild
 
-  t.equal(node.innerHTML, `<p style="height: 5px; width: 10px; "></p>`)
+  t.equal(node.style.height, `5px`)
+  t.equal(node.style.width, `10px`)
 
   cleanup()
 })

@@ -4,13 +4,13 @@ const test = require(`tape`)
 const Yolk = require(`yolk`)
 const renderInDoc = require(`../helpers/renderInDoc`)
 
-test(`will run code after the component mounts`, t => {
+test(`LifecycleHooks: will run code after the component mounts`, t => {
   t.plan(2)
-  t.timeoutAfter(500)
+  t.timeoutAfter(2000)
 
-  function onMount (event) {
+  function onMount (ev) {
     t.equal(node.childElementCount, 1)
-    t.equal(event.target.outerHTML, `<strong></strong>`)
+    t.equal(ev.target.outerHTML, `<strong></strong>`)
     cleanup()
   }
 
@@ -18,13 +18,13 @@ test(`will run code after the component mounts`, t => {
   const [node, cleanup] = renderInDoc(component)
 })
 
-test(`will run code when the component unmounts`, t => {
+test(`LifecycleHooks: will run code when the component unmounts`, t => {
   t.plan(3)
-  t.timeoutAfter(500)
+  t.timeoutAfter(2000)
 
-  function onUnmount () {
+  function onUnmount (ev) {
     t.equal(node.childElementCount, 1)
-    t.equal(event.target.outerHTML, `<strong></strong>`)
+    t.equal(ev.target.outerHTML, `<strong></strong>`)
 
     setTimeout(() => {
       t.equal(node.innerHTML, `<b></b>`)
