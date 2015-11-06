@@ -1,8 +1,7 @@
 const Rx = require(`rx`)
 const create = require(`yolk-virtual-dom/create-element`)
-const wrapObject = require(`./wrapObject`)
 const YolkCompositeFunctionWrapper = require(`./YolkCompositeFunctionWrapper`)
-
+const CompositePropSubject = require(`./CompositePropSubject`)
 
 function YolkCompositeComponent (fn, props, children) {
   const _props = {...props}
@@ -25,23 +24,10 @@ YolkCompositeComponent.prototype = {
   type: `Widget`,
 
   init () {
-    const keys = Object.keys(this._props)
-    const length = keys.length
-    const propsSubject = {}
-    let i = -1
-
-    this._propSubject = {}
-
-    while (++i < length) {
-      const key = keys[i]
-      const value = this._props[key]
-      this._propSubject[key] = new Rx.BehaviorSubject(value)
-      propsSubject[key] = this._propSubject[key].flatMapLatest(wrapObject)
-    }
-
+    this._propSubject = new CompositePropSubject(this._props)
     this._childSubject = new Rx.BehaviorSubject(this._children)
 
-    const propObservable = propsSubject
+    const propObservable = this._propSubject.asObservableObject()
     const childObservable = this._childSubject.asObservable()
 
     const fn = this._fn
@@ -55,17 +41,9 @@ YolkCompositeComponent.prototype = {
     this._propSubject = previous._propSubject
     this._childSubject = previous._childSubject
     this._component = previous._component
+
+    this._propSubject.onNext(this._props)
     this._childSubject.onNext(this._children)
-
-    const keys = Object.keys(this._props)
-    const length = keys.length
-    let i = -1
-
-    while (++i < length) {
-      const key = keys[i]
-      const value = this._props[key]
-      this._propSubject[key].onNext(value || null)
-    }
   },
 
   destroy () {

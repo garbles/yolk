@@ -8,6 +8,7 @@ const transformProperties = require(`./transformProperties`)
 const isFunction = require(`./isFunction`)
 const flatten = require(`./flatten`)
 const mountable = require(`./mountable`)
+const CompositePropSubject = require(`./CompositePropSubject`)
 
 function YolkBaseComponent (tag, props, children) {
   const _props = {...props}
@@ -28,27 +29,13 @@ YolkBaseComponent.prototype = {
   type: `Widget`,
 
   init () {
-    const keys = Object.keys(this._props)
-    const length = keys.length
-    const propsSubject = {}
-    let i = -1
-
-    this._propSubject = {}
-
-    while (++i < length) {
-      const key = keys[i]
-      const value = this._props[key]
-      this._propSubject[key] = new Rx.BehaviorSubject(value)
-      propsSubject[key] = this._propSubject[key].flatMapLatest(wrapObject)
-    }
-
+    this._propSubject = new CompositePropSubject(this._props)
     this._childSubject = new Rx.BehaviorSubject(this._children)
 
-    const propObservable = wrapObject(propsSubject, {wrapToJS: true}).map(transformProperties)
+    const propObservable = wrapObject(this._propSubject.asSubjectObject(), {wrapToJS: true}).map(transformProperties)
     const childObservable = this._childSubject.flatMapLatest(c => wrapObject(c, {wrapToJS: true}))
-
-    const vNode = h(this.id)
     const id = this.id
+    const vNode = h(id)
     const node = create(vNode)
 
     this._patchSubscription =
@@ -71,17 +58,9 @@ YolkBaseComponent.prototype = {
     this._propSubject = previous._propSubject
     this._childSubject = previous._childSubject
     this._patchSubscription = previous._patchSubscription
+
+    this._propSubject.onNext(this._props)
     this._childSubject.onNext(this._children)
-
-    const keys = Object.keys(previous._props)
-    const length = keys.length
-    let i = -1
-
-    while (++i < length) {
-      const key = keys[i]
-      const value = this._props[key]
-      this._propSubject[key].onNext(value || null)
-    }
   },
 
   predestroy () {
