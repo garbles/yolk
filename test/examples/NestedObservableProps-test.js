@@ -23,8 +23,7 @@ test(`NestedObservableProps: properly interpret properties`, t => {
   const heightSubject = new Rx.BehaviorSubject(1)
   const widthSubject = new Rx.BehaviorSubject(1)
   const component = <NestedObservableProps height={heightSubject} width={widthSubject} />
-  const [wrapper, cleanup] = renderInDoc(component)
-  const node = wrapper.firstChild
+  const [node, cleanup] = renderInDoc(component)
 
   t.equal(node.style.color, `blue`)
   t.equal(node.style.height, `1px`)
@@ -53,8 +52,7 @@ test(`NestedObservableProps: works with doubley nested observables`, t => {
   const nestedHeightSubject = new Rx.BehaviorSubject(deeplyNestedHeightSubject.asObservable())
   const heightSubject = new Rx.BehaviorSubject(nestedHeightSubject.asObservable())
   const component = <NestedObservableProps height={heightSubject} width={1} />
-  const [wrapper, cleanup] = renderInDoc(component)
-  const node = wrapper.firstChild
+  const [node, cleanup] = renderInDoc(component)
 
   t.equal(node.style.height, `1px`)
 
@@ -66,7 +64,7 @@ test(`NestedObservableProps: works with doubley nested observables`, t => {
 })
 
 test(`NestedObservableProps: works with plain objects that use nested props`, t => {
-  t.plan(3)
+  t.plan(9)
   t.timeoutAfter(100)
 
   const b = new Rx.BehaviorSubject({
@@ -78,7 +76,7 @@ test(`NestedObservableProps: works with plain objects that use nested props`, t 
   const component = <DeeplyNestedObservableProps a={{b}} />
   const [node, cleanup] = renderInDoc(component)
 
-  t.equal(node.innerHTML, `<div>hello goodbye!</div>`)
+  t.equal(node.innerHTML, `hello goodbye!`)
 
   const anotherSubject = new Rx.BehaviorSubject(`And another`)
 
@@ -91,11 +89,17 @@ test(`NestedObservableProps: works with plain objects that use nested props`, t 
     },
   })
 
-  t.equal(node.innerHTML, `<div><span>Random Component</span><p>And another</p></div>`)
+  t.equal(node.children[0].tagName, `SPAN`)
+  t.equal(node.children[0].innerHTML, `Random Component`)
+  t.equal(node.children[1].tagName, `P`)
+  t.equal(node.children[1].innerHTML, `And another`)
 
   anotherSubject.onNext(`Still working`)
 
-  t.equal(node.innerHTML, `<div><span>Random Component</span><p>Still working</p></div>`)
+  t.equal(node.children[0].tagName, `SPAN`)
+  t.equal(node.children[0].innerHTML, `Random Component`)
+  t.equal(node.children[1].tagName, `P`)
+  t.equal(node.children[1].innerHTML, `Still working`)
 
   cleanup()
 })

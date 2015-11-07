@@ -8,5 +8,5 @@ module.exports = function renderInDoc (instance) {
 
   const cleanup = () => document.body.removeChild(node)
 
-  return [node, cleanup]
+  return [node.firstChild, cleanup]
 }

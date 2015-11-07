@@ -28,13 +28,14 @@ function WrapCustomComponent () {
   )
 }
 
-test(`works just as any other component would`, t => {
-  t.plan(1)
+test(`WrapCustomComponent: works just as any other component would`, t => {
+  t.plan(2)
 
   const component = <WrapCustomComponent />
   const [node, cleanup] = renderInDoc(component)
 
-  t.equal(node.innerHTML, `<div><strong>hello world!</strong></div>`)
+  t.equal(node.firstChild.tagName, `STRONG`)
+  t.equal(node.firstChild.innerHTML, `hello world!`)
 
   cleanup()
 })

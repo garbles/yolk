@@ -4,22 +4,26 @@ const YolkBaseComponent = require(`YolkBaseComponent`)
 const renderInDoc = require(`../helpers/renderInDoc`)
 
 test(`YolkBaseComponent: returns a base component`, t => {
-  t.plan(2)
+  t.plan(6)
   t.timeoutAfter(100)
 
   const instance = new YolkBaseComponent(`p`, {height: 5}, [])
   const node = instance.init()
 
-  t.equal(node.outerHTML, `<p height="5"></p>`)
+  t.equal(node.tagName, `P`)
+  t.equal(node.getAttribute(`height`), `5`)
+  t.notOk(node.innerHTML, ``)
 
   const patched = new YolkBaseComponent(`p`, {height: 10}, [`hello`])
   patched.update(instance)
 
-  t.equal(node.outerHTML, `<p height="10">hello</p>`)
+  t.equal(node.tagName, `P`)
+  t.equal(node.getAttribute(`height`), `10`)
+  t.equal(node.innerHTML, `hello`)
 })
 
 test(`YolkBaseComponent: does not apply new prop keys`, t => {
-  t.plan(1)
+  t.plan(3)
   t.timeoutAfter(100)
 
   const instance = new YolkBaseComponent(`p`, {height: 5}, [])
@@ -28,7 +32,9 @@ test(`YolkBaseComponent: does not apply new prop keys`, t => {
   const patched = new YolkBaseComponent(`p`, {width: 10}, [`hello`])
   patched.update(instance)
 
-  t.equal(node.outerHTML, `<p height="null">hello</p>`)
+  t.equal(node.tagName, `P`)
+  t.equal(node.getAttribute(`height`), `null`)
+  t.notOk(node.getAttribute(`width`))
 })
 
 test(`YolkBaseComponent: listens for mount and umount when defined`, t => {
@@ -36,8 +42,7 @@ test(`YolkBaseComponent: listens for mount and umount when defined`, t => {
   t.timeoutAfter(2000)
 
   const instance = new YolkBaseComponent(`p`, {onMount: () => {}, onUnmount: () => {}}, [])
-  const [wrapper, cleanup] = renderInDoc(instance)
-  const node = wrapper.firstChild
+  const [node, cleanup] = renderInDoc(instance)
 
   const handler = () => t.pass(`emits event`)
 
@@ -53,7 +58,7 @@ test(`YolkBaseComponent: listens for mount and umount when defined`, t => {
 })
 
 test(`YolkBaseComponent: accepts observables as props`, t => {
-  t.plan(2)
+  t.plan(3)
   t.timeoutAfter(100)
 
   const height = new Rx.BehaviorSubject(5)
@@ -61,11 +66,12 @@ test(`YolkBaseComponent: accepts observables as props`, t => {
   const instance = new YolkBaseComponent(`p`, {height}, [])
   const [node, cleanup] = renderInDoc(instance)
 
-  t.equal(node.innerHTML, `<p height="5"></p>`)
+  t.equal(node.tagName, `P`)
+  t.equal(node.getAttribute(`height`), `5`)
 
   height.onNext(10)
 
-  t.equal(node.innerHTML, `<p height="10"></p>`)
+  t.equal(node.getAttribute(`height`), `10`)
 
   cleanup()
 })
@@ -81,8 +87,7 @@ test(`YolkBaseComponent: does not wrap objects with toJS defined on them`, t => 
   }
 
   const instance = new YolkBaseComponent(`p`, {style}, [])
-  const [wrapper, cleanup] = renderInDoc(instance)
-  const node = wrapper.firstChild
+  const [node, cleanup] = renderInDoc(instance)
 
   t.equal(node.style.height, `5px`)
   t.equal(node.style.width, `10px`)
@@ -91,7 +96,7 @@ test(`YolkBaseComponent: does not wrap objects with toJS defined on them`, t => 
 })
 
 test(`YolkBaseComponent: properly wraps children with toJS defined on them`, t => {
-  t.plan(2)
+  t.plan(8)
   t.timeoutAfter(100)
 
   const child1 = new YolkBaseComponent(`p`, null, [`hello`])
@@ -108,7 +113,9 @@ test(`YolkBaseComponent: properly wraps children with toJS defined on them`, t =
   const instance = new YolkBaseComponent(`b`, null, [childrenSubject])
   const [node, cleanup] = renderInDoc(instance)
 
-  t.equal(node.innerHTML, `<b><p>hello</p></b>`)
+  t.equal(node.tagName, `B`)
+  t.equal(node.firstChild.tagName, `P`)
+  t.equal(node.firstChild.innerHTML, `hello`)
 
   children = {
     toJS () {
@@ -118,7 +125,11 @@ test(`YolkBaseComponent: properly wraps children with toJS defined on them`, t =
 
   childrenSubject.onNext([children])
 
-  t.equal(node.innerHTML, `<b><p>hello</p><p>goodbye</p></b>`)
+  t.equal(node.tagName, `B`)
+  t.equal(node.children[0].tagName, `P`)
+  t.equal(node.children[0].innerHTML, `hello`)
+  t.equal(node.children[1].tagName, `P`)
+  t.equal(node.children[1].innerHTML, `goodbye`)
 
   cleanup()
 })

@@ -20,7 +20,7 @@ function createInstance () {
 }
 
 test(`CreateCustomElementTag: creating a custom HTML5 element`, t => {
-  t.plan(1)
+  t.plan(4)
   t.timeoutAfter(2000)
 
   const [node, cleanup] = createInstance()
@@ -29,13 +29,16 @@ test(`CreateCustomElementTag: creating a custom HTML5 element`, t => {
   // is not present. phantomJS does not use requestionAnimationFrame (?) so timeout for
   // at least one frame
   setTimeout(() => {
-    t.equal(node.outerHTML, `<create-custom height="10"><h1>hello world</h1></create-custom>`)
+    t.equal(node.tagName, `CREATE-CUSTOM`)
+    t.equal(node.getAttribute(`height`), `10`)
+    t.equal(node.firstChild.tagName, `H1`)
+    t.equal(node.firstChild.innerHTML, `hello world`)
     cleanup()
   }, 17)
 })
 
 test(`CreateCustomElementTag: changing an attribute of a node should change internal Yolk instance`, t => {
-  t.plan(4)
+  t.plan(7)
   t.timeoutAfter(2000)
 
   const [node, cleanup] = createInstance()
@@ -52,7 +55,10 @@ test(`CreateCustomElementTag: changing an attribute of a node should change inte
     const newInstance = node.__YOLK_INSTANCE_KEY__
     t.ok(newInstance instanceof YolkCompositeComponent)
     t.notEqual(instance, newInstance)
-    t.equal(node.outerHTML, `<create-custom height="500"><h1>hello world</h1></create-custom>`)
+    t.equal(node.tagName, `CREATE-CUSTOM`)
+    t.equal(node.getAttribute(`height`), `500`)
+    t.equal(node.firstChild.tagName, `H1`)
+    t.equal(node.firstChild.innerHTML, `hello world`)
     cleanup()
   }, 17)
 })

@@ -5,34 +5,33 @@ const Yolk = require(`yolk`)
 const renderInDoc = require(`../helpers/renderInDoc`)
 
 test(`LifecycleHooks: will run code after the component mounts`, t => {
-  t.plan(2)
+  t.plan(1)
   t.timeoutAfter(2000)
 
   function onMount (ev) {
-    t.equal(node.childElementCount, 1)
-    t.equal(ev.target.outerHTML, `<strong></strong>`)
+    t.equal(ev.target.tagName, `STRONG`)
     cleanup()
   }
 
   const component = <strong onMount={onMount} />
-  const [node, cleanup] = renderInDoc(component)
+  const cleanup = renderInDoc(component)[1]
 })
 
 test(`LifecycleHooks: will run code when the component unmounts`, t => {
-  t.plan(3)
+  t.plan(2)
   t.timeoutAfter(2000)
 
   function onUnmount (ev) {
-    t.equal(node.childElementCount, 1)
-    t.equal(ev.target.outerHTML, `<strong></strong>`)
+    t.equal(ev.target.tagName, `STRONG`)
 
     setTimeout(() => {
-      t.equal(node.innerHTML, `<b></b>`)
+      t.equal(parent.firstChild.tagName, `B`)
       cleanup()
     }, 0)
   }
 
   const [node, cleanup] = renderInDoc(<strong onUnmount={onUnmount} />)
+  const parent = node.parentNode
 
-  Yolk.render(<b />, node)
+  Yolk.render(<b />, parent)
 })

@@ -20,7 +20,7 @@ function NestedCallbackChild (props) {
   return <button id="nested-button" onClick={props.onClick} />
 }
 
-test(`handles calling callback functions from a child component`, t => {
+test(`NestedCallback: handles calling callback functions from a child component`, t => {
   t.plan(2)
 
   const component = <NestedCallback />

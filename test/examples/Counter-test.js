@@ -16,13 +16,21 @@ function Counter () {
   )
 }
 
-test(`a simple counter`, t => {
-  t.plan(2)
+test(`Counter: a simple counter`, t => {
+  t.plan(11)
+  t.timeoutAfter(100)
 
-  const component = <Counter />
-  const [node, cleanup] = renderInDoc(component)
+  const [node, cleanup] = renderInDoc(<Counter />)
 
-  t.equal(node.innerHTML, `<div><button id="plus">+</button><button id="minus">-</button><span>0</span></div>`)
+  t.equal(node.tagName, `DIV`)
+  t.equal(node.children[0].tagName, `BUTTON`)
+  t.equal(node.children[0].id, `plus`)
+  t.equal(node.children[0].innerHTML, `+`)
+  t.equal(node.children[1].tagName, `BUTTON`)
+  t.equal(node.children[1].id, `minus`)
+  t.equal(node.children[1].innerHTML, `-`)
+  t.equal(node.children[2].tagName, `SPAN`)
+  t.equal(node.children[2].innerHTML, `0`)
 
   const plus = node.querySelector(`#plus`)
   const minus = node.querySelector(`#minus`)
@@ -32,7 +40,8 @@ test(`a simple counter`, t => {
   plus.click()
   minus.click()
 
-  t.equal(node.innerHTML, `<div><button id="plus">+</button><button id="minus">-</button><span>2</span></div>`)
+  t.equal(node.children[2].tagName, `SPAN`)
+  t.equal(node.children[2].innerHTML, `2`)
 
   cleanup()
 })

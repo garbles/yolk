@@ -21,8 +21,8 @@ function DestroyChildren () {
   )
 }
 
-test(`destroying children`, t => {
-  t.plan(4)
+test(`DestroyChildren: remove children after clicking`, t => {
+  t.plan(19)
 
   const component = <DestroyChildren />
   const [node, cleanup] = renderInDoc(component)
@@ -31,21 +31,36 @@ test(`destroying children`, t => {
   const remover = node.querySelector(`#remove`)
   const children = node.querySelector(`#children`)
 
-  t.equal(children.innerHTML, `<b></b><p></p><p></p><p></p><p></p>`)
+  t.equal(children.children[0].tagName, `B`)
+  t.equal(children.children[1].tagName, `P`)
+  t.equal(children.children[2].tagName, `P`)
+  t.equal(children.children[3].tagName, `P`)
+  t.equal(children.children[4].tagName, `P`)
+  t.notOk(children.children[5])
 
   remover.click()
 
-  t.equal(children.innerHTML, `<b></b><p></p><p></p><p></p>`)
+  t.equal(children.children[0].tagName, `B`)
+  t.equal(children.children[1].tagName, `P`)
+  t.equal(children.children[2].tagName, `P`)
+  t.equal(children.children[3].tagName, `P`)
+  t.notOk(children.children[4])
 
   remover.click()
   remover.click()
 
-  t.equal(children.innerHTML, `<b></b><p></p>`)
+  t.equal(children.children[0].tagName, `B`)
+  t.equal(children.children[1].tagName, `P`)
+  t.notOk(children.children[2])
 
   adder.click()
   adder.click()
 
-  t.equal(children.innerHTML, `<b></b><b></b><b></b><p></p>`)
+  t.equal(children.children[0].tagName, `B`)
+  t.equal(children.children[1].tagName, `B`)
+  t.equal(children.children[2].tagName, `B`)
+  t.equal(children.children[3].tagName, `P`)
+  t.notOk(children.children[4])
 
   cleanup()
 })

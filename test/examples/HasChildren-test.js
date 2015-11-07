@@ -10,8 +10,9 @@ function HasChildren (props, children) {
   )
 }
 
-test(`renders children`, t => {
-  t.plan(1)
+test(`HasChildren: renders children`, t => {
+  t.plan(4)
+  t.timeoutAfter(100)
 
   const component = (
     <HasChildren>
@@ -20,13 +21,17 @@ test(`renders children`, t => {
   )
   const [node, cleanup] = renderInDoc(component)
 
-  t.equal(node.innerHTML, `<div class="wrapper"><div id="hello"></div></div>`)
+  t.equal(node.tagName, `DIV`)
+  t.equal(node.className, `wrapper`)
+  t.equal(node.firstChild.tagName, `DIV`)
+  t.equal(node.firstChild.id, `hello`)
 
   cleanup()
 })
 
-test(`renders deeply nested children`, t => {
-  t.plan(1)
+test(`HasChildren: renders deeply nested children`, t => {
+  t.plan(10)
+  t.timeoutAfter(100)
 
   const component = (
     <HasChildren>
@@ -41,7 +46,16 @@ test(`renders deeply nested children`, t => {
 
   const [node, cleanup] = renderInDoc(component)
 
-  t.equal(node.innerHTML, `<div class="wrapper"><div class="wrapper"><div id="hello"></div><div class="wrapper"><div id="hello"></div></div></div></div>`)
+  t.equal(node.tagName, `DIV`)
+  t.equal(node.className, `wrapper`)
+  t.equal(node.children[0].tagName, `DIV`)
+  t.equal(node.children[0].className, `wrapper`)
+  t.equal(node.children[0].children[0].tagName, `DIV`)
+  t.equal(node.children[0].children[0].id, `hello`)
+  t.equal(node.children[0].children[1].tagName, `DIV`)
+  t.equal(node.children[0].children[1].className, `wrapper`)
+  t.equal(node.children[0].children[1].children[0].tagName, `DIV`)
+  t.equal(node.children[0].children[1].children[0].id, `hello`)
 
   cleanup()
 })

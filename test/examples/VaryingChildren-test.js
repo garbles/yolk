@@ -30,8 +30,8 @@ function Stub (props, children) {
   return <button id="stub" onClick={handleClick}>{children}{count}</button>
 }
 
-test(`renders a varying number of base children`, t => {
-  t.plan(2)
+test(`VaryingChildren: renders a varying number of base children`, t => {
+  t.plan(10)
 
   const numbersSubject = new Rx.BehaviorSubject(1)
   const numbersObservable = numbersSubject.scan((acc, next) => acc.concat(next), [])
@@ -39,18 +39,26 @@ test(`renders a varying number of base children`, t => {
   const component = <VaryingBaseChildrenFromProps numbers={numbersObservable} />
   const [node, cleanup] = renderInDoc(component)
 
-  t.equal(node.innerHTML, `<ul><li>1</li></ul>`)
+  t.equal(node.tagName, `UL`)
+  t.equal(node.children[0].tagName, `LI`)
+  t.equal(node.children[0].innerHTML, `1`)
 
   numbersSubject.onNext(2)
   numbersSubject.onNext(3)
 
-  t.equal(node.innerHTML, `<ul><li>1</li><li>2</li><li>3</li></ul>`)
+  t.equal(node.tagName, `UL`)
+  t.equal(node.children[0].tagName, `LI`)
+  t.equal(node.children[0].innerHTML, `1`)
+  t.equal(node.children[1].tagName, `LI`)
+  t.equal(node.children[1].innerHTML, `2`)
+  t.equal(node.children[2].tagName, `LI`)
+  t.equal(node.children[2].innerHTML, `3`)
 
   cleanup()
 })
 
-test(`renders a varying number of widget children`, t => {
-  t.plan(3)
+test(`VaryingChildren: renders a varying number of widget children`, t => {
+  t.plan(8)
 
   const numbersSubject = new Rx.BehaviorSubject(1)
   const numbersObservable = numbersSubject.scan((acc, next) => acc.concat(next), [])
@@ -58,7 +66,10 @@ test(`renders a varying number of widget children`, t => {
   const component = <VaryingWidgetChildrenFromProps numbers={numbersObservable} />
   const [node, cleanup] = renderInDoc(component)
 
-  t.equal(node.innerHTML, `<div><button id="stub">10</button></div>`)
+  t.equal(node.tagName, `DIV`)
+  t.equal(node.firstChild.tagName, `BUTTON`)
+  t.equal(node.firstChild.id, `stub`)
+  t.equal(node.firstChild.innerHTML, `10`)
 
   const stubDiv = node.querySelector(`#stub`)
   stubDiv.click()
@@ -67,12 +78,14 @@ test(`renders a varying number of widget children`, t => {
   stubDiv.click()
   stubDiv.click()
 
-  t.equal(node.innerHTML, `<div><button id="stub">15</button></div>`)
+  t.equal(node.children[0].innerHTML, `15`)
 
   numbersSubject.onNext(2)
   numbersSubject.onNext(3)
 
-  t.equal(node.innerHTML, `<div><button id="stub">15</button><button id="stub">20</button><button id="stub">30</button></div>`)
+  t.equal(node.children[0].innerHTML, `15`)
+  t.equal(node.children[1].innerHTML, `20`)
+  t.equal(node.children[2].innerHTML, `30`)
 
   cleanup()
 })

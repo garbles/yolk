@@ -3,7 +3,7 @@ const test = require(`tape`)
 const Yolk = require(`yolk`)
 const renderInDoc = require(`../helpers/renderInDoc`)
 
-test(`YolkCustomComponent: a component that has livecycle hooks`, t => {
+test(`CreateCustomComponent: a component that has livecycle hooks`, t => {
   t.plan(3)
   t.timeoutAfter(100)
 
@@ -28,39 +28,40 @@ test(`YolkCustomComponent: a component that has livecycle hooks`, t => {
   const instance = <CustomOnlyMount className={names}><p /></CustomOnlyMount>
   const [node, cleanup] = renderInDoc(instance)
 
-  t.equal(node.innerHTML, `<p class="a b c d"></p>`)
+  t.equal(node.tagName, `P`)
+  t.equal(node.className, `a b c d`)
 
   names.onNext([`e`, `ee`, `eee`, `eeee`])
 
-  t.equal(node.innerHTML, `<p class="e ee eee eeee"></p>`)
+  t.equal(node.className, `e ee eee eeee`)
 
   Yolk.render(<div />, node)
 
   cleanup()
 })
 
-test(`YolkCustomComponent: uses a div if no child is passed in`, t => {
+test(`CreateCustomComponent: uses a div if no child is passed in`, t => {
   t.plan(2)
   t.timeoutAfter(100)
 
   class CC extends Yolk.CustomComponent {}
   const [node, cleanup] = renderInDoc(<CC />)
 
-  t.equal(node.firstChild.tagName, `DIV`)
+  t.equal(node.tagName, `DIV`)
 
   const [node2, cleanup2] = renderInDoc(<CC><p /></CC>)
 
-  t.equal(node2.firstChild.tagName, `P`)
+  t.equal(node2.tagName, `P`)
 
   cleanup()
   cleanup2()
 })
 
-test(`YolkCustomComponent: should raise when there is more than one child`, t => {
-  class CC extends Yolk.CustomComponent {}
-
+test(`CreateCustomComponent: should raise when there is more than one child`, t => {
   t.plan(6)
   t.timeoutAfter(100)
+
+  class CC extends Yolk.CustomComponent {}
 
   t.throws(() => <CC><p /><p /></CC>)
   t.throws(() => <CC><p><p /></p><p /></CC>)

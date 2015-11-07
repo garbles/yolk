@@ -20,7 +20,7 @@ class CustomStub {
   }
 }
 
-function WrapCustomComponentWithChildren (props) {
+function WrapCustomWidgetWithChildren (props) {
   return (
     <div>
       {
@@ -33,13 +33,17 @@ function WrapCustomComponentWithChildren (props) {
   )
 }
 
-test(`wrapping custom virtual dom widgets`, t => {
-  t.plan(1)
+test(`WrapCustomWidgetWithChildren: wrapping custom virtual dom widgets`, t => {
+  t.plan(4)
 
-  const component = <WrapCustomComponentWithChildren contents="and so does this" />
+  const component = <WrapCustomWidgetWithChildren contents="and so does this" />
   const [node, cleanup] = renderInDoc(component)
+  const widget = node.firstChild
 
-  t.equal(node.innerHTML, `<div><div><div>This works</div><p>and so does this</p></div></div>`)
+  t.equal(widget.children[0].tagName, `DIV`)
+  t.equal(widget.children[0].innerHTML, `This works`)
+  t.equal(widget.children[1].tagName, `P`)
+  t.equal(widget.children[1].innerHTML, `and so does this`)
 
   cleanup()
 })
