@@ -1,14 +1,11 @@
 const Rx = require(`rx`)
-const create = require(`yolk-virtual-dom/create-element`)
-const diff = require(`yolk-virtual-dom/diff`)
-const h = require(`yolk-virtual-dom/h`)
-const patch = require(`yolk-virtual-dom/patch`)
 const wrapObject = require(`./wrapObject`)
 const transformProperties = require(`./transformProperties`)
 const isFunction = require(`./isFunction`)
 const flatten = require(`./flatten`)
 const mountable = require(`./mountable`)
 const CompositePropSubject = require(`./CompositePropSubject`)
+const YolkBaseInnerComponent = require(`./YolkBaseInnerComponent`)
 
 function YolkBaseComponent (tag, props, children) {
   const _props = {...props}
@@ -33,28 +30,21 @@ YolkBaseComponent.prototype = {
     this._childSubject = new Rx.BehaviorSubject(this._children)
 
     const propObservable = wrapObject(this._propSubject.asSubjectObject(), {wrapToJS: true}).map(transformProperties)
-    const childObservable = this._childSubject.flatMapLatest(c => wrapObject(c, {wrapToJS: true}))
-    const id = this.id
-    const vNode = h(id)
-    const node = create(vNode)
+    const childObservable = this._childSubject.flatMapLatest(c => wrapObject(c, {wrapToJS: true})).map(flatten)
+    const innerComponent = new YolkBaseInnerComponent(this.id)
+    const node = innerComponent.createNode()
 
     this._patchSubscription =
       Rx.Observable
-      .combineLatest(propObservable, childObservable, (p, c) => h(id, p, flatten(c)))
-      .scan(([old], next) => [next, diff(old, next)], [vNode, null])
-      .subscribe(
-        ([__, patches]) => patch(node, patches),
-        (err) => {throw err}
-      )
+        .combineLatest(propObservable, childObservable)
+        .subscribe(([props, children]) => innerComponent.update(props, children))
 
     mountable.emitMount(node, this._props.onMount)
 
-    this._node = node
-    return this._node
+    return node
   },
 
   update (previous) {
-    this._node = previous._node
     this._propSubject = previous._propSubject
     this._childSubject = previous._childSubject
     this._patchSubscription = previous._patchSubscription
@@ -63,8 +53,8 @@ YolkBaseComponent.prototype = {
     this._childSubject.onNext(this._children)
   },
 
-  predestroy () {
-    mountable.emitUnmount(this._node, this._props.onUnmount)
+  predestroy (node) {
+    mountable.emitUnmount(node, this._props.onUnmount)
   },
 
   destroy () {

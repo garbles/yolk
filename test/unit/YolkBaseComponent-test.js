@@ -50,7 +50,7 @@ test(`YolkBaseComponent: listens for mount and umount when defined`, t => {
   node.addEventListener(`unmount`, handler)
 
   setTimeout(() => {
-    instance.predestroy()
+    instance.predestroy(node)
     node.removeEventListener(`mount`, handler)
     node.removeEventListener(`unmount`, handler)
     cleanup()
