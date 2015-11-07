@@ -34,10 +34,9 @@ YolkBaseComponent.prototype = {
     const innerComponent = new YolkBaseInnerComponent(this.id)
     const node = innerComponent.createNode()
 
-    this._patchSubscription =
-      Rx.Observable
-        .combineLatest(propObservable, childObservable)
-        .subscribe(([props, children]) => innerComponent.update(props, children))
+    this._disposable =
+      propObservable.combineLatest(childObservable)
+      .subscribe(([props, children]) => innerComponent.update(props, children))
 
     mountable.emitMount(node, this._props.onMount)
 
@@ -47,7 +46,7 @@ YolkBaseComponent.prototype = {
   update (previous) {
     this._propSubject = previous._propSubject
     this._childSubject = previous._childSubject
-    this._patchSubscription = previous._patchSubscription
+    this._disposable = previous._disposable
 
     this._propSubject.onNext(this._props)
     this._childSubject.onNext(this._children)
@@ -58,7 +57,7 @@ YolkBaseComponent.prototype = {
   },
 
   destroy () {
-    this._patchSubscription.dispose()
+    this._disposable.dispose()
 
     const children = this._children
     const length = children.length
