@@ -36,7 +36,10 @@ YolkBaseComponent.prototype = {
 
     this._disposable =
       propObservable.combineLatest(childObservable)
-      .subscribe(([props, children]) => innerComponent.update(props, children))
+      .subscribe(
+        ([props, children]) => innerComponent.update(props, children),
+        (err) => {throw err}
+      )
 
     mountable.emitMount(node, this._props.onMount)
 
