@@ -70,3 +70,35 @@ test(`CreateCustomComponent: should raise when there is more than one child`, t 
   t.doesNotThrow(() => <CC><p><p /><p /></p></CC>)
   t.doesNotThrow(() => <CC />)
 })
+
+test(`CreateCustomComponent: extending the class with .extend`, t => {
+  t.plan(3)
+  t.timeoutAfter(2000)
+
+  const CC = Yolk.CustomComponent.extend({
+    onMount () {
+      t.pass()
+    },
+
+    onUpdate () {
+      t.pass()
+    },
+
+    onUnmount () {
+      t.pass()
+    },
+  })
+
+  const subject = new Rx.BehaviorSubject(1)
+
+  // call onMount
+  const [node, cleanup] = renderInDoc(<CC someProp={subject} />)
+
+  // call onUpdate
+  subject.onNext(2)
+
+  // class onUnmount
+  Yolk.render(<p />, node.parentNode)
+
+  cleanup()
+})

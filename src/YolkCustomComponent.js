@@ -1,7 +1,7 @@
-const h = require(`yolk-virtual-dom/h`)
 const create = require(`yolk-virtual-dom/create-element`)
 const wrapObject = require(`./wrapObject`)
 const addProperties = require(`./addProperties`)
+const YolkBaseComponent = require(`./YolkBaseComponent`)
 const CompositePropSubject = require(`./CompositePropSubject`)
 
 function YolkCustomComponent () {}
@@ -21,7 +21,7 @@ YolkCustomComponent.prototype = {
       this._child = children[0]
       break
     case 0:
-      this._child = h(`div`)
+      this._child = new YolkBaseComponent(`div`)
       break
     default:
       throw new Error(`${this.constructor.name} may not have more than one child`)
@@ -69,6 +69,7 @@ YolkCustomComponent.create = function createInstance (props, children) {
 
 YolkCustomComponent.extend = function extend (obj) {
   function Component () {}
+  addProperties(Component, YolkCustomComponent)
   Component.prototype = Object.create(YolkCustomComponent.prototype)
   addProperties(Component.prototype, obj)
 
