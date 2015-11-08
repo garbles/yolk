@@ -30,7 +30,7 @@ test(`DisposeEventHandlers: disposing of event handlers when a component unmount
   t.equal(handlers[0].isDisposed, true)
   t.equal(handlers[0].observers, null)
   t.equal(handlers[1].isDisposed, true)
-  t.equal(handlers[0].observers, null)
+  t.equal(handlers[1].observers, null)
 
   cleanup()
 })
