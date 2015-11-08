@@ -22,7 +22,7 @@ test(`transformProperties: transforms props so that they will work correctly wit
   const transformedProps = {
     className: `someName otherName`,
     onclick: new EventHook(onClick),
-    disabled: new SoftSetHook(null, false),
+    disabled: new SoftSetHook(false),
     attributes: {
       action: `/`,
       rowspan: 5,

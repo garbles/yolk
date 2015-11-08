@@ -15,10 +15,7 @@ test(`DisablingButton: you can disable a button`, t => {
 
   disabled.onNext(false)
 
-  setTimeout(function () {
-    t.equal(node.disabled, false)
+  t.equal(node.disabled, false)
 
-    cleanup()
-  
-  })
+  cleanup()
 })
