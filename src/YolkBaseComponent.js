@@ -32,7 +32,6 @@ YolkBaseComponent.prototype = {
     const props$ = wrapObject(this._props$.asSubjectObject(), {wrapToJS: true}).map(transformProperties)
     const children$ = this._children$.flatMapLatest(c => wrapObject(c, {wrapToJS: true})).map(flatten)
     const innerComponent = new YolkBaseInnerComponent(this.id)
-    const node = innerComponent.createNode()
 
     this._disposable =
       props$.combineLatest(children$)
@@ -41,6 +40,7 @@ YolkBaseComponent.prototype = {
         (err) => {throw err}
       )
 
+    const node = innerComponent.createNode()
     mountable.emitMount(node, this._props.onMount)
 
     return node
