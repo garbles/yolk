@@ -57,7 +57,7 @@ module.exports = function transformProperty (props, key, value, descriptor = NUL
   } else if (descriptor.useEventHook) {
     props[_key] = new EventHook(_value)
   } else if (descriptor.useAttributeHook) {
-    props[_key] = new AttributeHook(_value)
+    props[_key] = new AttributeHook(null, _value)
   } else if (descriptor.isStandard) {
     props[_key] = _value
   }

@@ -137,5 +137,5 @@ test(`transformProperty: property uses attribute hook`, t => {
 
   transformProperty(props, `key`, `value`, descriptor)
 
-  t.deepEqual(props, {attributes: {}, key: new AttributeHook(`value`)})
+  t.deepEqual(props, {attributes: {}, key: new AttributeHook(null, `value`)})
 })

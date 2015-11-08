@@ -1,7 +1,7 @@
 const test = require(`tape`)
 const transformProperties = require(`transformProperties`)
 const EventHook = require(`EventHook`)
-const AttributeHook = require(`yolk-virtual-dom/virtual-hyperscript/hooks/attribute-hook`)
+const SoftSetHook = require(`yolk-virtual-dom/virtual-hyperscript/hooks/soft-set-hook`)
 
 test(`transformProperties: transforms props so that they will work correctly with virtual dom`, t => {
   t.plan(1)
@@ -22,7 +22,7 @@ test(`transformProperties: transforms props so that they will work correctly wit
   const transformedProps = {
     className: `someName otherName`,
     onclick: new EventHook(onClick),
-    disabled: new AttributeHook(false),
+    disabled: new SoftSetHook(null, false),
     attributes: {
       action: `/`,
       rowspan: 5,

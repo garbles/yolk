@@ -89,6 +89,7 @@ const attributes = {
   rel: IS_ATTRIBUTE,
   required: IS_ATTRIBUTE | HAS_BOOLEAN_VALUE,
   reversed: IS_ATTRIBUTE,
+  role: IS_ATTRIBUTE,
   rowSpan: IS_ATTRIBUTE | HAS_LOWER_CASE,
   sandbox: IS_ATTRIBUTE,
   scope: IS_ATTRIBUTE,
@@ -107,6 +108,7 @@ const attributes = {
   title: IS_ATTRIBUTE,
   type: IS_ATTRIBUTE,
   useMap: IS_ATTRIBUTE | HAS_LOWER_CASE,
+  width: IS_ATTRIBUTE,
   wrap: IS_ATTRIBUTE,
 
   // attributes only accessible via attribute namespace
@@ -118,7 +120,6 @@ const attributes = {
   cols: USE_ATTRIBUTE_HOOK,
   contextMenu: USE_ATTRIBUTE_HOOK | HAS_LOWER_CASE,
   dateTime: USE_ATTRIBUTE_HOOK | HAS_LOWER_CASE,
-  disabled: USE_ATTRIBUTE_HOOK | HAS_BOOLEAN_VALUE,
   form: USE_ATTRIBUTE_HOOK,
   formAction: USE_ATTRIBUTE_HOOK | HAS_LOWER_CASE,
   formEncType: USE_ATTRIBUTE_HOOK | HAS_LOWER_CASE,
@@ -132,18 +133,17 @@ const attributes = {
   maxLength: USE_ATTRIBUTE_HOOK | HAS_LOWER_CASE,
   media: USE_ATTRIBUTE_HOOK,
   minLength: USE_ATTRIBUTE_HOOK | HAS_LOWER_CASE,
-  role: USE_ATTRIBUTE_HOOK,
   rows: USE_ATTRIBUTE_HOOK,
   seamless: USE_ATTRIBUTE_HOOK | HAS_BOOLEAN_VALUE,
   size: USE_ATTRIBUTE_HOOK,
   sizes: USE_ATTRIBUTE_HOOK,
   srcSet: USE_ATTRIBUTE_HOOK | HAS_LOWER_CASE,
-  width: USE_ATTRIBUTE_HOOK,
   wmode: USE_ATTRIBUTE_HOOK,
 
   // attributes only accessible via setting property in JS
   checked: USE_PROPERTY_HOOK | HAS_BOOLEAN_VALUE,
   controls: USE_PROPERTY_HOOK | HAS_BOOLEAN_VALUE,
+  disabled: USE_PROPERTY_HOOK | HAS_BOOLEAN_VALUE,
   loop: USE_PROPERTY_HOOK | HAS_BOOLEAN_VALUE,
   multiple: USE_PROPERTY_HOOK | HAS_BOOLEAN_VALUE,
   readOnly: USE_PROPERTY_HOOK | HAS_LOWER_CASE | HAS_BOOLEAN_VALUE,
