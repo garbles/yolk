@@ -24,25 +24,25 @@ YolkCompositeComponent.prototype = {
   type: `Widget`,
 
   init () {
-    this._propSubject = new CompositePropSubject(this._props)
-    this._childSubject = new Rx.BehaviorSubject(this._children)
+    this._props$ = new CompositePropSubject(this._props)
+    this._children$ = new Rx.BehaviorSubject(this._children)
 
-    const propObservable = this._propSubject.asObservableObject()
-    const childObservable = this._childSubject.asObservable()
+    const props$ = this._props$.asObservableObject()
+    const children$ = this._children$.asObservable()
 
     const fn = this._fn
-    this._component = YolkCompositeFunctionWrapper.create(fn, propObservable, childObservable)
+    this._component = YolkCompositeFunctionWrapper.create(fn, props$, children$)
 
     return create(this._component.getVirtualNode())
   },
 
   update (previous) {
-    this._propSubject = previous._propSubject
-    this._childSubject = previous._childSubject
+    this._props$ = previous._props$
+    this._children$ = previous._children$
     this._component = previous._component
 
-    this._propSubject.onNext(this._props)
-    this._childSubject.onNext(this._children)
+    this._props$.onNext(this._props)
+    this._children$.onNext(this._children)
   },
 
   destroy () {

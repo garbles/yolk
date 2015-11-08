@@ -26,16 +26,16 @@ YolkBaseComponent.prototype = {
   type: `Widget`,
 
   init () {
-    this._propSubject = new CompositePropSubject(this._props)
-    this._childSubject = new Rx.BehaviorSubject(this._children)
+    this._props$ = new CompositePropSubject(this._props)
+    this._children$ = new Rx.BehaviorSubject(this._children)
 
-    const propObservable = wrapObject(this._propSubject.asSubjectObject(), {wrapToJS: true}).map(transformProperties)
-    const childObservable = this._childSubject.flatMapLatest(c => wrapObject(c, {wrapToJS: true})).map(flatten)
+    const props$ = wrapObject(this._props$.asSubjectObject(), {wrapToJS: true}).map(transformProperties)
+    const children$ = this._children$.flatMapLatest(c => wrapObject(c, {wrapToJS: true})).map(flatten)
     const innerComponent = new YolkBaseInnerComponent(this.id)
     const node = innerComponent.createNode()
 
     this._disposable =
-      propObservable.combineLatest(childObservable)
+      props$.combineLatest(children$)
       .subscribe(
         ([props, children]) => innerComponent.update(props, children),
         (err) => {throw err}
@@ -47,12 +47,12 @@ YolkBaseComponent.prototype = {
   },
 
   update (previous) {
-    this._propSubject = previous._propSubject
-    this._childSubject = previous._childSubject
+    this._props$ = previous._props$
+    this._children$ = previous._children$
     this._disposable = previous._disposable
 
-    this._propSubject.onNext(this._props)
-    this._childSubject.onNext(this._children)
+    this._props$.onNext(this._props)
+    this._children$.onNext(this._children)
   },
 
   predestroy (node) {

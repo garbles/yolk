@@ -19,9 +19,9 @@ const publicInterface = {
   },
 }
 
-function YolkCompositeFunctionWrapper (fn, props, children) {
+function YolkCompositeFunctionWrapper (fn, props$, children$) {
   this._eventHandlers = []
-  this._result = fn.call(this, props, children)
+  this._result = fn.call(this, props$, children$)
   addProperties(this, publicInterface)
 }
 
@@ -33,8 +33,8 @@ YolkCompositeFunctionWrapper.prototype = {
   },
 }
 
-YolkCompositeFunctionWrapper.create = (fn, props, children) => {
-  const instance = new YolkCompositeFunctionWrapper(fn, props, children)
+YolkCompositeFunctionWrapper.create = (fn, props$, children$) => {
+  const instance = new YolkCompositeFunctionWrapper(fn, props$, children$)
 
   if (!isComponent(instance.getVirtualNode())) {
     throw new Error(`Function did not return a valid component. See "${fn.name}".`)
