@@ -3013,6 +3013,70 @@ function appendPatch(apply, patch) {
 (function (global){
 "use strict";
 
+var Rx = (typeof window !== "undefined" ? window['Rx'] : typeof global !== "undefined" ? global['Rx'] : null);
+var wrapObject = require("./wrapObject");
+
+function CompositePropSubject(obj) {
+  this._keys = Object.keys(obj);
+  this._length = this._keys.length;
+  this._obj = {};
+
+  var i = -1;
+
+  while (++i < this._length) {
+    var key = this._keys[i];
+    var value = obj[key];
+    this._obj[key] = new Rx.BehaviorSubject(value);
+  }
+}
+
+CompositePropSubject.prototype = {
+  asSubjectObject: function asSubjectObject() {
+    return this._obj;
+  },
+
+  asObservableObject: function asObservableObject() {
+    var obsObj = {};
+
+    var i = -1;
+
+    while (++i < this._length) {
+      var key = this._keys[i];
+      var subject = this._obj[key];
+      obsObj[key] = subject.flatMapLatest(wrapObject);
+    }
+
+    return obsObj;
+  },
+
+  onNext: function onNext(obj) {
+    var i = -1;
+
+    while (++i < this._length) {
+      var key = this._keys[i];
+      var value = obj[key];
+      this._obj[key].onNext(value || null);
+    }
+  },
+
+  dispose: function dispose() {
+    var i = -1;
+
+    while (++i < this._length) {
+      var key = this._keys[i];
+      this._obj[key].dispose();
+    }
+  }
+};
+
+module.exports = CompositePropSubject;
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+
+},{"./wrapObject":93}],62:[function(require,module,exports){
+(function (global){
+"use strict";
+
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 module.exports = global.CustomEvent || (function () {
@@ -3031,7 +3095,7 @@ module.exports = global.CustomEvent || (function () {
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{}],62:[function(require,module,exports){
+},{}],63:[function(require,module,exports){
 "use strict";
 
 var kababCase = require("lodash.kebabcase");
@@ -3125,6 +3189,7 @@ var attributes = {
   rel: IS_ATTRIBUTE,
   required: IS_ATTRIBUTE | HAS_BOOLEAN_VALUE,
   reversed: IS_ATTRIBUTE,
+  role: IS_ATTRIBUTE,
   rowSpan: IS_ATTRIBUTE | HAS_LOWER_CASE,
   sandbox: IS_ATTRIBUTE,
   scope: IS_ATTRIBUTE,
@@ -3143,6 +3208,7 @@ var attributes = {
   title: IS_ATTRIBUTE,
   type: IS_ATTRIBUTE,
   useMap: IS_ATTRIBUTE | HAS_LOWER_CASE,
+  width: IS_ATTRIBUTE,
   wrap: IS_ATTRIBUTE,
 
   // attributes only accessible via attribute namespace
@@ -3154,7 +3220,6 @@ var attributes = {
   cols: USE_ATTRIBUTE_HOOK,
   contextMenu: USE_ATTRIBUTE_HOOK | HAS_LOWER_CASE,
   dateTime: USE_ATTRIBUTE_HOOK | HAS_LOWER_CASE,
-  disabled: USE_ATTRIBUTE_HOOK | HAS_BOOLEAN_VALUE,
   form: USE_ATTRIBUTE_HOOK,
   formAction: USE_ATTRIBUTE_HOOK | HAS_LOWER_CASE,
   formEncType: USE_ATTRIBUTE_HOOK | HAS_LOWER_CASE,
@@ -3168,18 +3233,17 @@ var attributes = {
   maxLength: USE_ATTRIBUTE_HOOK | HAS_LOWER_CASE,
   media: USE_ATTRIBUTE_HOOK,
   minLength: USE_ATTRIBUTE_HOOK | HAS_LOWER_CASE,
-  role: USE_ATTRIBUTE_HOOK,
   rows: USE_ATTRIBUTE_HOOK,
   seamless: USE_ATTRIBUTE_HOOK | HAS_BOOLEAN_VALUE,
   size: USE_ATTRIBUTE_HOOK,
   sizes: USE_ATTRIBUTE_HOOK,
   srcSet: USE_ATTRIBUTE_HOOK | HAS_LOWER_CASE,
-  width: USE_ATTRIBUTE_HOOK,
   wmode: USE_ATTRIBUTE_HOOK,
 
   // attributes only accessible via setting property in JS
   checked: USE_PROPERTY_HOOK | HAS_BOOLEAN_VALUE,
   controls: USE_PROPERTY_HOOK | HAS_BOOLEAN_VALUE,
+  disabled: USE_PROPERTY_HOOK | HAS_BOOLEAN_VALUE,
   loop: USE_PROPERTY_HOOK | HAS_BOOLEAN_VALUE,
   multiple: USE_PROPERTY_HOOK | HAS_BOOLEAN_VALUE,
   readOnly: USE_PROPERTY_HOOK | HAS_LOWER_CASE | HAS_BOOLEAN_VALUE,
@@ -3241,7 +3305,7 @@ while (++i < length) {
 
 module.exports = DOMAttributeDescriptors;
 
-},{"./EventsList":64,"lodash.kebabcase":29}],63:[function(require,module,exports){
+},{"./EventsList":65,"lodash.kebabcase":29}],64:[function(require,module,exports){
 "use strict";
 
 var evStore = require("ev-store");
@@ -3268,7 +3332,7 @@ EventHook.prototype = {
 
 module.exports = EventHook;
 
-},{"ev-store":14}],64:[function(require,module,exports){
+},{"ev-store":14}],65:[function(require,module,exports){
 "use strict";
 
 module.exports = ["Abort", "Blur", "CanPlay", "CanPlayThrough", "Change", "Click", "ContextMenu", "Copy", "CueChange", "Cut", "DblClick", "Drag", "DragEnd", "DragEnter", "DragLeave", "DragOver", "DragStart", "Drop", "DurationChange", "Emptied", "Ended", "Error", "Focus", "Input", "Invalid", "KeyDown", "KeyPress", "KeyUp", "LoadedData", "LoadedMetaData", "LoadStart", "MouseDown", "MouseMove", "MouseOut", "MouseOver", "MouseUp", "Paste", "Pause", "Play", "Playing", "Progress", "RateChange", "Reset", "Scroll", "Search", "Seeked", "Seeking", "Select", "Show", "Stalled", "Submit", "Suspend", "TimeUpdate", "Toggle", "VolumeChange", "Waiting", "Wheel",
@@ -3276,7 +3340,7 @@ module.exports = ["Abort", "Blur", "CanPlay", "CanPlayThrough", "Change", "Click
 // custom
 "Mount", "Unmount"];
 
-},{}],65:[function(require,module,exports){
+},{}],66:[function(require,module,exports){
 (function (global){
 "use strict";
 
@@ -3285,15 +3349,13 @@ var _slicedToArray = (function () { function sliceIterator(arr, i) { var _arr = 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 var Rx = (typeof window !== "undefined" ? window['Rx'] : typeof global !== "undefined" ? global['Rx'] : null);
-var create = require("yolk-virtual-dom/create-element");
-var diff = require("yolk-virtual-dom/diff");
-var h = require("yolk-virtual-dom/h");
-var patch = require("yolk-virtual-dom/patch");
 var wrapObject = require("./wrapObject");
 var transformProperties = require("./transformProperties");
 var isFunction = require("./isFunction");
 var flatten = require("./flatten");
 var mountable = require("./mountable");
+var CompositePropSubject = require("./CompositePropSubject");
+var YolkBaseInnerComponent = require("./YolkBaseInnerComponent");
 
 function YolkBaseComponent(tag, props, children) {
   var _props = _extends({}, props);
@@ -3314,78 +3376,46 @@ YolkBaseComponent.prototype = {
   type: "Widget",
 
   init: function init() {
-    var keys = Object.keys(this._props);
-    var length = keys.length;
-    var propsSubject = {};
-    var i = -1;
+    this._props$ = new CompositePropSubject(this._props);
+    this._children$ = new Rx.BehaviorSubject(this._children);
 
-    this._propSubject = {};
-
-    while (++i < length) {
-      var key = keys[i];
-      var value = this._props[key];
-      this._propSubject[key] = new Rx.BehaviorSubject(value);
-      propsSubject[key] = this._propSubject[key].flatMapLatest(wrapObject);
-    }
-
-    this._childSubject = new Rx.BehaviorSubject(this._children);
-
-    var propObservable = wrapObject(propsSubject, { wrapToJS: true }).map(transformProperties);
-    var childObservable = this._childSubject.flatMapLatest(function (c) {
+    var props$ = wrapObject(this._props$.asSubjectObject(), { wrapToJS: true }).map(transformProperties);
+    var children$ = this._children$.flatMapLatest(function (c) {
       return wrapObject(c, { wrapToJS: true });
-    });
+    }).map(flatten);
+    var innerComponent = new YolkBaseInnerComponent(this.id);
 
-    var vNode = h(this.id);
-    var id = this.id;
-    var node = create(vNode);
+    this._disposable = props$.combineLatest(children$).subscribe(function (_ref) {
+      var _ref2 = _slicedToArray(_ref, 2);
 
-    this._patchSubscription = Rx.Observable.combineLatest(propObservable, childObservable, function (p, c) {
-      return h(id, p, flatten(c));
-    }).scan(function (_ref, next) {
-      var _ref2 = _slicedToArray(_ref, 1);
-
-      var old = _ref2[0];
-      return [next, diff(old, next)];
-    }, [vNode, null]).subscribe(function (_ref3) {
-      var _ref32 = _slicedToArray(_ref3, 2);
-
-      var __ = _ref32[0];
-      var patches = _ref32[1];
-      return patch(node, patches);
+      var props = _ref2[0];
+      var children = _ref2[1];
+      return innerComponent.update(props, children);
     }, function (err) {
       throw err;
     });
 
+    var node = innerComponent.createNode();
     mountable.emitMount(node, this._props.onMount);
 
-    this._node = node;
-    return this._node;
+    return node;
   },
 
   update: function update(previous) {
-    this._node = previous._node;
-    this._propSubject = previous._propSubject;
-    this._childSubject = previous._childSubject;
-    this._patchSubscription = previous._patchSubscription;
-    this._childSubject.onNext(this._children);
+    this._props$ = previous._props$;
+    this._children$ = previous._children$;
+    this._disposable = previous._disposable;
 
-    var keys = Object.keys(previous._props);
-    var length = keys.length;
-    var i = -1;
-
-    while (++i < length) {
-      var key = keys[i];
-      var value = this._props[key];
-      this._propSubject[key].onNext(value || null);
-    }
+    this._props$.onNext(this._props);
+    this._children$.onNext(this._children);
   },
 
-  predestroy: function predestroy() {
-    mountable.emitUnmount(this._node, this._props.onUnmount);
+  predestroy: function predestroy(node) {
+    mountable.emitUnmount(node, this._props.onUnmount);
   },
 
   destroy: function destroy() {
-    this._patchSubscription.dispose();
+    this._disposable.dispose();
 
     var children = this._children;
     var length = children.length;
@@ -3402,7 +3432,48 @@ module.exports = YolkBaseComponent;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"./flatten":75,"./isFunction":80,"./mountable":84,"./transformProperties":87,"./wrapObject":90,"yolk-virtual-dom/create-element":36,"yolk-virtual-dom/diff":37,"yolk-virtual-dom/h":38,"yolk-virtual-dom/patch":41}],66:[function(require,module,exports){
+},{"./CompositePropSubject":61,"./YolkBaseInnerComponent":67,"./flatten":77,"./isFunction":83,"./mountable":87,"./transformProperties":90,"./wrapObject":93}],67:[function(require,module,exports){
+"use strict";
+
+var h = require("yolk-virtual-dom/h");
+var create = require("yolk-virtual-dom/create-element");
+var diff = require("yolk-virtual-dom/diff");
+var patch = require("yolk-virtual-dom/patch");
+var generateUid = require("./generateUid");
+
+function YolkBaseInnerComponent(tag) {
+  this._tag = tag;
+  this._props = {};
+  this._children = [];
+  this._uid = generateUid();
+  this._vNode = null;
+  this._node = null;
+}
+
+YolkBaseInnerComponent.prototype = {
+  createNode: function createNode() {
+    this._vNode = h(this._tag, this._props, this._children);
+    this._node = create(this._vNode);
+    return this._node;
+  },
+
+  update: function update(props, children) {
+    this._props = props;
+    this._children = children;
+
+    if (this._node) {
+      var vNode = h(this._tag, props, children);
+      var patches = diff(this._vNode, vNode);
+
+      this._vNode = vNode;
+      patch(this._node, patches);
+    }
+  }
+};
+
+module.exports = YolkBaseInnerComponent;
+
+},{"./generateUid":78,"yolk-virtual-dom/create-element":36,"yolk-virtual-dom/diff":37,"yolk-virtual-dom/h":38,"yolk-virtual-dom/patch":41}],68:[function(require,module,exports){
 (function (global){
 "use strict";
 
@@ -3410,8 +3481,8 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 var Rx = (typeof window !== "undefined" ? window['Rx'] : typeof global !== "undefined" ? global['Rx'] : null);
 var create = require("yolk-virtual-dom/create-element");
-var wrapObject = require("./wrapObject");
 var YolkCompositeFunctionWrapper = require("./YolkCompositeFunctionWrapper");
+var CompositePropSubject = require("./CompositePropSubject");
 
 function YolkCompositeComponent(fn, props, children) {
   var _props = _extends({}, props);
@@ -3434,47 +3505,25 @@ YolkCompositeComponent.prototype = {
   type: "Widget",
 
   init: function init() {
-    var keys = Object.keys(this._props);
-    var length = keys.length;
-    var propsSubject = {};
-    var i = -1;
+    this._props$ = new CompositePropSubject(this._props);
+    this._children$ = new Rx.BehaviorSubject(this._children);
 
-    this._propSubject = {};
-
-    while (++i < length) {
-      var key = keys[i];
-      var value = this._props[key];
-      this._propSubject[key] = new Rx.BehaviorSubject(value);
-      propsSubject[key] = this._propSubject[key].flatMapLatest(wrapObject);
-    }
-
-    this._childSubject = new Rx.BehaviorSubject(this._children);
-
-    var propObservable = propsSubject;
-    var childObservable = this._childSubject.asObservable();
+    var props$ = this._props$.asObservableObject();
+    var children$ = this._children$.asObservable();
 
     var fn = this._fn;
-    this._component = YolkCompositeFunctionWrapper.create(fn, propObservable, childObservable);
+    this._component = YolkCompositeFunctionWrapper.create(fn, props$, children$);
 
-    var node = create(this._component._result);
-    return node;
+    return create(this._component.getVirtualNode());
   },
 
   update: function update(previous) {
-    this._propSubject = previous._propSubject;
-    this._childSubject = previous._childSubject;
+    this._props$ = previous._props$;
+    this._children$ = previous._children$;
     this._component = previous._component;
-    this._childSubject.onNext(this._children);
 
-    var keys = Object.keys(this._props);
-    var length = keys.length;
-    var i = -1;
-
-    while (++i < length) {
-      var key = keys[i];
-      var value = this._props[key];
-      this._propSubject[key].onNext(value || null);
-    }
+    this._props$.onNext(this._props);
+    this._children$.onNext(this._children);
   },
 
   destroy: function destroy() {
@@ -3495,22 +3544,16 @@ module.exports = YolkCompositeComponent;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"./YolkCompositeFunctionWrapper":67,"./wrapObject":90,"yolk-virtual-dom/create-element":36}],67:[function(require,module,exports){
+},{"./CompositePropSubject":61,"./YolkCompositeFunctionWrapper":69,"yolk-virtual-dom/create-element":36}],69:[function(require,module,exports){
 "use strict";
 
 var _createEventHandler = require("./createEventHandler");
 var isComponent = require("./isComponent");
+var addProperties = require("./addProperties");
 
-function YolkCompositeFunctionWrapper() {
-  this._eventHandlers = [];
-  this._result = null;
-}
-
-YolkCompositeFunctionWrapper.prototype = {
-  createEventHandler: function createEventHandler(mapFn, init) {
-    var handler = _createEventHandler(mapFn, init);
-    this._eventHandlers.push(handler);
-    return handler;
+var publicInterface = {
+  getVirtualNode: function getVirtualNode() {
+    return this._result;
   },
 
   destroy: function destroy() {
@@ -3525,29 +3568,40 @@ YolkCompositeFunctionWrapper.prototype = {
   }
 };
 
-YolkCompositeFunctionWrapper.create = function (fn, props, children) {
-  var instance = new YolkCompositeFunctionWrapper();
-  var result = fn.call(instance, props, children);
+function YolkCompositeFunctionWrapper(fn, props$, children$) {
+  this._eventHandlers = [];
+  this._result = fn.call(this, props$, children$);
+  addProperties(this, publicInterface);
+}
 
-  if (!isComponent(result)) {
+YolkCompositeFunctionWrapper.prototype = {
+  createEventHandler: function createEventHandler(mapFn, init) {
+    var handler = _createEventHandler(mapFn, init);
+    this._eventHandlers.push(handler);
+    return handler;
+  }
+};
+
+YolkCompositeFunctionWrapper.create = function (fn, props$, children$) {
+  var instance = new YolkCompositeFunctionWrapper(fn, props$, children$);
+
+  if (!isComponent(instance.getVirtualNode())) {
     throw new Error("Function did not return a valid component. See \"" + fn.name + "\".");
   }
 
-  instance._result = result;
   return instance;
 };
 
 module.exports = YolkCompositeFunctionWrapper;
 
-},{"./createEventHandler":73,"./isComponent":77}],68:[function(require,module,exports){
-(function (global){
+},{"./addProperties":72,"./createEventHandler":75,"./isComponent":80}],70:[function(require,module,exports){
 "use strict";
 
-var Rx = (typeof window !== "undefined" ? window['Rx'] : typeof global !== "undefined" ? global['Rx'] : null);
-var h = require("yolk-virtual-dom/h");
 var create = require("yolk-virtual-dom/create-element");
 var wrapObject = require("./wrapObject");
 var addProperties = require("./addProperties");
+var YolkBaseComponent = require("./YolkBaseComponent");
+var CompositePropSubject = require("./CompositePropSubject");
 
 function YolkCustomComponent() {}
 
@@ -3559,14 +3613,14 @@ YolkCustomComponent.prototype = {
 
   _initialize: function _initialize(props, children) {
     this._props = props;
-    this._propsSubject$ = null;
+    this._props$ = null;
 
     switch (children.length) {
       case 1:
         this._child = children[0];
         break;
       case 0:
-        this._child = h("div");
+        this._child = new YolkBaseComponent("div");
         break;
       default:
         throw new Error(this.constructor.name + " may not have more than one child");
@@ -3576,10 +3630,10 @@ YolkCustomComponent.prototype = {
   init: function init() {
     var _this = this;
 
-    this._propsSubject$ = new Rx.BehaviorSubject(this._props);
+    this._props$ = new CompositePropSubject(this._props);
 
     var node = create(this._child);
-    var props$ = wrapObject(this._propsSubject$);
+    var props$ = wrapObject(this._props$.asSubjectObject());
     var mountDisposable = props$.take(1).subscribe(function (props) {
       return _this.onMount(props, node);
     });
@@ -3596,8 +3650,8 @@ YolkCustomComponent.prototype = {
   },
 
   update: function update(previous) {
-    this._propsSubject$ = previous._propsSubject$;
-    this._propsSubject$.onNext(this._props);
+    this._props$ = previous._props$;
+    this._props$.onNext(this._props);
   },
 
   predestroy: function predestroy(node) {
@@ -3620,6 +3674,7 @@ YolkCustomComponent.create = function createInstance(props, children) {
 
 YolkCustomComponent.extend = function extend(obj) {
   function Component() {}
+  addProperties(Component, YolkCustomComponent);
   Component.prototype = Object.create(YolkCustomComponent.prototype);
   addProperties(Component.prototype, obj);
 
@@ -3628,9 +3683,7 @@ YolkCustomComponent.extend = function extend(obj) {
 
 module.exports = YolkCustomComponent;
 
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-
-},{"./addProperties":70,"./wrapObject":90,"yolk-virtual-dom/create-element":36,"yolk-virtual-dom/h":38}],69:[function(require,module,exports){
+},{"./CompositePropSubject":61,"./YolkBaseComponent":66,"./addProperties":72,"./wrapObject":93,"yolk-virtual-dom/create-element":36}],71:[function(require,module,exports){
 "use strict";
 
 var create = require("yolk-virtual-dom/create-element");
@@ -3682,7 +3735,7 @@ YolkRootComponent.render = function render(instance, node) {
 
 module.exports = YolkRootComponent;
 
-},{"./delegator":74,"yolk-virtual-dom/create-element":36,"yolk-virtual-dom/diff":37,"yolk-virtual-dom/patch":41}],70:[function(require,module,exports){
+},{"./delegator":76,"yolk-virtual-dom/create-element":36,"yolk-virtual-dom/diff":37,"yolk-virtual-dom/patch":41}],72:[function(require,module,exports){
 /* eslint-disable guard-for-in */
 
 "use strict";
@@ -3706,7 +3759,7 @@ module.exports = function addProperties(base) {
   return base;
 };
 
-},{}],71:[function(require,module,exports){
+},{}],73:[function(require,module,exports){
 "use strict";
 
 var isDefined = require("./isDefined");
@@ -3726,7 +3779,7 @@ module.exports = function compact(arr) {
   return newArr;
 };
 
-},{"./isDefined":78}],72:[function(require,module,exports){
+},{"./isDefined":81}],74:[function(require,module,exports){
 "use strict";
 
 var YolkCompositeComponent = require("./YolkCompositeComponent");
@@ -3751,7 +3804,7 @@ module.exports = function createElement(tag, props) {
   return new YolkCompositeComponent(tag, _props, children);
 };
 
-},{"./YolkBaseComponent":65,"./YolkCompositeComponent":66,"./isString":83}],73:[function(require,module,exports){
+},{"./YolkBaseComponent":66,"./YolkCompositeComponent":68,"./isString":86}],75:[function(require,module,exports){
 (function (global){
 "use strict";
 
@@ -3792,7 +3845,7 @@ module.exports = function createEventHandler(mapFn, init) {
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"./addProperties":70,"./isDefined":78,"./isFunction":80}],74:[function(require,module,exports){
+},{"./addProperties":72,"./isDefined":81,"./isFunction":83}],76:[function(require,module,exports){
 "use strict";
 
 var domDelegator = require("dom-delegator");
@@ -3811,7 +3864,7 @@ module.exports = function delegator(node) {
   return instance;
 };
 
-},{"./EventsList":64,"dom-delegator":5}],75:[function(require,module,exports){
+},{"./EventsList":65,"dom-delegator":5}],77:[function(require,module,exports){
 "use strict";
 
 module.exports = function flatten(arr) {
@@ -3832,7 +3885,14 @@ module.exports = function flatten(arr) {
   return result;
 };
 
-},{}],76:[function(require,module,exports){
+},{}],78:[function(require,module,exports){
+"use strict";
+
+module.exports = function generateUid() {
+  return (Math.random() * 0x100000000000000).toString(36);
+};
+
+},{}],79:[function(require,module,exports){
 "use strict";
 
 var isFunction = require("./isFunction");
@@ -3841,7 +3901,7 @@ module.exports = function hasToJS(obj) {
   return !!obj && isFunction(obj.toJS);
 };
 
-},{"./isFunction":80}],77:[function(require,module,exports){
+},{"./isFunction":83}],80:[function(require,module,exports){
 "use strict";
 
 var isWidget = require("yolk-virtual-dom/vnode/is-widget");
@@ -3849,38 +3909,38 @@ var isVNode = require("yolk-virtual-dom/vnode/is-vnode");
 var isVText = require("yolk-virtual-dom/vnode/is-vtext");
 
 module.exports = function isComponent(obj) {
-  return !!obj && (isWidget(obj) || isThunk(obj) || isVNode(obj) || isVText(obj));
+  return !!obj && (isWidget(obj) || isVNode(obj) || isVText(obj));
 };
 
-},{"yolk-virtual-dom/vnode/is-vnode":52,"yolk-virtual-dom/vnode/is-vtext":53,"yolk-virtual-dom/vnode/is-widget":54}],78:[function(require,module,exports){
+},{"yolk-virtual-dom/vnode/is-vnode":52,"yolk-virtual-dom/vnode/is-vtext":53,"yolk-virtual-dom/vnode/is-widget":54}],81:[function(require,module,exports){
 "use strict";
 
 module.exports = function isDefined(obj) {
   return typeof obj !== "undefined" && obj !== null;
 };
 
-},{}],79:[function(require,module,exports){
+},{}],82:[function(require,module,exports){
 "use strict";
 
 module.exports = function isEmpty(obj) {
   return Object.keys(obj).length === 0;
 };
 
-},{}],80:[function(require,module,exports){
+},{}],83:[function(require,module,exports){
 "use strict";
 
 module.exports = function isFunction(obj) {
   return Object.prototype.toString.call(obj) === "[object Function]";
 };
 
-},{}],81:[function(require,module,exports){
+},{}],84:[function(require,module,exports){
 "use strict";
 
 module.exports = function isNumber(num) {
   return typeof num === "number" || num instanceof Number;
 };
 
-},{}],82:[function(require,module,exports){
+},{}],85:[function(require,module,exports){
 (function (global){
 "use strict";
 
@@ -3892,14 +3952,14 @@ module.exports = function isObservable(obj) {
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{}],83:[function(require,module,exports){
+},{}],86:[function(require,module,exports){
 "use strict";
 
 module.exports = function isString(str) {
   return typeof str === "string" || str instanceof String;
 };
 
-},{}],84:[function(require,module,exports){
+},{}],87:[function(require,module,exports){
 "use strict";
 
 var isFunction = require("./isFunction");
@@ -3929,7 +3989,7 @@ function emitUnmount(node, fn) {
 
 module.exports = { emitMount: emitMount, emitUnmount: emitUnmount };
 
-},{"./CustomEvent":61,"./isFunction":80}],85:[function(require,module,exports){
+},{"./CustomEvent":62,"./isFunction":83}],88:[function(require,module,exports){
 "use strict";
 
 var camelCase = require("lodash.camelcase");
@@ -3961,7 +4021,7 @@ module.exports = function parseDOMNodeAttributes(attributes) {
   return attrs;
 };
 
-},{"lodash.camelcase":17}],86:[function(require,module,exports){
+},{"lodash.camelcase":17}],89:[function(require,module,exports){
 "use strict";
 
 var YolkRootComponent = require("./YolkRootComponent");
@@ -3998,7 +4058,7 @@ module.exports = function registerElement(name, Component) {
   document.registerElement(name, { prototype: prototype });
 };
 
-},{"./YolkRootComponent":69,"./createElement":72,"./parseDOMNodeAttributes":85}],87:[function(require,module,exports){
+},{"./YolkRootComponent":71,"./createElement":74,"./parseDOMNodeAttributes":88}],90:[function(require,module,exports){
 "use strict";
 
 var DOMAttributeDescriptors = require("./DOMAttributeDescriptors");
@@ -4025,7 +4085,7 @@ module.exports = function transformProperties(props) {
   return newProps;
 };
 
-},{"./DOMAttributeDescriptors":62,"./transformProperty":88,"./transformStyle":89}],88:[function(require,module,exports){
+},{"./DOMAttributeDescriptors":63,"./transformProperty":91,"./transformStyle":92}],91:[function(require,module,exports){
 "use strict";
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
@@ -4091,7 +4151,7 @@ module.exports = function transformProperty(props, key, value) {
   } else if (descriptor.useEventHook) {
     props[_key] = new EventHook(_value);
   } else if (descriptor.useAttributeHook) {
-    props[_key] = new AttributeHook(_value);
+    props[_key] = new AttributeHook(null, _value);
   } else if (descriptor.isStandard) {
     props[_key] = _value;
   }
@@ -4099,7 +4159,7 @@ module.exports = function transformProperty(props, key, value) {
   return props;
 };
 
-},{"./EventHook":63,"./compact":71,"lodash.kebabcase":29,"yolk-virtual-dom/virtual-hyperscript/hooks/attribute-hook":48,"yolk-virtual-dom/virtual-hyperscript/hooks/soft-set-hook":49}],89:[function(require,module,exports){
+},{"./EventHook":64,"./compact":73,"lodash.kebabcase":29,"yolk-virtual-dom/virtual-hyperscript/hooks/attribute-hook":48,"yolk-virtual-dom/virtual-hyperscript/hooks/soft-set-hook":49}],92:[function(require,module,exports){
 "use strict";
 
 var isNumber = require("./isNumber");
@@ -4159,7 +4219,7 @@ module.exports = function transformStyle(props, style) {
   return props;
 };
 
-},{"./isNumber":81}],90:[function(require,module,exports){
+},{"./isNumber":84}],93:[function(require,module,exports){
 (function (global){
 "use strict";
 
@@ -4231,7 +4291,7 @@ module.exports = function wrapObject(_x2) {
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"./hasToJS":76,"./isEmpty":79,"./isObservable":82,"lodash.isplainobject":24}],91:[function(require,module,exports){
+},{"./hasToJS":79,"./isEmpty":82,"./isObservable":85,"lodash.isplainobject":24}],94:[function(require,module,exports){
 (function (global){
 "use strict";
 
@@ -4251,6 +4311,6 @@ module.exports = new Yolk();
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"./YolkCustomComponent":68,"./YolkRootComponent":69,"./createElement":72,"./registerElement":86,"document-register-element":2}]},{},[91])(91)
+},{"./YolkCustomComponent":70,"./YolkRootComponent":71,"./createElement":74,"./registerElement":89,"document-register-element":2}]},{},[94])(94)
 });
 //# sourceMappingURL=yolk.js.map
