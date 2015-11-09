@@ -1,3 +1,7 @@
+# 0.7.1 (November 8, 2015)
+
+- Fix nasty bug where anything using `.setAttribute` to set an attribute did not work
+
 # 0.7.0 (November 4, 2015)
 
 - Add Yolk.CustomComponent to wrap custom JavaScript behaviors as Yolk components
