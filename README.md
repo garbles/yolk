@@ -56,7 +56,7 @@ The Yolk API is intentionally very limited so that you don't have to spend weeks
 
 The API for a component instance is a _single method_.
 
-__`this.createEventHandler(mapping: any, initialValue: any): Function`__
+##### `this.createEventHandler(mapping: any, initialValue: any): Function`
 
 Creates an exotic function that can also be used as an observable. If the function is called, the input value is pushed to the observable as it's latest value.
 In other words, when this function is used as an event handler, the result is an observable stream of events from that handler. For example,
@@ -85,7 +85,7 @@ When custom components are destroyed, we want to make sure that all of our event
 
 ### Top Level API
 
-__`Yolk.render(instance: YolkComponent, node: HTMLElement): YolkComponent`__
+##### `Yolk.render(instance: YolkComponent, node: HTMLElement): YolkComponent`
 
 Renders an instance of a YolkComponent inside of an HTMLElement.
 
@@ -93,7 +93,7 @@ Renders an instance of a YolkComponent inside of an HTMLElement.
 Yolk.render(<span>Hello World!</span>, document.getElementById('container'))
 ```
 
-__`Yolk.registerElement(name: string, fn: Function): void`__
+##### `Yolk.registerElement(name: string, fn: Function): void`
 
 Registers a [custom HTML element](http://www.html5rocks.com/en/tutorials/webcomponents/customelements/) using `document.registerElement` (polyfill included).
 This is especially useful if you're not building a single page application. For example,
@@ -114,7 +114,7 @@ will allow you to use `<big-red-text content="Hello!"></big-red-text>` in your `
 </big-red-text>
 ```
 
-__`Yolk.CustomComponent`__
+##### `Yolk.CustomComponent`
 
 Yolk.CustomComponent makes it easy to wrap non-Yolk behavior as a component, e.g. jQuery plugin or React component.
 Each component expects three (optional) methods,
