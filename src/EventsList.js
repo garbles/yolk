@@ -27,6 +27,7 @@ module.exports = [
   `KeyDown`,
   `KeyPress`,
   `KeyUp`,
+  `Load`,
   `LoadedData`,
   `LoadedMetaData`,
   `LoadStart`,
