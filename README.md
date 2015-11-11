@@ -234,7 +234,7 @@ Yolk supports the following list of standard browser events,
 onAbort onBlur onCanPlay onCanPlayThrough onChange onClick onContextMenu onCopy
 onCueChange onCut onDblClick onDrag onDragEnd onDragEnter onDragLeave onDragOver
 onDragStart onDrop onDurationChange onEmptied onEnded onError onFocus onInput
-onInvalid onKeyDown onKeyPress onKeyUp onLoadedData onLoadedMetaData onLoadStart
+onInvalid onKeyDown onKeyPress onKeyUp onLoad onLoadedData onLoadedMetaData onLoadStart
 onMouseDown onMouseMove onMouseOut onMouseOver onMouseUp onPaste onPause onPlay
 onPlaying onProgress onRateChange onReset onScroll onSearch onSeeked onSeeking
 onSelect onShow onStalled onSubmit onSuspend onTimeUpdate onToggle onVolumeChange
