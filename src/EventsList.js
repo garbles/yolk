@@ -69,7 +69,6 @@ module.exports = [
   `TouchEnd`,
   `TouchMove`,
   `TouchStart`,
-  `Unload`,
   `VolumeChange`,
   `Waiting`,
   `Wheel`,
