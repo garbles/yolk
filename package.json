@@ -60,6 +60,7 @@
     "lodash.camelcase": "3.0.1",
     "lodash.isplainobject": "3.2.0",
     "lodash.kebabcase": "3.0.1",
+    "parse-tag": "1.0.0",
     "rx": "^4.0.0",
     "yolk-virtual-dom": "3.0.2"
   },
