@@ -1,3 +1,9 @@
+# 0.8.0 (November 11, 2015)
+
+- Through testing all of the attribute descriptors, I found that several attributes either
+has invalid descriptors, were not widely supported, or were not being assigned correctly.
+- Added various other event handlers
+
 # 0.7.1 (November 8, 2015)
 
 - Fix nasty bug where anything using `.setAttribute` to set an attribute did not work
