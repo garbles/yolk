@@ -231,14 +231,15 @@ value is required to render something. It is particularly useful when used with 
 Yolk supports the following list of standard browser events,
 
 ```
-onAbort onBlur onCanPlay onCanPlayThrough onChange onClick onContextMenu onCopy
-onCueChange onCut onDblClick onDrag onDragEnd onDragEnter onDragLeave onDragOver
-onDragStart onDrop onDurationChange onEmptied onEnded onError onFocus onInput
+onAbort onBlur onCancel onCanPlay onCanPlayThrough onChange onClick
+onCompositionStart onCompositionUpdate onCompositionEnd onContextMenu onCopy
+onCueChange onCut onDblClick onDrag onDragEnd onDragEnter onDragExit onDragLeave onDragOver
+onDragStart onDrop onDurationChange onEmptied onEnded onEncypted onError onFocus onInput
 onInvalid onKeyDown onKeyPress onKeyUp onLoad onLoadedData onLoadedMetaData onLoadStart
-onMouseDown onMouseMove onMouseOut onMouseOver onMouseUp onPaste onPause onPlay
-onPlaying onProgress onRateChange onReset onScroll onSearch onSeeked onSeeking
-onSelect onShow onStalled onSubmit onSuspend onTimeUpdate onToggle onVolumeChange
-onWaiting onWheel
+onMouseDown onMouseEnter onMouseLeave onMouseMove onMouseOut onMouseOver onMouseUp
+onPaste onPause onPlay onPlaying onProgress onRateChange onReset onResize onScroll onSearch
+onSeeked onSeeking onSelect onShow onStalled onSubmit onSuspend onTimeUpdate onTouchCancel
+onTouchEnd onTouchMove onTouchStart onToggle onVolumeChange onWaiting onWheel
 ```
 
 In addition, Yolk supports the following custom browser events,
@@ -253,16 +254,16 @@ Yolk supports the following list of standard element attributes,
 
 ```
 accept acceptCharset accessKey action align alt async autoComplete autoFocus autoPlay
-autoSave bgColor border buffered cite className code codebase color colSpan content
-contentEditable coords default defer dir dirName download draggable dropZone email
-encType file for headers height hidden high href hrefLang httpEquiv icon id isMap
-itemProp keyType kind label lang language low max method min name noValidate open
-optimum password pattern ping placeholder poster preload pubdate radioGroup rel
-required reversed rowSpan sandbox scope scoped shape span spellCheck src srcLang start
-step style summary tabIndex target text title type useMap wrap allowFullScreen
+autoSave bgColor border cite className color colSpan content
+contentEditable coords default defer dir dirName draggable dropZone
+encType for headers height hidden href hrefLang httpEquiv icon id isMap
+itemProp keyType kind label lang max method min name noValidate open
+optimum pattern ping placeholder poster preload radioGroup rel
+required reversed rowSpan sandbox scope span spellCheck src srcLang start
+step style summary tabIndex target title type useMap wrap allowFullScreen
 allowTransparency capture charset challenge cols contextMenu dateTime disabled form
 formAction formEncType formMethod formTarget frameBorder inputMode is list manifest
-maxLength media minLength role rows seamless size sizes srcSet width wmode checked
+maxLength media minLength role rows seamless size sizes srcSet width checked
 controls loop multiple readOnly selected srcDoc value
 ```
 
