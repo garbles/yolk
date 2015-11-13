@@ -1,7 +1,7 @@
 <h1>Yolk <img src="https://avatars3.githubusercontent.com/u/15056177?v=3&s=50" alt="https://twitter.com/patdryburgh" /></h1>
 
 [![Join the chat at https://gitter.im/yolkjs/yolk](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/yolkjs/yolk?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-[![travis-ci](https://travis-ci.org/garbles/yolk.svg?branch=master)](https://travis-ci.org/yolkjs/yolk)
+[![travis-ci](https://travis-ci.org/garbles/yolk.svg?branch=master)](https://travis-ci.org/garbles/yolk)
 [![npm version](https://badge.fury.io/js/yolk.svg)](https://badge.fury.io/js/yolk)
 
 A library for building asynchronous user interfaces.
