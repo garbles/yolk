@@ -99,7 +99,7 @@ Renders an instance of a YolkComponent inside of an HTMLElement.
 Yolk.render(<span>Hello World!</span>, document.getElementById('container'))
 ```
 
-##### `h(component: string|Component, props: object|void, children: Array|void): Component`
+##### `h(component: string|Function, props: object|void, children: Array|void): Component`
 
 If you prefer hyperscript over JSX, Yolk exposes a function `h` which can be used to write your components with hyperscript.
 `h` also parses tags for brevity. For example, `p.my-class` will append a `my-class` class to a `p` tag, `#some-id` will
