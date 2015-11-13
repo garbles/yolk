@@ -8,7 +8,7 @@ A library for building asynchronous user interfaces.
 
 
 
-* __Familiar__: Yolk is a small library built on top of [Virtual DOM](https://github.com/Matt-Esch/virtual-dom) and [RxJS](https://github.com/Reactive-Extensions/RxJS). It exposes a very limited API so that you don't have to spend weeks getting up to speed. Yolk components are just plain functions that return JSX.
+* __Familiar__: Yolk is a small library built on top of [Virtual DOM](https://github.com/Matt-Esch/virtual-dom) and [RxJS](https://github.com/Reactive-Extensions/RxJS). It exposes a very limited API so that you don't have to spend weeks getting up to speed. Yolk components are just plain functions that return JSX or hyperscript.
 
 * __Everything is an observable__: Yolk components consume RxJS observable streams as if they were plain values. From a websocket connection to a generator function to an event handler. If it can be represented as an observable, then it can be rendered directly into your markup.
 
@@ -21,7 +21,7 @@ Also see the [Yolk organzation](https://github.com/yolkjs) for additional reposi
 The following example renders a component with buttons to increment and decrement a counter.
 
 ```js
-import Yolk from `yolk`
+import Yolk from 'yolk'
 
 function Counter () {
 
@@ -91,7 +91,7 @@ When custom components are destroyed, we want to make sure that all of our event
 
 ### Top Level API
 
-##### `Yolk.render(instance: YolkComponent, node: HTMLElement): YolkComponent`
+##### `render(instance: Component, node: HTMLElement): Component`
 
 Renders an instance of a YolkComponent inside of an HTMLElement.
 
@@ -99,7 +99,29 @@ Renders an instance of a YolkComponent inside of an HTMLElement.
 Yolk.render(<span>Hello World!</span>, document.getElementById('container'))
 ```
 
-##### `Yolk.registerElement(name: string, fn: Function): void`
+##### `h(component: string|Component, props: object|void, children: Array|void): Component`
+
+If you prefer hyperscript over JSX, Yolk exposes a function `h` which can be used to write your components with hyperscript.
+In addition to being able to skip JSX-preprocessing, `h` also parses tags for brevity. For example, `p.my-class` will append a `my-class` class to
+a `p` tag, `#some-id` will append a `some-id` id to a `div` tag.
+
+```js
+import {h} from 'yolk'
+
+function MyComponent () {
+  const handleClick = this.createEventHandler()
+
+  const numberOfClicks =
+    handleClick.scan((acc, ev) => acc + 1, 0).startWith(0)
+
+  return h(`.my-counter-component`, {},
+    h(`span#counter`, {}, `Number of clicks: `, numberOfClicks),
+    h(`button#clicker`, {onClick: handleClick}, `Click me!`)
+  )
+}
+```
+
+##### `registerElement(name: string, fn: Function): void`
 
 Registers a [custom HTML element](http://www.html5rocks.com/en/tutorials/webcomponents/customelements/) using `document.registerElement` (polyfill included).
 This is especially useful if you're not building a single page application. For example,
@@ -120,7 +142,7 @@ will allow you to use `<big-red-text content="Hello!"></big-red-text>` in your `
 </big-red-text>
 ```
 
-##### `Yolk.CustomComponent`
+##### `CustomComponent`
 
 Yolk.CustomComponent makes it easy to wrap non-Yolk behavior as a component, e.g. jQuery plugin or React component.
 Each component expects three (optional) methods,
@@ -181,6 +203,11 @@ function MyComponent () {
   )
 }
 ```
+
+##### `createElement(component: string|Component, props: object|void, children: array|void): Component`
+
+A wrapper that should really only be used with JSX. If you do not want to use JSX, use the `Yolk.h` hyperscript helper instead to
+take advantage to tag parsing.
 
 ## Using JSX
 
