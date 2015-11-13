@@ -291,18 +291,19 @@ maxLength media minLength role rows seamless size sizes srcSet width checked
 controls loop multiple readOnly selected srcDoc value
 ```
 
-Adding `data-*` attributes requires passing an object to the `data` attribute. For example,
+Adding `aria-*` or `data-*` attributes requires passing an object to the attribute. For example,
 
 ```js
+const aria = {hidden: false}
 const data = {cool: `dude`, veryRad: `gal`}
 
-<div data={data} />
+<div aria={aria} data={data} />
 ```
 
-will render
+will render,
 
 ```html
-<div data-cool="dude" data-very-rad="gal"></div>
+<div aria-hidden="false" data-cool="dude" data-very-rad="gal"></div>
 ```
 
 ## Setup
