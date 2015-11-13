@@ -102,8 +102,8 @@ Yolk.render(<span>Hello World!</span>, document.getElementById('container'))
 ##### `h(component: string|Component, props: object|void, children: Array|void): Component`
 
 If you prefer hyperscript over JSX, Yolk exposes a function `h` which can be used to write your components with hyperscript.
-In addition to being able to skip JSX-preprocessing, `h` also parses tags for brevity. For example, `p.my-class` will append a `my-class` class to
-a `p` tag, `#some-id` will append a `some-id` id to a `div` tag.
+`h` also parses tags for brevity. For example, `p.my-class` will append a `my-class` class to a `p` tag, `#some-id` will
+append a `some-id` id to a `div` tag.
 
 ```js
 import {h} from 'yolk'
@@ -204,11 +204,6 @@ function MyComponent () {
 }
 ```
 
-##### `createElement(component: string|Component, props: object|void, children: array|void): Component`
-
-A wrapper that should really only be used with JSX. If you do not want to use JSX, use the `Yolk.h` hyperscript helper instead to
-take advantage to tag parsing.
-
 ## Using JSX
 
 It is highly suggested that you write Yolk with JSX. This is achieved using the [Babel transpiler](http://babeljs.io/). You should configure the `jsxPragma` option for Babel either in `.babelrc` or in `package.json`,
@@ -217,7 +212,7 @@ It is highly suggested that you write Yolk with JSX. This is achieved using the 
 
 ```json
 {
-  "jsxPragma": "Yolk.createElement"
+  "jsxPragma": "Yolk.h"
 }
 ```
 
@@ -226,7 +221,7 @@ It is highly suggested that you write Yolk with JSX. This is achieved using the 
 ```json
 {
   "babel": {
-    "jsxPragma": "Yolk.createElement"
+    "jsxPragma": "Yolk.h"
   }
 }
 ```
@@ -240,7 +235,7 @@ Then anywhere you use JSX it will be transformed into plain JavaScript. For exam
 Turns into,
 
 ```js
-Yolk.createElement(
+Yolk.h(
   "p",
   null,
   "My JSX"
