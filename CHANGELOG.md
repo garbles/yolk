@@ -1,3 +1,11 @@
+# 0.9.0 (November 12, 2015)
+
+- Remove `Yolk.createElement` in favor of supercharged `Yolk.h`
+
+# 0.8.1 (November 12, 2015)
+
+- Add `Yolk.h` for doing hyperscript instead of JSX
+
 # 0.8.0 (November 11, 2015)
 
 - Through testing all of the attribute descriptors, I found that several attributes either
