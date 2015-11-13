@@ -138,6 +138,7 @@ const attributes = {
   value: USE_PROPERTY_HOOK,
 
   // X-* attributes
+  aria: IS_STAR,
   data: IS_STAR,
 }
 
