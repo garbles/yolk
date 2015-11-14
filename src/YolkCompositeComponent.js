@@ -59,4 +59,8 @@ YolkCompositeComponent.prototype = {
   },
 }
 
+YolkCompositeComponent.create = function createInstance (fn, props, children) {
+  return new YolkCompositeComponent(fn, props, children)
+}
+
 module.exports = YolkCompositeComponent

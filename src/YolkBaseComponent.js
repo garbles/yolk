@@ -4,8 +4,11 @@ const transformProperties = require(`./transformProperties`)
 const isFunction = require(`./isFunction`)
 const flatten = require(`./flatten`)
 const mountable = require(`./mountable`)
+const parseTag = require(`./parseTag`)
 const CompositePropSubject = require(`./CompositePropSubject`)
 const YolkBaseInnerComponent = require(`./YolkBaseInnerComponent`)
+
+const TAG_IS_ONLY_LETTERS = /^[a-zA-Z]*$/
 
 function YolkBaseComponent (tag, props, children) {
   const _props = {...props}
@@ -71,6 +74,22 @@ YolkBaseComponent.prototype = {
       isFunction(child.destroy) && child.destroy()
     }
   },
+}
+
+YolkBaseComponent.create = function createInstance (_tag, _props, children) {
+  let tag
+  let props
+
+  if (TAG_IS_ONLY_LETTERS.test(_tag)) {
+    tag = _tag
+    props = _props
+  } else {
+    const parsed = parseTag(_tag)
+    tag = parsed.tag
+    props = {..._props, ...parsed.classIds}
+  }
+
+  return new YolkBaseComponent(tag, props, children)
 }
 
 module.exports = YolkBaseComponent
