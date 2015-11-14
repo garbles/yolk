@@ -33,10 +33,10 @@
     "release-major": "git checkout master && npm version major && git push origin master --tags && npm publish",
     "test": "npm run test-phantom",
     "test-debug": "npm run test-chrome",
-    "test-phantom": "NODE_PATH=$NODE_PATH:./src browserify test/**/*-test.js -t babelify --noparse=rx | tape-run --browser=phantom --render=faucet",
-    "test-firefox": "NODE_PATH=$NODE_PATH:./src browserify test/**/*-test.js -t babelify --noparse=rx | tape-run --browser=firefox --render=faucet",
-    "test-chrome":  "NODE_PATH=$NODE_PATH:./src browserify test/**/*-test.js -t babelify --noparse=rx | tape-run --browser=chrome --render=faucet",
-    "test-safari":  "NODE_PATH=$NODE_PATH:./src browserify test/**/*-test.js -t babelify --noparse=rx | tape-run --browser=safari --render=faucet",
+    "test-phantom": "NODE_PATH=$NODE_PATH:./src browserify test/**/*-test.js -t babelify --noparse=rx | tape-run --browser=phantom | faucet",
+    "test-firefox": "NODE_PATH=$NODE_PATH:./src browserify test/**/*-test.js -t babelify --noparse=rx | tape-run --browser=firefox | faucet",
+    "test-chrome":  "NODE_PATH=$NODE_PATH:./src browserify test/**/*-test.js -t babelify --noparse=rx | tape-run --browser=chrome | faucet",
+    "test-safari":  "NODE_PATH=$NODE_PATH:./src browserify test/**/*-test.js -t babelify --noparse=rx | tape-run --browser=safari | faucet",
     "test-ci": "npm run lint && npm run test-phantom && npm run test-chrome && npm run test-firefox"
   },
   "homepage": "https://github.com/yolkjs/yolk",
@@ -52,7 +52,7 @@
     "exorcist": "0.4.0",
     "faucet": "0.0.1",
     "tape": "4.2.0",
-    "tape-run": "2.1.0"
+    "tape-run": "1.1.0"
   },
   "dependencies": {
     "document-register-element": "0.5.0",
