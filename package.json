@@ -25,21 +25,19 @@
     "clean": "rm -rf lib/ dist/ && mkdir lib/ dist/",
     "build": "babel -d lib/ src/",
     "lint": "eslint src test",
-
     "commit-bundle": "git add dist/ lib/ && git commit -m ':tada: new bundle!'",
     "prerelease": "npm run test-ci && npm run clean && npm run bundle && npm run uglify && npm run build && npm run commit-bundle",
     "release": "npm run release-patch",
     "release-patch": "git checkout master && npm version patch && git push origin master --tags && npm publish",
     "release-minor": "git checkout master && npm version minor && git push origin master --tags && npm publish",
     "release-major": "git checkout master && npm version major && git push origin master --tags && npm publish",
-
-    "bundle-test": "rm -rf .tmp/ && mkdir .tmp/ && NODE_PATH=$NODE_PATH:./src browserify test/**/*-test.js -t babelify --noparse=rx > .tmp/yolk.js",
-    "test": "npm run bundle-test && cat .tmp/yolk.js | tape-run --browser=phantom --render=faucet",
-    "test-debug": "npm run bundle-test && npm run test-debug-chrome",
-    "test-debug-phantom": "cat .tmp/yolk.js | tape-run --browser=phantom --render=faucet",
-    "test-debug-chrome": "cat .tmp/yolk.js | tape-run --browser=chrome --render=faucet",
-    "test-debug-firefox": "cat .tmp/yolk.js | tape-run --browser=firefox --render=faucet",
-    "test-ci": "npm run lint && npm run bundle-test && npm run test-debug-phantom && npm run test-debug-chrome && npm run test-debug-firefox"
+    "test": "npm run test-phantom",
+    "test-debug": "npm run test-chrome",
+    "test-phantom": "NODE_PATH=$NODE_PATH:./src browserify test/**/*-test.js -t babelify --noparse=rx | tape-run --browser=phantom --render=faucet",
+    "test-firefox": "NODE_PATH=$NODE_PATH:./src browserify test/**/*-test.js -t babelify --noparse=rx | tape-run --browser=firefox --render=faucet",
+    "test-chrome":  "NODE_PATH=$NODE_PATH:./src browserify test/**/*-test.js -t babelify --noparse=rx | tape-run --browser=chrome --render=faucet",
+    "test-safari":  "NODE_PATH=$NODE_PATH:./src browserify test/**/*-test.js -t babelify --noparse=rx | tape-run --browser=safari --render=faucet",
+    "test-ci": "npm run lint && npm run test-phantom && npm run test-chrome && npm run test-firefox"
   },
   "homepage": "https://github.com/yolkjs/yolk",
   "devDependencies": {
