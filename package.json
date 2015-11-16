@@ -37,7 +37,7 @@
     "test-firefox": "NODE_PATH=$NODE_PATH:./src browserify test/**/*-test.js -t babelify --noparse=rx | tape-run --browser=firefox | faucet",
     "test-chrome":  "NODE_PATH=$NODE_PATH:./src browserify test/**/*-test.js -t babelify --noparse=rx | tape-run --browser=chrome | faucet",
     "test-safari":  "NODE_PATH=$NODE_PATH:./src browserify test/**/*-test.js -t babelify --noparse=rx | tape-run --browser=safari | faucet",
-    "test-ci": "npm run lint && npm run test-phantom && npm run test-chrome && npm run test-firefox"
+    "test-ci": "npm run lint && npm run test-phantom && npm run test-firefox"
   },
   "homepage": "https://github.com/yolkjs/yolk",
   "devDependencies": {
