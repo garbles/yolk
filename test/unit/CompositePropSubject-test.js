@@ -105,3 +105,28 @@ test(`CompositePropSubject: can dispose of underlying subjects`, t => {
   t.ok(obj.a.isDisposed)
   t.ok(obj.b.isDisposed)
 })
+
+test(`CompositePropSubject: can prevent duplicate values`, t => {
+  t.plan(5)
+  t.timeoutAfter(100)
+
+  const subject = new Rx.BehaviorSubject(1)
+  const obj = new CompositePropSubject({subject}).asDistinctObservableObject()
+  const disposable = obj.subject.subscribe(() => t.pass())
+
+  subject.onNext(1)
+  subject.onNext(1)
+  subject.onNext(2)
+  subject.onNext(2)
+  subject.onNext(2)
+  subject.onNext(3)
+  subject.onNext(4)
+  subject.onNext(4)
+  subject.onNext(4)
+  subject.onNext(1)
+  subject.onNext(1)
+  subject.onNext(1)
+  subject.onNext(1)
+
+  disposable.dispose()
+})

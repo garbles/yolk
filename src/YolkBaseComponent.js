@@ -32,7 +32,7 @@ YolkBaseComponent.prototype = {
     this._props$ = new CompositePropSubject(this._props)
     this._children$ = new Rx.BehaviorSubject(this._children)
 
-    const props$ = wrapObject(this._props$.asSubjectObject(), {wrapToJS: true}).map(transformProperties)
+    const props$ = wrapObject(this._props$.asDistinctObservableObject(), {wrapToJS: true}).map(transformProperties)
     const children$ = this._children$.flatMapLatest(c => wrapObject(c, {wrapToJS: true})).map(flatten)
     const innerComponent = new YolkBaseInnerComponent(this.id)
 
