@@ -20,6 +20,20 @@ CompositePropSubject.prototype = {
     return this._obj
   },
 
+  asDistinctObservableObject () {
+    const obsObj = {}
+
+    let i = -1
+
+    while (++i < this._length) {
+      const key = this._keys[i]
+      const subject = this._obj[key]
+      obsObj[key] = subject.flatMapLatest(wrapObject).distinctUntilChanged()
+    }
+
+    return obsObj
+  },
+
   asObservableObject () {
     const obsObj = {}
 
