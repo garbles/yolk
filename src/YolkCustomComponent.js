@@ -45,6 +45,7 @@ YolkCustomComponent.prototype = {
   },
 
   update (previous) {
+    this._onDestroy = previous._onDestroy
     this._props$ = previous._props$
     this._props$.onNext(this._props)
   },
