@@ -2,15 +2,9 @@ const isFunction = require(`./isFunction`)
 const CustomEvent = require(`./CustomEvent`)
 
 function emitMount (node, fn) {
-  if (!isFunction(fn)) {
-    return
-  }
-
-  if (node.parentNode) {
+  if (isFunction(fn) && node.parentNode) {
     const event = new CustomEvent(`mount`)
     node.dispatchEvent(event)
-  } else {
-    setTimeout(() => emitMount(node, fn), 0)
   }
 }
 

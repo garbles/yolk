@@ -29,9 +29,14 @@ YolkCustomComponent.prototype = {
   },
 
   init () {
+    const node = create(this._child)
+
     this._props$ = new CompositePropSubject(this._props)
 
-    const node = create(this._child)
+    return node
+  },
+
+  postinit (node) {
     const props$ = wrapObject(this._props$.asSubjectObject())
     const mountDisposable = props$.take(1).subscribe(props => this.onMount(props, node))
     const updateDisposable = props$.skip(1).subscribe(props => this.onUpdate(props, node))
@@ -40,8 +45,6 @@ YolkCustomComponent.prototype = {
       mountDisposable.dispose()
       updateDisposable.dispose()
     }
-
-    return node
   },
 
   update (previous) {

@@ -21,6 +21,9 @@ test(`LifecycleHooks: will run code when the component unmounts`, t => {
   t.plan(2)
   t.timeoutAfter(2000)
 
+  let node
+  let cleanup
+
   function onUnmount (ev) {
     t.equal(ev.target.tagName, `STRONG`)
 
@@ -30,7 +33,7 @@ test(`LifecycleHooks: will run code when the component unmounts`, t => {
     }, 0)
   }
 
-  const [node, cleanup] = renderInDoc(<strong onUnmount={onUnmount} />)
+  [node, cleanup] = renderInDoc(<strong onUnmount={onUnmount} />)
   const parent = node.parentNode
 
   Yolk.render(<b />, parent)

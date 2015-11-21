@@ -44,9 +44,12 @@ YolkBaseComponent.prototype = {
       )
 
     const node = innerComponent.createNode()
-    mountable.emitMount(node, this._props.onMount)
 
     return node
+  },
+
+  postinit (node) {
+    mountable.emitMount(node, this._props.onMount)
   },
 
   update (previous) {

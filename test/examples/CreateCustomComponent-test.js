@@ -71,6 +71,21 @@ test(`CreateCustomComponent: should raise when there is more than one child`, t 
   t.doesNotThrow(() => <CC />)
 })
 
+test(`CreateCustomComponent: node is already inserted into the DOM with onMount`, t => {
+  t.plan(1)
+  t.timeoutAfter(2000)
+
+  const CC = Yolk.CustomComponent.extend({
+    onMount (__props, node) {
+      t.ok(node.parentNode)
+    },
+  })
+
+  const cleanup = renderInDoc(<CC />)[1]
+
+  cleanup()
+})
+
 test(`CreateCustomComponent: extending the class with .extend`, t => {
   t.plan(3)
   t.timeoutAfter(2000)

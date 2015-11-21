@@ -41,18 +41,12 @@ test(`YolkBaseComponent: listens for mount and umount when defined`, t => {
   t.plan(2)
   t.timeoutAfter(2000)
 
-  const instance = new YolkBaseComponent(`p`, {onMount: () => {}, onUnmount: () => {}}, [])
-  const [node, cleanup] = renderInDoc(instance)
-
   const handler = () => t.pass(`emits event`)
-
-  node.addEventListener(`mount`, handler)
-  node.addEventListener(`unmount`, handler)
+  const instance = new YolkBaseComponent(`p`, {onMount: handler, onUnmount: handler}, [])
+  const [node, cleanup] = renderInDoc(instance)
 
   setTimeout(() => {
     instance.predestroy(node)
-    node.removeEventListener(`mount`, handler)
-    node.removeEventListener(`unmount`, handler)
     cleanup()
   }, 0)
 })
