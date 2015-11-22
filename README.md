@@ -34,7 +34,7 @@ function Counter (props, children) {
   const minusOne$ = handleMinus.map(() => -1)
 
   // merge both event streams together and keep a running count of the result
-  const count$ = plusOne.merge(minusOne).scan((x, y) => x + y, 0).startWith(0)
+  const count$ = plusOne$.merge(minusOne$).scan((x, y) => x + y, 0).startWith(0)
   
   const title$ = props.title.map(title => `Awesome ${title}`)
 
@@ -42,11 +42,11 @@ function Counter (props, children) {
     <div>
       <h1>{title$}</h1>
       <div>
-        <button id="plus" onClick={handlePlus$}>+</button>
-        <button id="minus" onClick={handleMinus$}>-</button>
+        <button id="plus" onClick={handlePlus}>+</button>
+        <button id="minus" onClick={handleMinus}>-</button>
       </div>
       <div>
-        <span>Count: {count}</span>
+        <span>Count: {count$}</span>
       </div>
       {children}
     </div>
