@@ -31,7 +31,7 @@
     "release-patch": "git checkout master && npm version patch && git push origin master --tags && npm publish",
     "release-minor": "git checkout master && npm version minor && git push origin master --tags && npm publish",
     "release-major": "git checkout master && npm version major && git push origin master --tags && npm publish",
-    "test": "npm run lint && npm run test-phantom && npm run test-chrome && npm run test-firefox",
+    "test": "npm run lint && npm run test-chrome && npm run test-firefox",
     "test-debug": "npm run test-chrome",
     "test-phantom": "NODE_PATH=$NODE_PATH:./src browserify test/**/*-test.js -t babelify --noparse=rx | tape-run --browser=phantom | faucet",
     "test-firefox": "NODE_PATH=$NODE_PATH:./src browserify test/**/*-test.js -t babelify --noparse=rx | tape-run --browser=firefox | faucet",
