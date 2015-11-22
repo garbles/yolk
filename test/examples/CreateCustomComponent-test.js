@@ -100,7 +100,7 @@ test(`CreateCustomComponent: node is already insert into the DOM even after the 
 
   const cleanup = renderInDoc(<div>{child}</div>)[1]
 
-  setTimeout(function () {
+  setTimeout(() => {
     child.onNext(<CC />)
     cleanup()
   }, 0)
