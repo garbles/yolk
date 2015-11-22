@@ -75,15 +75,35 @@ test(`CreateCustomComponent: node is already inserted into the DOM with onMount`
   t.plan(1)
   t.timeoutAfter(2000)
 
-  const CC = Yolk.CustomComponent.extend({
+  class CC extends Yolk.CustomComponent {
     onMount (__props, node) {
       t.ok(node.parentNode)
-    },
-  })
+    }
+  }
 
   const cleanup = renderInDoc(<CC />)[1]
 
   cleanup()
+})
+
+test(`CreateCustomComponent: node is already insert into the DOM even after the original load`, t => {
+  t.plan(1)
+  t.timeoutAfter(2000)
+
+  class CC extends Yolk.CustomComponent {
+    onMount (__props, node) {
+      t.ok(node.parentNode)
+    }
+  }
+
+  const child = new Rx.BehaviorSubject(<div />)
+
+  const cleanup = renderInDoc(<div>{child}</div>)[1]
+
+  setTimeout(function () {
+    child.onNext(<CC />)
+    cleanup()
+  }, 0)
 })
 
 test(`CreateCustomComponent: extending the class with .extend`, t => {
