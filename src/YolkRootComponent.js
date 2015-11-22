@@ -15,7 +15,7 @@ YolkRootComponent.prototype = {
   type: `Widget`,
 
   init () {
-    return create(this._child)
+    return this._child
   },
 
   update (previous, node) {

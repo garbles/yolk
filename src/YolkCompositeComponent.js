@@ -1,5 +1,4 @@
 const Rx = require(`rx`)
-const create = require(`yolk-virtual-dom/create-element`)
 const YolkCompositeFunctionWrapper = require(`./YolkCompositeFunctionWrapper`)
 const CompositePropSubject = require(`./CompositePropSubject`)
 
@@ -33,7 +32,7 @@ YolkCompositeComponent.prototype = {
     const fn = this._fn
     this._component = YolkCompositeFunctionWrapper.create(fn, props$, children$)
 
-    return create(this._component.getVirtualNode())
+    return this._component.getVirtualNode()
   },
 
   update (previous) {

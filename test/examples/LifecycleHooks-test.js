@@ -10,7 +10,7 @@ test(`LifecycleHooks: will run code after the component mounts`, t => {
 
   function onMount (ev) {
     t.equal(ev.target.tagName, `STRONG`)
-    cleanup()
+    setTimeout(cleanup, 0)
   }
 
   const component = <strong onMount={onMount} />

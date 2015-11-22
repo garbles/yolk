@@ -8,11 +8,7 @@ class CustomStub {
   }
 
   init () {
-    const node = document.createElement(`strong`)
-
-    node.innerHTML = `hello world!`
-
-    return node
+    return Yolk.h(`strong`, null, `hello world!`)
   }
 
   update (previous, node) {
