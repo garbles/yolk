@@ -8,7 +8,7 @@ test(`YolkBaseComponent: returns a base component`, t => {
   t.timeoutAfter(100)
 
   const instance = new YolkBaseComponent(`p`, {height: 5}, [])
-  const node = instance.init()
+  const [node, cleanup] = renderInDoc(instance)
 
   t.equal(node.tagName, `P`)
   t.equal(node.getAttribute(`height`), `5`)
@@ -20,6 +20,8 @@ test(`YolkBaseComponent: returns a base component`, t => {
   t.equal(node.tagName, `P`)
   t.equal(node.getAttribute(`height`), `10`)
   t.equal(node.innerHTML, `hello`)
+
+  cleanup()
 })
 
 test(`YolkBaseComponent: does not apply new prop keys`, t => {
@@ -27,7 +29,7 @@ test(`YolkBaseComponent: does not apply new prop keys`, t => {
   t.timeoutAfter(100)
 
   const instance = new YolkBaseComponent(`p`, {height: 5}, [])
-  const node = instance.init()
+  const [node, cleanup] = renderInDoc(instance)
 
   const patched = new YolkBaseComponent(`p`, {width: 10}, [`hello`])
   patched.update(instance)
@@ -35,6 +37,8 @@ test(`YolkBaseComponent: does not apply new prop keys`, t => {
   t.equal(node.tagName, `P`)
   t.equal(node.getAttribute(`height`), `null`)
   t.notOk(node.getAttribute(`width`))
+
+  cleanup()
 })
 
 test(`YolkBaseComponent: listens for mount and umount when defined`, t => {

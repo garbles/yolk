@@ -62,7 +62,7 @@
     "lodash.kebabcase": "3.0.1",
     "parse-tag": "1.0.0",
     "rx": "^4.0.0",
-    "yolk-virtual-dom": "3.0.3"
+    "yolk-virtual-dom": "4.1.0"
   },
   "browserify-shim": {
     "rx": "global:Rx"

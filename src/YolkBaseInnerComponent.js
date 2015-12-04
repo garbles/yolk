@@ -1,5 +1,4 @@
 const h = require(`yolk-virtual-dom/h`)
-const create = require(`yolk-virtual-dom/create-element`)
 const diff = require(`yolk-virtual-dom/diff`)
 const patch = require(`yolk-virtual-dom/patch`)
 const generateUid = require(`./generateUid`)
@@ -14,10 +13,14 @@ function YolkBaseInnerComponent (tag) {
 }
 
 YolkBaseInnerComponent.prototype = {
-  createNode () {
+  createVirtualNode () {
     this._vNode = h(this._tag, this._props, this._children)
-    this._node = create(this._vNode)
-    return this._node
+    return this._vNode
+  },
+
+  setNode (node) {
+    this._node = node
+    this.update(this._props, this._children)
   },
 
   update (props, children) {

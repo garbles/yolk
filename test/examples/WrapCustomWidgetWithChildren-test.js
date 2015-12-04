@@ -1,7 +1,7 @@
 const test = require(`tape`)
 const Yolk = require(`yolk`) // eslint-disable-line no-unused-vars
 
-const {h, create} = require(`yolk-virtual-dom`)
+const {h} = require(`yolk-virtual-dom`)
 const renderInDoc = require(`../helpers/renderInDoc`)
 
 class CustomStub {
@@ -11,8 +11,7 @@ class CustomStub {
   }
 
   init () {
-    const vNode = h(`div`, null, this.children)
-    return create(vNode)
+    return h(`div`, null, this.children)
   }
 
   update (previous, node) {

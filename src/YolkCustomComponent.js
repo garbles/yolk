@@ -1,4 +1,3 @@
-const create = require(`yolk-virtual-dom/create-element`)
 const wrapObject = require(`./wrapObject`)
 const addProperties = require(`./addProperties`)
 const YolkBaseComponent = require(`./YolkBaseComponent`)
@@ -29,11 +28,9 @@ YolkCustomComponent.prototype = {
   },
 
   init () {
-    const node = create(this._child)
-
     this._props$ = new CompositePropSubject(this._props)
 
-    return node
+    return this._child
   },
 
   postinit (node) {

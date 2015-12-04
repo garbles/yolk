@@ -31,10 +31,11 @@ YolkBaseComponent.prototype = {
   init () {
     this._props$ = new CompositePropSubject(this._props)
     this._children$ = new Rx.BehaviorSubject(this._children)
+    this._innerComponent = new YolkBaseInnerComponent(this.id)
 
     const props$ = wrapObject(this._props$.asDistinctObservableObject(), {wrapToJS: true}).map(transformProperties)
     const children$ = this._children$.flatMapLatest(c => wrapObject(c, {wrapToJS: true})).map(flatten)
-    const innerComponent = new YolkBaseInnerComponent(this.id)
+    const innerComponent = this._innerComponent
 
     this._disposable =
       props$.combineLatest(children$)
@@ -43,12 +44,11 @@ YolkBaseComponent.prototype = {
         (err) => {throw err}
       )
 
-    const node = innerComponent.createNode()
-
-    return node
+    return innerComponent.createVirtualNode()
   },
 
   postinit (node) {
+    this._innerComponent.setNode(node)
     mountable.emitMount(node, this._props.onMount)
   },
 
@@ -56,6 +56,7 @@ YolkBaseComponent.prototype = {
     this._props$ = previous._props$
     this._children$ = previous._children$
     this._disposable = previous._disposable
+    this._innerComponent = previous._innerComponent
 
     this._props$.onNext(this._props)
     this._children$.onNext(this._children)
