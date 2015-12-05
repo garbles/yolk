@@ -3,9 +3,9 @@ const Yolk = require(`yolk`) // eslint-disable-line no-unused-vars
 const {h} = Yolk
 const renderInDoc = require(`../helpers/renderInDoc`)
 
-function CounterWithJSX () {
-  const handlePlus = this.createEventHandler(1)
-  const handleMinus = this.createEventHandler(-1)
+function CounterWithJSX ({createEventHandler}) {
+  const handlePlus = createEventHandler(1)
+  const handleMinus = createEventHandler(-1)
   const count = handlePlus.merge(handleMinus).scan((x, y) => x + y, 0).startWith(0)
 
   return (
@@ -17,9 +17,9 @@ function CounterWithJSX () {
   )
 }
 
-function CounterWithHyperScript () {
-  const handlePlus = this.createEventHandler(1)
-  const handleMinus = this.createEventHandler(-1)
+function CounterWithHyperScript ({createEventHandler}) {
+  const handlePlus = createEventHandler(1)
+  const handleMinus = createEventHandler(-1)
   const count = handlePlus.merge(handleMinus).scan((x, y) => x + y, 0).startWith(0)
 
   return h(`div`, null, [
@@ -30,11 +30,11 @@ function CounterWithHyperScript () {
 }
 
 
-function CounterWithDOMHelpers () {
+function CounterWithDOMHelpers ({createEventHandler}) {
   const {div, button, span} = Yolk.DOM
 
-  const handlePlus = this.createEventHandler(1)
-  const handleMinus = this.createEventHandler(-1)
+  const handlePlus = createEventHandler(1)
+  const handleMinus = createEventHandler(-1)
   const count = handlePlus.merge(handleMinus).scan((x, y) => x + y, 0).startWith(0)
 
   return div(null, [

@@ -3,9 +3,9 @@ const Yolk = require(`yolk`)
 const evStore = require(`ev-store`)
 const renderInDoc = require(`../helpers/renderInDoc`)
 
-function CounterWithMultipleSubscribers (props) {
-  const handlePlus = this.createEventHandler(() => 1, 0)
-  const handleMinus = this.createEventHandler(() => -1, 0)
+function CounterWithMultipleSubscribers ({props, createEventHandler}) {
+  const handlePlus = createEventHandler(() => 1, 0)
+  const handleMinus = createEventHandler(() => -1, 0)
   const count = handlePlus.merge(handleMinus).scan((x, y) => x + y, 0)
 
   return (

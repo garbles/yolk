@@ -2,8 +2,8 @@ const test = require(`tape`)
 const Yolk = require(`yolk`)
 const renderInDoc = require(`../helpers/renderInDoc`)
 
-function Counter (props) {
-  const handlePlus = this.createEventHandler(() => 1, 0)
+function Counter ({createEventHandler, props}) {
+  const handlePlus = createEventHandler(() => 1, 0)
   const count = handlePlus.scan((x, y) => x + y, 0).combineLatest(props.count, (a, b) => a + b)
 
   return (

@@ -32,7 +32,7 @@ YolkCompositeComponent.prototype = {
     const fn = this._fn
     this._component = YolkCompositeFunctionWrapper.create(fn, props$, children$)
 
-    return this._component.getVirtualNode()
+    return this._component.vNode
   },
 
   update (previous) {
@@ -45,7 +45,7 @@ YolkCompositeComponent.prototype = {
   },
 
   destroy () {
-    this._component.destroy()
+    YolkCompositeFunctionWrapper.destroy(this._component)
 
     const children = this._children
     const length = children.length

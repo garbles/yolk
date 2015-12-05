@@ -9,9 +9,9 @@ test(`DisposeEventHandlers: disposing of event handlers when a component unmount
 
   const handlers = []
 
-  function DisposeEventHandlers () {
-    const handler = this.createEventHandler()
-    const handler2 = this.createEventHandler()
+  function DisposeEventHandlers ({createEventHandler}) {
+    const handler = createEventHandler()
+    const handler2 = createEventHandler()
     handlers.push(handler)
     handlers.push(handler2)
 

@@ -2,9 +2,9 @@ const test = require(`tape`)
 const Yolk = require(`yolk`) // eslint-disable-line no-unused-vars
 const renderInDoc = require(`../helpers/renderInDoc`)
 
-function NestedCounter (props) {
-  const handlePlus = this.createEventHandler(() => 1, 0)
-  const handleMinus = this.createEventHandler(() => -1, 0)
+function NestedCounter ({props, createEventHandler}) {
+  const handlePlus = createEventHandler(() => 1, 0)
+  const handleMinus = createEventHandler(() => -1, 0)
   const count =
     handlePlus.merge(handleMinus)
     .scan((acc, next) => acc + next, 0)
@@ -23,9 +23,9 @@ function NestedCounter (props) {
   )
 }
 
-function Counter () {
-  const handlePlus = this.createEventHandler(() => 1, 0)
-  const handleMinus = this.createEventHandler(() => -1, 0)
+function Counter ({createEventHandler}) {
+  const handlePlus = createEventHandler(() => 1, 0)
+  const handleMinus = createEventHandler(() => -1, 0)
   const count = handlePlus.merge(handleMinus).scan((acc, next) => acc + next, 0)
 
   return (
@@ -44,7 +44,7 @@ function Counter () {
   )
 }
 
-test(`increments and decrements a wrapper counter and a nested child`, t => {
+test(`NestedCounter: increments and decrements a wrapper counter and a nested child`, t => {
   t.plan(8)
 
   const component = <Counter />
