@@ -33,8 +33,8 @@ YolkBaseComponent.prototype = {
     this._children$ = new Rx.BehaviorSubject(this._children)
     this._innerComponent = new YolkBaseInnerComponent(this.id)
 
-    const props$ = wrapObject(this._props$.asDistinctObservableObject(), {wrapToJS: true}).map(transformProperties)
-    const children$ = this._children$.flatMapLatest(c => wrapObject(c, {wrapToJS: true})).map(flatten)
+    const props$ = wrapObject(this._props$.asDistinctObservableObject(), {base: true}).map(transformProperties)
+    const children$ = this._children$.flatMapLatest(c => wrapObject(c, {base: true})).map(flatten)
     const innerComponent = this._innerComponent
 
     this._disposable =

@@ -34,7 +34,7 @@ YolkCustomComponent.prototype = {
   },
 
   postinit (node) {
-    const props$ = wrapObject(this._props$.asSubjectObject())
+    const props$ = wrapObject(this._props$.asSubjectObject(), {base: false})
     const mountDisposable = props$.take(1).subscribe(props => this.onMount(props, node))
     const updateDisposable = props$.skip(1).subscribe(props => this.onUpdate(props, node))
 
