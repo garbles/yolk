@@ -10,4 +10,4 @@ module.exports = global.CustomEvent || (() => {
   }
 
   return CustomEvent
-}())
+})()
