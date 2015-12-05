@@ -211,23 +211,21 @@ function MyComponent () {
 
 ## Using JSX
 
-It is highly suggested that you write Yolk with JSX. This is achieved using the [Babel transpiler](http://babeljs.io/). You should configure the `jsxPragma` option for Babel either in `.babelrc` or in `package.json`,
+It is highly suggested that you write Yolk with JSX. This is achieved using the [Babel transpiler](http://babeljs.io/) (version 6+). You should install your `babel` tool of choice (e.g., `babel-cli` or `babel-loader`) and `babel-plugin-transform-react-jsx` and configure the `pragma` option for `transform-react-jsx`.
+
+Run:
+
+```sh
+npm i --save-dev babel-cli babel-plugin-transform-react-jsx
+```
 
 `.babelrc`:
 
 ```json
 {
-  "jsxPragma": "Yolk.h"
-}
-```
-
-`package.json`:
-
-```json
-{
-  "babel": {
-    "jsxPragma": "Yolk.h"
-  }
+  "plugins": [
+    ["transform-react-jsx", {"pragma": "Yolk.h"}]
+  ]
 }
 ```
 
@@ -248,6 +246,19 @@ Yolk.h(
 ```
 
 Without this pragma, Babel will assume that you mean to write JSX for React and you will receive `React is undefined` errors.
+
+If you want to additionally transpile ES2015 code into ES5 code you should install and use `babel-preset-es2015`:
+
+```json
+{
+  "presets": ["es2015"],
+  "plugins": [
+    ["transform-react-jsx", {"pragma": "Yolk.h"}]
+  ]
+}
+```
+
+See [`yolk-todomvc`](https://github.com/yolkjs/yolk-todomvc) for a complete working example.
 
 ## Support for Immutable Objects and #toJS
 

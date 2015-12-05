@@ -16,7 +16,7 @@ const randomStringTestPairs = (() => {
   }
 
   return arr
-}())
+})()
 
 const randomNumberTestPairs = (() => {
   let arr = []
@@ -28,7 +28,7 @@ const randomNumberTestPairs = (() => {
   }
 
   return arr
-}())
+})()
 
 const randomURLTestPairs = (() => {
   let arr = []
@@ -40,7 +40,7 @@ const randomURLTestPairs = (() => {
   }
 
   return arr
-}())
+})()
 
 const testTable = [
 // | attribute | computed | input | expected | update | new expected |
