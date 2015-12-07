@@ -1,3 +1,9 @@
+# 0.10.0 (December 6, 2015)
+
+- Upgrade to Babel 6
+- Make all components accept a single argument rather than two. This now includes injecting
+createEventHandler as part of this argument rather than calling `this.createEventHandler`
+
 # 0.9.0 (November 12, 2015)
 
 - Remove `Yolk.createElement` in favor of supercharged `Yolk.h`
