@@ -1867,11 +1867,13 @@ module.exports = createElement
 function createElement(vnode, opts) {
     var doc = opts ? opts.document || document : document
     var warn = opts ? opts.warn : null
+    var node
 
     if (isWidget(vnode)) {
         var widget = vnode.init()
-        setupInitializeWidgets(widget, vnode)
-        return widget
+        node = createElement(widget)
+        setupInitializeWidgets(node, vnode)
+        return node
     } else if (isVText(vnode)) {
         return doc.createTextNode(vnode.text)
     } else if (!isVNode(vnode)) {
@@ -1881,7 +1883,7 @@ function createElement(vnode, opts) {
         return null
     }
 
-    var node = (vnode.namespace === null) ?
+    node = (vnode.namespace === null) ?
         doc.createElement(vnode.tagName) :
         doc.createElementNS(vnode.namespace, vnode.tagName)
 
@@ -1996,6 +1998,7 @@ var isWidget = require("../vnode/is-widget.js")
 var VPatch = require("../vnode/vpatch.js")
 
 var updateWidget = require("./update-widget")
+var createElement = require("./create-element")
 
 module.exports = applyPatch
 
@@ -2073,7 +2076,8 @@ function widgetPatch(domNode, leftVNode, widget, renderOptions) {
     var newNode
 
     if (updating) {
-        newNode = widget.update(leftVNode, domNode) || domNode
+        var widget = widget.update(leftVNode, domNode)
+        newNode = widget ? createElement(widget) : domNode
     } else {
         newNode = renderOptions.render(widget, renderOptions)
     }
@@ -2151,7 +2155,7 @@ function replaceRoot(oldRoot, newRoot) {
     return newRoot;
 }
 
-},{"../vnode/is-widget.js":49,"../vnode/vpatch.js":52,"./apply-properties":36,"./update-widget":42}],40:[function(require,module,exports){
+},{"../vnode/is-widget.js":49,"../vnode/vpatch.js":52,"./apply-properties":36,"./create-element":37,"./update-widget":42}],40:[function(require,module,exports){
 var document = require("global/document")
 
 var render = require("./create-element")
@@ -2276,19 +2280,25 @@ function setupInitializeWidgets (node, vnode) {
     }
 
     node[INITIALIZED_KEY] = false
+    vnode[INITIALIZED_KEY] = false
 
     outerPostinit = node[POSTINIT_KEY] || function () {}
 
     node[POSTINIT_KEY] = function () {
+        if (node[INITIALIZED_KEY] === true) {
+          return
+        }
+
         initializeChildren(node)
 
-        if (typeof vnode.postinit === "function" && isWidget(vnode)) {
+        if (typeof vnode.postinit === "function" && isWidget(vnode) && vnode[INITIALIZED_KEY] === false) {
+            vnode[INITIALIZED_KEY] = true
             vnode.postinit(node)
         }
 
-        node[INITIALIZED_KEY] = true
-
         outerPostinit()
+
+        node[INITIALIZED_KEY] = true
     }
 
     if (node.parentNode && node.parentNode[INITIALIZED_KEY] === true) {
@@ -3129,7 +3139,6 @@ CompositePropSubject.prototype = {
   asSubjectObject: function asSubjectObject() {
     return this._obj;
   },
-
   asDistinctObservableObject: function asDistinctObservableObject() {
     var obsObj = {};
 
@@ -3143,7 +3152,6 @@ CompositePropSubject.prototype = {
 
     return obsObj;
   },
-
   asObservableObject: function asObservableObject() {
     var obsObj = {};
 
@@ -3157,7 +3165,6 @@ CompositePropSubject.prototype = {
 
     return obsObj;
   },
-
   onNext: function onNext(obj) {
     var i = -1;
 
@@ -3167,7 +3174,6 @@ CompositePropSubject.prototype = {
       this._obj[key].onNext(value || null);
     }
   },
-
   dispose: function dispose() {
     var i = -1;
 
@@ -3250,14 +3256,14 @@ var attributes = {
   content: IS_ATTRIBUTE,
   contentEditable: IS_ATTRIBUTE | HAS_LOWER_CASE | HAS_BOOLEAN_VALUE,
   coords: IS_ATTRIBUTE,
-  "default": IS_ATTRIBUTE | HAS_BOOLEAN_VALUE,
+  default: IS_ATTRIBUTE | HAS_BOOLEAN_VALUE,
   defer: IS_ATTRIBUTE | HAS_BOOLEAN_VALUE,
   dir: IS_ATTRIBUTE,
   dirName: IS_ATTRIBUTE | HAS_LOWER_CASE,
   draggable: IS_ATTRIBUTE,
   dropZone: IS_ATTRIBUTE | HAS_LOWER_CASE,
   encType: IS_ATTRIBUTE | HAS_LOWER_CASE,
-  "for": IS_ATTRIBUTE,
+  for: IS_ATTRIBUTE,
   headers: IS_ATTRIBUTE,
   height: IS_ATTRIBUTE,
   href: IS_ATTRIBUTE,
@@ -3356,8 +3362,8 @@ var length = EventsList.length;
 var i = -1;
 
 while (++i < length) {
-  var _event = EventsList[i];
-  attributes["on" + _event] = HAS_LOWER_CASE | USE_EVENT_HOOK;
+  var event = EventsList[i];
+  attributes["on" + event] = HAS_LOWER_CASE | USE_EVENT_HOOK;
 }
 
 var keys = Object.keys(attributes);
@@ -3417,7 +3423,6 @@ EventHook.prototype = {
 
     es[propName] = this.value;
   },
-
   unhook: function unhook(node, propertyName) {
     var es = evStore(node);
     var propName = propertyName.substr(2).toLowerCase();
@@ -3509,12 +3514,13 @@ YolkBaseComponent.prototype = {
   init: function init() {
     this._props$ = new CompositePropSubject(this._props);
     this._children$ = new Rx.BehaviorSubject(this._children);
+    this._innerComponent = new YolkBaseInnerComponent(this.id);
 
     var props$ = wrapObject(this._props$.asDistinctObservableObject(), { wrapToJS: true }).map(transformProperties);
     var children$ = this._children$.flatMapLatest(function (c) {
       return wrapObject(c, { wrapToJS: true });
     }).map(flatten);
-    var innerComponent = new YolkBaseInnerComponent(this.id);
+    var innerComponent = this._innerComponent;
 
     this._disposable = props$.combineLatest(children$).subscribe(function (_ref) {
       var _ref2 = _slicedToArray(_ref, 2);
@@ -3526,28 +3532,24 @@ YolkBaseComponent.prototype = {
       throw err;
     });
 
-    var node = innerComponent.createNode();
-
-    return node;
+    return innerComponent.createVirtualNode();
   },
-
   postinit: function postinit(node) {
+    this._innerComponent.setNode(node);
     mountable.emitMount(node, this._props.onMount);
   },
-
   update: function update(previous) {
     this._props$ = previous._props$;
     this._children$ = previous._children$;
     this._disposable = previous._disposable;
+    this._innerComponent = previous._innerComponent;
 
     this._props$.onNext(this._props);
     this._children$.onNext(this._children);
   },
-
   predestroy: function predestroy(node) {
     mountable.emitUnmount(node, this._props.onUnmount);
   },
-
   destroy: function destroy() {
     this._disposable.dispose();
 
@@ -3586,7 +3588,6 @@ module.exports = YolkBaseComponent;
 "use strict";
 
 var h = require("yolk-virtual-dom/h");
-var create = require("yolk-virtual-dom/create-element");
 var diff = require("yolk-virtual-dom/diff");
 var patch = require("yolk-virtual-dom/patch");
 var generateUid = require("./generateUid");
@@ -3601,12 +3602,14 @@ function YolkBaseInnerComponent(tag) {
 }
 
 YolkBaseInnerComponent.prototype = {
-  createNode: function createNode() {
+  createVirtualNode: function createVirtualNode() {
     this._vNode = h(this._tag, this._props, this._children);
-    this._node = create(this._vNode);
-    return this._node;
+    return this._vNode;
   },
-
+  setNode: function setNode(node) {
+    this._node = node;
+    this.update(this._props, this._children);
+  },
   update: function update(props, children) {
     this._props = props;
     this._children = children;
@@ -3623,14 +3626,13 @@ YolkBaseInnerComponent.prototype = {
 
 module.exports = YolkBaseInnerComponent;
 
-},{"./generateUid":75,"yolk-virtual-dom/create-element":31,"yolk-virtual-dom/diff":32,"yolk-virtual-dom/h":33,"yolk-virtual-dom/patch":35}],65:[function(require,module,exports){
+},{"./generateUid":75,"yolk-virtual-dom/diff":32,"yolk-virtual-dom/h":33,"yolk-virtual-dom/patch":35}],65:[function(require,module,exports){
 (function (global){
 "use strict";
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 var Rx = (typeof window !== "undefined" ? window['Rx'] : typeof global !== "undefined" ? global['Rx'] : null);
-var create = require("yolk-virtual-dom/create-element");
 var YolkCompositeFunctionWrapper = require("./YolkCompositeFunctionWrapper");
 var CompositePropSubject = require("./CompositePropSubject");
 
@@ -3664,9 +3666,8 @@ YolkCompositeComponent.prototype = {
     var fn = this._fn;
     this._component = YolkCompositeFunctionWrapper.create(fn, props$, children$);
 
-    return create(this._component.getVirtualNode());
+    return this._component.vNode;
   },
-
   update: function update(previous) {
     this._props$ = previous._props$;
     this._children$ = previous._children$;
@@ -3675,9 +3676,8 @@ YolkCompositeComponent.prototype = {
     this._props$.onNext(this._props);
     this._children$.onNext(this._children);
   },
-
   destroy: function destroy() {
-    this._component.destroy();
+    YolkCompositeFunctionWrapper.destroy(this._component);
 
     var children = this._children;
     var length = children.length;
@@ -3698,60 +3698,51 @@ module.exports = YolkCompositeComponent;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"./CompositePropSubject":56,"./YolkCompositeFunctionWrapper":66,"yolk-virtual-dom/create-element":31}],66:[function(require,module,exports){
+},{"./CompositePropSubject":56,"./YolkCompositeFunctionWrapper":66}],66:[function(require,module,exports){
 "use strict";
 
-var _createEventHandler = require("./createEventHandler");
+var createEventHandler_ = require("./createEventHandler");
 var isComponent = require("./isComponent");
-var addProperties = require("./addProperties");
 
-var publicInterface = {
-  getVirtualNode: function getVirtualNode() {
-    return this._result;
-  },
+function YolkCompositeFunctionWrapper(fn, props, children) {
+  var eventHandlers = [];
 
-  destroy: function destroy() {
-    var length = this._eventHandlers.length;
-    var i = -1;
-
-    while (++i < length) {
-      this._eventHandlers[i].dispose();
-    }
-
-    this._result.destroy();
-  }
-};
-
-function YolkCompositeFunctionWrapper(fn, props$, children$) {
-  this._eventHandlers = [];
-  this._result = fn.call(this, props$, children$);
-  addProperties(this, publicInterface);
-}
-
-YolkCompositeFunctionWrapper.prototype = {
-  createEventHandler: function createEventHandler(mapFn, init) {
-    var handler = _createEventHandler(mapFn, init);
-    this._eventHandlers.push(handler);
+  function createEventHandler(mapFn, init) {
+    var handler = createEventHandler_(mapFn, init);
+    eventHandlers.push(handler);
     return handler;
   }
-};
+
+  this.vNode = fn.call(null, { props: props, children: children, createEventHandler: createEventHandler });
+  this.eventHandlers = eventHandlers;
+}
 
 YolkCompositeFunctionWrapper.create = function (fn, props$, children$) {
   var instance = new YolkCompositeFunctionWrapper(fn, props$, children$);
 
-  if (!isComponent(instance.getVirtualNode())) {
+  if (!isComponent(instance.vNode)) {
     throw new Error("Function did not return a valid component. See \"" + fn.name + "\".");
   }
 
   return instance;
 };
 
+YolkCompositeFunctionWrapper.destroy = function (instance) {
+  var length = instance.eventHandlers.length;
+  var i = -1;
+
+  while (++i < length) {
+    instance.eventHandlers[i].dispose();
+  }
+
+  instance.vNode.destroy();
+};
+
 module.exports = YolkCompositeFunctionWrapper;
 
-},{"./addProperties":69,"./createEventHandler":72,"./isComponent":77}],67:[function(require,module,exports){
+},{"./createEventHandler":72,"./isComponent":77}],67:[function(require,module,exports){
 "use strict";
 
-var create = require("yolk-virtual-dom/create-element");
 var wrapObject = require("./wrapObject");
 var addProperties = require("./addProperties");
 var YolkBaseComponent = require("./YolkBaseComponent");
@@ -3764,7 +3755,6 @@ YolkCustomComponent.prototype = {
   onMount: function onMount() {},
   onUpdate: function onUpdate() {},
   onUnmount: function onUnmount() {},
-
   _initialize: function _initialize(props, children) {
     this._props = props;
     this._props$ = null;
@@ -3780,15 +3770,11 @@ YolkCustomComponent.prototype = {
         throw new Error(this.constructor.name + " may not have more than one child");
     }
   },
-
   init: function init() {
-    var node = create(this._child);
-
     this._props$ = new CompositePropSubject(this._props);
 
-    return node;
+    return this._child;
   },
-
   postinit: function postinit(node) {
     var _this = this;
 
@@ -3805,17 +3791,14 @@ YolkCustomComponent.prototype = {
       updateDisposable.dispose();
     };
   },
-
   update: function update(previous) {
     this._onDestroy = previous._onDestroy;
     this._props$ = previous._props$;
     this._props$.onNext(this._props);
   },
-
   predestroy: function predestroy(node) {
     this.onUnmount(node);
   },
-
   destroy: function destroy() {
     this._onDestroy && this._onDestroy();
   }
@@ -3841,7 +3824,7 @@ YolkCustomComponent.extend = function extend(obj) {
 
 module.exports = YolkCustomComponent;
 
-},{"./CompositePropSubject":56,"./YolkBaseComponent":63,"./addProperties":69,"./wrapObject":91,"yolk-virtual-dom/create-element":31}],68:[function(require,module,exports){
+},{"./CompositePropSubject":56,"./YolkBaseComponent":63,"./addProperties":69,"./wrapObject":91}],68:[function(require,module,exports){
 "use strict";
 
 var create = require("yolk-virtual-dom/create-element");
@@ -3861,9 +3844,8 @@ YolkRootComponent.prototype = {
   type: "Widget",
 
   init: function init() {
-    return create(this._child);
+    return this._child;
   },
-
   update: function update(previous, node) {
     if (this._child.key !== previous._child.key) {
       return this.init();
@@ -3896,9 +3878,9 @@ YolkRootComponent.render = function render(instance, node) {
 module.exports = YolkRootComponent;
 
 },{"./delegator":73,"yolk-virtual-dom/create-element":31,"yolk-virtual-dom/diff":32,"yolk-virtual-dom/initialize-widgets":34,"yolk-virtual-dom/patch":35}],69:[function(require,module,exports){
-/* eslint-disable guard-for-in */
-
 "use strict";
+
+/* eslint-disable guard-for-in */
 
 module.exports = function addProperties(base) {
   for (var _len = arguments.length, objs = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
@@ -4129,15 +4111,15 @@ var CustomEvent = require("./CustomEvent");
 
 function emitMount(node, fn) {
   if (isFunction(fn) && node.parentNode) {
-    var _event = new CustomEvent("mount");
-    node.dispatchEvent(_event);
+    var event = new CustomEvent("mount");
+    node.dispatchEvent(event);
   }
 }
 
 function emitUnmount(node, fn) {
   if (isFunction(fn)) {
-    var _event2 = new CustomEvent("unmount");
-    node.dispatchEvent(_event2);
+    var event = new CustomEvent("unmount");
+    node.dispatchEvent(event);
   }
 }
 
@@ -4162,14 +4144,14 @@ module.exports = function parseDOMNodeAttributes(attributes) {
 
   while (++i < length) {
     var attr = attributes[i];
-    var _name = camelCase(attr.name);
+    var name = camelCase(attr.name);
     var value = attr.value;
 
     if (!ALL_CHARS_ARE_DIGITS_REGEX.test(value) && !isSingleton(value) && DOES_NOT_LEAD_WITH_ENCLOSING_CHAR_REGEX.test(value)) {
       value = "\"" + value + "\"";
     }
 
-    attrs[_name] = JSON.parse(value);
+    attrs[name] = JSON.parse(value);
   }
 
   return attrs;
@@ -4291,10 +4273,10 @@ module.exports = function transformProperty(props, key, value) {
 
   if (descriptor.isStar) {
     var keys = Object.keys(value);
-    var _length = keys.length;
+    var length = keys.length;
     var i = -1;
 
-    while (++i < _length) {
+    while (++i < length) {
       var __key = keys[i];
       var __value = value[__key];
       transformProperty(props, key + "-" + kababCase(__key), __value, STAR_DESCRIPTOR);
@@ -4388,70 +4370,62 @@ module.exports = function transformStyle(props, style) {
 (function (global){
 "use strict";
 
+function _typeof(obj) { return obj && typeof Symbol !== "undefined" && obj.constructor === Symbol ? "symbol" : typeof obj; }
+
 var Rx = (typeof window !== "undefined" ? window['Rx'] : typeof global !== "undefined" ? global['Rx'] : null);
 var isPlainObject = require("lodash.isplainobject");
 var isObservable = require("./isObservable");
 var isEmpty = require("./isEmpty");
 var hasToJS = require("./hasToJS");
 
-module.exports = function wrapObject(_x2) {
-  var _arguments = arguments;
-  var _again = true;
+module.exports = function wrapObject(obj) {
+  var opts = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
 
-  _function: while (_again) {
-    var obj = _x2;
-    _again = false;
-    var opts = _arguments.length <= 1 || _arguments[1] === undefined ? {} : _arguments[1];
-
-    if (isObservable(obj)) {
-      return obj.flatMapLatest(function (o) {
-        return wrapObject(o, opts);
-      });
-    } else if (hasToJS(obj)) {
-      if (opts.wrapToJS) {
-        // only call toJS if option is set
-        _arguments = [_x2 = obj.toJS(), opts];
-        _again = true;
-        opts = undefined;
-        continue _function;
-      }
-    } else if (isPlainObject(obj) && !isEmpty(obj)) {
-      var _ret = (function () {
-        var keys = Object.keys(obj);
-        var length = keys.length;
-        var values = Array(length);
-        var index = -1;
-
-        while (++index < length) {
-          var key = keys[index];
-          values[index] = wrapObject(obj[key], opts);
-        }
-
-        return {
-          v: Rx.Observable.combineLatest(values, function combineLatest() {
-            var newObj = {};
-            index = -1;
-
-            while (++index < length) {
-              var key = keys[index];
-              newObj[key] = arguments[index];
-            }
-
-            return newObj;
-          })
-        };
-      })();
-
-      if (typeof _ret === "object") return _ret.v;
-    } else if (Array.isArray(obj) && obj.length) {
-      var _obj = obj.map(function (i) {
-        return wrapObject(i, opts);
-      });
-      return Rx.Observable.combineLatest(_obj);
+  if (isObservable(obj)) {
+    return obj.flatMapLatest(function (o) {
+      return wrapObject(o, opts);
+    });
+  } else if (hasToJS(obj)) {
+    if (opts.wrapToJS) {
+      // only call toJS if option is set
+      return wrapObject(obj.toJS(), opts);
     }
+  } else if (isPlainObject(obj) && !isEmpty(obj)) {
+    var _ret = (function () {
+      var keys = Object.keys(obj);
+      var length = keys.length;
+      var values = Array(length);
+      var index = -1;
 
-    return Rx.Observable.just(obj);
+      while (++index < length) {
+        var key = keys[index];
+        values[index] = wrapObject(obj[key], opts);
+      }
+
+      return {
+        v: Rx.Observable.combineLatest(values, function combineLatest() {
+          var newObj = {};
+          index = -1;
+
+          while (++index < length) {
+            var key = keys[index];
+            newObj[key] = arguments[index];
+          }
+
+          return newObj;
+        })
+      };
+    })();
+
+    if ((typeof _ret === "undefined" ? "undefined" : _typeof(_ret)) === "object") return _ret.v;
+  } else if (Array.isArray(obj) && obj.length) {
+    var _obj = obj.map(function (i) {
+      return wrapObject(i, opts);
+    });
+    return Rx.Observable.combineLatest(_obj);
   }
+
+  return Rx.Observable.just(obj);
 };
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
