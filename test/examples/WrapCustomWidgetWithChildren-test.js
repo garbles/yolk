@@ -19,7 +19,7 @@ class CustomStub {
   }
 }
 
-function WrapCustomWidgetWithChildren (props) {
+function WrapCustomWidgetWithChildren ({props}) {
   return (
     <div>
       {

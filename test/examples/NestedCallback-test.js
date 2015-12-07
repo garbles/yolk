@@ -2,8 +2,8 @@ const test = require(`tape`)
 const Yolk = require(`yolk`) // eslint-disable-line no-unused-vars
 const renderInDoc = require(`../helpers/renderInDoc`)
 
-function NestedCallback () {
-  const handleInc = this.createEventHandler(() => 1, 0)
+function NestedCallback ({createEventHandler}) {
+  const handleInc = createEventHandler(() => 1, 0)
   const count = handleInc.scan((x, y) => x + y, 0)
 
   return (
@@ -16,7 +16,7 @@ function NestedCallback () {
   )
 }
 
-function NestedCallbackChild (props) {
+function NestedCallbackChild ({props}) {
   return <button id="nested-button" onClick={props.onClick} />
 }
 

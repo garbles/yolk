@@ -2,7 +2,7 @@ const test = require(`tape`)
 const Yolk = require(`yolk`) // eslint-disable-line no-unused-vars
 const renderInDoc = require(`../helpers/renderInDoc`)
 
-function HasChildren (props, children) {
+function HasChildren ({children}) {
   return (
     <div className="wrapper">
       {children}

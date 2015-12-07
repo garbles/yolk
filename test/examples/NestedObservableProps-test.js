@@ -3,14 +3,14 @@ const Yolk = require(`yolk`)
 const {Rx} = Yolk
 const renderInDoc = require(`../helpers/renderInDoc`)
 
-function NestedObservableProps (props) {
+function NestedObservableProps ({props}) {
   const {height, width} = props
   const style = {color: `blue`, height, width}
 
   return <div style={style} />
 }
 
-function DeeplyNestedObservableProps (props) {
+function DeeplyNestedObservableProps ({props}) {
   const content = props.a.map(a => a.b.c.d)
 
   return <div>{content}</div>

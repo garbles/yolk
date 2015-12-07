@@ -3,8 +3,8 @@ const Yolk = require(`yolk`)
 const {Rx} = Yolk
 const renderInDoc = require(`../helpers/renderInDoc`)
 
-function Stub (props, children) {
-  const handleClick = this.createEventHandler(() => 1, 0)
+function Stub ({children, createEventHandler}) {
+  const handleClick = createEventHandler(() => 1, 0)
   const count = handleClick.scan((acc, next) => acc + next, 0)
 
   return <button className="stub" onClick={handleClick}>{children}{count}</button>

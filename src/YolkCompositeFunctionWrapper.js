@@ -1,46 +1,38 @@
-const createEventHandler = require(`./createEventHandler`)
+const createEventHandler_ = require(`./createEventHandler`)
 const isComponent = require(`./isComponent`)
-const addProperties = require(`./addProperties`)
 
-const publicInterface = {
-  getVirtualNode () {
-    return this._result
-  },
+function YolkCompositeFunctionWrapper (fn, props, children) {
+  const eventHandlers = []
 
-  destroy () {
-    const length = this._eventHandlers.length
-    let i = -1
-
-    while (++i < length) {
-      this._eventHandlers[i].dispose()
-    }
-
-    this._result.destroy()
-  },
-}
-
-function YolkCompositeFunctionWrapper (fn, props$, children$) {
-  this._eventHandlers = []
-  this._result = fn.call(this, props$, children$)
-  addProperties(this, publicInterface)
-}
-
-YolkCompositeFunctionWrapper.prototype = {
-  createEventHandler (mapFn, init) {
-    const handler = createEventHandler(mapFn, init)
-    this._eventHandlers.push(handler)
+  function createEventHandler (mapFn, init) {
+    const handler = createEventHandler_(mapFn, init)
+    eventHandlers.push(handler)
     return handler
-  },
+  }
+
+  this.vNode = fn.call(null, {props, children, createEventHandler})
+  this.eventHandlers = eventHandlers
 }
 
 YolkCompositeFunctionWrapper.create = (fn, props$, children$) => {
   const instance = new YolkCompositeFunctionWrapper(fn, props$, children$)
 
-  if (!isComponent(instance.getVirtualNode())) {
+  if (!isComponent(instance.vNode)) {
     throw new Error(`Function did not return a valid component. See "${fn.name}".`)
   }
 
   return instance
+}
+
+YolkCompositeFunctionWrapper.destroy = (instance) => {
+  const length = instance.eventHandlers.length
+  let i = -1
+
+  while (++i < length) {
+    instance.eventHandlers[i].dispose()
+  }
+
+  instance.vNode.destroy()
 }
 
 module.exports = YolkCompositeFunctionWrapper

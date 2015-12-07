@@ -3,7 +3,7 @@ const Yolk = require(`yolk`)
 const {Rx} = Yolk
 const renderInDoc = require(`../helpers/renderInDoc`)
 
-function VaryingBaseChildrenFromProps (props) {
+function VaryingBaseChildrenFromProps ({props}) {
   const numbers = props.numbers.map(nums => {
     return nums.map(num => <li>{num}</li>)
   })
@@ -15,7 +15,7 @@ function VaryingBaseChildrenFromProps (props) {
   )
 }
 
-function VaryingWidgetChildrenFromProps (props) {
+function VaryingWidgetChildrenFromProps ({props}) {
   const numbers = props.numbers.map(nums => {
     return nums.map(num => <Stub>{num}</Stub>)
   })
@@ -23,8 +23,8 @@ function VaryingWidgetChildrenFromProps (props) {
   return <div>{numbers}</div>
 }
 
-function Stub (props, children) {
-  const handleClick = this.createEventHandler(() => 1, 0)
+function Stub ({children, createEventHandler}) {
+  const handleClick = createEventHandler(() => 1, 0)
   const count = handleClick.scan((acc, next) => acc + next, 0)
 
   return <button id="stub" onClick={handleClick}>{children}{count}</button>

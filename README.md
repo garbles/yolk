@@ -6,8 +6,6 @@
 
 A library for building asynchronous user interfaces.
 
-
-
 * __Familiar__: Yolk is a small library built on top of [Virtual DOM](https://github.com/Matt-Esch/virtual-dom) and [RxJS](https://github.com/Reactive-Extensions/RxJS). It exposes a very limited API so that you don't have to spend weeks getting up to speed. Yolk components are just plain functions that return JSX or hyperscript.
 
 * __Everything is an observable__: Yolk components consume RxJS observable streams as if they were plain values. From a websocket connection to a generator function to an event handler. If it can be represented as an observable, then it can be rendered directly into your markup.
@@ -23,19 +21,19 @@ The following example renders a component with buttons to increment and decremen
 ```js
 import Yolk from 'yolk'
 
-function Counter (props, children) {
+function Counter ({props, children, createEventHandler}) {
 
   // map all plus button click events to 1
-  const handlePlus = this.createEventHandler()
+  const handlePlus = createEventHandler()
   const plusOne$ = handlePlus.map(() => 1)
 
   // map all minus button click events to -1
-  const handleMinus = this.createEventHandler()
+  const handleMinus = createEventHandler()
   const minusOne$ = handleMinus.map(() => -1)
 
   // merge both event streams together and keep a running count of the result
   const count$ = plusOne$.merge(minusOne$).scan((x, y) => x + y, 0).startWith(0)
-  
+
   // prop keys are always cast as observables
   const title$ = props.title.map(title => `Awesome ${title}`)
 
@@ -65,17 +63,55 @@ The Yolk API is intentionally very limited so that you don't have to spend weeks
 
 ### Instance API
 
-The API for a component instance is a _single method_.
+Yolk components inject a single object as an argument. The object has three keys: `props`, `children`, and `createEventHandler`.
 
-##### `this.createEventHandler(mapping: any, initialValue: any): Function`
+##### `props: Object<Observable>`
+
+An object who's keys are the props passed into the component. These props are wrapped in observables.
+Yolk supports infinite nesting of observable properties, so it doesn't matter whether you pass in a plain
+value or a Subject of Subjects, the result will be an observable of plain values. We do this intentionally
+so that components are less dependent on the scenario which they are consumed.
+
+```js
+function MyComponent({props}) {
+  return <h1>{props.title}</h1>
+}
+
+// both of the following will render the same result
+
+// render MyComponent with an observable as the title prop
+const title$ = new Rx.BehaviorSubject("Hello!")
+Yolk.render(<MyComponent title={title$} />, document.querySelector(`#container`))
+
+// render MyComponent with a plain value as the title prop
+Yolk.render(<MyComponent title="Hello!" />, document.querySelector(`#container`))
+```
+
+##### `children: Observable`
+
+An observable of the children passed to a component.
+
+```js
+function MyComponent({children}) {
+  return <p>{children}</p>
+}
+
+Yolk.render(
+  <MyComponent><strong>HELLO!</strong><span>world...</span></MyComponent>,
+  document.querySelector(`#container`)
+)
+// renders <p><strong>HELLO!</strong><span>world...</span></p>
+```
+
+##### `createEventHandler(mapping: any, initialValue: any): Function`
 
 Creates an exotic function that can also be used as an observable. If the function is called, the input value is pushed to the observable as it's latest value.
 In other words, when this function is used as an event handler, the result is an observable stream of events from that handler. For example,
 
 ```js
-function MyComponent () {
+function MyComponent ({createEventHandler}) {
   // create an event handler
-  const handleClick = this.createEventHandler()
+  const handleClick = createEventHandler()
 
   // use event handler to count the number of clicks
   const numberOfClicks =
@@ -104,7 +140,7 @@ Renders an instance of a YolkComponent inside of an HTMLElement.
 Yolk.render(<span>Hello World!</span>, document.getElementById('container'))
 ```
 
-##### `h(component: string|Function , [props: object], [...children: Array]): Component`
+##### `h(component: string|Function , [props: Object<any>], [...children: Array<any>]): Component`
 
 If you prefer hyperscript over JSX, Yolk exposes a function `h` which can be used to write your components with hyperscript.
 `h` also parses tags for brevity. For example, `p.my-class` will append a `my-class` class to a `p` tag, `#some-id` will
@@ -113,8 +149,8 @@ append a `some-id` id to a `div` tag.
 ```js
 import {h} from 'yolk'
 
-function MyComponent () {
-  const handleClick = this.createEventHandler()
+function MyComponent ({createEventHandler}) {
+  const handleClick = createEventHandler()
 
   const numberOfClicks =
     handleClick.scan((acc, ev) => acc + 1, 0).startWith(0)
@@ -132,7 +168,7 @@ Registers a [custom HTML element](http://www.html5rocks.com/en/tutorials/webcomp
 This is especially useful if you're not building a single page application. For example,
 
 ```js
-function BigRedText (props) {
+function BigRedText ({props}) {
   return <h1 style={{color: 'red'}}>{props.content}</h1>
 }
 
@@ -177,8 +213,8 @@ class MyjQueryWrapper extends Yolk.CustomComponent {
 And then in your component markup,
 
 ```js
-function MyComponent () {
-  const handleClick = this.createEventHandler()
+function MyComponent ({createEventHandler}) {
+  const handleClick = createEventHandler()
 
   return (
     <div>
@@ -192,8 +228,8 @@ CustomComponent expects a single child element to use as the node; otherwise, it
 For example, you can specify the child like so,
 
 ```js
-function MyComponent () {
-  const handleClick = this.createEventHandler()
+function MyComponent ({createEventHandler}) {
+  const handleClick = createEventHandler()
 
   return (
     <div>
