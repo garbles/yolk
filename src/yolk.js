@@ -8,7 +8,4 @@ import { default as CustomComponent } from './YolkCustomComponent'
 import { default as wrapObject } from './wrapObject'
 import { render } from './YolkRootComponent'
 
-function Yolk () {}
-Yolk.prototype = {Rx, CustomComponent, DOM, h, registerElement, render, wrapObject}
-
-export default new Yolk
+export default {Rx, CustomComponent, DOM, h, registerElement, render, wrapObject}
