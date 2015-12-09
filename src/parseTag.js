@@ -1,7 +1,7 @@
-import { default as _parseTag } from 'parse-tag'
+import { default as parseTag_ } from 'parse-tag'
 
 export default function parseTag (_tag) {
   const classIds = {}
-  const tag = _parseTag(_tag, classIds).toLowerCase()
+  const tag = parseTag_(_tag, classIds).toLowerCase()
   return {tag, classIds}
 }
