@@ -52,7 +52,7 @@ function Counter ({props, children, createEventHandler}) {
   )
 }
 
-Yolk.render(<Counter />, document.getElementById('container'))
+Yolk.render(<Counter title="Example" />, document.getElementById('container'))
 ```
 
 Additionally, see the Yolk implementation of [TodoMVC](https://github.com/yolkjs/yolk-todomvc) or [The Flux Challenge](https://github.com/staltz/flux-challenge/tree/master/submissions/garbles).
