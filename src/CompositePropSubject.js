@@ -1,5 +1,4 @@
-import { default as Rx } from 'rx'
-import { wrapObject } from './yolk'
+import { wrapObject, Rx } from './yolk'
 
 export default function CompositePropSubject (obj) {
   this._keys = Object.keys(obj)

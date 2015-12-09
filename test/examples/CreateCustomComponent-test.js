@@ -1,5 +1,5 @@
 import { default as test } from 'tape'
-import { h, CustomComponent, render, Rx } from 'yolk'
+import { h, CustomComponent, render, Rx } from 'yolk' // eslint-disable-line no-unused-vars
 import { default as renderInDoc } from '../helpers/renderInDoc'
 
 test(`CreateCustomComponent: a component that has livecycle hooks`, t => {

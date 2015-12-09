@@ -1,5 +1,5 @@
 import { default as test } from 'tape'
-import { h, Rx } from 'yolk'
+import { h, Rx } from 'yolk' // eslint-disable-line no-unused-vars
 import { default as renderInDoc } from '../helpers/renderInDoc'
 
 const booleanTestPairs = [true, `true`, false, `false`, `${Math.random()}`, undefined, `true`, undefined, `false`, undefined]

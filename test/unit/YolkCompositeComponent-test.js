@@ -1,5 +1,5 @@
 import { default as test } from 'tape'
-import { default as Rx } from 'rx'
+import { Rx } from 'yolk'
 import { default as YolkCompositeComponent } from 'YolkCompositeComponent'
 import { default as YolkBaseComponent } from 'YolkBaseComponent'
 

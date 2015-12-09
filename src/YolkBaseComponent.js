@@ -1,4 +1,3 @@
-import { default as Rx } from 'rx'
 import { default as transformProperties } from './transformProperties'
 import { default as isFunction } from './isFunction'
 import { default as flatten } from './flatten'
@@ -6,7 +5,7 @@ import { emitMount, emitUnmount } from './mountable'
 import { default as parseTag } from './parseTag'
 import { default as CompositePropSubject } from './CompositePropSubject'
 import { default as YolkBaseInnerComponent } from './YolkBaseInnerComponent'
-import { wrapObject } from './yolk'
+import { Rx, wrapObject } from './yolk'
 
 const TAG_IS_ONLY_LETTERS = /^[a-zA-Z]*$/
 

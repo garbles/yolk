@@ -1,8 +1,8 @@
-import { default as Rx } from 'rx'
 import { default as isPlainObject } from 'lodash.isplainobject'
 import { default as isObservable } from './isObservable'
 import { default as isEmpty } from './isEmpty'
 import { default as hasToJS } from './hasToJS'
+import { Rx } from './yolk'
 
 export default function wrapObject (obj, opts = {}) {
   if (isObservable(obj)) {

@@ -1,6 +1,6 @@
-import { default as Rx } from 'rx'
 import { default as YolkCompositeFunctionWrapper } from './YolkCompositeFunctionWrapper'
 import { default as CompositePropSubject } from './CompositePropSubject'
+import { Rx } from './yolk'
 
 function YolkCompositeComponent (fn, props, children) {
   const _props = {...props}

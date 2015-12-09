@@ -2,7 +2,7 @@ import { default as test } from 'tape'
 import { default as renderInDoc } from '../helpers/renderInDoc'
 
 const Yolk = require(`yolk`)
-const {h} = Yolk
+const {h} = Yolk // eslint-disable-line no-unused-vars
 
 test(`OverridingWrapObject: giving wrapObject special behavior`, t => {
   t.plan(5)

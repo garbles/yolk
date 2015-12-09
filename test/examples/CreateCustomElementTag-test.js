@@ -1,5 +1,5 @@
 import { default as test } from 'tape'
-import { h, registerElement } from 'yolk'
+import { h, registerElement } from 'yolk' // eslint-disable-line no-unused-vars
 import { default as YolkCompositeComponent } from 'YolkCompositeComponent'
 
 function CreateCustom () {

@@ -1,4 +1,4 @@
-import { default as Rx } from 'rx'
+import { Rx } from './yolk'
 import { default as isDefined } from './isDefined'
 import { default as isFunction } from './isFunction'
 import { default as addProperties } from './addProperties'

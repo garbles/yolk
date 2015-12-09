@@ -1,5 +1,5 @@
 import { default as test } from 'tape'
-import { default as Rx } from 'rx'
+import { Rx } from 'yolk'
 import { default as YolkBaseComponent } from 'YolkBaseComponent'
 import { default as renderInDoc } from '../helpers/renderInDoc'
 

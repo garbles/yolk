@@ -1,7 +1,7 @@
 /* eslint-disable no-use-before-define */
 
 import { default as test } from 'tape'
-import { h, render, Rx } from 'yolk'
+import { h, render } from 'yolk' // eslint-disable-line no-unused-vars
 import { default as renderInDoc } from '../helpers/renderInDoc'
 
 test(`LifecycleHooks: will run code after the component mounts`, t => {

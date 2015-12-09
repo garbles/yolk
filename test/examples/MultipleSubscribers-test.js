@@ -1,5 +1,5 @@
 import { default as test } from 'tape'
-import { h, render } from 'yolk'
+import { h, render } from 'yolk' // eslint-disable-line no-unused-vars
 import { default as evStore } from 'ev-store'
 import { default as renderInDoc } from '../helpers/renderInDoc'
 
