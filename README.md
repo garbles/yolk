@@ -19,7 +19,7 @@ Also see the [Yolk organzation](https://github.com/yolkjs) for additional reposi
 The following example renders a component with buttons to increment and decrement a counter.
 
 ```js
-import Yolk from 'yolk'
+import { h, render } from 'yolk'
 
 function Counter ({props, children, createEventHandler}) {
 
@@ -52,7 +52,7 @@ function Counter ({props, children, createEventHandler}) {
   )
 }
 
-Yolk.render(<Counter title="Example" />, document.getElementById('container'))
+render(<Counter title="Example" />, document.getElementById('container'))
 ```
 
 Additionally, see the Yolk implementation of [TodoMVC](https://github.com/yolkjs/yolk-todomvc) or [The Flux Challenge](https://github.com/staltz/flux-challenge/tree/master/submissions/garbles).
@@ -73,6 +73,8 @@ value or a Subject of Subjects, the result will be an observable of plain values
 so that components are less dependent on the scenario which they are consumed.
 
 ```js
+import { h, render } from 'yolk'
+
 function MyComponent({props}) {
   return <h1>{props.title}</h1>
 }
@@ -81,10 +83,10 @@ function MyComponent({props}) {
 
 // render MyComponent with an observable as the title prop
 const title$ = new Rx.BehaviorSubject("Hello!")
-Yolk.render(<MyComponent title={title$} />, document.querySelector(`#container`))
+render(<MyComponent title={title$} />, document.querySelector(`#container`))
 
 // render MyComponent with a plain value as the title prop
-Yolk.render(<MyComponent title="Hello!" />, document.querySelector(`#container`))
+render(<MyComponent title="Hello!" />, document.querySelector(`#container`))
 ```
 
 ##### `children: Observable`
@@ -92,11 +94,13 @@ Yolk.render(<MyComponent title="Hello!" />, document.querySelector(`#container`)
 An observable of the children passed to a component.
 
 ```js
+import { h, render } from 'yolk'
+
 function MyComponent({children}) {
   return <p>{children}</p>
 }
 
-Yolk.render(
+render(
   <MyComponent><strong>HELLO!</strong><span>world...</span></MyComponent>,
   document.querySelector(`#container`)
 )
@@ -109,6 +113,8 @@ Creates an exotic function that can also be used as an observable. If the functi
 In other words, when this function is used as an event handler, the result is an observable stream of events from that handler. For example,
 
 ```js
+import { h, render } from 'yolk'
+
 function MyComponent ({createEventHandler}) {
   // create an event handler
   const handleClick = createEventHandler()
@@ -137,7 +143,8 @@ When custom components are destroyed, we want to make sure that all of our event
 Renders an instance of a YolkComponent inside of an HTMLElement.
 
 ```js
-Yolk.render(<span>Hello World!</span>, document.getElementById('container'))
+import { render } from 'yolk'
+render(<span>Hello World!</span>, document.getElementById('container'))
 ```
 
 ##### `h(component: string|Function , [props: Object<any>], [...children: Array<any>]): Component`
@@ -147,7 +154,7 @@ If you prefer hyperscript over JSX, Yolk exposes a function `h` which can be use
 append a `some-id` id to a `div` tag.
 
 ```js
-import {h} from 'yolk'
+import { h } from 'yolk'
 
 function MyComponent ({createEventHandler}) {
   const handleClick = createEventHandler()
@@ -168,11 +175,12 @@ Registers a [custom HTML element](http://www.html5rocks.com/en/tutorials/webcomp
 This is especially useful if you're not building a single page application. For example,
 
 ```js
+import { h, registerElement } from 'yolk'
 function BigRedText ({props}) {
   return <h1 style={{color: 'red'}}>{props.content}</h1>
 }
 
-Yolk.registerElement(`big-red-text`, BigRedText)
+registerElement(`big-red-text`, BigRedText)
 ```
 
 will allow you to use `<big-red-text content="Hello!"></big-red-text>` in your `.html` files and will render out to
@@ -195,7 +203,8 @@ Each component expects three (optional) methods,
 These methods pass in the latest values of your props so that you don't need to deal with subscribing to and disposing of Observables. For example,
 
 ```js
-class MyjQueryWrapper extends Yolk.CustomComponent {
+import { CustomComponent } from 'yolk'
+class MyjQueryWrapper extends CustomComponent {
   onMount (props, node) {
     this._instance = $(node).myjQueryThing(props)
   }
@@ -213,6 +222,7 @@ class MyjQueryWrapper extends Yolk.CustomComponent {
 And then in your component markup,
 
 ```js
+import { h } from 'yolk'
 function MyComponent ({createEventHandler}) {
   const handleClick = createEventHandler()
 
@@ -228,6 +238,8 @@ CustomComponent expects a single child element to use as the node; otherwise, it
 For example, you can specify the child like so,
 
 ```js
+import { h } from 'yolk'
+
 function MyComponent ({createEventHandler}) {
   const handleClick = createEventHandler()
 
@@ -260,7 +272,7 @@ npm i --save-dev babel-cli babel-plugin-transform-react-jsx
 ```json
 {
   "plugins": [
-    ["transform-react-jsx", {"pragma": "Yolk.h"}]
+    ["transform-react-jsx", {"pragma": "h"}]
   ]
 }
 ```
@@ -274,7 +286,7 @@ Then anywhere you use JSX it will be transformed into plain JavaScript. For exam
 Turns into,
 
 ```js
-Yolk.h(
+h(
   "p",
   null,
   "My JSX"
@@ -289,7 +301,7 @@ If you want to additionally transpile ES2015 code into ES5 code you should insta
 {
   "presets": ["es2015"],
   "plugins": [
-    ["transform-react-jsx", {"pragma": "Yolk.h"}]
+    ["transform-react-jsx", {"pragma": "h"}]
   ]
 }
 ```
