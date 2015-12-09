@@ -1,6 +1,6 @@
-const test = require(`tape`)
-const Yolk = require(`yolk`)
-const renderInDoc = require(`../helpers/renderInDoc`)
+import { default as test } from 'tape'
+import { default as Yolk } from 'yolk'
+import { default as renderInDoc } from '../helpers/renderInDoc'
 
 test(`DisablingButton: you can disable a button`, t => {
   t.plan(2)

@@ -1,8 +1,8 @@
 /* eslint-disable no-use-before-define */
 
-const test = require(`tape`)
-const Yolk = require(`yolk`)
-const renderInDoc = require(`../helpers/renderInDoc`)
+import { default as test } from 'tape'
+import { default as Yolk } from 'yolk'
+import { default as renderInDoc } from '../helpers/renderInDoc'
 
 test(`LifecycleHooks: will run code after the component mounts`, t => {
   t.plan(1)

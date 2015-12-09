@@ -1,4 +1,4 @@
-const camelCase = require(`lodash.camelcase`)
+import { default as camelCase } from 'lodash.camelcase'
 
 const ALL_CHARS_ARE_DIGITS_REGEX = /^\d*$/
 const DOES_NOT_LEAD_WITH_ENCLOSING_CHAR_REGEX = /^[^\{\[\"\']/
@@ -7,7 +7,7 @@ function isSingleton (value) {
   return (value === `true` || value === `false` || value === `null`)
 }
 
-module.exports = function parseDOMNodeAttributes (attributes) {
+export default function parseDOMNodeAttributes (attributes) {
   const attrs = {}
   const length = attributes.length
   let i = -1

@@ -1,7 +1,7 @@
-const test = require(`tape`)
-const transformProperties = require(`transformProperties`)
-const EventHook = require(`EventHook`)
-const SoftSetHook = require(`yolk-virtual-dom/virtual-hyperscript/hooks/soft-set-hook`)
+import { default as test } from 'tape'
+import { default as transformProperties } from 'transformProperties'
+import { default as EventHook } from 'EventHook'
+import { default as SoftSetHook } from 'yolk-virtual-dom/virtual-hyperscript/hooks/soft-set-hook'
 
 test(`transformProperties: transforms props so that they will work correctly with virtual dom`, t => {
   t.plan(1)

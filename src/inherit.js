@@ -1,4 +1,4 @@
-module.exports = function inherit (child, parent) {
+export default function inherit (child, parent) {
   function __ () { this.constructor = child }
   __.prototype = parent.prototype
   child.prototype = new __()

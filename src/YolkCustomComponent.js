@@ -1,7 +1,7 @@
-const wrapObject = require(`./wrapObject`)
-const addProperties = require(`./addProperties`)
-const YolkBaseComponent = require(`./YolkBaseComponent`)
-const CompositePropSubject = require(`./CompositePropSubject`)
+import { default as Yolk } from './yolk'
+import { default as addProperties } from './addProperties'
+import { default as YolkBaseComponent } from './YolkBaseComponent'
+import { default as CompositePropSubject } from './CompositePropSubject'
 
 function YolkCustomComponent () {}
 
@@ -34,7 +34,7 @@ YolkCustomComponent.prototype = {
   },
 
   postinit (node) {
-    const props$ = wrapObject(this._props$.asSubjectObject(), {base: false})
+    const props$ = Yolk.wrapObject(this._props$.asSubjectObject(), {base: false})
     const mountDisposable = props$.take(1).subscribe(props => this.onMount(props, node))
     const updateDisposable = props$.skip(1).subscribe(props => this.onUpdate(props, node))
 
@@ -77,4 +77,4 @@ YolkCustomComponent.extend = function extend (obj) {
   return Component
 }
 
-module.exports = YolkCustomComponent
+export default YolkCustomComponent

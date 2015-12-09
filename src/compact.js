@@ -1,6 +1,6 @@
-const isDefined = require(`./isDefined`)
+import { default as isDefined } from './isDefined'
 
-module.exports = function compact (arr) {
+export default function compact (arr) {
   const length = arr.length
   const newArr = []
   let i = -1

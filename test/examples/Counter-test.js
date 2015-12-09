@@ -1,7 +1,8 @@
-const test = require(`tape`)
-const Yolk = require(`yolk`) // eslint-disable-line no-unused-vars
+import { default as test } from 'tape'
+import { default as Yolk } from 'yolk' // eslint-disable-line no-unused-var
+import { default as renderInDoc } from '../helpers/renderInDoc'
+
 const {h} = Yolk
-const renderInDoc = require(`../helpers/renderInDoc`)
 
 function CounterWithJSX ({createEventHandler}) {
   const handlePlus = createEventHandler(1)

@@ -1,4 +1,4 @@
-const Yolk = require(`yolk`)
+import { default as Yolk } from 'yolk'
 
 module.exports = function renderInDoc (instance) {
   const node = document.createElement(`div`)

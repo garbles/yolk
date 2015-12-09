@@ -1,6 +1,6 @@
-const test = require(`tape`)
-const Yolk = require(`yolk`)
-const renderInDoc = require(`../helpers/renderInDoc`)
+import { default as test } from 'tape'
+import { default as Yolk } from 'yolk'
+import { default as renderInDoc } from '../helpers/renderInDoc'
 
 function Counter ({createEventHandler, props}) {
   const handlePlus = createEventHandler(() => 1, 0)

@@ -1,8 +1,8 @@
-const YolkCompositeComponent = require(`./YolkCompositeComponent`)
-const YolkBaseComponent = require(`./YolkBaseComponent`)
-const isString = require(`./isString`)
+import { default as YolkCompositeComponent } from './YolkCompositeComponent'
+import { default as YolkBaseComponent } from './YolkBaseComponent'
+import { default as isString } from './isString'
 
-module.exports = function createElement (tag, _props, ...children) {
+export default function createElement (tag, _props, ...children) {
   const props = {..._props}
 
   if (isString(tag)) {

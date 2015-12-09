@@ -1,6 +1,6 @@
-const test = require(`tape`)
-const Yolk = require(`yolk`) // eslint-disable-line no-unused-vars
-const renderInDoc = require(`../helpers/renderInDoc`)
+import { default as test } from 'tape'
+import { default as Yolk } from 'yolk' // eslint-disable-line no-unused-vars
+import { default as renderInDoc } from '../helpers/renderInDoc'
 
 function HasChildren ({children}) {
   return (

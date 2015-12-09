@@ -1,7 +1,7 @@
-const domDelegator = require(`dom-delegator`)
-const EventsList = require(`./EventsList`)
+import { default as domDelegator } from 'dom-delegator'
+import { default as EventsList } from './EventsList'
 
-module.exports = function delegator (node) {
+export default function delegator (node) {
   const instance = domDelegator(node)
 
   const length = EventsList.length

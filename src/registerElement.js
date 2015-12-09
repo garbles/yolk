@@ -1,10 +1,10 @@
-const YolkRootComponent = require(`./YolkRootComponent`)
-const createElement = require(`./createElement`)
-const parseDOMNodeAttributes = require(`./parseDOMNodeAttributes`)
+import { render } from './YolkRootComponent'
+import { default as createElement } from './createElement'
+import { default as parseDOMNodeAttributes } from './parseDOMNodeAttributes'
 
 const INSTANCE_KEY = `__YOLK_INSTANCE_KEY__`
 
-module.exports = function registerElement (name, Component) {
+export default function registerElement (name, Component) {
   const prototype = Object.create(HTMLElement.prototype)
 
   prototype.createdCallback = function createdCallback () {
@@ -15,7 +15,7 @@ module.exports = function registerElement (name, Component) {
   }
 
   prototype.attachedCallback = function attachedCallback () {
-    YolkRootComponent.render(this[INSTANCE_KEY], this)
+    render(this[INSTANCE_KEY], this)
   }
 
   prototype.detachedCallback = function detachedCallback () {

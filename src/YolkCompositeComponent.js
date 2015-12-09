@@ -1,6 +1,6 @@
-const Rx = require(`rx`)
-const YolkCompositeFunctionWrapper = require(`./YolkCompositeFunctionWrapper`)
-const CompositePropSubject = require(`./CompositePropSubject`)
+import { default as Rx } from 'rx'
+import { default as YolkCompositeFunctionWrapper } from './YolkCompositeFunctionWrapper'
+import { default as CompositePropSubject } from './CompositePropSubject'
 
 function YolkCompositeComponent (fn, props, children) {
   const _props = {...props}
@@ -62,4 +62,4 @@ YolkCompositeComponent.create = function createInstance (fn, props, children) {
   return new YolkCompositeComponent(fn, props, children)
 }
 
-module.exports = YolkCompositeComponent
+export default YolkCompositeComponent

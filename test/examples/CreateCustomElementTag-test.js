@@ -1,6 +1,6 @@
-const test = require(`tape`)
-const Yolk = require(`yolk`)
-const YolkCompositeComponent = require(`YolkCompositeComponent`)
+import { default as test } from 'tape'
+import { default as Yolk } from 'yolk'
+import { default as YolkCompositeComponent } from 'YolkCompositeComponent'
 
 function CreateCustom () {
   return <h1>hello world</h1>

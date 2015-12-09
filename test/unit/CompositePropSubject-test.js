@@ -1,6 +1,6 @@
-const test = require(`tape`)
-const Rx = require(`rx`)
-const CompositePropSubject = require(`CompositePropSubject`)
+import { default as test } from 'tape'
+import { default as Rx } from 'rx'
+import { default as CompositePropSubject } from 'CompositePropSubject'
 
 test(`CompositePropSubject: creates an object of BehaviorSubjects`, t => {
   t.plan(7)

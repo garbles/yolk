@@ -1,4 +1,4 @@
-module.exports = function flatten (arr) {
+export default function flatten (arr) {
   const length = arr.length
   let result = []
   let index = -1

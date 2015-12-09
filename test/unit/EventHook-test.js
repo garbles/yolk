@@ -1,6 +1,6 @@
-const test = require(`tape`)
-const evStore = require(`ev-store`)
-const EventHook = require(`EventHook`)
+import { default as test } from 'tape'
+import { default as evStore } from 'ev-store'
+import { default as EventHook } from 'EventHook'
 
 test(`EventHook: adds a listener to the event store`, t => {
   t.plan(2)

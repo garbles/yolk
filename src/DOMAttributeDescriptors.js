@@ -1,5 +1,5 @@
-const kababCase = require(`lodash.kebabcase`)
-const EventsList = require(`./EventsList`)
+import { default as kababCase } from 'lodash.kebabcase'
+import { default as EventsList } from './EventsList'
 
 const HAS_LOWER_CASE = 0x1
 const HAS_DASH_CASE = 0x2
@@ -190,4 +190,4 @@ while (++i < length) {
   }
 }
 
-module.exports = DOMAttributeDescriptors
+export default DOMAttributeDescriptors

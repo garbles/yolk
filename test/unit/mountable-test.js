@@ -1,5 +1,5 @@
-const test = require(`tape`)
-const mountable = require(`mountable`)
+import { default as test } from 'tape'
+import { emitMount, emitUnmount } from 'mountable'
 
 test(`mountable: mounting and unmounting an instance`, t => {
   t.plan(2)
@@ -13,8 +13,8 @@ test(`mountable: mounting and unmounting an instance`, t => {
 
   document.body.appendChild(node)
 
-  mountable.emitMount(node, handler)
-  mountable.emitUnmount(node, handler)
+  emitMount(node, handler)
+  emitUnmount(node, handler)
 
   setTimeout(() => {
     node.removeEventListener(`mount`, handler)

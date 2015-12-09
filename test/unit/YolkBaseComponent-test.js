@@ -1,7 +1,7 @@
-const test = require(`tape`)
-const Rx = require(`rx`)
-const YolkBaseComponent = require(`YolkBaseComponent`)
-const renderInDoc = require(`../helpers/renderInDoc`)
+import { default as test } from 'tape'
+import { default as Rx } from 'rx'
+import { default as YolkBaseComponent } from 'YolkBaseComponent'
+import { default as renderInDoc } from '../helpers/renderInDoc'
 
 test(`YolkBaseComponent: returns a base component`, t => {
   t.plan(6)

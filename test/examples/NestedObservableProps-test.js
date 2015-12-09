@@ -1,7 +1,8 @@
-const test = require(`tape`)
-const Yolk = require(`yolk`)
+import { default as test } from 'tape'
+import { default as Yolk } from 'yolk'
+import { default as renderInDoc } from '../helpers/renderInDoc'
+
 const {Rx} = Yolk
-const renderInDoc = require(`../helpers/renderInDoc`)
 
 function NestedObservableProps ({props}) {
   const {height, width} = props

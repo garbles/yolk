@@ -1,5 +1,5 @@
-const createEventHandler_ = require(`./createEventHandler`)
-const isComponent = require(`./isComponent`)
+import { default as createEventHandler_ } from './createEventHandler'
+import { default as isComponent } from './isComponent'
 
 function YolkCompositeFunctionWrapper (fn, props, children) {
   const eventHandlers = []
@@ -35,4 +35,4 @@ YolkCompositeFunctionWrapper.destroy = (instance) => {
   instance.vNode.destroy()
 }
 
-module.exports = YolkCompositeFunctionWrapper
+export default YolkCompositeFunctionWrapper

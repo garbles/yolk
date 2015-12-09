@@ -1,6 +1,7 @@
-const test = require(`tape`)
-const Yolk = require(`yolk`)
-const renderInDoc = require(`../helpers/renderInDoc`)
+import { default as test } from 'tape'
+import { default as Yolk } from 'yolk'
+import { default as renderInDoc } from '../helpers/renderInDoc'
+
 const {Rx} = Yolk
 
 test(`ChangingProps: when a changed element changes it's list of properties instead of just the values`, t => {

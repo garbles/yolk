@@ -1,7 +1,7 @@
-const test = require(`tape`)
-const Yolk = require(`yolk`)
-const evStore = require(`ev-store`)
-const renderInDoc = require(`../helpers/renderInDoc`)
+import { default as test } from 'tape'
+import { default as Yolk } from 'yolk'
+import { default as evStore } from 'ev-store'
+import { default as renderInDoc } from '../helpers/renderInDoc'
 
 function CounterWithMultipleSubscribers ({props, createEventHandler}) {
   const handlePlus = createEventHandler(() => 1, 0)

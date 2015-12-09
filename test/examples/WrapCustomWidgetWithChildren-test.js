@@ -1,8 +1,7 @@
-const test = require(`tape`)
-const Yolk = require(`yolk`) // eslint-disable-line no-unused-vars
-
-const {h} = require(`yolk-virtual-dom`)
-const renderInDoc = require(`../helpers/renderInDoc`)
+import { default as test } from 'tape'
+import { default as Yolk } from 'yolk' // eslint-disable-line no-unused-vars
+import { h } from 'yolk-virtual-dom'
+import { default as renderInDoc } from '../helpers/renderInDoc'
 
 class CustomStub {
   constructor (children) {

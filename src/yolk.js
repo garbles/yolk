@@ -1,14 +1,14 @@
-require(`document-register-element`)
+import 'document-register-element'
 
-const Rx = require(`rx`)
-const h = require(`./createElement`)
-const DOM = require(`./HTMLHelpers`)
-const registerElement = require(`./registerElement`)
-const CustomComponent = require(`./YolkCustomComponent`)
-const render = require(`./YolkRootComponent`).render
+import { default as Rx } from 'rx'
+import { default as h } from './createElement'
+import { default as DOM } from './HTMLHelpers'
+import { default as registerElement } from './registerElement'
+import { default as CustomComponent } from './YolkCustomComponent'
+import { default as wrapObject } from './wrapObject'
+import { render } from './YolkRootComponent'
 
 function Yolk () {}
-Yolk.prototype = {Rx, CustomComponent, DOM, h, registerElement, render}
-Object.freeze(Yolk)
+Yolk.prototype = {Rx, CustomComponent, DOM, h, registerElement, render, wrapObject}
 
-module.exports = new Yolk
+export default new Yolk

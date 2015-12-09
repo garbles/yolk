@@ -1,6 +1,6 @@
-const _parseTag = require(`parse-tag`)
+import { default as _parseTag } from 'parse-tag'
 
-module.exports = function parseTag (_tag) {
+export default function parseTag (_tag) {
   const classIds = {}
   const tag = _parseTag(_tag, classIds).toLowerCase()
   return {tag, classIds}

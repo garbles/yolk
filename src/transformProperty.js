@@ -1,8 +1,8 @@
-const kababCase = require(`lodash.kebabcase`)
-const SoftSetHook = require(`yolk-virtual-dom/virtual-hyperscript/hooks/soft-set-hook`)
-const AttributeHook = require(`yolk-virtual-dom/virtual-hyperscript/hooks/attribute-hook`)
-const EventHook = require(`./EventHook`)
-const compact = require(`./compact`)
+import { default as kababCase } from 'lodash.kebabcase'
+import { default as SoftSetHook } from 'yolk-virtual-dom/virtual-hyperscript/hooks/soft-set-hook'
+import { default as AttributeHook } from 'yolk-virtual-dom/virtual-hyperscript/hooks/attribute-hook'
+import { default as EventHook } from './EventHook'
+import { default as compact } from './compact'
 
 const NULL_DESCRIPTOR = {
   isAttribute: false,
@@ -18,7 +18,7 @@ const NULL_DESCRIPTOR = {
 
 const STAR_DESCRIPTOR = {...NULL_DESCRIPTOR, isAttribute: true, isStandard: true}
 
-module.exports = function transformProperty (props, key, value, descriptor = NULL_DESCRIPTOR) {
+export default function transformProperty (props, key, value, descriptor = NULL_DESCRIPTOR) {
   let _value = value
   let _key
 

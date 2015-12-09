@@ -1,5 +1,5 @@
-const test = require(`tape`)
-const parseTag = require(`parseTag`)
+import { default as test } from 'tape'
+import { default as parseTag } from 'parseTag'
 
 test(`parseTag: returns a new tag with it's classes and ids`, t => {
   t.plan(6)

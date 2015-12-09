@@ -1,7 +1,7 @@
-const Rx = require(`rx`)
-const test = require(`tape`)
-const Yolk = require(`yolk`)
-const renderInDoc = require(`../helpers/renderInDoc`)
+import { default as Rx } from 'rx'
+import { default as test } from 'tape'
+import { default as Yolk } from 'yolk'
+import { default as renderInDoc } from '../helpers/renderInDoc'
 
 test(`CreateCustomComponent: a component that has livecycle hooks`, t => {
   t.plan(3)

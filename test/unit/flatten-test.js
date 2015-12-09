@@ -1,5 +1,5 @@
-const test = require(`tape`)
-const flatten = require(`flatten`)
+import { default as test } from 'tape'
+import { default as flatten } from 'flatten'
 
 test(`flatten: makes nested arrays flat`,  t => {
   t.plan(4)
