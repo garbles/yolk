@@ -1,17 +1,18 @@
-import { default as YolkCompositeComponent } from './YolkCompositeComponent'
-import { default as YolkBaseComponent } from './YolkBaseComponent'
+import { create as createCompositeComponent } from './YolkCompositeComponent'
+import { create as createBaseComponent } from './YolkBaseComponent'
+import { create as createCustomComponent } from './YolkCustomComponent'
 import { default as isString } from './isString'
 
 export default function createElement (tag, _props, ...children) {
   const props = {..._props}
 
   if (isString(tag)) {
-    return YolkBaseComponent.create(tag, props, children)
+    return createBaseComponent(tag, props, children)
   }
 
   if (tag._isCustomComponent) {
-    return tag.create(props, children)
+    return createCustomComponent(tag, props, children)
   }
 
-  return YolkCompositeComponent.create(tag, props, children)
+  return createCompositeComponent(tag, props, children)
 }

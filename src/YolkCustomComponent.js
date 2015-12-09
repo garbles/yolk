@@ -61,13 +61,6 @@ YolkCustomComponent.prototype = {
 
 YolkCustomComponent._isCustomComponent = true
 
-YolkCustomComponent.create = function createInstance (props, children) {
-  const instance = new this(props, children)
-  instance._initialize(props, children)
-
-  return instance
-}
-
 YolkCustomComponent.extend = function extend (obj) {
   function Component () {}
   addProperties(Component, YolkCustomComponent)
@@ -75,6 +68,13 @@ YolkCustomComponent.extend = function extend (obj) {
   addProperties(Component.prototype, obj)
 
   return Component
+}
+
+export function create (Tag, props, children) {
+  const instance = new Tag(props, children)
+  instance._initialize(props, children)
+
+  return instance
 }
 
 export default YolkCustomComponent

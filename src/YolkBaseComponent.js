@@ -80,7 +80,7 @@ YolkBaseComponent.prototype = {
   },
 }
 
-YolkBaseComponent.create = function createInstance (_tag, _props, children) {
+export function create (_tag, _props, children) {
   let tag
   let props
 
