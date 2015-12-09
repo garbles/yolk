@@ -1,13 +1,12 @@
-import { default as Rx } from 'rx'
 import { default as test } from 'tape'
-import { default as Yolk } from 'yolk'
+import { h, CustomComponent, render, Rx } from 'yolk'
 import { default as renderInDoc } from '../helpers/renderInDoc'
 
 test(`CreateCustomComponent: a component that has livecycle hooks`, t => {
   t.plan(3)
   t.timeoutAfter(100)
 
-  class CustomOnlyMount extends Yolk.CustomComponent {
+  class CustomOnlyMount extends CustomComponent {
     onMount (props, node) {
       const className = props.className.join(` `)
       node.setAttribute(`class`, className)
@@ -35,7 +34,7 @@ test(`CreateCustomComponent: a component that has livecycle hooks`, t => {
 
   t.equal(node.className, `e ee eee eeee`)
 
-  Yolk.render(<div />, node)
+  render(<div />, node)
 
   cleanup()
 })
@@ -44,7 +43,7 @@ test(`CreateCustomComponent: uses a div if no child is passed in`, t => {
   t.plan(2)
   t.timeoutAfter(100)
 
-  class CC extends Yolk.CustomComponent {}
+  class CC extends CustomComponent {}
   const [node, cleanup] = renderInDoc(<CC />)
 
   t.equal(node.tagName, `DIV`)
@@ -61,7 +60,7 @@ test(`CreateCustomComponent: should raise when there is more than one child`, t 
   t.plan(6)
   t.timeoutAfter(100)
 
-  class CC extends Yolk.CustomComponent {}
+  class CC extends CustomComponent {}
 
   t.throws(() => <CC><p /><p /></CC>)
   t.throws(() => <CC><p><p /></p><p /></CC>)
@@ -75,7 +74,7 @@ test(`CreateCustomComponent: node is already inserted into the DOM with onMount`
   t.plan(1)
   t.timeoutAfter(2000)
 
-  class CC extends Yolk.CustomComponent {
+  class CC extends CustomComponent {
     onMount (__props, node) {
       t.ok(node.parentNode)
     }
@@ -90,7 +89,7 @@ test(`CreateCustomComponent: node is already insert into the DOM even after the 
   t.plan(1)
   t.timeoutAfter(2000)
 
-  class CC extends Yolk.CustomComponent {
+  class CC extends CustomComponent {
     onMount (__props, node) {
       t.ok(node.parentNode)
     }
@@ -110,7 +109,7 @@ test(`CreateCustomComponent: extending the class with .extend`, t => {
   t.plan(3)
   t.timeoutAfter(2000)
 
-  const CC = Yolk.CustomComponent.extend({
+  const CC = CustomComponent.extend({
     onMount () {
       t.pass()
     },
@@ -133,7 +132,7 @@ test(`CreateCustomComponent: extending the class with .extend`, t => {
   subject.onNext(2)
 
   // class onUnmount
-  Yolk.render(<p />, node.parentNode)
+  render(<p />, node.parentNode)
 
   cleanup()
 })

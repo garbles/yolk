@@ -1,6 +1,6 @@
 import { default as test } from 'tape'
-import { default as Yolk } from 'yolk' // eslint-disable-line no-unused-vars
-import { h } from 'yolk-virtual-dom'
+import { h } from 'yolk' // eslint-disable-line no-unused-vars
+import { h as h_ } from 'yolk-virtual-dom'
 import { default as renderInDoc } from '../helpers/renderInDoc'
 
 class CustomStub {
@@ -10,7 +10,7 @@ class CustomStub {
   }
 
   init () {
-    return h(`div`, null, this.children)
+    return h_(`div`, null, this.children)
   }
 
   update (previous, node) {

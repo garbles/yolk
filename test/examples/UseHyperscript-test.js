@@ -1,8 +1,6 @@
 import { default as test } from 'tape'
-import { default as Yolk } from 'yolk'
+import { h } from 'yolk'
 import { default as renderInDoc } from '../helpers/renderInDoc'
-
-const {h} = Yolk
 
 test(`UseHyperscript: rendering components using hyperscript helper`, t => {
   t.plan(10)

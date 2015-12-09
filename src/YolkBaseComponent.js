@@ -6,7 +6,7 @@ import { emitMount, emitUnmount } from './mountable'
 import { default as parseTag } from './parseTag'
 import { default as CompositePropSubject } from './CompositePropSubject'
 import { default as YolkBaseInnerComponent } from './YolkBaseInnerComponent'
-import { default as Yolk } from './yolk'
+import { wrapObject } from './yolk'
 
 const TAG_IS_ONLY_LETTERS = /^[a-zA-Z]*$/
 
@@ -33,8 +33,8 @@ YolkBaseComponent.prototype = {
     this._children$ = new Rx.BehaviorSubject(this._children)
     this._innerComponent = new YolkBaseInnerComponent(this.id)
 
-    const props$ = Yolk.wrapObject(this._props$.asDistinctObservableObject(), {base: true}).map(transformProperties)
-    const children$ = this._children$.flatMapLatest(c => Yolk.wrapObject(c, {base: true})).map(flatten)
+    const props$ = wrapObject(this._props$.asDistinctObservableObject(), {base: true}).map(transformProperties)
+    const children$ = this._children$.flatMapLatest(c => wrapObject(c, {base: true})).map(flatten)
     const innerComponent = this._innerComponent
 
     this._disposable =

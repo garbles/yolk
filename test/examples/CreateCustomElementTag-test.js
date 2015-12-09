@@ -1,12 +1,12 @@
 import { default as test } from 'tape'
-import { default as Yolk } from 'yolk'
+import { h, registerElement } from 'yolk'
 import { default as YolkCompositeComponent } from 'YolkCompositeComponent'
 
 function CreateCustom () {
   return <h1>hello world</h1>
 }
 
-Yolk.registerElement(`create-custom`, CreateCustom)
+registerElement(`create-custom`, CreateCustom)
 
 function createInstance () {
   const div = document.createElement(`div`)

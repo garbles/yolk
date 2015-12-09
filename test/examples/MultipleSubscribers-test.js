@@ -1,5 +1,5 @@
 import { default as test } from 'tape'
-import { default as Yolk } from 'yolk'
+import { h, render } from 'yolk'
 import { default as evStore } from 'ev-store'
 import { default as renderInDoc } from '../helpers/renderInDoc'
 
@@ -54,7 +54,7 @@ test(`MultipleSubscribers: can have multiple subscribers listening to the same s
   minus.click()
 
   component = <CounterWithMultipleSubscribers count={77} />
-  Yolk.render(component, node.parentNode)
+  render(component, node.parentNode)
 
   t.equal(node.children[2].innerHTML, `2`)
   t.equal(node.children[3].innerHTML, `2`)

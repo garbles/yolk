@@ -1,6 +1,8 @@
 import { default as test } from 'tape'
-import { default as Yolk } from 'yolk'
 import { default as renderInDoc } from '../helpers/renderInDoc'
+
+const Yolk = require(`yolk`)
+const {h} = Yolk
 
 test(`OverridingWrapObject: giving wrapObject special behavior`, t => {
   t.plan(5)

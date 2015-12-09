@@ -1,12 +1,12 @@
 import { default as test } from 'tape'
-import { default as Yolk } from 'yolk'
+import { h, Rx } from 'yolk'
 import { default as renderInDoc } from '../helpers/renderInDoc'
 
 test(`DisablingButton: you can disable a button`, t => {
   t.plan(2)
   t.timeoutAfter(100)
 
-  const disabled = new Yolk.Rx.BehaviorSubject(true)
+  const disabled = new Rx.BehaviorSubject(true)
 
   const instance = <button disabled={disabled} />
   const [node, cleanup] = renderInDoc(instance)

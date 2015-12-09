@@ -1,7 +1,7 @@
-import { default as Yolk } from './yolk'
 import { default as addProperties } from './addProperties'
 import { default as YolkBaseComponent } from './YolkBaseComponent'
 import { default as CompositePropSubject } from './CompositePropSubject'
+import { wrapObject } from './yolk'
 
 function YolkCustomComponent () {}
 
@@ -34,7 +34,7 @@ YolkCustomComponent.prototype = {
   },
 
   postinit (node) {
-    const props$ = Yolk.wrapObject(this._props$.asSubjectObject(), {base: false})
+    const props$ = wrapObject(this._props$.asSubjectObject(), {base: false})
     const mountDisposable = props$.take(1).subscribe(props => this.onMount(props, node))
     const updateDisposable = props$.skip(1).subscribe(props => this.onUpdate(props, node))
 

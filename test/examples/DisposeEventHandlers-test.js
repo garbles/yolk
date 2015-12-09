@@ -1,5 +1,5 @@
 import { default as test } from 'tape'
-import { default as Yolk } from 'yolk'
+import { h, render } from 'yolk'
 import { default as evStore } from 'ev-store'
 import { default as renderInDoc } from '../helpers/renderInDoc'
 
@@ -25,7 +25,7 @@ test(`DisposeEventHandlers: disposing of event handlers when a component unmount
   t.equal(handlers[0].isDisposed, false)
   t.equal(handlers[1].isDisposed, false)
 
-  Yolk.render(<p />, node.parentNode)
+  render(<p />, node.parentNode)
 
   t.equal(handlers[0].isDisposed, true)
   t.equal(handlers[0].observers, null)

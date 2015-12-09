@@ -1,5 +1,5 @@
 import { default as Rx } from 'rx'
-import { default as Yolk } from './yolk'
+import { wrapObject } from './yolk'
 
 export default function CompositePropSubject (obj) {
   this._keys = Object.keys(obj)
@@ -28,7 +28,7 @@ CompositePropSubject.prototype = {
     while (++i < this._length) {
       const key = this._keys[i]
       const subject = this._obj[key]
-      obsObj[key] = subject.flatMapLatest(v => Yolk.wrapObject(v, {base: false})).distinctUntilChanged() // eslint-disable-line no-loop-func
+      obsObj[key] = subject.flatMapLatest(v => wrapObject(v, {base: false})).distinctUntilChanged() // eslint-disable-line no-loop-func
     }
 
     return obsObj
@@ -42,7 +42,7 @@ CompositePropSubject.prototype = {
     while (++i < this._length) {
       const key = this._keys[i]
       const subject = this._obj[key]
-      obsObj[key] = subject.flatMapLatest(v => Yolk.wrapObject(v, {base: false})) // eslint-disable-line no-loop-func
+      obsObj[key] = subject.flatMapLatest(v => wrapObject(v, {base: false})) // eslint-disable-line no-loop-func
     }
 
     return obsObj

@@ -1,5 +1,5 @@
 import { default as test } from 'tape'
-import { default as Yolk } from 'yolk' // eslint-disable-line no-unused-vars
+import { h } from 'yolk' // eslint-disable-line no-unused-vars
 import { default as renderInDoc } from '../helpers/renderInDoc'
 
 test(`ArrayedClassName: an arrayed list of classes`, t => {

@@ -1,5 +1,5 @@
 import { default as test } from 'tape'
-import { default as Yolk } from 'yolk'
+import { h } from 'yolk'
 import { default as renderInDoc } from '../helpers/renderInDoc'
 
 class CustomStub {
@@ -8,7 +8,7 @@ class CustomStub {
   }
 
   init () {
-    return Yolk.h(`strong`, null, `hello world!`)
+    return h(`strong`, null, `hello world!`)
   }
 
   update (previous, node) {

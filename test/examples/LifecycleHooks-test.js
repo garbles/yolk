@@ -1,7 +1,7 @@
 /* eslint-disable no-use-before-define */
 
 import { default as test } from 'tape'
-import { default as Yolk } from 'yolk'
+import { h, render, Rx } from 'yolk'
 import { default as renderInDoc } from '../helpers/renderInDoc'
 
 test(`LifecycleHooks: will run code after the component mounts`, t => {
@@ -36,5 +36,5 @@ test(`LifecycleHooks: will run code when the component unmounts`, t => {
   [node, cleanup] = renderInDoc(<strong onUnmount={onUnmount} />)
   const parent = node.parentNode
 
-  Yolk.render(<b />, parent)
+  render(<b />, parent)
 })

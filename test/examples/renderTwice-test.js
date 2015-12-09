@@ -1,5 +1,5 @@
 import { default as test } from 'tape'
-import { default as Yolk } from 'yolk'
+import { h, render } from 'yolk'
 import { default as renderInDoc } from '../helpers/renderInDoc'
 
 function Counter ({createEventHandler, props}) {
@@ -37,7 +37,7 @@ test(`RenderTwice: only updates the props and or children`, t => {
   t.equal(count.innerHTML, `Count: 2`)
 
   const newComponent = <Counter count={5} />
-  Yolk.render(newComponent, node.parentNode)
+  render(newComponent, node.parentNode)
 
   t.equal(count.tagName, `SPAN`)
   t.equal(count.innerHTML, `Count: 7`)
