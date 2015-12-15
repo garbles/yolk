@@ -1,5 +1,5 @@
-const isFunction = require(`./isFunction`)
+import { default as isFunction } from './isFunction'
 
-module.exports = function hasToJS (obj) {
+export default function hasToJS (obj) {
   return !!obj && isFunction(obj.toJS)
 }

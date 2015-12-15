@@ -1,6 +1,6 @@
-const test = require(`tape`)
-const Yolk = require(`yolk`) // eslint-disable-line no-unused-vars
-const renderInDoc = require(`../helpers/renderInDoc`)
+import { default as test } from 'tape'
+import { h } from 'yolk'
+import { default as renderInDoc } from '../helpers/renderInDoc'
 
 class CustomStub {
   constructor () {
@@ -8,7 +8,7 @@ class CustomStub {
   }
 
   init () {
-    return Yolk.h(`strong`, null, `hello world!`)
+    return h(`strong`, null, `hello world!`)
   }
 
   update (previous, node) {

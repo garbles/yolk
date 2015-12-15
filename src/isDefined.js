@@ -1,3 +1,3 @@
-module.exports = function isDefined (obj) {
+export default function isDefined (obj) {
   return typeof obj !== `undefined` && obj !== null
 }

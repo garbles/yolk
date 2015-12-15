@@ -1,4 +1,4 @@
-const evStore = require(`ev-store`)
+import { default as evStore } from 'ev-store'
 
 function EventHook (value) {
   this.value = value
@@ -20,4 +20,4 @@ EventHook.prototype = {
   },
 }
 
-module.exports = EventHook
+export default EventHook

@@ -1,7 +1,7 @@
-const test = require(`tape`)
-const Yolk = require(`yolk`)
-const evStore = require(`ev-store`)
-const renderInDoc = require(`../helpers/renderInDoc`)
+import { default as test } from 'tape'
+import { h, render } from 'yolk' // eslint-disable-line no-unused-vars
+import { default as evStore } from 'ev-store'
+import { default as renderInDoc } from '../helpers/renderInDoc'
 
 function CounterWithMultipleSubscribers ({props, createEventHandler}) {
   const handlePlus = createEventHandler(() => 1, 0)
@@ -54,7 +54,7 @@ test(`MultipleSubscribers: can have multiple subscribers listening to the same s
   minus.click()
 
   component = <CounterWithMultipleSubscribers count={77} />
-  Yolk.render(component, node.parentNode)
+  render(component, node.parentNode)
 
   t.equal(node.children[2].innerHTML, `2`)
   t.equal(node.children[3].innerHTML, `2`)

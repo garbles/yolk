@@ -1,5 +1,5 @@
-const createElement = require(`./createElement`)
-const HTMLTags = require(`./HTMLTags`)
+import { default as createElement } from './createElement'
+import { default as HTMLTags } from './HTMLTags'
 
 const boundCreateElement = tagName => (props, ...children) => {
   return createElement(tagName, props, ...children)
@@ -14,4 +14,4 @@ while (++i < length) {
   helpers[tagName] = boundCreateElement(tagName)
 }
 
-module.exports = helpers
+export default helpers

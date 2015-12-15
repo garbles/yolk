@@ -1,8 +1,8 @@
-const test = require(`tape`)
-const transformProperty = require(`transformProperty`)
-const SoftSetHook = require(`yolk-virtual-dom/virtual-hyperscript/hooks/soft-set-hook`)
-const AttributeHook = require(`yolk-virtual-dom/virtual-hyperscript/hooks/attribute-hook`)
-const EventHook = require(`EventHook`)
+import { default as test } from 'tape'
+import { default as transformProperty } from 'transformProperty'
+import { default as SoftSetHook } from 'yolk-virtual-dom/virtual-hyperscript/hooks/soft-set-hook'
+import { default as AttributeHook } from 'yolk-virtual-dom/virtual-hyperscript/hooks/attribute-hook'
+import { default as EventHook } from 'EventHook'
 
 const BASE_DESCRIPTOR = {
   isStandard: true,

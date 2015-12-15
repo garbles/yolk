@@ -1,6 +1,6 @@
-const test = require(`tape`)
-const Yolk = require(`yolk`)
-const renderInDoc = require(`../helpers/renderInDoc`)
+import { default as test } from 'tape'
+import { h, render } from 'yolk' // eslint-disable-line no-unused-vars
+import { default as renderInDoc } from '../helpers/renderInDoc'
 
 test(`AddingAndRemovingProps: addings and removing props after the initial render`, t => {
   t.plan(1)
@@ -9,7 +9,7 @@ test(`AddingAndRemovingProps: addings and removing props after the initial rende
   const nextComponent = <div className="some-class" key="second" />
   const [node, cleanup] = renderInDoc(component)
   const parent = node.parentNode
-  Yolk.render(nextComponent, parent)
+  render(nextComponent, parent)
 
   t.equal(parent.firstChild.className, `some-class`)
 

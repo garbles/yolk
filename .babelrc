@@ -4,6 +4,6 @@
     "stage-2"
   ],
   "plugins": [
-    ["transform-react-jsx", {"pragma": "Yolk.h"}]
+    ["transform-react-jsx", {"pragma": "h"}]
   ]
 }

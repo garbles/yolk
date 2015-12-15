@@ -1,5 +1,5 @@
-const test = require(`tape`)
-const addProperties = require(`addProperties`)
+import { default as test } from 'tape'
+import { default as addProperties } from 'addProperties'
 
 test(`addProperties: extends a base object`, t => {
   t.plan(1)

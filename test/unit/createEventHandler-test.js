@@ -1,5 +1,5 @@
-const test = require(`tape`)
-const createEventHandler = require(`createEventHandler`)
+import { default as test } from 'tape'
+import { default as createEventHandler } from 'createEventHandler'
 
 test(`createEventHandler: without any arguments`, t => {
   t.plan(1)

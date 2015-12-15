@@ -1,7 +1,7 @@
-const h = require(`yolk-virtual-dom/h`)
-const diff = require(`yolk-virtual-dom/diff`)
-const patch = require(`yolk-virtual-dom/patch`)
-const generateUid = require(`./generateUid`)
+import { default as h } from 'yolk-virtual-dom/h'
+import { default as diff } from 'yolk-virtual-dom/diff'
+import { default as patch } from 'yolk-virtual-dom/patch'
+import { default as generateUid } from './generateUid'
 
 function YolkBaseInnerComponent (tag) {
   this._tag = tag
@@ -37,4 +37,4 @@ YolkBaseInnerComponent.prototype = {
   },
 }
 
-module.exports = YolkBaseInnerComponent
+export default YolkBaseInnerComponent

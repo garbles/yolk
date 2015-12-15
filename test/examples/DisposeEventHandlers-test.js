@@ -1,7 +1,7 @@
-const test = require(`tape`)
-const Yolk = require(`yolk`)
-const evStore = require(`ev-store`)
-const renderInDoc = require(`../helpers/renderInDoc`)
+import { default as test } from 'tape'
+import { h, render } from 'yolk' // eslint-disable-line no-unused-vars
+import { default as evStore } from 'ev-store'
+import { default as renderInDoc } from '../helpers/renderInDoc'
 
 test(`DisposeEventHandlers: disposing of event handlers when a component unmounts`, t => {
   t.plan(8)
@@ -25,7 +25,7 @@ test(`DisposeEventHandlers: disposing of event handlers when a component unmount
   t.equal(handlers[0].isDisposed, false)
   t.equal(handlers[1].isDisposed, false)
 
-  Yolk.render(<p />, node.parentNode)
+  render(<p />, node.parentNode)
 
   t.equal(handlers[0].isDisposed, true)
   t.equal(handlers[0].observers, null)

@@ -1,4 +1,4 @@
-const isNumber = require(`./isNumber`)
+import { default as isNumber } from './isNumber'
 
 const unitlessNumberProperties = {
   animationIterationCount: true,
@@ -29,7 +29,7 @@ const unitlessNumberProperties = {
   zoom: true,
 }
 
-module.exports = function transformStyle (props, style) {
+export default function transformStyle (props, style) {
   if (!style) {
     return false
   }

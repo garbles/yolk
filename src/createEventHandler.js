@@ -1,9 +1,9 @@
-const Rx = require(`rx`)
-const isDefined = require(`./isDefined`)
-const isFunction = require(`./isFunction`)
-const addProperties = require(`./addProperties`)
+import { Rx } from './yolk'
+import { default as isDefined } from './isDefined'
+import { default as isFunction } from './isFunction'
+import { default as addProperties } from './addProperties'
 
-module.exports = function createEventHandler (mapFn, init) {
+export default function createEventHandler (mapFn, init) {
   const initIsDefined = isDefined(init)
   const mapFnIsDefined = isDefined(mapFn)
   const mapFnIsFunction = isFunction(mapFn)

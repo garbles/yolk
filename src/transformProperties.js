@@ -1,8 +1,8 @@
-const DOMAttributeDescriptors = require(`./DOMAttributeDescriptors`)
-const transformStyle = require(`./transformStyle`)
-const transformProperty = require(`./transformProperty`)
+import { default as DOMAttributeDescriptors } from './DOMAttributeDescriptors'
+import { default as transformStyle } from './transformStyle'
+import { default as transformProperty } from './transformProperty'
 
-module.exports = function transformProperties (props) {
+export default function transformProperties (props) {
   const keys = Object.keys(props)
   const length = keys.length
   const newProps = {attributes: {}}

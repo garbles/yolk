@@ -1,5 +1,5 @@
-const test = require(`tape`)
-const transformStyle = require(`transformStyle`)
+import { default as test } from 'tape'
+import { default as transformStyle } from 'transformStyle'
 
 test(`transformStyle: returns nothing if style is nothing`, t => {
   t.plan(1)

@@ -1,7 +1,6 @@
-const test = require(`tape`)
-const Yolk = require(`yolk`)
-const {Rx} = Yolk
-const renderInDoc = require(`../helpers/renderInDoc`)
+import { default as test } from 'tape'
+import { h, Rx } from 'yolk' // eslint-disable-line no-unused-vars
+import { default as renderInDoc } from '../helpers/renderInDoc'
 
 function VaryingBaseChildrenFromProps ({props}) {
   const numbers = props.numbers.map(nums => {

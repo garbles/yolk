@@ -1,8 +1,8 @@
-const create = require(`yolk-virtual-dom/create-element`)
-const diff = require(`yolk-virtual-dom/diff`)
-const patch = require(`yolk-virtual-dom/patch`)
-const initializeWidgets = require(`yolk-virtual-dom/initialize-widgets`)
-const delegator = require(`./delegator`)
+import { default as create } from 'yolk-virtual-dom/create-element'
+import { default as diff } from 'yolk-virtual-dom/diff'
+import { default as patch } from 'yolk-virtual-dom/patch'
+import { default as initializeWidgets } from 'yolk-virtual-dom/initialize-widgets'
+import { default as delegator } from './delegator'
 
 const PREVIOUS_WIDGET_KEY = `__YOLK_PREVIOUS_WIDGET_KEY__`
 
@@ -28,7 +28,7 @@ YolkRootComponent.prototype = {
   },
 }
 
-YolkRootComponent.render = function render (instance, node) {
+export function render (instance, node) {
   const root = new YolkRootComponent(instance)
   let child = node.children[0]
 
@@ -47,4 +47,4 @@ YolkRootComponent.render = function render (instance, node) {
   return root
 }
 
-module.exports = YolkRootComponent
+export default YolkRootComponent

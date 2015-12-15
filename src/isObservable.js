@@ -1,5 +1,5 @@
-const Rx = require(`rx`)
+import { Rx } from './yolk'
 
-module.exports = function isObservable (obj) {
+export default function isObservable (obj) {
   return obj instanceof Rx.Observable
 }

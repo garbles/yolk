@@ -1,6 +1,6 @@
 /* eslint-disable guard-for-in */
 
-module.exports = function addProperties (base, ...objs) {
+export default function addProperties (base, ...objs) {
   const length = objs.length
   let i = -1
 

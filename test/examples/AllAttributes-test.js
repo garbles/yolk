@@ -1,6 +1,6 @@
-const test = require(`tape`)
-const Yolk = require(`yolk`)
-const renderInDoc = require(`../helpers/renderInDoc`)
+import { default as test } from 'tape'
+import { h, Rx } from 'yolk' // eslint-disable-line no-unused-vars
+import { default as renderInDoc } from '../helpers/renderInDoc'
 
 const booleanTestPairs = [true, `true`, false, `false`, `${Math.random()}`, undefined, `true`, undefined, `false`, undefined]
 const booleanSoftTestPairs = [true, `true`, false, `false`, true, `true`]
@@ -163,7 +163,7 @@ test(`AllAttributes: make sure that all attributes are properly applied`, t => {
   testTable.forEach(([attribute, computed, ...inputOutputPairs]) => {
     const input = inputOutputPairs[0]
     const output = inputOutputPairs[1]
-    const value = new Yolk.Rx.BehaviorSubject(input)
+    const value = new Rx.BehaviorSubject(input)
     const props = {[attribute]: value}
 
     const [node, cleanup] = renderInDoc(<div {...props} />)

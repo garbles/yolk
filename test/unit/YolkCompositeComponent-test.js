@@ -1,7 +1,7 @@
-const test = require(`tape`)
-const Rx = require(`rx`)
-const YolkCompositeComponent = require(`YolkCompositeComponent`)
-const YolkBaseComponent = require(`YolkBaseComponent`)
+import { default as test } from 'tape'
+import { Rx } from 'yolk'
+import { default as YolkCompositeComponent } from 'YolkCompositeComponent'
+import { default as YolkBaseComponent } from 'YolkBaseComponent'
 
 test(`YolkCompositeComponent: raises when it doesn't return an element`, t => {
   t.plan(6)

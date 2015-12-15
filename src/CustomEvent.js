@@ -1,4 +1,4 @@
-module.exports = global.CustomEvent || (() => {
+export default global.CustomEvent || (() => {
   const DEFAULT_PARAMS = {bubbles: false, cancelable: false, detail: undefined}
 
   function CustomEvent (_event, _params) {

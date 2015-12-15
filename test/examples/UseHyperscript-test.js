@@ -1,7 +1,6 @@
-const test = require(`tape`)
-const Yolk = require(`yolk`)
-const {h} = Yolk
-const renderInDoc = require(`../helpers/renderInDoc`)
+import { default as test } from 'tape'
+import { h } from 'yolk'
+import { default as renderInDoc } from '../helpers/renderInDoc'
 
 test(`UseHyperscript: rendering components using hyperscript helper`, t => {
   t.plan(10)

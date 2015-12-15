@@ -1,5 +1,5 @@
-const test = require(`tape`)
-const compact = require(`compact`)
+import { default as test } from 'tape'
+import { default as compact } from 'compact'
 
 test(`compact: compacts arrays`, t => {
   t.plan(1)

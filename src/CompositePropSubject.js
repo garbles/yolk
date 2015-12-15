@@ -1,7 +1,6 @@
-const Rx = require(`rx`)
-const wrapObject = require(`./wrapObject`)
+import { wrapObject, Rx } from './yolk'
 
-function CompositePropSubject (obj) {
+export default function CompositePropSubject (obj) {
   this._keys = Object.keys(obj)
   this._length = this._keys.length
   this._obj = {}
@@ -28,7 +27,7 @@ CompositePropSubject.prototype = {
     while (++i < this._length) {
       const key = this._keys[i]
       const subject = this._obj[key]
-      obsObj[key] = subject.flatMapLatest(wrapObject).distinctUntilChanged()
+      obsObj[key] = subject.flatMapLatest(v => wrapObject(v, {base: false})).distinctUntilChanged() // eslint-disable-line no-loop-func
     }
 
     return obsObj
@@ -42,7 +41,7 @@ CompositePropSubject.prototype = {
     while (++i < this._length) {
       const key = this._keys[i]
       const subject = this._obj[key]
-      obsObj[key] = subject.flatMapLatest(wrapObject)
+      obsObj[key] = subject.flatMapLatest(v => wrapObject(v, {base: false})) // eslint-disable-line no-loop-func
     }
 
     return obsObj
@@ -67,5 +66,3 @@ CompositePropSubject.prototype = {
     }
   },
 }
-
-module.exports = CompositePropSubject

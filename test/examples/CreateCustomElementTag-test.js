@@ -1,12 +1,12 @@
-const test = require(`tape`)
-const Yolk = require(`yolk`)
-const YolkCompositeComponent = require(`YolkCompositeComponent`)
+import { default as test } from 'tape'
+import { h, registerElement } from 'yolk' // eslint-disable-line no-unused-vars
+import { default as YolkCompositeComponent } from 'YolkCompositeComponent'
 
 function CreateCustom () {
   return <h1>hello world</h1>
 }
 
-Yolk.registerElement(`create-custom`, CreateCustom)
+registerElement(`create-custom`, CreateCustom)
 
 function createInstance () {
   const div = document.createElement(`div`)

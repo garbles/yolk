@@ -1,7 +1,6 @@
-const test = require(`tape`)
-const Yolk = require(`yolk`) // eslint-disable-line no-unused-vars
-const {h} = Yolk
-const renderInDoc = require(`../helpers/renderInDoc`)
+import { default as test } from 'tape'
+import { DOM, h } from 'yolk'
+import { default as renderInDoc } from '../helpers/renderInDoc'
 
 function CounterWithJSX ({createEventHandler}) {
   const handlePlus = createEventHandler(1)
@@ -31,7 +30,7 @@ function CounterWithHyperScript ({createEventHandler}) {
 
 
 function CounterWithDOMHelpers ({createEventHandler}) {
-  const {div, button, span} = Yolk.DOM
+  const {div, button, span} = DOM
 
   const handlePlus = createEventHandler(1)
   const handleMinus = createEventHandler(-1)

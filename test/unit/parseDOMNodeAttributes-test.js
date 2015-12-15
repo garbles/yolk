@@ -1,5 +1,5 @@
-const test = require(`tape`)
-const parseDOMNodeAttributes = require(`parseDOMNodeAttributes`)
+import { default as test } from 'tape'
+import { default as parseDOMNodeAttributes } from 'parseDOMNodeAttributes'
 
 test(`parseDOMNodeAttributes: no attributes`, t => {
   t.plan(1)

@@ -1,12 +1,11 @@
-const Rx = require(`rx`)
-const wrapObject = require(`./wrapObject`)
-const transformProperties = require(`./transformProperties`)
-const isFunction = require(`./isFunction`)
-const flatten = require(`./flatten`)
-const mountable = require(`./mountable`)
-const parseTag = require(`./parseTag`)
-const CompositePropSubject = require(`./CompositePropSubject`)
-const YolkBaseInnerComponent = require(`./YolkBaseInnerComponent`)
+import { default as transformProperties } from './transformProperties'
+import { default as isFunction } from './isFunction'
+import { default as flatten } from './flatten'
+import { emitMount, emitUnmount } from './mountable'
+import { default as parseTag } from './parseTag'
+import { default as CompositePropSubject } from './CompositePropSubject'
+import { default as YolkBaseInnerComponent } from './YolkBaseInnerComponent'
+import { Rx, wrapObject } from './yolk'
 
 const TAG_IS_ONLY_LETTERS = /^[a-zA-Z]*$/
 
@@ -33,8 +32,8 @@ YolkBaseComponent.prototype = {
     this._children$ = new Rx.BehaviorSubject(this._children)
     this._innerComponent = new YolkBaseInnerComponent(this.id)
 
-    const props$ = wrapObject(this._props$.asDistinctObservableObject(), {wrapToJS: true}).map(transformProperties)
-    const children$ = this._children$.flatMapLatest(c => wrapObject(c, {wrapToJS: true})).map(flatten)
+    const props$ = wrapObject(this._props$.asDistinctObservableObject(), {base: true}).map(transformProperties)
+    const children$ = this._children$.flatMapLatest(c => wrapObject(c, {base: true})).map(flatten)
     const innerComponent = this._innerComponent
 
     this._disposable =
@@ -49,7 +48,7 @@ YolkBaseComponent.prototype = {
 
   postinit (node) {
     this._innerComponent.setNode(node)
-    mountable.emitMount(node, this._props.onMount)
+    emitMount(node, this._props.onMount)
   },
 
   update (previous) {
@@ -63,7 +62,7 @@ YolkBaseComponent.prototype = {
   },
 
   predestroy (node) {
-    mountable.emitUnmount(node, this._props.onUnmount)
+    emitUnmount(node, this._props.onUnmount)
   },
 
   destroy () {
@@ -80,7 +79,7 @@ YolkBaseComponent.prototype = {
   },
 }
 
-YolkBaseComponent.create = function createInstance (_tag, _props, children) {
+export function create (_tag, _props, children) {
   let tag
   let props
 
@@ -96,4 +95,4 @@ YolkBaseComponent.create = function createInstance (_tag, _props, children) {
   return new YolkBaseComponent(tag, props, children)
 }
 
-module.exports = YolkBaseComponent
+export default YolkBaseComponent

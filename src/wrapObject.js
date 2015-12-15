@@ -1,14 +1,14 @@
-const Rx = require(`rx`)
-const isPlainObject = require(`lodash.isplainobject`)
-const isObservable = require(`./isObservable`)
-const isEmpty = require(`./isEmpty`)
-const hasToJS = require(`./hasToJS`)
+import { default as isPlainObject } from 'lodash.isplainobject'
+import { default as isObservable } from './isObservable'
+import { default as isEmpty } from './isEmpty'
+import { default as hasToJS } from './hasToJS'
+import { Rx } from './yolk'
 
-module.exports = function wrapObject (obj, opts = {}) {
+export default function wrapObject (obj, opts = {}) {
   if (isObservable(obj)) {
     return obj.flatMapLatest(o => wrapObject(o, opts))
   } else if (hasToJS(obj)) {
-    if (opts.wrapToJS) { // only call toJS if option is set
+    if (opts.base) { // only call toJS about to render base component
       return wrapObject(obj.toJS(), opts)
     }
   } else if (isPlainObject(obj) && !isEmpty(obj)) {
