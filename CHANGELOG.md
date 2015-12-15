@@ -1,3 +1,8 @@
+# 0.10.0 (December 15, 2015)
+
+- Expose Yolk.wrapObject so that I can be.. wrapped
+- Use ES6 imports instead of CommonJS require
+
 # 0.10.0 (December 6, 2015)
 
 - Upgrade to Babel 6
