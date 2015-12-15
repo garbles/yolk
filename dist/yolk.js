@@ -3115,11 +3115,14 @@ function appendPatch(apply, patch) {
 }
 
 },{"../vnode/is-vnode":47,"../vnode/is-vtext":48,"../vnode/is-widget":49,"../vnode/vpatch":52,"./diff-props":54}],56:[function(require,module,exports){
-(function (global){
-"use strict";
+'use strict';
 
-var Rx = (typeof window !== "undefined" ? window['Rx'] : typeof global !== "undefined" ? global['Rx'] : null);
-var wrapObject = require("./wrapObject");
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = CompositePropSubject;
+
+var _yolk = require('./yolk');
 
 function CompositePropSubject(obj) {
   this._keys = Object.keys(obj);
@@ -3131,7 +3134,7 @@ function CompositePropSubject(obj) {
   while (++i < this._length) {
     var key = this._keys[i];
     var value = obj[key];
-    this._obj[key] = new Rx.BehaviorSubject(value);
+    this._obj[key] = new _yolk.Rx.BehaviorSubject(value);
   }
 }
 
@@ -3147,7 +3150,9 @@ CompositePropSubject.prototype = {
     while (++i < this._length) {
       var key = this._keys[i];
       var subject = this._obj[key];
-      obsObj[key] = subject.flatMapLatest(wrapObject).distinctUntilChanged();
+      obsObj[key] = subject.flatMapLatest(function (v) {
+        return (0, _yolk.wrapObject)(v, { base: false });
+      }).distinctUntilChanged(); // eslint-disable-line no-loop-func
     }
 
     return obsObj;
@@ -3160,7 +3165,9 @@ CompositePropSubject.prototype = {
     while (++i < this._length) {
       var key = this._keys[i];
       var subject = this._obj[key];
-      obsObj[key] = subject.flatMapLatest(wrapObject);
+      obsObj[key] = subject.flatMapLatest(function (v) {
+        return (0, _yolk.wrapObject)(v, { base: false });
+      }); // eslint-disable-line no-loop-func
     }
 
     return obsObj;
@@ -3184,17 +3191,17 @@ CompositePropSubject.prototype = {
   }
 };
 
-module.exports = CompositePropSubject;
-
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-
-},{"./wrapObject":91}],57:[function(require,module,exports){
+},{"./yolk":92}],57:[function(require,module,exports){
 (function (global){
 "use strict";
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-module.exports = global.CustomEvent || (function () {
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+exports.default = global.CustomEvent || (function () {
   var DEFAULT_PARAMS = { bubbles: false, cancelable: false, detail: undefined };
 
   function CustomEvent(_event, _params) {
@@ -3211,10 +3218,21 @@ module.exports = global.CustomEvent || (function () {
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
 },{}],58:[function(require,module,exports){
-"use strict";
+'use strict';
 
-var kababCase = require("lodash.kebabcase");
-var EventsList = require("./EventsList");
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _lodash = require('lodash.kebabcase');
+
+var _lodash2 = _interopRequireDefault(_lodash);
+
+var _EventsList = require('./EventsList');
+
+var _EventsList2 = _interopRequireDefault(_EventsList);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var HAS_LOWER_CASE = 0x1;
 var HAS_DASH_CASE = 0x2;
@@ -3358,12 +3376,12 @@ var attributes = {
 };
 
 // events
-var length = EventsList.length;
+var length = _EventsList2.default.length;
 var i = -1;
 
 while (++i < length) {
-  var event = EventsList[i];
-  attributes["on" + event] = HAS_LOWER_CASE | USE_EVENT_HOOK;
+  var event = _EventsList2.default[i];
+  attributes['on' + event] = HAS_LOWER_CASE | USE_EVENT_HOOK;
 }
 
 var keys = Object.keys(attributes);
@@ -3389,7 +3407,7 @@ while (++i < length) {
   if (hasLowerCase) {
     computed = key.toLowerCase();
   } else if (hasDashCase) {
-    computed = kababCase(key);
+    computed = (0, _lodash2.default)(key);
   }
 
   DOMAttributeDescriptors[key] = {
@@ -3405,12 +3423,20 @@ while (++i < length) {
   };
 }
 
-module.exports = DOMAttributeDescriptors;
+exports.default = DOMAttributeDescriptors;
 
 },{"./EventsList":60,"lodash.kebabcase":25}],59:[function(require,module,exports){
-"use strict";
+'use strict';
 
-var evStore = require("ev-store");
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _evStore = require('ev-store');
+
+var _evStore2 = _interopRequireDefault(_evStore);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function EventHook(value) {
   this.value = value;
@@ -3418,34 +3444,48 @@ function EventHook(value) {
 
 EventHook.prototype = {
   hook: function hook(node, propertyName) {
-    var es = evStore(node);
+    var es = (0, _evStore2.default)(node);
     var propName = propertyName.substr(2).toLowerCase();
 
     es[propName] = this.value;
   },
   unhook: function unhook(node, propertyName) {
-    var es = evStore(node);
+    var es = (0, _evStore2.default)(node);
     var propName = propertyName.substr(2).toLowerCase();
 
     es[propName] = undefined;
   }
 };
 
-module.exports = EventHook;
+exports.default = EventHook;
 
 },{"ev-store":9}],60:[function(require,module,exports){
 "use strict";
 
-module.exports = ["Abort", "Blur", "Cancel", "CanPlay", "CanPlayThrough", "Change", "Click", "CompositionStart", "CompositionUpdate", "CompositionEnd", "ContextMenu", "Copy", "CueChange", "Cut", "DblClick", "Drag", "DragEnd", "DragExit", "DragEnter", "DragLeave", "DragOver", "DragStart", "Drop", "DurationChange", "Emptied", "Encrypted", "Ended", "Error", "Focus", "FocusIn", "FocusOut", "Input", "Invalid", "KeyDown", "KeyPress", "KeyUp", "Load", "LoadedData", "LoadedMetaData", "LoadStart", "MouseDown", "MouseEnter", "MouseLeave", "MouseMove", "MouseOut", "MouseOver", "MouseUp", "Paste", "Pause", "Play", "Playing", "Progress", "RateChange", "Reset", "Resize", "Scroll", "Search", "Seeked", "Seeking", "Select", "Show", "Stalled", "Submit", "Suspend", "TimeUpdate", "Toggle", "TouchCancel", "TouchEnd", "TouchMove", "TouchStart", "VolumeChange", "Waiting", "Wheel",
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = ["Abort", "Blur", "Cancel", "CanPlay", "CanPlayThrough", "Change", "Click", "CompositionStart", "CompositionUpdate", "CompositionEnd", "ContextMenu", "Copy", "CueChange", "Cut", "DblClick", "Drag", "DragEnd", "DragExit", "DragEnter", "DragLeave", "DragOver", "DragStart", "Drop", "DurationChange", "Emptied", "Encrypted", "Ended", "Error", "Focus", "FocusIn", "FocusOut", "Input", "Invalid", "KeyDown", "KeyPress", "KeyUp", "Load", "LoadedData", "LoadedMetaData", "LoadStart", "MouseDown", "MouseEnter", "MouseLeave", "MouseMove", "MouseOut", "MouseOver", "MouseUp", "Paste", "Pause", "Play", "Playing", "Progress", "RateChange", "Reset", "Resize", "Scroll", "Search", "Seeked", "Seeking", "Select", "Show", "Stalled", "Submit", "Suspend", "TimeUpdate", "Toggle", "TouchCancel", "TouchEnd", "TouchMove", "TouchStart", "VolumeChange", "Waiting", "Wheel",
 
 // custom
 "Mount", "Unmount"];
 
 },{}],61:[function(require,module,exports){
-"use strict";
+'use strict';
 
-var createElement = require("./createElement");
-var HTMLTags = require("./HTMLTags");
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createElement = require('./createElement');
+
+var _createElement2 = _interopRequireDefault(_createElement);
+
+var _HTMLTags = require('./HTMLTags');
+
+var _HTMLTags2 = _interopRequireDefault(_HTMLTags);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var boundCreateElement = function boundCreateElement(tagName) {
   return function (props) {
@@ -3453,43 +3493,70 @@ var boundCreateElement = function boundCreateElement(tagName) {
       children[_key - 1] = arguments[_key];
     }
 
-    return createElement.apply(undefined, [tagName, props].concat(children));
+    return _createElement2.default.apply(undefined, [tagName, props].concat(children));
   };
 };
 
 var helpers = {};
-var length = HTMLTags.length;
+var length = _HTMLTags2.default.length;
 var i = -1;
 
 while (++i < length) {
-  var tagName = HTMLTags[i];
+  var tagName = _HTMLTags2.default[i];
   helpers[tagName] = boundCreateElement(tagName);
 }
 
-module.exports = helpers;
+exports.default = helpers;
 
 },{"./HTMLTags":62,"./createElement":71}],62:[function(require,module,exports){
 "use strict";
 
-module.exports = ["a", "abbr", "address", "area", "article", "aside", "audio", "b", "base", "bdi", "bdo", "blockquote", "body", "br", "button", "canvas", "caption", "cite", "code", "col", "colgroup", "data", "datalist", "dd", "del", "details", "dfn", "dialog", "div", "dl", "dt", "em", "embed", "fieldset", "figcaption", "figure", "footer", "form", "h1", "h2", "h3", "h4", "h5", "h6", "head", "header", "hgroup", "hr", "html", "i", "iframe", "img", "input", "ins", "kbd", "keygen", "label", "legend", "li", "link", "main", "map", "mark", "menu", "menuitem", "meta", "meter", "nav", "noscript", "object", "ol", "optgroup", "option", "output", "p", "param", "pre", "progress", "q", "rb", "rp", "rt", "rtc", "ruby", "s", "samp", "script", "section", "select", "small", "source", "span", "strong", "style", "sub", "summary", "sup", "table", "tbody", "td", "template", "textarea", "tfoot", "th", "thead", "time", "title", "tr", "track", "u", "ul", "var", "video", "wbr"];
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = ["a", "abbr", "address", "area", "article", "aside", "audio", "b", "base", "bdi", "bdo", "blockquote", "body", "br", "button", "canvas", "caption", "cite", "code", "col", "colgroup", "data", "datalist", "dd", "del", "details", "dfn", "dialog", "div", "dl", "dt", "em", "embed", "fieldset", "figcaption", "figure", "footer", "form", "h1", "h2", "h3", "h4", "h5", "h6", "head", "header", "hgroup", "hr", "html", "i", "iframe", "img", "input", "ins", "kbd", "keygen", "label", "legend", "li", "link", "main", "map", "mark", "menu", "menuitem", "meta", "meter", "nav", "noscript", "object", "ol", "optgroup", "option", "output", "p", "param", "pre", "progress", "q", "rb", "rp", "rt", "rtc", "ruby", "s", "samp", "script", "section", "select", "small", "source", "span", "strong", "style", "sub", "summary", "sup", "table", "tbody", "td", "template", "textarea", "tfoot", "th", "thead", "time", "title", "tr", "track", "u", "ul", "var", "video", "wbr"];
 
 },{}],63:[function(require,module,exports){
-(function (global){
-"use strict";
+'use strict';
 
 var _slicedToArray = (function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; })();
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-var Rx = (typeof window !== "undefined" ? window['Rx'] : typeof global !== "undefined" ? global['Rx'] : null);
-var wrapObject = require("./wrapObject");
-var transformProperties = require("./transformProperties");
-var isFunction = require("./isFunction");
-var flatten = require("./flatten");
-var mountable = require("./mountable");
-var parseTag = require("./parseTag");
-var CompositePropSubject = require("./CompositePropSubject");
-var YolkBaseInnerComponent = require("./YolkBaseInnerComponent");
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.create = create;
+
+var _transformProperties = require('./transformProperties');
+
+var _transformProperties2 = _interopRequireDefault(_transformProperties);
+
+var _isFunction = require('./isFunction');
+
+var _isFunction2 = _interopRequireDefault(_isFunction);
+
+var _flatten = require('./flatten');
+
+var _flatten2 = _interopRequireDefault(_flatten);
+
+var _mountable = require('./mountable');
+
+var _parseTag = require('./parseTag');
+
+var _parseTag2 = _interopRequireDefault(_parseTag);
+
+var _CompositePropSubject = require('./CompositePropSubject');
+
+var _CompositePropSubject2 = _interopRequireDefault(_CompositePropSubject);
+
+var _YolkBaseInnerComponent = require('./YolkBaseInnerComponent');
+
+var _YolkBaseInnerComponent2 = _interopRequireDefault(_YolkBaseInnerComponent);
+
+var _yolk = require('./yolk');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var TAG_IS_ONLY_LETTERS = /^[a-zA-Z]*$/;
 
@@ -3502,24 +3569,24 @@ function YolkBaseComponent(tag, props, children) {
     delete _props.key;
   }
 
-  this.name = "YolkBaseComponent_" + tag;
+  this.name = 'YolkBaseComponent_' + tag;
   this.id = tag;
   this._props = _props;
   this._children = _children;
 }
 
 YolkBaseComponent.prototype = {
-  type: "Widget",
+  type: 'Widget',
 
   init: function init() {
-    this._props$ = new CompositePropSubject(this._props);
-    this._children$ = new Rx.BehaviorSubject(this._children);
-    this._innerComponent = new YolkBaseInnerComponent(this.id);
+    this._props$ = new _CompositePropSubject2.default(this._props);
+    this._children$ = new _yolk.Rx.BehaviorSubject(this._children);
+    this._innerComponent = new _YolkBaseInnerComponent2.default(this.id);
 
-    var props$ = wrapObject(this._props$.asDistinctObservableObject(), { wrapToJS: true }).map(transformProperties);
+    var props$ = (0, _yolk.wrapObject)(this._props$.asDistinctObservableObject(), { base: true }).map(_transformProperties2.default);
     var children$ = this._children$.flatMapLatest(function (c) {
-      return wrapObject(c, { wrapToJS: true });
-    }).map(flatten);
+      return (0, _yolk.wrapObject)(c, { base: true });
+    }).map(_flatten2.default);
     var innerComponent = this._innerComponent;
 
     this._disposable = props$.combineLatest(children$).subscribe(function (_ref) {
@@ -3536,7 +3603,7 @@ YolkBaseComponent.prototype = {
   },
   postinit: function postinit(node) {
     this._innerComponent.setNode(node);
-    mountable.emitMount(node, this._props.onMount);
+    (0, _mountable.emitMount)(node, this._props.onMount);
   },
   update: function update(previous) {
     this._props$ = previous._props$;
@@ -3548,7 +3615,7 @@ YolkBaseComponent.prototype = {
     this._children$.onNext(this._children);
   },
   predestroy: function predestroy(node) {
-    mountable.emitUnmount(node, this._props.onUnmount);
+    (0, _mountable.emitUnmount)(node, this._props.onUnmount);
   },
   destroy: function destroy() {
     this._disposable.dispose();
@@ -3559,12 +3626,12 @@ YolkBaseComponent.prototype = {
 
     while (++i < length) {
       var child = children[i];
-      isFunction(child.destroy) && child.destroy();
+      (0, _isFunction2.default)(child.destroy) && child.destroy();
     }
   }
 };
 
-YolkBaseComponent.create = function createInstance(_tag, _props, children) {
+function create(_tag, _props, children) {
   var tag = undefined;
   var props = undefined;
 
@@ -3572,38 +3639,53 @@ YolkBaseComponent.create = function createInstance(_tag, _props, children) {
     tag = _tag;
     props = _props;
   } else {
-    var parsed = parseTag(_tag);
+    var parsed = (0, _parseTag2.default)(_tag);
     tag = parsed.tag;
     props = _extends({}, _props, parsed.classIds);
   }
 
   return new YolkBaseComponent(tag, props, children);
-};
+}
 
-module.exports = YolkBaseComponent;
+exports.default = YolkBaseComponent;
 
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"./CompositePropSubject":56,"./YolkBaseInnerComponent":64,"./flatten":74,"./isFunction":80,"./mountable":84,"./parseTag":86,"./transformProperties":88,"./yolk":92}],64:[function(require,module,exports){
+'use strict';
 
-},{"./CompositePropSubject":56,"./YolkBaseInnerComponent":64,"./flatten":74,"./isFunction":80,"./mountable":84,"./parseTag":86,"./transformProperties":88,"./wrapObject":91}],64:[function(require,module,exports){
-"use strict";
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 
-var h = require("yolk-virtual-dom/h");
-var diff = require("yolk-virtual-dom/diff");
-var patch = require("yolk-virtual-dom/patch");
-var generateUid = require("./generateUid");
+var _h = require('yolk-virtual-dom/h');
+
+var _h2 = _interopRequireDefault(_h);
+
+var _diff = require('yolk-virtual-dom/diff');
+
+var _diff2 = _interopRequireDefault(_diff);
+
+var _patch = require('yolk-virtual-dom/patch');
+
+var _patch2 = _interopRequireDefault(_patch);
+
+var _generateUid = require('./generateUid');
+
+var _generateUid2 = _interopRequireDefault(_generateUid);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function YolkBaseInnerComponent(tag) {
   this._tag = tag;
   this._props = {};
   this._children = [];
-  this._uid = generateUid();
+  this._uid = (0, _generateUid2.default)();
   this._vNode = null;
   this._node = null;
 }
 
 YolkBaseInnerComponent.prototype = {
   createVirtualNode: function createVirtualNode() {
-    this._vNode = h(this._tag, this._props, this._children);
+    this._vNode = (0, _h2.default)(this._tag, this._props, this._children);
     return this._vNode;
   },
   setNode: function setNode(node) {
@@ -3615,26 +3697,38 @@ YolkBaseInnerComponent.prototype = {
     this._children = children;
 
     if (this._node) {
-      var vNode = h(this._tag, props, children);
-      var patches = diff(this._vNode, vNode);
+      var vNode = (0, _h2.default)(this._tag, props, children);
+      var patches = (0, _diff2.default)(this._vNode, vNode);
 
       this._vNode = vNode;
-      patch(this._node, patches);
+      (0, _patch2.default)(this._node, patches);
     }
   }
 };
 
-module.exports = YolkBaseInnerComponent;
+exports.default = YolkBaseInnerComponent;
 
 },{"./generateUid":75,"yolk-virtual-dom/diff":32,"yolk-virtual-dom/h":33,"yolk-virtual-dom/patch":35}],65:[function(require,module,exports){
-(function (global){
-"use strict";
+'use strict';
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-var Rx = (typeof window !== "undefined" ? window['Rx'] : typeof global !== "undefined" ? global['Rx'] : null);
-var YolkCompositeFunctionWrapper = require("./YolkCompositeFunctionWrapper");
-var CompositePropSubject = require("./CompositePropSubject");
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.create = create;
+
+var _YolkCompositeFunctionWrapper = require('./YolkCompositeFunctionWrapper');
+
+var _YolkCompositeFunctionWrapper2 = _interopRequireDefault(_YolkCompositeFunctionWrapper);
+
+var _CompositePropSubject = require('./CompositePropSubject');
+
+var _CompositePropSubject2 = _interopRequireDefault(_CompositePropSubject);
+
+var _yolk = require('./yolk');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function YolkCompositeComponent(fn, props, children) {
   var _props = _extends({}, props);
@@ -3645,7 +3739,7 @@ function YolkCompositeComponent(fn, props, children) {
     delete _props.key;
   }
 
-  this.name = "YolkCompositeComponent_" + fn.name;
+  this.name = 'YolkCompositeComponent_' + fn.name;
   this.id = fn.name;
   this._fn = fn;
   this._props = _props;
@@ -3654,17 +3748,17 @@ function YolkCompositeComponent(fn, props, children) {
 }
 
 YolkCompositeComponent.prototype = {
-  type: "Widget",
+  type: 'Widget',
 
   init: function init() {
-    this._props$ = new CompositePropSubject(this._props);
-    this._children$ = new Rx.BehaviorSubject(this._children);
+    this._props$ = new _CompositePropSubject2.default(this._props);
+    this._children$ = new _yolk.Rx.BehaviorSubject(this._children);
 
     var props$ = this._props$.asObservableObject();
     var children$ = this._children$.asObservable();
 
     var fn = this._fn;
-    this._component = YolkCompositeFunctionWrapper.create(fn, props$, children$);
+    this._component = _YolkCompositeFunctionWrapper2.default.create(fn, props$, children$);
 
     return this._component.vNode;
   },
@@ -3677,7 +3771,7 @@ YolkCompositeComponent.prototype = {
     this._children$.onNext(this._children);
   },
   destroy: function destroy() {
-    YolkCompositeFunctionWrapper.destroy(this._component);
+    _YolkCompositeFunctionWrapper2.default.destroy(this._component);
 
     var children = this._children;
     var length = children.length;
@@ -3690,25 +3784,34 @@ YolkCompositeComponent.prototype = {
   }
 };
 
-YolkCompositeComponent.create = function createInstance(fn, props, children) {
+function create(fn, props, children) {
   return new YolkCompositeComponent(fn, props, children);
-};
+}
 
-module.exports = YolkCompositeComponent;
+exports.default = YolkCompositeComponent;
 
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"./CompositePropSubject":56,"./YolkCompositeFunctionWrapper":66,"./yolk":92}],66:[function(require,module,exports){
+'use strict';
 
-},{"./CompositePropSubject":56,"./YolkCompositeFunctionWrapper":66}],66:[function(require,module,exports){
-"use strict";
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 
-var createEventHandler_ = require("./createEventHandler");
-var isComponent = require("./isComponent");
+var _createEventHandler = require('./createEventHandler');
+
+var _createEventHandler2 = _interopRequireDefault(_createEventHandler);
+
+var _isComponent = require('./isComponent');
+
+var _isComponent2 = _interopRequireDefault(_isComponent);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function YolkCompositeFunctionWrapper(fn, props, children) {
   var eventHandlers = [];
 
   function createEventHandler(mapFn, init) {
-    var handler = createEventHandler_(mapFn, init);
+    var handler = (0, _createEventHandler2.default)(mapFn, init);
     eventHandlers.push(handler);
     return handler;
   }
@@ -3720,8 +3823,8 @@ function YolkCompositeFunctionWrapper(fn, props, children) {
 YolkCompositeFunctionWrapper.create = function (fn, props$, children$) {
   var instance = new YolkCompositeFunctionWrapper(fn, props$, children$);
 
-  if (!isComponent(instance.vNode)) {
-    throw new Error("Function did not return a valid component. See \"" + fn.name + "\".");
+  if (!(0, _isComponent2.default)(instance.vNode)) {
+    throw new Error('Function did not return a valid component. See "' + fn.name + '".');
   }
 
   return instance;
@@ -3738,20 +3841,36 @@ YolkCompositeFunctionWrapper.destroy = function (instance) {
   instance.vNode.destroy();
 };
 
-module.exports = YolkCompositeFunctionWrapper;
+exports.default = YolkCompositeFunctionWrapper;
 
 },{"./createEventHandler":72,"./isComponent":77}],67:[function(require,module,exports){
-"use strict";
+'use strict';
 
-var wrapObject = require("./wrapObject");
-var addProperties = require("./addProperties");
-var YolkBaseComponent = require("./YolkBaseComponent");
-var CompositePropSubject = require("./CompositePropSubject");
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.create = create;
+
+var _addProperties = require('./addProperties');
+
+var _addProperties2 = _interopRequireDefault(_addProperties);
+
+var _YolkBaseComponent = require('./YolkBaseComponent');
+
+var _YolkBaseComponent2 = _interopRequireDefault(_YolkBaseComponent);
+
+var _CompositePropSubject = require('./CompositePropSubject');
+
+var _CompositePropSubject2 = _interopRequireDefault(_CompositePropSubject);
+
+var _yolk = require('./yolk');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function YolkCustomComponent() {}
 
 YolkCustomComponent.prototype = {
-  type: "Widget",
+  type: 'Widget',
   onMount: function onMount() {},
   onUpdate: function onUpdate() {},
   onUnmount: function onUnmount() {},
@@ -3764,21 +3883,21 @@ YolkCustomComponent.prototype = {
         this._child = children[0];
         break;
       case 0:
-        this._child = new YolkBaseComponent("div");
+        this._child = new _YolkBaseComponent2.default('div');
         break;
       default:
-        throw new Error(this.constructor.name + " may not have more than one child");
+        throw new Error(this.constructor.name + ' may not have more than one child');
     }
   },
   init: function init() {
-    this._props$ = new CompositePropSubject(this._props);
+    this._props$ = new _CompositePropSubject2.default(this._props);
 
     return this._child;
   },
   postinit: function postinit(node) {
     var _this = this;
 
-    var props$ = wrapObject(this._props$.asSubjectObject());
+    var props$ = (0, _yolk.wrapObject)(this._props$.asSubjectObject(), { base: false });
     var mountDisposable = props$.take(1).subscribe(function (props) {
       return _this.onMount(props, node);
     });
@@ -3806,42 +3925,63 @@ YolkCustomComponent.prototype = {
 
 YolkCustomComponent._isCustomComponent = true;
 
-YolkCustomComponent.create = function createInstance(props, children) {
-  var instance = new this(props, children);
-  instance._initialize(props, children);
-
-  return instance;
-};
-
 YolkCustomComponent.extend = function extend(obj) {
   function Component() {}
-  addProperties(Component, YolkCustomComponent);
+  (0, _addProperties2.default)(Component, YolkCustomComponent);
   Component.prototype = Object.create(YolkCustomComponent.prototype);
-  addProperties(Component.prototype, obj);
+  (0, _addProperties2.default)(Component.prototype, obj);
 
   return Component;
 };
 
-module.exports = YolkCustomComponent;
+function create(Tag, props, children) {
+  var instance = new Tag(props, children);
+  instance._initialize(props, children);
 
-},{"./CompositePropSubject":56,"./YolkBaseComponent":63,"./addProperties":69,"./wrapObject":91}],68:[function(require,module,exports){
-"use strict";
+  return instance;
+}
 
-var create = require("yolk-virtual-dom/create-element");
-var diff = require("yolk-virtual-dom/diff");
-var patch = require("yolk-virtual-dom/patch");
-var initializeWidgets = require("yolk-virtual-dom/initialize-widgets");
-var delegator = require("./delegator");
+exports.default = YolkCustomComponent;
 
-var PREVIOUS_WIDGET_KEY = "__YOLK_PREVIOUS_WIDGET_KEY__";
+},{"./CompositePropSubject":56,"./YolkBaseComponent":63,"./addProperties":69,"./yolk":92}],68:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.render = render;
+
+var _createElement = require('yolk-virtual-dom/create-element');
+
+var _createElement2 = _interopRequireDefault(_createElement);
+
+var _diff = require('yolk-virtual-dom/diff');
+
+var _diff2 = _interopRequireDefault(_diff);
+
+var _patch = require('yolk-virtual-dom/patch');
+
+var _patch2 = _interopRequireDefault(_patch);
+
+var _initializeWidgets = require('yolk-virtual-dom/initialize-widgets');
+
+var _initializeWidgets2 = _interopRequireDefault(_initializeWidgets);
+
+var _delegator = require('./delegator');
+
+var _delegator2 = _interopRequireDefault(_delegator);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var PREVIOUS_WIDGET_KEY = '__YOLK_PREVIOUS_WIDGET_KEY__';
 
 function YolkRootComponent(child) {
   this._child = child;
 }
 
 YolkRootComponent.prototype = {
-  name: "YolkRootComponent",
-  type: "Widget",
+  name: 'YolkRootComponent',
+  type: 'Widget',
 
   init: function init() {
     return this._child;
@@ -3851,38 +3991,42 @@ YolkRootComponent.prototype = {
       return this.init();
     }
 
-    var patches = diff(previous._child, this._child);
-    patch(node, patches);
+    var patches = (0, _diff2.default)(previous._child, this._child);
+    (0, _patch2.default)(node, patches);
   }
 };
 
-YolkRootComponent.render = function render(instance, node) {
+function render(instance, node) {
   var root = new YolkRootComponent(instance);
   var child = node.children[0];
 
   if (child) {
-    var patches = diff(child[PREVIOUS_WIDGET_KEY], root);
-    patch(child, patches);
+    var patches = (0, _diff2.default)(child[PREVIOUS_WIDGET_KEY], root);
+    (0, _patch2.default)(child, patches);
   } else {
-    child = create(root);
+    child = (0, _createElement2.default)(root);
     node.appendChild(child);
-    delegator(node);
-    initializeWidgets(child);
+    (0, _delegator2.default)(node);
+    (0, _initializeWidgets2.default)(child);
   }
 
   child[PREVIOUS_WIDGET_KEY] = root;
 
   return root;
-};
+}
 
-module.exports = YolkRootComponent;
+exports.default = YolkRootComponent;
 
 },{"./delegator":73,"yolk-virtual-dom/create-element":31,"yolk-virtual-dom/diff":32,"yolk-virtual-dom/initialize-widgets":34,"yolk-virtual-dom/patch":35}],69:[function(require,module,exports){
 "use strict";
 
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = addProperties;
 /* eslint-disable guard-for-in */
 
-module.exports = function addProperties(base) {
+function addProperties(base) {
   for (var _len = arguments.length, objs = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
     objs[_key - 1] = arguments[_key];
   }
@@ -3899,68 +4043,105 @@ module.exports = function addProperties(base) {
   }
 
   return base;
-};
+}
 
 },{}],70:[function(require,module,exports){
-"use strict";
+'use strict';
 
-var isDefined = require("./isDefined");
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = compact;
 
-module.exports = function compact(arr) {
+var _isDefined = require('./isDefined');
+
+var _isDefined2 = _interopRequireDefault(_isDefined);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function compact(arr) {
   var length = arr.length;
   var newArr = [];
   var i = -1;
 
   while (++i < length) {
     var value = arr[i];
-    if (isDefined(value) && value !== false) {
+    if ((0, _isDefined2.default)(value) && value !== false) {
       newArr.push(value);
     }
   }
 
   return newArr;
-};
+}
 
 },{"./isDefined":78}],71:[function(require,module,exports){
-"use strict";
+'use strict';
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-var YolkCompositeComponent = require("./YolkCompositeComponent");
-var YolkBaseComponent = require("./YolkBaseComponent");
-var isString = require("./isString");
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = createElement;
 
-module.exports = function createElement(tag, _props) {
+var _YolkCompositeComponent = require('./YolkCompositeComponent');
+
+var _YolkBaseComponent = require('./YolkBaseComponent');
+
+var _YolkCustomComponent = require('./YolkCustomComponent');
+
+var _isString = require('./isString');
+
+var _isString2 = _interopRequireDefault(_isString);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function createElement(tag, _props) {
   var props = _extends({}, _props);
 
   for (var _len = arguments.length, children = Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
     children[_key - 2] = arguments[_key];
   }
 
-  if (isString(tag)) {
-    return YolkBaseComponent.create(tag, props, children);
+  if ((0, _isString2.default)(tag)) {
+    return (0, _YolkBaseComponent.create)(tag, props, children);
   }
 
   if (tag._isCustomComponent) {
-    return tag.create(props, children);
+    return (0, _YolkCustomComponent.create)(tag, props, children);
   }
 
-  return YolkCompositeComponent.create(tag, props, children);
-};
+  return (0, _YolkCompositeComponent.create)(tag, props, children);
+}
 
-},{"./YolkBaseComponent":63,"./YolkCompositeComponent":65,"./isString":83}],72:[function(require,module,exports){
-(function (global){
-"use strict";
+},{"./YolkBaseComponent":63,"./YolkCompositeComponent":65,"./YolkCustomComponent":67,"./isString":83}],72:[function(require,module,exports){
+'use strict';
 
-var Rx = (typeof window !== "undefined" ? window['Rx'] : typeof global !== "undefined" ? global['Rx'] : null);
-var isDefined = require("./isDefined");
-var isFunction = require("./isFunction");
-var addProperties = require("./addProperties");
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = createEventHandler;
 
-module.exports = function createEventHandler(mapFn, init) {
-  var initIsDefined = isDefined(init);
-  var mapFnIsDefined = isDefined(mapFn);
-  var mapFnIsFunction = isFunction(mapFn);
+var _yolk = require('./yolk');
+
+var _isDefined = require('./isDefined');
+
+var _isDefined2 = _interopRequireDefault(_isDefined);
+
+var _isFunction = require('./isFunction');
+
+var _isFunction2 = _interopRequireDefault(_isFunction);
+
+var _addProperties = require('./addProperties');
+
+var _addProperties2 = _interopRequireDefault(_addProperties);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function createEventHandler(mapFn, init) {
+  var initIsDefined = (0, _isDefined2.default)(init);
+  var mapFnIsDefined = (0, _isDefined2.default)(mapFn);
+  var mapFnIsFunction = (0, _isFunction2.default)(mapFn);
   var handler = undefined;
 
   if (mapFnIsDefined && mapFnIsFunction) {
@@ -3977,41 +4158,55 @@ module.exports = function createEventHandler(mapFn, init) {
     };
   }
 
-  addProperties(handler, Rx.ReplaySubject.prototype);
-  Rx.ReplaySubject.call(handler, 1);
+  (0, _addProperties2.default)(handler, _yolk.Rx.ReplaySubject.prototype);
+  _yolk.Rx.ReplaySubject.call(handler, 1);
 
   if (initIsDefined) {
     handler.onNext(init);
   }
 
   return handler;
-};
+}
 
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"./addProperties":69,"./isDefined":78,"./isFunction":80,"./yolk":92}],73:[function(require,module,exports){
+'use strict';
 
-},{"./addProperties":69,"./isDefined":78,"./isFunction":80}],73:[function(require,module,exports){
-"use strict";
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = delegator;
 
-var domDelegator = require("dom-delegator");
-var EventsList = require("./EventsList");
+var _domDelegator = require('dom-delegator');
 
-module.exports = function delegator(node) {
-  var instance = domDelegator(node);
+var _domDelegator2 = _interopRequireDefault(_domDelegator);
 
-  var length = EventsList.length;
+var _EventsList = require('./EventsList');
+
+var _EventsList2 = _interopRequireDefault(_EventsList);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function delegator(node) {
+  var instance = (0, _domDelegator2.default)(node);
+
+  var length = _EventsList2.default.length;
   var i = -1;
 
   while (++i < length) {
-    instance.listenTo(EventsList[i].toLowerCase());
+    instance.listenTo(_EventsList2.default[i].toLowerCase());
   }
 
   return instance;
-};
+}
 
 },{"./EventsList":60,"dom-delegator":6}],74:[function(require,module,exports){
 "use strict";
 
-module.exports = function flatten(arr) {
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = flatten;
+function flatten(arr) {
   var length = arr.length;
   var result = [];
   var index = -1;
@@ -4027,168 +4222,260 @@ module.exports = function flatten(arr) {
   }
 
   return result;
-};
+}
 
 },{}],75:[function(require,module,exports){
 "use strict";
 
-module.exports = function generateUid() {
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = generateUid;
+function generateUid() {
   return (Math.random() * 0x100000000000000).toString(36);
-};
+}
 
 },{}],76:[function(require,module,exports){
-"use strict";
+'use strict';
 
-var isFunction = require("./isFunction");
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = hasToJS;
 
-module.exports = function hasToJS(obj) {
-  return !!obj && isFunction(obj.toJS);
-};
+var _isFunction = require('./isFunction');
+
+var _isFunction2 = _interopRequireDefault(_isFunction);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function hasToJS(obj) {
+  return !!obj && (0, _isFunction2.default)(obj.toJS);
+}
 
 },{"./isFunction":80}],77:[function(require,module,exports){
-"use strict";
+'use strict';
 
-var isWidget = require("yolk-virtual-dom/vnode/is-widget");
-var isVNode = require("yolk-virtual-dom/vnode/is-vnode");
-var isVText = require("yolk-virtual-dom/vnode/is-vtext");
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = isComponent;
 
-module.exports = function isComponent(obj) {
-  return !!obj && (isWidget(obj) || isVNode(obj) || isVText(obj));
-};
+var _isWidget = require('yolk-virtual-dom/vnode/is-widget');
+
+var _isWidget2 = _interopRequireDefault(_isWidget);
+
+var _isVnode = require('yolk-virtual-dom/vnode/is-vnode');
+
+var _isVnode2 = _interopRequireDefault(_isVnode);
+
+var _isVtext = require('yolk-virtual-dom/vnode/is-vtext');
+
+var _isVtext2 = _interopRequireDefault(_isVtext);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function isComponent(obj) {
+  return !!obj && ((0, _isWidget2.default)(obj) || (0, _isVnode2.default)(obj) || (0, _isVtext2.default)(obj));
+}
 
 },{"yolk-virtual-dom/vnode/is-vnode":47,"yolk-virtual-dom/vnode/is-vtext":48,"yolk-virtual-dom/vnode/is-widget":49}],78:[function(require,module,exports){
 "use strict";
 
-module.exports = function isDefined(obj) {
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = isDefined;
+function isDefined(obj) {
   return typeof obj !== "undefined" && obj !== null;
-};
+}
 
 },{}],79:[function(require,module,exports){
 "use strict";
 
-module.exports = function isEmpty(obj) {
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = isEmpty;
+function isEmpty(obj) {
   return Object.keys(obj).length === 0;
-};
+}
 
 },{}],80:[function(require,module,exports){
 "use strict";
 
-module.exports = function isFunction(obj) {
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = isFunction;
+function isFunction(obj) {
   return Object.prototype.toString.call(obj) === "[object Function]";
-};
+}
 
 },{}],81:[function(require,module,exports){
 "use strict";
 
-module.exports = function isNumber(num) {
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = isNumber;
+function isNumber(num) {
   return typeof num === "number" || num instanceof Number;
-};
+}
 
 },{}],82:[function(require,module,exports){
-(function (global){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = isObservable;
+
+var _yolk = require('./yolk');
+
+function isObservable(obj) {
+  return obj instanceof _yolk.Rx.Observable;
+}
+
+},{"./yolk":92}],83:[function(require,module,exports){
 "use strict";
 
-var Rx = (typeof window !== "undefined" ? window['Rx'] : typeof global !== "undefined" ? global['Rx'] : null);
-
-module.exports = function isObservable(obj) {
-  return obj instanceof Rx.Observable;
-};
-
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-
-},{}],83:[function(require,module,exports){
-"use strict";
-
-module.exports = function isString(str) {
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = isString;
+function isString(str) {
   return typeof str === "string" || str instanceof String;
-};
+}
 
 },{}],84:[function(require,module,exports){
-"use strict";
+'use strict';
 
-var isFunction = require("./isFunction");
-var CustomEvent = require("./CustomEvent");
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.emitMount = emitMount;
+exports.emitUnmount = emitUnmount;
+
+var _isFunction = require('./isFunction');
+
+var _isFunction2 = _interopRequireDefault(_isFunction);
+
+var _CustomEvent = require('./CustomEvent');
+
+var _CustomEvent2 = _interopRequireDefault(_CustomEvent);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function emitMount(node, fn) {
-  if (isFunction(fn) && node.parentNode) {
-    var event = new CustomEvent("mount");
+  if ((0, _isFunction2.default)(fn) && node.parentNode) {
+    var event = new _CustomEvent2.default('mount');
     node.dispatchEvent(event);
   }
 }
 
 function emitUnmount(node, fn) {
-  if (isFunction(fn)) {
-    var event = new CustomEvent("unmount");
+  if ((0, _isFunction2.default)(fn)) {
+    var event = new _CustomEvent2.default('unmount');
     node.dispatchEvent(event);
   }
 }
 
-module.exports = { emitMount: emitMount, emitUnmount: emitUnmount };
-
 },{"./CustomEvent":57,"./isFunction":80}],85:[function(require,module,exports){
-"use strict";
+'use strict';
 
-var camelCase = require("lodash.camelcase");
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = parseDOMNodeAttributes;
+
+var _lodash = require('lodash.camelcase');
+
+var _lodash2 = _interopRequireDefault(_lodash);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var ALL_CHARS_ARE_DIGITS_REGEX = /^\d*$/;
 var DOES_NOT_LEAD_WITH_ENCLOSING_CHAR_REGEX = /^[^\{\[\"\']/;
 
 function isSingleton(value) {
-  return value === "true" || value === "false" || value === "null";
+  return value === 'true' || value === 'false' || value === 'null';
 }
 
-module.exports = function parseDOMNodeAttributes(attributes) {
+function parseDOMNodeAttributes(attributes) {
   var attrs = {};
   var length = attributes.length;
   var i = -1;
 
   while (++i < length) {
     var attr = attributes[i];
-    var name = camelCase(attr.name);
+    var name = (0, _lodash2.default)(attr.name);
     var value = attr.value;
 
     if (!ALL_CHARS_ARE_DIGITS_REGEX.test(value) && !isSingleton(value) && DOES_NOT_LEAD_WITH_ENCLOSING_CHAR_REGEX.test(value)) {
-      value = "\"" + value + "\"";
+      value = '"' + value + '"';
     }
 
     attrs[name] = JSON.parse(value);
   }
 
   return attrs;
-};
+}
 
 },{"lodash.camelcase":20}],86:[function(require,module,exports){
-"use strict";
+'use strict';
 
-var _parseTag = require("parse-tag");
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = parseTag;
 
-module.exports = function parseTag(_tag) {
+var _parseTag = require('parse-tag');
+
+var _parseTag2 = _interopRequireDefault(_parseTag);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function parseTag(_tag) {
   var classIds = {};
-  var tag = _parseTag(_tag, classIds).toLowerCase();
+  var tag = (0, _parseTag2.default)(_tag, classIds).toLowerCase();
   return { tag: tag, classIds: classIds };
-};
+}
 
 },{"parse-tag":28}],87:[function(require,module,exports){
-"use strict";
+'use strict';
 
-var YolkRootComponent = require("./YolkRootComponent");
-var createElement = require("./createElement");
-var parseDOMNodeAttributes = require("./parseDOMNodeAttributes");
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = registerElement;
 
-var INSTANCE_KEY = "__YOLK_INSTANCE_KEY__";
+var _YolkRootComponent = require('./YolkRootComponent');
 
-module.exports = function registerElement(name, Component) {
+var _createElement = require('./createElement');
+
+var _createElement2 = _interopRequireDefault(_createElement);
+
+var _parseDOMNodeAttributes = require('./parseDOMNodeAttributes');
+
+var _parseDOMNodeAttributes2 = _interopRequireDefault(_parseDOMNodeAttributes);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var INSTANCE_KEY = '__YOLK_INSTANCE_KEY__';
+
+function registerElement(name, Component) {
   var prototype = Object.create(HTMLElement.prototype);
 
   prototype.createdCallback = function createdCallback() {
-    var attrs = parseDOMNodeAttributes(this.attributes);
-    var instance = createElement(Component, attrs);
+    var attrs = (0, _parseDOMNodeAttributes2.default)(this.attributes);
+    var instance = (0, _createElement2.default)(Component, attrs);
 
     this[INSTANCE_KEY] = instance;
   };
 
   prototype.attachedCallback = function attachedCallback() {
-    YolkRootComponent.render(this[INSTANCE_KEY], this);
+    (0, _YolkRootComponent.render)(this[INSTANCE_KEY], this);
   };
 
   prototype.detachedCallback = function detachedCallback() {
@@ -4196,23 +4483,38 @@ module.exports = function registerElement(name, Component) {
   };
 
   prototype.attributeChangedCallback = function attributeChangedCallback() {
-    var attrs = parseDOMNodeAttributes(this.attributes);
-    var instance = createElement(Component, attrs);
+    var attrs = (0, _parseDOMNodeAttributes2.default)(this.attributes);
+    var instance = (0, _createElement2.default)(Component, attrs);
     instance.update(this[INSTANCE_KEY]);
     this[INSTANCE_KEY] = instance;
   };
 
   document.registerElement(name, { prototype: prototype });
-};
+}
 
 },{"./YolkRootComponent":68,"./createElement":71,"./parseDOMNodeAttributes":85}],88:[function(require,module,exports){
-"use strict";
+'use strict';
 
-var DOMAttributeDescriptors = require("./DOMAttributeDescriptors");
-var transformStyle = require("./transformStyle");
-var transformProperty = require("./transformProperty");
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = transformProperties;
 
-module.exports = function transformProperties(props) {
+var _DOMAttributeDescriptors = require('./DOMAttributeDescriptors');
+
+var _DOMAttributeDescriptors2 = _interopRequireDefault(_DOMAttributeDescriptors);
+
+var _transformStyle = require('./transformStyle');
+
+var _transformStyle2 = _interopRequireDefault(_transformStyle);
+
+var _transformProperty = require('./transformProperty');
+
+var _transformProperty2 = _interopRequireDefault(_transformProperty);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function transformProperties(props) {
   var keys = Object.keys(props);
   var length = keys.length;
   var newProps = { attributes: {} };
@@ -4222,26 +4524,47 @@ module.exports = function transformProperties(props) {
     var key = keys[i];
     var value = props[key];
 
-    if (key === "style") {
-      transformStyle(newProps, value);
+    if (key === 'style') {
+      (0, _transformStyle2.default)(newProps, value);
     } else {
-      transformProperty(newProps, key, value, DOMAttributeDescriptors[key]);
+      (0, _transformProperty2.default)(newProps, key, value, _DOMAttributeDescriptors2.default[key]);
     }
   }
 
   return newProps;
-};
+}
 
 },{"./DOMAttributeDescriptors":58,"./transformProperty":89,"./transformStyle":90}],89:[function(require,module,exports){
-"use strict";
+'use strict';
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-var kababCase = require("lodash.kebabcase");
-var SoftSetHook = require("yolk-virtual-dom/virtual-hyperscript/hooks/soft-set-hook");
-var AttributeHook = require("yolk-virtual-dom/virtual-hyperscript/hooks/attribute-hook");
-var EventHook = require("./EventHook");
-var compact = require("./compact");
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = transformProperty;
+
+var _lodash = require('lodash.kebabcase');
+
+var _lodash2 = _interopRequireDefault(_lodash);
+
+var _softSetHook = require('yolk-virtual-dom/virtual-hyperscript/hooks/soft-set-hook');
+
+var _softSetHook2 = _interopRequireDefault(_softSetHook);
+
+var _attributeHook = require('yolk-virtual-dom/virtual-hyperscript/hooks/attribute-hook');
+
+var _attributeHook2 = _interopRequireDefault(_attributeHook);
+
+var _EventHook = require('./EventHook');
+
+var _EventHook2 = _interopRequireDefault(_EventHook);
+
+var _compact = require('./compact');
+
+var _compact2 = _interopRequireDefault(_compact);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var NULL_DESCRIPTOR = {
   isAttribute: false,
@@ -4257,7 +4580,7 @@ var NULL_DESCRIPTOR = {
 
 var STAR_DESCRIPTOR = _extends({}, NULL_DESCRIPTOR, { isAttribute: true, isStandard: true });
 
-module.exports = function transformProperty(props, key, value) {
+function transformProperty(props, key, value) {
   var descriptor = arguments.length <= 3 || arguments[3] === undefined ? NULL_DESCRIPTOR : arguments[3];
 
   var _value = value;
@@ -4279,7 +4602,7 @@ module.exports = function transformProperty(props, key, value) {
     while (++i < length) {
       var __key = keys[i];
       var __value = value[__key];
-      transformProperty(props, key + "-" + kababCase(__key), __value, STAR_DESCRIPTOR);
+      transformProperty(props, key + '-' + (0, _lodash2.default)(__key), __value, STAR_DESCRIPTOR);
     }
 
     return props;
@@ -4288,28 +4611,37 @@ module.exports = function transformProperty(props, key, value) {
   _key = descriptor.computed || key;
 
   if (descriptor.canBeArrayOfStrings && Array.isArray(_value)) {
-    _value = compact(_value).join(" ");
+    _value = (0, _compact2.default)(_value).join(' ');
   }
 
   if (descriptor.isAttribute) {
     props.attributes[_key] = _value;
   } else if (descriptor.usePropertyHook) {
-    props[_key] = new SoftSetHook(_value);
+    props[_key] = new _softSetHook2.default(_value);
   } else if (descriptor.useEventHook) {
-    props[_key] = new EventHook(_value);
+    props[_key] = new _EventHook2.default(_value);
   } else if (descriptor.useAttributeHook) {
-    props[_key] = new AttributeHook(null, _value);
+    props[_key] = new _attributeHook2.default(null, _value);
   } else if (descriptor.isStandard) {
     props[_key] = _value;
   }
 
   return props;
-};
+}
 
 },{"./EventHook":59,"./compact":70,"lodash.kebabcase":25,"yolk-virtual-dom/virtual-hyperscript/hooks/attribute-hook":43,"yolk-virtual-dom/virtual-hyperscript/hooks/soft-set-hook":44}],90:[function(require,module,exports){
-"use strict";
+'use strict';
 
-var isNumber = require("./isNumber");
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = transformStyle;
+
+var _isNumber = require('./isNumber');
+
+var _isNumber2 = _interopRequireDefault(_isNumber);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var unitlessNumberProperties = {
   animationIterationCount: true,
@@ -4340,7 +4672,7 @@ var unitlessNumberProperties = {
   zoom: true
 };
 
-module.exports = function transformStyle(props, style) {
+function transformStyle(props, style) {
   if (!style) {
     return false;
   }
@@ -4354,8 +4686,8 @@ module.exports = function transformStyle(props, style) {
     var isUnitlessNumber = unitlessNumberProperties[key] || false;
     var value = style[key];
 
-    if (!isUnitlessNumber && isNumber(value)) {
-      value = value + "px";
+    if (!isUnitlessNumber && (0, _isNumber2.default)(value)) {
+      value = value + 'px';
     }
 
     newStyle[key] = value;
@@ -4364,33 +4696,51 @@ module.exports = function transformStyle(props, style) {
   props.style = newStyle;
 
   return props;
-};
+}
 
 },{"./isNumber":81}],91:[function(require,module,exports){
-(function (global){
-"use strict";
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = wrapObject;
+
+var _lodash = require('lodash.isplainobject');
+
+var _lodash2 = _interopRequireDefault(_lodash);
+
+var _isObservable = require('./isObservable');
+
+var _isObservable2 = _interopRequireDefault(_isObservable);
+
+var _isEmpty = require('./isEmpty');
+
+var _isEmpty2 = _interopRequireDefault(_isEmpty);
+
+var _hasToJS = require('./hasToJS');
+
+var _hasToJS2 = _interopRequireDefault(_hasToJS);
+
+var _yolk = require('./yolk');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _typeof(obj) { return obj && typeof Symbol !== "undefined" && obj.constructor === Symbol ? "symbol" : typeof obj; }
 
-var Rx = (typeof window !== "undefined" ? window['Rx'] : typeof global !== "undefined" ? global['Rx'] : null);
-var isPlainObject = require("lodash.isplainobject");
-var isObservable = require("./isObservable");
-var isEmpty = require("./isEmpty");
-var hasToJS = require("./hasToJS");
-
-module.exports = function wrapObject(obj) {
+function wrapObject(obj) {
   var opts = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
 
-  if (isObservable(obj)) {
+  if ((0, _isObservable2.default)(obj)) {
     return obj.flatMapLatest(function (o) {
       return wrapObject(o, opts);
     });
-  } else if (hasToJS(obj)) {
-    if (opts.wrapToJS) {
-      // only call toJS if option is set
+  } else if ((0, _hasToJS2.default)(obj)) {
+    if (opts.base) {
+      // only call toJS about to render base component
       return wrapObject(obj.toJS(), opts);
     }
-  } else if (isPlainObject(obj) && !isEmpty(obj)) {
+  } else if ((0, _lodash2.default)(obj) && !(0, _isEmpty2.default)(obj)) {
     var _ret = (function () {
       var keys = Object.keys(obj);
       var length = keys.length;
@@ -4403,7 +4753,7 @@ module.exports = function wrapObject(obj) {
       }
 
       return {
-        v: Rx.Observable.combineLatest(values, function combineLatest() {
+        v: _yolk.Rx.Observable.combineLatest(values, function combineLatest() {
           var newObj = {};
           index = -1;
 
@@ -4417,40 +4767,66 @@ module.exports = function wrapObject(obj) {
       };
     })();
 
-    if ((typeof _ret === "undefined" ? "undefined" : _typeof(_ret)) === "object") return _ret.v;
+    if ((typeof _ret === 'undefined' ? 'undefined' : _typeof(_ret)) === "object") return _ret.v;
   } else if (Array.isArray(obj) && obj.length) {
     var _obj = obj.map(function (i) {
       return wrapObject(i, opts);
     });
-    return Rx.Observable.combineLatest(_obj);
+    return _yolk.Rx.Observable.combineLatest(_obj);
   }
 
-  return Rx.Observable.just(obj);
-};
+  return _yolk.Rx.Observable.just(obj);
+}
 
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-
-},{"./hasToJS":76,"./isEmpty":79,"./isObservable":82,"lodash.isplainobject":24}],92:[function(require,module,exports){
+},{"./hasToJS":76,"./isEmpty":79,"./isObservable":82,"./yolk":92,"lodash.isplainobject":24}],92:[function(require,module,exports){
 (function (global){
-"use strict";
+'use strict';
 
-require("document-register-element");
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Rx = exports.render = exports.wrapObject = exports.CustomComponent = exports.registerElement = exports.DOM = exports.h = undefined;
 
-var Rx = (typeof window !== "undefined" ? window['Rx'] : typeof global !== "undefined" ? global['Rx'] : null);
-var h = require("./createElement");
-var DOM = require("./HTMLHelpers");
-var registerElement = require("./registerElement");
-var CustomComponent = require("./YolkCustomComponent");
-var render = require("./YolkRootComponent").render;
+require('document-register-element');
 
-function Yolk() {}
-Yolk.prototype = { Rx: Rx, CustomComponent: CustomComponent, DOM: DOM, h: h, registerElement: registerElement, render: render };
-Object.freeze(Yolk);
+var _rx = (typeof window !== "undefined" ? window['Rx'] : typeof global !== "undefined" ? global['Rx'] : null);
 
-module.exports = new Yolk();
+var _rx2 = _interopRequireDefault(_rx);
+
+var _createElement = require('./createElement');
+
+var _createElement2 = _interopRequireDefault(_createElement);
+
+var _HTMLHelpers = require('./HTMLHelpers');
+
+var _HTMLHelpers2 = _interopRequireDefault(_HTMLHelpers);
+
+var _registerElement = require('./registerElement');
+
+var _registerElement2 = _interopRequireDefault(_registerElement);
+
+var _YolkCustomComponent = require('./YolkCustomComponent');
+
+var _YolkCustomComponent2 = _interopRequireDefault(_YolkCustomComponent);
+
+var _wrapObject = require('./wrapObject');
+
+var _wrapObject2 = _interopRequireDefault(_wrapObject);
+
+var _YolkRootComponent = require('./YolkRootComponent');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.h = _createElement2.default;
+exports.DOM = _HTMLHelpers2.default;
+exports.registerElement = _registerElement2.default;
+exports.CustomComponent = _YolkCustomComponent2.default;
+exports.wrapObject = _wrapObject2.default;
+exports.render = _YolkRootComponent.render;
+exports.Rx = _rx2.default;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"./HTMLHelpers":61,"./YolkCustomComponent":67,"./YolkRootComponent":68,"./createElement":71,"./registerElement":87,"document-register-element":3}]},{},[92])(92)
+},{"./HTMLHelpers":61,"./YolkCustomComponent":67,"./YolkRootComponent":68,"./createElement":71,"./registerElement":87,"./wrapObject":91,"document-register-element":3}]},{},[92])(92)
 });
 //# sourceMappingURL=yolk.js.map
