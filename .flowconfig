@@ -1,0 +1,12 @@
+[ignore]
+.*/node_modules/babel.*
+.*/node_modules/babylon
+.*/karma.conf.js
+.*/webpack.config.test.js
+
+[include]
+src/.*
+
+[libs]
+
+[options]
