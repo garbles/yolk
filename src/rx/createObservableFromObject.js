@@ -7,14 +7,14 @@ import 'rxjs/add/observable/fromArray'
 import 'rxjs/add/operator/combineLatest-static'
 
 export function createObservableFromObject (obj: Object): Observable {
-  const keys = Object.keys(obj)
-  const len = keys.length
-  const values = Array(len)
-  let i = -1
+  const keys: Array<string> = Object.keys(obj)
+  const len: number = keys.length
+  const values: Array<Observable> = Array(len)
+  let i: number = -1
 
   while (++i < len) {
-    const key = keys[i]
-    const value = obj[key]
+    const key: string = keys[i]
+    const value: any = obj[key]
 
     if (isObservable(value)) {
       values[i] = value
@@ -23,12 +23,12 @@ export function createObservableFromObject (obj: Object): Observable {
     }
   }
 
-  return Observable.combineLatest(values, function latest () {
-    const newObj = {}
+  return Observable.combineLatest(values, function latest (): Object {
+    const newObj: Object = {}
     i = -1
 
     while (++i < len) {
-      const key = keys[i]
+      const key: string = keys[i]
       newObj[key] = arguments[i]
     }
 

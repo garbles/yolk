@@ -8,6 +8,5 @@
 .*/src/.*
 
 [libs]
-.*/interfaces/.*
 
 [options]

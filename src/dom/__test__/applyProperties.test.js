@@ -1,5 +1,3 @@
-/* @flow */
-
 import document from 'global/document'
 import {applyProperties} from '../applyProperties'
 

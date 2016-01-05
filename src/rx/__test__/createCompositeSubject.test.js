@@ -1,5 +1,3 @@
-/* @flow */
-
 import {BehaviorSubject} from 'rxjs/subject/BehaviorSubject'
 import {createCompositeSubject} from '../createCompositeSubject'
 import {createObservableFromObject} from '../createObservableFromObject'

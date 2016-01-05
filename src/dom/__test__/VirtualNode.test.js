@@ -1,5 +1,3 @@
-/* @flow */
-
 import {VirtualNode} from '../VirtualNode'
 
 describe(`VirtualNode`, () => {
