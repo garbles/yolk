@@ -1,6 +1,5 @@
-import {mocha} from 'mocha'
-import {chai} from 'chai'
+/* @flow */
 
-declare var describe = mocha.describe
-declare var it = mocha.it
-declare var assert = chai.assert
+declare var describe: Object
+declare var it: Function
+declare var assert: Object

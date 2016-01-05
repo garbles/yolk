@@ -1,18 +1,19 @@
 /* @flow */
 
 import {BehaviorSubject} from 'rxjs/subject/BehaviorSubject'
-import {CompositeSubject} from '../CompositeSubject'
+import {createCompositeSubject} from '../createCompositeSubject'
+import {createObservableFromObject} from '../createObservableFromObject'
+import {createObservableFromArray} from '../createObservableFromArray'
 
 import 'rxjs/add/operator/skip'
 
-describe(`CompositeSubject`, () => {
+describe(`createCompositeSubject`, () => {
   it(`ends subscriptions`, () => {
-    const subject = CompositeSubject.fromObject({hidden: true})
+    const subject = createCompositeSubject(createObservableFromObject)({hidden: true})
 
     subject.subscribe()
 
     assert.equal(subject.isUnsubscribed, false)
-    assert.equal(subject.observers.length, 1)
 
     subject.unsubscribe()
 
@@ -21,22 +22,22 @@ describe(`CompositeSubject`, () => {
 
   it(`does not propegate values after it has been unsubscribed`, () => {
     const hidden = new BehaviorSubject(true)
-    const subject = CompositeSubject.fromObject({hidden})
+    const subject = createCompositeSubject(createObservableFromObject)({hidden})
     const error = new Error(`ER MER GERD!`)
 
-    subject.skip(1).subscribe(() => {throw error})
+    const subscription = subject.skip(1).subscribe(() => {throw error})
 
     assert.throws(() => hidden.next(false))
-    subject.unsubscribe()
+    subscription.unsubscribe()
     assert.doesNotThrow(() => hidden.next(true), error)
   })
 
-  describe(`.fromObject`, () => {
+  describe(`createObservableFromObject`, () => {
     it(`creates a subject that unwraps an object of observables`, done => {
       const height = new BehaviorSubject(12)
       const hidden = new BehaviorSubject(true)
       const className = `gabe gabe gabe`
-      const subject = CompositeSubject.fromObject({height, hidden, className})
+      const subject = createCompositeSubject(createObservableFromObject)({height, hidden, className})
 
       subject.subscribe(props => {
         assert.equal(props.height, 12)
@@ -47,12 +48,12 @@ describe(`CompositeSubject`, () => {
     })
   })
 
-  describe(`.fromArray`, () => {
+  describe(`createObservableFromArray`, () => {
     it(`creates a subject that unwraps an array of observables`, done => {
       const height = new BehaviorSubject(12)
       const hidden = new BehaviorSubject(true)
       const className = `gabe gabe gabe`
-      const subject = CompositeSubject.fromArray([height, hidden, className])
+      const subject = createCompositeSubject(createObservableFromArray)([height, hidden, className])
 
       subject.subscribe(props => {
         assert.equal(props[0], 12)
