@@ -2,7 +2,7 @@
 
 import descriptors from 'html-props'
 
-export function applyProperties (node: Object, props: Object, oldProps?: Object = {}): void {
+export function patchProperties (node: Object, props: Object, oldProps?: Object = {}): void {
   for (const key in props) {
     if (props[key] !== oldProps[key]) {
       const next = props[key]

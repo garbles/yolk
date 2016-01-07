@@ -1,13 +1,22 @@
 /* @flow */
 
+import {Subject} from 'rxjs/Subject'
 import {VirtualText} from './VirtualText'
+import {createCompositeSubject} from '../rx/createCompositeSubject'
+import {createObservableFromObject} from '../rx/createObservableFromObject'
+import {patchProperties} from './patchProperties'
+
+// import {createObservableFromArray} from '..rx/createObservableFromArray'
 
 const NO_PROPERTIES = Object.freeze({})
 const NO_CHILDREN = Object.freeze([])
 
+const createCompositeObjectSubject = createCompositeSubject(createObservableFromObject)
+
 export class VirtualNode {
   tagName: string;
   props: Object;
+  props$: Subject;
   children: Array<VirtualNode|VirtualText>;
   key: string|void;
   namespace: string|void;
@@ -17,11 +26,19 @@ export class VirtualNode {
     this.children = children || NO_CHILDREN
     this.key = key
     this.namespace = namespace
-    Object.freeze(this)
   }
 
   create (node: Element): void {
-    node
+    const props$: Subject = this.props$ = createCompositeObjectSubject(this.props)
+
+    // wrap this
+    let previous: Object = {}
+
+    props$.subscribe((next: Object): void => {
+      console.log(next, previous)
+      patchProperties(node, next, previous)
+      previous = next
+    })
   }
 
   insert (node: Element): void {
