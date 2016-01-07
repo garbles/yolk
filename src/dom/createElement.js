@@ -9,7 +9,7 @@ function createTextNode (vnode: VirtualText): Text {
 }
 
 function createElementNS (vnode: VirtualNode): HTMLElement {
-  const node = document.createElementNS(vnode.namespace, vnode.tagName)
+  const node: HTMLElement = document.createElementNS(vnode.namespace, vnode.tagName)
   vnode.create(node)
   return node
 }

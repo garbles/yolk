@@ -35,7 +35,6 @@ export class VirtualNode {
     let previous: Object = {}
 
     props$.subscribe((next: Object): void => {
-      console.log(next, previous)
       patchProperties(node, next, previous)
       previous = next
     })

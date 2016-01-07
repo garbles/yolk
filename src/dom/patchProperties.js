@@ -1,6 +1,6 @@
 /* @flow */
 
-import descriptors from 'html-props'
+import {descriptors} from './propertyDescriptors'
 
 export function patchProperties (node: Object, props: Object, oldProps?: Object = {}): void {
   for (const key in props) {
@@ -15,7 +15,7 @@ export function patchProperties (node: Object, props: Object, oldProps?: Object 
 
       const {computed} = descriptor
 
-      if (descriptor.setWithEquals) {
+      if (descriptor.useEqualSetter) {
         node[computed] = next
         continue
       }
@@ -40,7 +40,7 @@ export function patchProperties (node: Object, props: Object, oldProps?: Object 
 
       const {computed} = descriptor
 
-      if (descriptor.setWithFunction) {
+      if (descriptor.useSetAttribute) {
         node.removeAttribute(computed)
         continue
       }

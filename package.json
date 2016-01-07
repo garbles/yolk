@@ -52,8 +52,9 @@
     "webpack": "1.12.9"
   },
   "dependencies": {
+    "dom-delegator": "13.1.0",
+    "ev-store": "7.0.0",
     "global": "4.3.0",
-    "html-props": "0.0.2",
     "rxjs": "5.0.0-beta.0"
   }
 }
