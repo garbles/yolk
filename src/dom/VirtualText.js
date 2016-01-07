@@ -1,6 +1,7 @@
 /* @flow */
 
 import document from 'global/document'
+import {noop} from '../util/noop'
 
 export class VirtualText {
   text: string;
@@ -13,5 +14,5 @@ export class VirtualText {
     return document.createTextNode(vnode.text)
   }
 
-  create (node: Text): void {}
+  create = noop;
 }
