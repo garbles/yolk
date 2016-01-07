@@ -1,12 +1,15 @@
+import document from 'global/document'
 import {createElement} from '../createElement'
 import {VirtualNode} from '../VirtualNode'
 
 describe(`createElement`, () => {
-  it(`creates an HTMLElement with children`, () => {
-    const vnode = new VirtualNode(`span`, { width: 55 }, [new VirtualNode(`p`), new VirtualNode(`strong`)])
+  it(`creates an HTMLElement with children`, done => {
+    const vnode = new VirtualNode(`div`, { width: 55 }, [new VirtualNode(`p`), new VirtualNode(`strong`)])
     const node = createElement(vnode)
 
-    assert.equal(node.tagName, `span`)
+    document.body.appendChild(node)
+
+    assert.equal(node.tagName, `div`)
     assert.equal(node.width, 55)
 
     // temp
@@ -18,6 +21,17 @@ describe(`createElement`, () => {
 
     assert.equal(node.width, undefined)
 
-    // assert.equal(node.children.length, 2)
+    // ensure that click handler is working
+    const onClick = () => done()
+    vnode.props$.next({onClick})
+
+    // real event handler is not attached to DOM node
+    assert.notOk(node.onclick)
+
+    const event = document.createEvent(`MouseEvent`)
+    event.initMouseEvent(`click`)
+    node.dispatchEvent(event)
+
+    document.removeChild(node)
   })
 })

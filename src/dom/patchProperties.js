@@ -1,6 +1,7 @@
 /* @flow */
 
 import {descriptors} from './propertyDescriptors'
+import {addEventListener, removeEventListener} from './eventListener'
 
 export function patchProperties (node: Object, props: Object, oldProps?: Object = {}): void {
   for (const key in props) {
@@ -22,6 +23,11 @@ export function patchProperties (node: Object, props: Object, oldProps?: Object 
 
       if (descriptor.hasBooleanValue && !next) {
         node.removeAttribute(computed)
+        continue
+      }
+
+      if (descriptor.useEventListener) {
+        addEventListener(node, computed, next)
         continue
       }
 
@@ -47,6 +53,11 @@ export function patchProperties (node: Object, props: Object, oldProps?: Object 
 
       if (descriptor.hasBooleanValue) {
         node[computed] = false
+        continue
+      }
+
+      if (descriptor.useEventListener) {
+        removeEventListener(node, computed)
         continue
       }
 

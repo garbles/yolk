@@ -69,7 +69,7 @@ describe(`propertDescriptors`, () => {
       }
 
       switch (true) {
-      case (prop.useSetAttribute && prop.useEqualSetter):
+      case (prop.useSetAttribute && prop.useEqualSetter || prop.useSetAttribute && prop.useEventListener || prop.useEqualSetter && prop.useEventListener):
         throw new Error(`${key} can\`t have two setters!`)
       case (prop.useEqualSetter && prop.hasBooleanValue):
         setBooleanWithEqualsTest(prop)
@@ -89,6 +89,8 @@ describe(`propertDescriptors`, () => {
       case (prop.useSetAttribute):
         setStringWithFunctionTest(prop)
         break
+      case (prop.useEventListener):
+        break // ignore
       default:
         throw new Error(`${key} does not have setter!`)
       }

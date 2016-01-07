@@ -1,12 +1,15 @@
 /* @flow */
 
+import {eventsList} from './eventsList'
+
 const HAS_LOWER_CASE: number = 0x1 // transform key to all lowercase
 const HAS_DASHED_CASE: number = 0x2 // transform key to dashed case
 const USE_EQUAL_SETTER: number = 0x4 // props only settable with =
 const USE_SET_ATTRIBUTE: number = 0x8 // props only settable with setAttribute
-const HAS_BOOLEAN_VALUE: number = 0x10 // props can only be booleans
-const HAS_NUMBER_VALUE: number = 0x20 // props can only be numbers
-const IS_STAR: number = 0x40 // props can be any dashed case, e.g. data-*
+const USE_EVENT_LISTENER: number = 0x10 // props only settable with addEventListener
+const HAS_BOOLEAN_VALUE: number = 0x20 // props can only be booleans
+const HAS_NUMBER_VALUE: number = 0x40 // props can only be numbers
+const IS_STAR: number = 0x80 // props can be any dashed case, e.g. data-*
 
 const DASHED_CASE_REGEX: RegExp = /(?:^\w|[A-Z]|\b\w|\s+)/g
 
@@ -155,6 +158,10 @@ const props: Object = {
   data: IS_STAR,
 }
 
+eventsList.forEach(event => {
+  props[`on${event}`] = USE_EVENT_LISTENER | HAS_LOWER_CASE
+})
+
 const descriptors: Object = {}
 const keys: Array<string> = Object.keys(props)
 const len: number = keys.length
@@ -167,6 +174,7 @@ while (++i < len) {
   const hasDashedCase: boolean = checkMask(prop, HAS_DASHED_CASE)
   const useEqualSetter: boolean = checkMask(prop, USE_EQUAL_SETTER)
   const useSetAttribute: boolean = checkMask(prop, USE_SET_ATTRIBUTE)
+  const useEventListener: boolean = checkMask(prop, USE_EVENT_LISTENER)
   const hasBooleanValue: boolean = checkMask(prop, HAS_BOOLEAN_VALUE)
   const hasNumberValue: boolean = checkMask(prop, HAS_NUMBER_VALUE)
   const isStar: boolean = checkMask(prop, IS_STAR)
@@ -175,6 +183,7 @@ while (++i < len) {
   descriptors[key] = {
     useEqualSetter,
     useSetAttribute,
+    useEventListener,
     hasBooleanValue,
     hasNumberValue,
     isStar,
