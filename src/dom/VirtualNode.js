@@ -1,5 +1,6 @@
 /* @flow */
 
+import document from 'global/document'
 import {Subject} from 'rxjs/Subject'
 import {VirtualText} from './VirtualText'
 import {createCompositeSubject} from '../rx/createCompositeSubject'
@@ -28,6 +29,10 @@ export class VirtualNode {
     this.namespace = namespace
   }
 
+  init (): HTMLElement {
+    return document.createElementNS(this.namespace, this.tagName)
+  }
+
   create (node: Element): void {
     const props$: Subject = this.props$ = createCompositeObjectSubject(this.props)
 
@@ -40,26 +45,26 @@ export class VirtualNode {
     })
   }
 
-  insert (node: Element): void {
-    node
-  }
+  // insert (node: Element): void {
+  //   node
+  // }
 
-  prepatch (previous: VirtualNode, next: VirtualNode, node: Element): void {
-    previous; next; node
-  }
+  // prepatch (previous: VirtualNode, next: VirtualNode, node: Element): void {
+  //   previous; next; node
+  // }
 
-  patch (previous: VirtualNode, next: VirtualNode, node: Element): void {
-    previous; next; node
-  }
+  // patch (previous: VirtualNode, next: VirtualNode, node: Element): void {
+  //   previous; next; node
+  // }
 
-  postpatch (previous: VirtualNode, next: VirtualNode, node: Element): void {
-    previous; next; node
-  }
+  // postpatch (previous: VirtualNode, next: VirtualNode, node: Element): void {
+  //   previous; next; node
+  // }
 
-  predestroy (node: Element): void {
-    node
-  }
+  // predestroy (node: Element): void {
+  //   node
+  // }
 
-  destroy (): void {
-  }
+  // destroy (): void {
+  // }
 }
