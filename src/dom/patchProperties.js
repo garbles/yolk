@@ -57,7 +57,7 @@ export function patchProperties (node: Object, props: Object, oldProps?: Object 
       }
 
       if (descriptor.useEventListener) {
-        removeEventListener(node, computed)
+        removeEventListener(node, computed, oldProps[key])
         continue
       }
 

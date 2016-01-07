@@ -7,7 +7,7 @@ import {isEmptyObject} from '../util/isEmptyObject'
 import 'rxjs/add/observable/fromArray'
 import 'rxjs/add/operator/combineLatest-static'
 
-export function createObservableFromObject (obj: Object): Observable {
+export function createObservableFromObject (obj: Object): Observable<Object> {
   if (isEmptyObject(obj)) {
     return Observable.of({})
   }

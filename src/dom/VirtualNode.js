@@ -17,8 +17,9 @@ const createCompositeObjectSubject = createCompositeSubject(createObservableFrom
 export class VirtualNode {
   tagName: string;
   props: Object;
-  props$: Subject;
+  props$: Subject<Object>;
   children: Array<VirtualNode|VirtualText>;
+  children$: Subject<Array<VirtualNode|VirtualText>>;
   key: string|void;
   namespace: string|void;
   constructor (tagName: string, props?: Object, children?: Array<VirtualNode|VirtualText>, key?: string, namespace?: string) {
@@ -33,8 +34,9 @@ export class VirtualNode {
     return document.createElementNS(this.namespace, this.tagName)
   }
 
-  create (node: Element): void {
-    const props$: Subject = this.props$ = createCompositeObjectSubject(this.props)
+  // TODO: type this better
+  create (node: Object): void {
+    const props$: Subject<Object> = this.props$ = createCompositeObjectSubject(this.props)
 
     // wrap this
     let previous: Object = {}

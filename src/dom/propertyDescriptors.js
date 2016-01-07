@@ -26,7 +26,7 @@ function makeDashedCase (letter: string, i: number): string {
     return letter.toLowerCase()
   }
 
-  return `-` + letter.toLowerCase()
+  return `-${letter.toLowerCase()}`
 }
 
 function computeName (name: string, hasLowerCase: boolean, hasDashedCase: boolean): string {

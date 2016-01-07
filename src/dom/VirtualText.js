@@ -11,8 +11,9 @@ export class VirtualText {
   }
 
   init (): Text {
-    return document.createTextNode(vnode.text)
+    return document.createTextNode(this.text)
   }
 
-  create = noop;
+  // TODO: type this better
+  create (node: Object): void {}
 }
