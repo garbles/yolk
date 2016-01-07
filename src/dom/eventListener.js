@@ -14,11 +14,11 @@ while (++i < len) {
 }
 
 export function addEventListener (node: HTMLElement, key: string, fn: Function): void {
-  const eventName: string = key.substr(2)
-  delegator.addEventListener(node, eventName, fn)
+  const event: string = key.substr(2)
+  delegator.addEventListener(node, event, fn)
 }
 
 export function removeEventListener (node: HTMLElement, key: string, fn: Function): void {
-  const eventName: string = key.substr(2)
-  delegator.removeEventListener(node, eventName, fn)
+  const event: string = key.substr(2)
+  delegator.removeEventListener(node, event, fn)
 }
