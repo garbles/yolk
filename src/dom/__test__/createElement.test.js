@@ -3,8 +3,8 @@ import {createElement} from '../createElement'
 import {VirtualNode} from '../VirtualNode'
 
 describe(`createElement`, () => {
-  it(`creates an HTMLElement with children`, done => {
-    const vnode = new VirtualNode(`div`, { width: 55 }, [new VirtualNode(`p`), new VirtualNode(`strong`)])
+  it(`creates an HTMLElement that can push props`, done => {
+    const vnode = new VirtualNode(`div`, { width: 55 })
     const node = createElement(vnode)
 
     document.body.appendChild(node)
@@ -33,5 +33,12 @@ describe(`createElement`, () => {
     node.dispatchEvent(event)
 
     document.removeChild(node)
+  })
+
+  it(`creates an HTMLElement with children`, () => {
+    const vnode = new VirtualNode(`div`, { width: 55 }, [new VirtualNode(`p`), new VirtualNode(`strong`)])
+    const node = createElement(vnode)
+
+    assert.equal(node.children.length, 2)
   })
 })

@@ -5,14 +5,15 @@ import {Subject} from 'rxjs/Subject'
 import {VirtualText} from './VirtualText'
 import {createCompositeSubject} from '../rx/createCompositeSubject'
 import {createObservableFromObject} from '../rx/createObservableFromObject'
+import {createObservableFromArray} from '../rx/createObservableFromArray'
+import {patchChildren} from './patchChildren'
 import {patchProperties} from './patchProperties'
-
-// import {createObservableFromArray} from '..rx/createObservableFromArray'
 
 const NO_PROPERTIES = Object.freeze({})
 const NO_CHILDREN = Object.freeze([])
 
 const createCompositeObjectSubject = createCompositeSubject(createObservableFromObject)
+const createCompositeArraySubject = createCompositeSubject(createObservableFromArray)
 
 export class VirtualNode {
   tagName: string;
@@ -37,13 +38,20 @@ export class VirtualNode {
   // TODO: type this better
   create (node: Object): void {
     const props$: Subject<Object> = this.props$ = createCompositeObjectSubject(this.props)
+    const children$: Subject<Array<VirtualNode | VirtualText>> = this.children$ = createCompositeArraySubject(this.children)
 
     // wrap this
-    let previous: Object = {}
+    let previousProps: Object = {}
+    let previousChildren: Array<VirtualNode | VirtualText> = []
 
     props$.subscribe((next: Object): void => {
-      patchProperties(node, next, previous)
-      previous = next
+      patchProperties(node, next, previousProps)
+      previousProps = next
+    })
+
+    children$.subscribe((next: Array<VirtualNode | VirtualText>): void => {
+      patchChildren(node, next, previousChildren)
+      previousChildren = next
     })
   }
 
