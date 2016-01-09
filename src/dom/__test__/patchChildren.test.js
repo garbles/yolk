@@ -65,6 +65,7 @@ describe(`patchChildren`, () => {
     const node = document.createElement(`div`)
     const children = createEmptyVNodes([`a`, null, null, null, `b`])
     const next = createEmptyVNodes([`b`, `a`, `c`, null])
+    const doubleNext = createEmptyVNodes([`c`, `a`, null])
 
     let result = patchChildren(node, children, [])
 
@@ -73,6 +74,7 @@ describe(`patchChildren`, () => {
     node.children[4].__specialTag__ = `@@keyed`
 
     assert.equal(node.children.length, 5)
+    asssert.equal(result.length, 5)
     assert.equal(result[0].key, `a`)
     assert.equal(result[1].key, 1)
     assert.equal(result[2].key, 2)
@@ -82,6 +84,7 @@ describe(`patchChildren`, () => {
     result = patchChildren(node, next, children)
 
     assert.equal(node.children.length, 4)
+    asssert.equal(result.length, 4)
     assert.equal(result[0].key, `b`)
     assert.equal(result[1].key, `a`)
     assert.equal(result[2].key, `c`)
@@ -92,6 +95,20 @@ describe(`patchChildren`, () => {
     for (const i = 0; i < node.children.length; i++) {
       const child = node.children[i]
       assert.notEqual(child.__specialTag__, `@@removed`)
+    }
+
+    result = patchChildren(node, doubleNext, next)
+
+    assert.equal(node.children.length, 2)
+    asssert.equal(result.length, 2)
+    assert.equal(result[0].key, `c`)
+    assert.equal(result[1].key, `a`)
+    assert.equal(result[2].key, 2)
+
+    for (const i = 0; i < node.children.length; i++) {
+      const child = node.children[i]
+      assert.notEqual(child.__specialTag__, `@@keyed`)
+      assert.notEqual(child.__specialTag__, `@@unkeyed`)
     }
   })
 })
