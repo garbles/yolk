@@ -28,7 +28,7 @@ export class VirtualNode {
     this.tagName = tagName
     this.key = key
     this.props = props || NO_PROPERTIES
-    this.children = appendKeysToChildren(children || NO_CHILDREN)
+    this.children = children || NO_CHILDREN
     this.namespace = namespace
   }
 
@@ -45,15 +45,18 @@ export class VirtualNode {
     let previousProps: Object = {}
     let previousChildren: Array<VirtualNode | VirtualText> = []
 
-    props$.subscribe((next: Object): void => {
-      patchProperties(node, next, previousProps)
-      previousProps = next
-    })
+    props$
+      .subscribe((next: Object): void => {
+        patchProperties(node, next, previousProps)
+        previousProps = next
+      })
 
-    children$.subscribe((next: Array<VirtualNode | VirtualText>): void => {
-      patchChildren(node, next, previousChildren)
-      previousChildren = next
-    })
+    children$
+      .subscribe((next: Array<VirtualNode | VirtualText>): void => {
+        appendKeysToChildren(previousChildren)
+        appendKeysToChildren(next)
+        previousChildren = patchChildren(node, next, previousChildren)
+      })
   }
 
   insert (__node: Object): void {}

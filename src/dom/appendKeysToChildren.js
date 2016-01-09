@@ -1,4 +1,5 @@
 import {isDefined} from '../util/isDefined'
+import {isNumber} from '../util/isNumber'
 
 export function appendKeysToChildren (children: Array<VirtualNode | VirtualText>): Array<VirtualNode | VirtualText> {
   const len: number = children.length
@@ -12,7 +13,7 @@ export function appendKeysToChildren (children: Array<VirtualNode | VirtualText>
   while (++i < len) {
     const child: VirtualNode | VirtualText = children[i]
 
-    if (!isDefined(child.key)) {
+    if (!isDefined(child.key) || isNumber(child.key)) {
       child.key = i
     }
   }

@@ -29,7 +29,7 @@ module.exports = config => {
 
     reporters: [
       `mocha`,
-      `coverage`,
+      // `coverage`,
       `growl`,
     ],
 

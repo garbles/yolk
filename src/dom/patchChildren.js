@@ -12,74 +12,75 @@ function keyIndex (children: Array<VirtualNode | VirtualText>): Object {
 
   while (++i < len) {
     const child: VirtualNode | VirtualText = children[i]
-    keys[child.key] = i
+
+    if (isDefined(child.key)) {
+      keys[child.key] = i
+    }
   }
 
   return keys
 }
 
-export function patchChildren (node: Object, next: Array<VirtualNode | VirtualText>, previous?: Array<VirtualNode | VirtualText> = []): void {
+export function patchChildren (node: Object, next: Array<VirtualNode | VirtualText>, previous?: Array<VirtualNode | VirtualText> = []): Array<VirtualNode | VirtualText> {
   const nextLen = next.length
   const previousLen = previous.length
   const nextKeys = keyIndex(next)
   const previousKeys = keyIndex(previous)
-  const len = Math.max(nextLen, previousLen)
   let i = -1
+  let j = -1
 
-  const operations = []
+  const newChildren: Array<VirtualNode | VirtualText> = []
+  const operations: Array<Function> = []
 
-  while (++i < len) {
-    const left: VirtualNode | VirtualText = previous[i]
-    const right: VirtualNode | VirtualText = next[i]
+  while (++i < previousLen) {
+    const child: VirtualNode | VirtualText = previous[i]
+    const childKey: string = child.key
 
-    if (!isDefined(left) && isDefined(right)) {
-      const child: HTMLElement | Text = createElement(right)
+    if (!nextKeys.hasOwnProperty(childKey)) { // ASSUME ALL TAGS ARE THE SAME FOR NOW
+      const childNode = node.children[i]
 
       operations.push(() => {
-        node.appendChild(child)
-        right.insert(child) // change to queue for insertion!
+        child.predestroy(node)
+        node.removeChild(childNode)
+        child.destroy()
       })
-      continue
     }
+  }
 
-    if (isDefined(left) && !isDefined(right)) {
-      const child: HTMLElement | Text = node.children[i]
+  while (++j < nextLen) {
+    const child: VirtualNode | VirtualText = next[j]
+    const childKey: string = child.key
 
-      operations.push(() => {
-        left.predestroy(child)
-        node.removeChild(child)
-        left.destroy()
-      })
-      continue
-    }
-
-    const leftIndex = previousKeys[left.key]
-    const rightIndex = nextKeys[left.key]
-
-    // this only works if none of the children have keys
-    if (left.tagName === right.tagName) {
-      const child: HTMLElement | Text = node.children[i]
+    if (previousKeys.hasOwnProperty(childKey)) { // ASSUME ALL TAGS ARE THE SAME FOR NOW
+      const previousIndex = previousKeys[childKey]
+      const previousChild = previous[previousIndex]
+      const childNode = node.children[previousIndex]
 
       operations.push(() => {
-        left.patch(right, child)
+        const beforeNode = node.children[j]
+        previousChild.patch(child, childNode)
+        node.insertBefore(childNode, beforeNode)
+        newChildren.push(previousChild)
       })
-      continue
-    }
-
-    // this only works if none of the children have keys
-    if (left.tagName !== right.tagName) {
-      const newChild: HTMLElement | Text = createElement(right)
-      const child: HTMLElement | Text = node.children[i]
+    } else {
+      const childNode = createElement(child)
 
       operations.push(() => {
-        left.predestroy(child)
-        node.replaceChild(newChild, child)
-        left.destroy()
-        right.insert(newChild) // change to queue for insertion!
+        const beforeNode = node.children[j]
+
+        if (isDefined(beforeNode)) {
+          node.insertBefore(childNode, beforeNode)
+        } else {
+          node.appendChild(childNode)
+        }
+
+        child.insert(childNode) // queue for insert
+        newChildren.push(child)
       })
-      continue
     }
   }
 
   operations.forEach(fn => fn())
+
+  return newChildren
 }
