@@ -4,6 +4,7 @@ import {VirtualNode} from './VirtualNode'
 import {VirtualText} from './VirtualText'
 import {createElement} from './createElement'
 import {isDefined} from '../util/isDefined'
+import {updateChildrenKeys} from './updateChildrenKeys'
 
 function keyIndex (children: Array<VirtualNode | VirtualText>): Object {
   const keys: Object = {}
@@ -82,5 +83,5 @@ export function patchChildren (node: Object, next: Array<VirtualNode | VirtualTe
 
   operations.forEach(fn => fn())
 
-  return newChildren
+  return updateChildrenKeys(newChildren)
 }

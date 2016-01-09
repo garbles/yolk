@@ -1,7 +1,7 @@
 import {isDefined} from '../util/isDefined'
 import {isNumber} from '../util/isNumber'
 
-export function appendKeysToChildren (children: Array<VirtualNode | VirtualText>): Array<VirtualNode | VirtualText> {
+export function updateChildrenKeys (children: Array<VirtualNode | VirtualText>): Array<VirtualNode | VirtualText> {
   const len: number = children.length
 
   if (len === 0) {
