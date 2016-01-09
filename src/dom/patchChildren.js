@@ -4,6 +4,7 @@ import {VirtualNode} from './VirtualNode'
 import {VirtualText} from './VirtualText'
 import {createElement} from './createElement'
 import {isDefined} from '../util/isDefined'
+import {isNumber} from '../util/isNumber'
 import {updateChildrenKeys} from './updateChildrenKeys'
 
 function keyIndex (children: Array<VirtualNode | VirtualText>): Object {
@@ -13,10 +14,7 @@ function keyIndex (children: Array<VirtualNode | VirtualText>): Object {
 
   while (++i < len) {
     const child: VirtualNode | VirtualText = children[i]
-
-    if (isDefined(child.key)) {
-      keys[child.key] = i
-    }
+    keys[child.key] = i
   }
 
   return keys
@@ -37,7 +35,7 @@ export function patchChildren (node: Object, next: Array<VirtualNode | VirtualTe
     const child: VirtualNode | VirtualText = previous[i]
     const childKey: string = child.key
 
-    if (!nextKeys.hasOwnProperty(childKey)) { // ASSUME ALL TAGS ARE THE SAME FOR NOW
+    if (!nextKeys.hasOwnProperty(childKey)) {
       const childNode = node.children[i]
 
       operations.push(() => {
@@ -55,20 +53,45 @@ export function patchChildren (node: Object, next: Array<VirtualNode | VirtualTe
     if (previousKeys.hasOwnProperty(childKey)) { // ASSUME ALL TAGS ARE THE SAME FOR NOW
       const previousIndex = previousKeys[childKey]
       const previousChild = previous[previousIndex]
-      const childNode = node.children[previousIndex]
 
-      operations.push(() => {
-        const beforeNode = node.children[j]
+      if (child.tagName === previousChild.tagName) {
+        const childNode = node.children[previousIndex]
 
-        if (isDefined(beforeNode) && beforeNode !== childNode) {
-          node.insertBefore(childNode, beforeNode)
-        } else {
-          node.appendChild(childNode)
-        }
+        operations.push(() => {
+          const beforeNode = node.children[j]
 
-        previousChild.patch(child, childNode)
-        newChildren.push(previousChild)
-      })
+          if (isDefined(beforeNode)) {
+            if (beforeNode !== childNode) {
+              node.insertBefore(childNode, beforeNode)
+            }
+          } else {
+            node.appendChild(childNode)
+          }
+
+          previousChild.patch(child, childNode)
+          newChildren.push(previousChild)
+        })
+      } else {
+        const childNode = node.children[previousIndex]
+        const newNode = createElement(child)
+
+        operations.push(() => {
+          const beforeNode = node.children[j]
+
+          if (isDefined(beforeNode)) {
+            node.insertBefore(newNode, beforeNode)
+          } else {
+            node.appendChild(newNode)
+          }
+
+          previousChild.predestroy(childNode)
+          node.removeChild(childNode)
+          previousChild.destroy(childNode)
+
+          child.insert(newNode) // queue for insert
+          newChildren.push(child)
+        })
+      }
     } else {
       const childNode = createElement(child)
 

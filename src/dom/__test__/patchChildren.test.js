@@ -131,4 +131,29 @@ describe(`patchChildren`, () => {
     assert.equal(node.children.length, 1)
     assert.equal(node.firstChild.tagName, `div`)
   })
+
+  it(`replaces children of children`, () => {
+    const node = document.createElement(`div`)
+    const children = createEmptyVNodes(`p`, [null])
+    children[0].children = createEmptyVNodes(`span`, [null, `b`])
+
+    const next = createEmptyVNodes(`p`, [null])
+    next[0].children = createEmptyVNodes(`span`, [`b`, `a`, `c`, null])
+
+    let result = patchChildren(node, children, [])
+    const childNode = node.firstChild
+
+    assert.equal(node.children.length, 1)
+    assert.equal(childNode.tagName, `p`)
+    assert.equal(childNode.children.length, 2)
+
+    childNode.children[1].__specialTag__ = `@@keyed`
+
+    result = patchChildren(node, next, result)
+
+    assert.equal(node.children.length, 1)
+    assert.equal(childNode.tagName, `p`)
+    assert.equal(childNode.children.length, 4)
+    assert.equal(childNode.children[0].__specialTag__, `@@keyed`)
+  })
 })
