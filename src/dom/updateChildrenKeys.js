@@ -1,3 +1,5 @@
+/* @flow */
+
 import {isDefined} from '../util/isDefined'
 import {isNumber} from '../util/isNumber'
 

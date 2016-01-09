@@ -2,7 +2,7 @@
 
 import document from 'global/document'
 
-const tagName = `__TEXT__`
+const tagName = `__YOLK_TEXT_TAG_NAME__`
 
 export class VirtualText {
   tagName: string;

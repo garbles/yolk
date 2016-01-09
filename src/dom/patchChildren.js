@@ -59,8 +59,14 @@ export function patchChildren (node: Object, next: Array<VirtualNode | VirtualTe
 
       operations.push(() => {
         const beforeNode = node.children[j]
+
+        if (isDefined(beforeNode) && beforeNode !== childNode) {
+          node.insertBefore(childNode, beforeNode)
+        } else {
+          node.appendChild(childNode)
+        }
+
         previousChild.patch(child, childNode)
-        node.insertBefore(childNode, beforeNode)
         newChildren.push(previousChild)
       })
     } else {

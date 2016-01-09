@@ -1,7 +1,7 @@
 /* @flow */
 
 import {descriptors} from './propertyDescriptors'
-import {addEventListener, removeEventListener} from './eventListener'
+import {addEventListener, removeEventListener} from './eventDelegator'
 
 export function patchProperties (node: Object, props: Object, oldProps?: Object = {}): void {
   for (const key in props) {
