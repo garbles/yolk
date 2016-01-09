@@ -8,6 +8,7 @@ import {createObservableFromObject} from '../rx/createObservableFromObject'
 import {createObservableFromArray} from '../rx/createObservableFromArray'
 import {patchChildren} from './patchChildren'
 import {patchProperties} from './patchProperties'
+import {appendKeysToChildren} from './appendKeysToChildren'
 
 const NO_PROPERTIES = Object.freeze({})
 const NO_CHILDREN = Object.freeze([])
@@ -19,15 +20,15 @@ export class VirtualNode {
   tagName: string;
   props: Object;
   props$: Subject<Object>;
-  children: Array<VirtualNode|VirtualText>;
-  children$: Subject<Array<VirtualNode|VirtualText>>;
-  key: string|void;
-  namespace: string|void;
-  constructor (tagName: string, props?: Object, children?: Array<VirtualNode|VirtualText>, key?: string, namespace?: string) {
+  children: Array<VirtualNode | VirtualText>;
+  children$: Subject<Array<VirtualNode | VirtualText>>;
+  key: string | void;
+  namespace: string | void;
+  constructor (tagName: string, props?: Object, children?: Array<VirtualNode | VirtualText>, key?: string, namespace?: string) {
     this.tagName = tagName
-    this.props = props || NO_PROPERTIES
-    this.children = children || NO_CHILDREN
     this.key = key
+    this.props = props || NO_PROPERTIES
+    this.children = appendKeysToChildren(children || NO_CHILDREN)
     this.namespace = namespace
   }
 
@@ -55,26 +56,13 @@ export class VirtualNode {
     })
   }
 
-  // insert (node: Element): void {
-  //   node
-  // }
+  insert (__node: Object): void {}
 
-  // prepatch (previous: VirtualNode, next: VirtualNode, node: Element): void {
-  //   previous; next; node
-  // }
+  patch (next: Object, __node: Object): void {
+    this.props$.next(next.props)
+    this.children$.next(next.children)
+  }
 
-  // patch (previous: VirtualNode, next: VirtualNode, node: Element): void {
-  //   previous; next; node
-  // }
-
-  // postpatch (previous: VirtualNode, next: VirtualNode, node: Element): void {
-  //   previous; next; node
-  // }
-
-  // predestroy (node: Element): void {
-  //   node
-  // }
-
-  // destroy (): void {
-  // }
+  predestroy (__node: Object): void {}
+  destroy (): void {}
 }
