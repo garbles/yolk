@@ -8,9 +8,6 @@ import {createObservableFromObject} from '../rx/createObservableFromObject'
 import {createObservableFromArray} from '../rx/createObservableFromArray'
 import {patchChildren} from './patchChildren'
 import {patchProperties} from './patchProperties'
-import {updateChildrenKeys} from './updateChildrenKeys'
-
-import 'rxjs/add/operator/map'
 
 const NO_PROPERTIES = Object.freeze({})
 const NO_CHILDREN = Object.freeze([])
@@ -28,9 +25,9 @@ export class VirtualNode {
   namespace: string | void;
   constructor (tagName: string, props?: Object, children?: Array<VirtualNode | VirtualText>, key?: string, namespace?: string) {
     this.tagName = tagName
-    this.key = key
     this.props = props || NO_PROPERTIES
     this.children = children || NO_CHILDREN
+    this.key = key
     this.namespace = namespace
   }
 
@@ -49,12 +46,10 @@ export class VirtualNode {
 
     props$
       .subscribe((next: Object): void => {
-        patchProperties(node, next, previousProps)
-        previousProps = next
+        previousProps = patchProperties(node, next, previousProps)
       })
 
     children$
-      .map(updateChildrenKeys)
       .subscribe((next: Array<VirtualNode | VirtualText>): void => {
         previousChildren = patchChildren(node, next, previousChildren)
       })

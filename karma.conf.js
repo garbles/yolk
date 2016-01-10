@@ -33,9 +33,9 @@ module.exports = config => {
       `growl`,
     ],
 
-    coverageReporter: {
-      type: 'text',
-      dir: 'coverage/'
-    }
+    // coverageReporter: {
+    //   type: 'text',
+    //   dir: 'coverage/'
+    // }
   })
 }

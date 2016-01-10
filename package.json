@@ -53,6 +53,7 @@
   },
   "dependencies": {
     "cuid": "1.3.8",
+    "dift": "0.1.12",
     "dom-delegator": "13.1.0",
     "global": "4.3.0",
     "individual": "3.0.0",

@@ -3,7 +3,7 @@
 import {descriptors} from './propertyDescriptors'
 import {addEventListener, removeEventListener} from './eventDelegator'
 
-export function patchProperties (node: Object, props: Object, oldProps?: Object = {}): void {
+export function patchProperties (node: Object, props: Object, oldProps?: Object = {}): Object {
   for (const key in props) {
     if (props[key] !== oldProps[key]) {
       const next = props[key]
@@ -64,4 +64,6 @@ export function patchProperties (node: Object, props: Object, oldProps?: Object 
       node[computed] = undefined
     }
   }
+
+  return props
 }

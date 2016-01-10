@@ -3,7 +3,7 @@ import {patchChildren} from '../patchChildren'
 import {VirtualNode} from '../VirtualNode'
 
 function createEmptyVNodes (tag, mapping) {
-  return mapping.map((key, i) => createEmptyVnode(tag, key || i))
+  return mapping.map((key, i) => createEmptyVnode(tag, key))
 }
 
 function createEmptyVnode (tag, key) {
@@ -34,12 +34,16 @@ describe(`patchChildren`, () => {
     const node = document.createElement(`div`)
     const children = [new VirtualNode(`p`, {}, [], 0)]
     const next = [new VirtualNode(`p`, {width: 55}, [], 0)]
+    const doubleNext = [new VirtualNode(`p`, {width: 100}, [], 0)]
 
-    patchChildren(node, children, [])
+    let result = patchChildren(node, children, [])
     assert.equal(node.firstChild.width, undefined)
 
-    patchChildren(node, next, children)
+    result = patchChildren(node, next, result)
     assert.equal(node.firstChild.width, 55)
+
+    patchChildren(node, doubleNext, result)
+    assert.equal(node.firstChild.width, 100)
   })
 
   it(`rearranges children with keys`, () => {
@@ -60,7 +64,7 @@ describe(`patchChildren`, () => {
 
     patchChildren(node, next, children)
 
-    assert.equal(node.children[0].__specialTag__, undefined)
+    assert.equal(node.children[0].__specialTag__, `@@second`)
     assert.equal(node.children[1].__specialTag__, `@@third`)
     assert.equal(node.children[2].__specialTag__, `@@first`)
   })
@@ -80,9 +84,9 @@ describe(`patchChildren`, () => {
     assert.equal(node.children.length, 5)
     assert.equal(result.length, 5)
     assert.equal(result[0].key, `a`)
-    assert.equal(result[1].key, 1)
-    assert.equal(result[2].key, 2)
-    assert.equal(result[3].key, 3)
+    assert.equal(result[1].key, null)
+    assert.equal(result[2].key, null)
+    assert.equal(result[3].key, null)
     assert.equal(result[4].key, `b`)
 
     result = patchChildren(node, next, result)
@@ -92,7 +96,7 @@ describe(`patchChildren`, () => {
     assert.equal(result[0].key, `b`)
     assert.equal(result[1].key, `a`)
     assert.equal(result[2].key, `c`)
-    assert.equal(result[3].key, 3)
+    assert.equal(result[3].key, null)
     assert.equal(node.children[0].__specialTag__, `@@keyed`)
     assert.equal(node.children[3].__specialTag__, `@@unkeyed`)
 
@@ -107,13 +111,7 @@ describe(`patchChildren`, () => {
     assert.equal(result.length, 3)
     assert.equal(result[0].key, `c`)
     assert.equal(result[1].key, `a`)
-    assert.equal(result[2].key, 2)
-
-    for (let i = 0; i < node.children.length; i++) {
-      const child = node.children[i]
-      assert.notEqual(child.__specialTag__, `@@keyed`)
-      assert.notEqual(child.__specialTag__, `@@unkeyed`)
-    }
+    assert.equal(result[2].key, null)
   })
 
   it(`removes children if their key does not match the same tagName`, () => {
@@ -123,13 +121,17 @@ describe(`patchChildren`, () => {
 
     let result = patchChildren(node, children, [])
 
+    node.children[0].__specialTag__ = `@@paragraph`
+
     assert.equal(node.children.length, 1)
     assert.equal(node.firstChild.tagName, `p`)
+    assert.equal(node.firstChild.__specialTag__, `@@paragraph`)
 
     result = patchChildren(node, next, result)
 
     assert.equal(node.children.length, 1)
     assert.equal(node.firstChild.tagName, `div`)
+    assert.equal(node.firstChild.__specialTag__, undefined)
   })
 
   it(`replaces children of children`, () => {
