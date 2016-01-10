@@ -1,10 +1,10 @@
 import document from 'global/document'
 import {createElement} from '../createElement'
-import {VirtualNode} from '../VirtualNode'
+import {VirtualElement} from '../VirtualElement'
 
 describe(`createElement`, () => {
   it(`creates an HTMLElement that can push props`, done => {
-    const vnode = new VirtualNode(`div`, { width: 55 }, [new VirtualNode(`p`, {}, [], `blurg`)])
+    const vnode = new VirtualElement(`div`, { width: 55 }, [new VirtualElement(`p`, {}, [], `blurg`)])
     const node = createElement(vnode)
 
     document.body.appendChild(node)

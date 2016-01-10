@@ -1,13 +1,13 @@
 /* @flow */
 
 import dift, {CREATE, UPDATE, MOVE, REMOVE} from 'dift'
-import {VirtualNode} from './VirtualNode'
-import {VirtualText} from './VirtualText'
 import {create, update, move, remove} from './actions'
+import {VirtualElement} from './VirtualElement'
+import {VirtualText} from './VirtualText'
 import {keyIndex} from './keyIndex'
 import {isNumber} from '../util/isNumber'
 
-export function patchChildren (node: Object, _next: Array<VirtualNode | VirtualText>, _previous?: Array<VirtualNode | VirtualText> = []): Array<VirtualNode | VirtualText> {
+export function patchChildren (node: Object, _next: Array<VirtualElement | VirtualText>, _previous?: Array<VirtualElement | VirtualText> = []): Array<VirtualElement | VirtualText> {
   const previousIndex: Array<Object> = keyIndex(_previous)
   const nextIndex: Array<Object> = keyIndex(_next)
   const keyFn: Function = a => a.key
@@ -34,7 +34,7 @@ export function patchChildren (node: Object, _next: Array<VirtualNode | VirtualT
 
   dift(previousIndex, nextIndex, apply, keyFn)
 
-  const children: Array<VirtualNode | VirtualText> = []
+  const children: Array<VirtualElement | VirtualText> = []
   actions.forEach(fn => fn(children))
 
   return children

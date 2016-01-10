@@ -1,13 +1,13 @@
 import document from 'global/document'
 import {patchChildren} from '../patchChildren'
-import {VirtualNode} from '../VirtualNode'
+import {VirtualElement} from '../VirtualElement'
 
 function createEmptyVNodes (tag, mapping) {
   return mapping.map((key, i) => createEmptyVnode(tag, key))
 }
 
 function createEmptyVnode (tag, key) {
-  return new VirtualNode(tag || `p`, {}, [], key)
+  return new VirtualElement(tag || `p`, {}, [], key)
 }
 
 describe(`patchChildren`, () => {
@@ -32,9 +32,9 @@ describe(`patchChildren`, () => {
 
   it(`patches children`, () => {
     const node = document.createElement(`div`)
-    const children = [new VirtualNode(`p`, {}, [], 0)]
-    const next = [new VirtualNode(`p`, {width: 55}, [], 0)]
-    const doubleNext = [new VirtualNode(`p`, {width: 100}, [], 0)]
+    const children = [new VirtualElement(`p`, {}, [], 0)]
+    const next = [new VirtualElement(`p`, {width: 55}, [], 0)]
+    const doubleNext = [new VirtualElement(`p`, {width: 100}, [], 0)]
 
     let result = patchChildren(node, children, [])
     assert.equal(node.firstChild.width, undefined)

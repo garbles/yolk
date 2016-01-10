@@ -1,10 +1,10 @@
 /* @flow */
 
 import {createElement} from './createElement'
-import {VirtualNode} from './VirtualNode'
+import {VirtualElement} from './VirtualElement'
 import {VirtualText} from './VirtualText'
 
-export function render (vnode: VirtualNode | VirtualText, container: HTMLElement): void {
+export function render (vnode: VirtualElement | VirtualText, container: HTMLElement): void {
   const node = createElement(vnode)
   container.appendChild(node)
 }
