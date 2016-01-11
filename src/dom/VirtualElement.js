@@ -7,6 +7,7 @@ import {createObservableFromObject} from '../rx/createObservableFromObject'
 import {createObservableFromArray} from '../rx/createObservableFromArray'
 import {patchChildren} from './patchChildren'
 import {patchProperties} from './patchProperties'
+import {emitMount, emitUnmount} from './mountable'
 
 const NO_PROPERTIES = Object.freeze({})
 const NO_CHILDREN = Object.freeze([])
@@ -53,7 +54,9 @@ export class VirtualElement {
       })
   }
 
-  insert (__node: HTMLElement): void {}
+  insert (node: HTMLElement): void {
+    emitMount(node, this.props.onMount)
+  }
 
   patch (next: Object, __node: HTMLElement): void {
     this.props$.next(next.props)

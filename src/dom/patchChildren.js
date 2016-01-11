@@ -5,10 +5,11 @@ import {create, update, move, remove} from './actions'
 import {keyIndex} from './keyIndex'
 import {isNumber} from '../util/isNumber'
 
+const keyFn: Function = a => a.key
+
 export function patchChildren (node: HTMLElement, _next: Array<VirtualNode>, _previous?: Array<VirtualNode> = []): Array<VirtualNode> {
   const previousIndex: Array<Object> = keyIndex(_previous)
   const nextIndex: Array<Object> = keyIndex(_next)
-  const keyFn: Function = a => a.key
   const actions: Array<Function> = []
 
   function apply (type: number, previous: Object, next: Object, index: number): void {
