@@ -1,3 +1,5 @@
+/* @flow weak */
+
 import document from 'global/document'
 import {patchProperties} from '../patchProperties'
 

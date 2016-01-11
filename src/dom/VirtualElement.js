@@ -2,7 +2,6 @@
 
 import document from 'global/document'
 import {Subject} from 'rxjs/Subject'
-import {VirtualText} from './VirtualText'
 import {createCompositeSubject} from '../rx/createCompositeSubject'
 import {createObservableFromObject} from '../rx/createObservableFromObject'
 import {createObservableFromArray} from '../rx/createObservableFromArray'
@@ -17,13 +16,13 @@ const createCompositeArraySubject = createCompositeSubject(createObservableFromA
 
 export class VirtualElement {
   tagName: string;
-  props: Object;
-  props$: Subject<Object>;
-  children: Array<VirtualElement | VirtualText>;
-  children$: Subject<Array<VirtualElement | VirtualText>>;
   key: string | void;
   namespace: string | void;
-  constructor (tagName: string, props?: Object, children?: Array<VirtualElement | VirtualText>, key?: string, namespace?: string) {
+  props: Object;
+  props$: Subject<Object>;
+  children: Array<VirtualNode>;
+  children$: Subject<Array<VirtualNode>>;
+  constructor (tagName: string, props?: Object, children?: Array<VirtualNode>, key?: string, namespace?: string) {
     this.tagName = tagName
     this.props = props || NO_PROPERTIES
     this.children = children || NO_CHILDREN
@@ -35,13 +34,13 @@ export class VirtualElement {
     return document.createElementNS(this.namespace, this.tagName)
   }
 
-  create (node: Object): void {
+  create (node: HTMLElement): void {
     const props$: Subject<Object> = this.props$ = createCompositeObjectSubject(this.props)
-    const children$: Subject<Array<VirtualElement | VirtualText>> = this.children$ = createCompositeArraySubject(this.children)
+    const children$: Subject<Array<VirtualNode>> = this.children$ = createCompositeArraySubject(this.children)
 
     // wrap this
     let previousProps: Object = {}
-    let previousChildren: Array<VirtualElement | VirtualText> = []
+    let previousChildren: Array<VirtualNode> = []
 
     props$
       .subscribe((next: Object): void => {
@@ -49,18 +48,18 @@ export class VirtualElement {
       })
 
     children$
-      .subscribe((next: Array<VirtualElement | VirtualText>): void => {
+      .subscribe((next: Array<VirtualNode>): void => {
         previousChildren = patchChildren(node, next, previousChildren)
       })
   }
 
-  insert (__node: Object): void {}
+  insert (__node: HTMLElement): void {}
 
-  patch (next: Object, __node: Object): void {
+  patch (next: Object, __node: HTMLElement): void {
     this.props$.next(next.props)
     this.children$.next(next.children)
   }
 
-  predestroy (__node: Object): void {}
+  predestroy (__node: HTMLElement): void {}
   destroy (): void {}
 }

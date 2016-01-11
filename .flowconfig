@@ -5,8 +5,9 @@
 .*/webpack.config.test.js
 
 [include]
-.*/src/.*
+src/
 
 [libs]
+interfaces/
 
 [options]

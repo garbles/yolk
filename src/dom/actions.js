@@ -1,11 +1,9 @@
 /* @flow */
 
-import {VirtualElement} from './VirtualElement'
-import {VirtualText} from './VirtualText'
 import {createElement} from './createElement'
 import {isDefined} from '../util/isDefined'
 
-export const create = (node: HTMLElement, next: VirtualElement | VirtualText, index: number): Function => (children: Array<VirtualElement | VirtualText>): void => {
+export const create = (node: HTMLElement, next: VirtualNode, index: number): Function => (children: Array<VirtualNode>): void => {
   const child: Node = createElement(next)
   const before: Node = node.children[index]
 
@@ -20,16 +18,16 @@ export const create = (node: HTMLElement, next: VirtualElement | VirtualText, in
   next.insert(child) // queue up
 }
 
-export const update = (node: HTMLElement, previous: VirtualElement | VirtualText, next: VirtualElement | VirtualText, index: number): Function => (children: Array<VirtualElement | VirtualText>): void => {
+export const update = (node: HTMLElement, previous: VirtualNode, next: VirtualNode, index: number): Function => (children: Array<VirtualNode>): void => {
   const child: Node = node.children[index]
   previous.patch(next, child)
   children.splice(index, 0, previous)
 }
 
-export const move = (node: HTMLElement, previous: VirtualElement | VirtualText, next: VirtualElement | VirtualText, oldIndex: number, newIndex: number): Function => {
+export const move = (node: HTMLElement, previous: VirtualNode, next: VirtualNode, oldIndex: number, newIndex: number): Function => {
   const child: Node = node.children[oldIndex]
 
-  return (children: Array<VirtualElement | VirtualText>): void => {
+  return (children: Array<VirtualNode>): void => {
     const before: Node = node.children[newIndex]
 
     if (isDefined(before)) {
@@ -44,7 +42,7 @@ export const move = (node: HTMLElement, previous: VirtualElement | VirtualText, 
   }
 }
 
-export const remove = (node: HTMLElement, previous: VirtualElement | VirtualText, index: number): Function => {
+export const remove = (node: HTMLElement, previous: VirtualNode, index: number): Function => {
   const child: Node = node.children[index]
 
   return (): void => {

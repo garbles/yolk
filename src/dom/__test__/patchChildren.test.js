@@ -1,3 +1,5 @@
+/* @flow weak */
+
 import document from 'global/document'
 import {patchChildren} from '../patchChildren'
 import {VirtualElement} from '../VirtualElement'
@@ -13,7 +15,7 @@ function createEmptyVnode (tag, key) {
 describe(`patchChildren`, () => {
   it(`creates children`, () => {
     const node = document.createElement(`div`)
-    const children = createEmptyVNodes(`p`, [null, null])
+    const children: Array<VirtualElement> = createEmptyVNodes(`p`, [null, null])
 
     patchChildren(node, children, [])
 
@@ -22,7 +24,7 @@ describe(`patchChildren`, () => {
 
   it(`destroys children`, () => {
     const node = document.createElement(`div`)
-    const children = createEmptyVNodes(`p`, [null, null])
+    const children: Array<VirtualElement> = createEmptyVNodes(`p`, [null, null])
 
     patchChildren(node, children, [])
     patchChildren(node, [], children)
@@ -32,24 +34,24 @@ describe(`patchChildren`, () => {
 
   it(`patches children`, () => {
     const node = document.createElement(`div`)
-    const children = [new VirtualElement(`p`, {}, [], 0)]
-    const next = [new VirtualElement(`p`, {width: 55}, [], 0)]
-    const doubleNext = [new VirtualElement(`p`, {width: 100}, [], 0)]
+    const children: Array<VirtualElement> = [new VirtualElement(`p`)]
+    const next: Array<VirtualElement> = [new VirtualElement(`p`, {id: `next`})]
+    const doubleNext: Array<VirtualElement> = [new VirtualElement(`p`, {id: `double-next`})]
 
-    let result = patchChildren(node, children, [])
-    assert.equal(node.firstChild.width, undefined)
+    let result: Array<VirtualElement> = patchChildren(node, children, [])
+    assert.equal(node.firstElementChild.width, undefined)
 
     result = patchChildren(node, next, result)
-    assert.equal(node.firstChild.width, 55)
+    assert.equal(node.firstElementChild.id, `next`)
 
     patchChildren(node, doubleNext, result)
-    assert.equal(node.firstChild.width, 100)
+    assert.equal(node.firstElementChild.id, `double-next`)
   })
 
   it(`rearranges children with keys`, () => {
     const node = document.createElement(`div`)
-    const children = createEmptyVNodes(`p`, [`a`, null, `b`])
-    const next = createEmptyVNodes(`p`, [null, `b`, `a`])
+    const children: Array<VirtualElement> = createEmptyVNodes(`p`, [`a`, null, `b`])
+    const next: Array<VirtualElement> = createEmptyVNodes(`p`, [null, `b`, `a`])
 
     patchChildren(node, children, [])
 
@@ -71,11 +73,11 @@ describe(`patchChildren`, () => {
 
   it(`removes children but preserves the appropriate keyed elements`, () => {
     const node = document.createElement(`div`)
-    const children = createEmptyVNodes(`p`, [`a`, null, null, null, `b`])
-    const next = createEmptyVNodes(`p`, [`b`, `a`, `c`, null])
-    const doubleNext = createEmptyVNodes(`p`, [`c`, `a`, null])
+    const children: Array<VirtualElement> = createEmptyVNodes(`p`, [`a`, null, null, null, `b`])
+    const next: Array<VirtualElement> = createEmptyVNodes(`p`, [`b`, `a`, `c`, null])
+    const doubleNext: Array<VirtualElement> = createEmptyVNodes(`p`, [`c`, `a`, null])
 
-    let result = patchChildren(node, children, [])
+    let result: Array<VirtualElement> = patchChildren(node, children, [])
 
     node.children[1].__specialTag__ = `@@removed`
     node.children[3].__specialTag__ = `@@unkeyed`
@@ -116,34 +118,34 @@ describe(`patchChildren`, () => {
 
   it(`removes children if their key does not match the same tagName`, () => {
     const node = document.createElement(`div`)
-    const children = createEmptyVNodes(`p`, [null])
-    const next = createEmptyVNodes(`div`, [null])
+    const children: Array<VirtualElement> = createEmptyVNodes(`p`, [null])
+    const next: Array<VirtualElement> = createEmptyVNodes(`div`, [null])
 
-    let result = patchChildren(node, children, [])
+    let result: Array<VirtualElement> = patchChildren(node, children, [])
 
     node.children[0].__specialTag__ = `@@paragraph`
 
     assert.equal(node.children.length, 1)
-    assert.equal(node.firstChild.tagName, `p`)
-    assert.equal(node.firstChild.__specialTag__, `@@paragraph`)
+    assert.equal(node.firstElementChild.tagName, `p`)
+    assert.equal(node.firstElementChild.__specialTag__, `@@paragraph`)
 
     result = patchChildren(node, next, result)
 
     assert.equal(node.children.length, 1)
-    assert.equal(node.firstChild.tagName, `div`)
-    assert.equal(node.firstChild.__specialTag__, undefined)
+    assert.equal(node.firstElementChild.tagName, `div`)
+    assert.equal(node.firstElementChild.__specialTag__, undefined)
   })
 
   it(`replaces children of children`, () => {
     const node = document.createElement(`div`)
-    const children = createEmptyVNodes(`p`, [null])
+    const children: Array<VirtualElement> = createEmptyVNodes(`p`, [null])
     children[0].children = createEmptyVNodes(`span`, [null, `b`])
 
-    const next = createEmptyVNodes(`p`, [null])
+    const next: Array<VirtualElement> = createEmptyVNodes(`p`, [null])
     next[0].children = createEmptyVNodes(`span`, [`b`, `a`, `c`, null])
 
-    let result = patchChildren(node, children, [])
-    const childNode = node.firstChild
+    let result: Array<VirtualElement> = patchChildren(node, children, [])
+    const childNode = node.firstElementChild
 
     assert.equal(node.children.length, 1)
     assert.equal(childNode.tagName, `p`)

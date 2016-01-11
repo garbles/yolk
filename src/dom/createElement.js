@@ -1,10 +1,7 @@
 /* @flow */
 
-import {VirtualElement} from './VirtualElement'
-import {VirtualText} from './VirtualText'
-
-export function createElement (vnode: VirtualElement | VirtualText): HTMLElement | Text {
-  const node: HTMLElement | Text = vnode.init()
+export function createElement (vnode: VirtualElement): HTMLElement {
+  const node: HTMLElement = vnode.init()
   vnode.create(node)
   return node
 }

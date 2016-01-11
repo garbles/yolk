@@ -18,11 +18,11 @@ export class VirtualText {
   }
 
   // TODO: type this better
-  create (__node: Object): void {}
-  insert (__node: Object): void {}
-  prepatch (__node: Object): void {}
-  patch (__next: Object, __node: Object): void {}
-  postpatch (__node: Object): void {}
-  predestroy (__node: Object): void {}
+  create (__node: Node): void {}
+  insert (__node: Node): void {}
+  prepatch (__node: Node): void {}
+  patch (__next: VirtualNode, __node: Node): void {}
+  postpatch (__node: Node): void {}
+  predestroy (__node: Node): void {}
   destroy (): void {}
 }
