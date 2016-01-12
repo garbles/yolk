@@ -4,7 +4,7 @@
 [![circle-ci](https://circleci.com/gh/garbles/yolk/tree/master.png?style=shield)](https://circleci.com/gh/garbles/yolk)
 [![npm version](https://badge.fury.io/js/yolk.svg)](https://badge.fury.io/js/yolk)
 
-__Rewrite in progress__: While most of the API for Yolk will remain the same, it is currently being rewritten to accomodate various internal improvements that need to be made. [You can follow along here](https://github.com/garbles/yolk/pull/67).
+__Rewrite in progress!!!__ While most of the API for Yolk will remain the same, it is currently being rewritten to accomodate various internal improvements that need to be made. [You can follow along here](https://github.com/garbles/yolk/pull/67). :neckbeard:
 
 Anyway...
 
