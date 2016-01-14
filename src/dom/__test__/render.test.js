@@ -26,7 +26,7 @@ describe(`render`, () => {
     const onUnmount = () => unmountCallbackCount += 1
     const width = new BehaviorSubject(55)
     const height = new BehaviorSubject(100)
-    const children = new BehaviorSubject([h(`strong`), h(`p`, {onUnmount})])
+    const children = new BehaviorSubject([h(`strong`, {onUnmount}), h(`p`, {onUnmount})])
 
     const vnode = h(`div`, {className: `cool`, onMount}, [
       h(`span`, {width: width, onMount}),
@@ -47,10 +47,11 @@ describe(`render`, () => {
     assert.equal(node.children[0].children[1].children[0].tagName, `strong`)
     assert.equal(node.children[0].children[1].children[1].tagName, `p`)
 
+
     const otherChildren = new BehaviorSubject(h(`strong`, {onMount}))
     width.next(550)
     height.next(1000)
-    children.next([h(`p`, {onMount}), h(`div`, {}, [otherChildren])])
+    children.next([h(`p`), h(`div`, {onMount}, [otherChildren])])
 
     assert.equal(node.children[0].children[0].width, 550)
     assert.equal(node.children[0].children[1].height, 1000)
@@ -60,7 +61,7 @@ describe(`render`, () => {
     assert.equal(node.children[0].children[1].children[1].children.length, 1)
     assert.equal(node.children[0].children[1].children[1].children[0].tagName, `strong`)
 
-    // assert.equal(mountCallbackCount, 4)
-    // assert.equal(unmountCallbackCount, 1)
+    assert.equal(mountCallbackCount, 4)
+    assert.equal(unmountCallbackCount, 1)
   })
 })

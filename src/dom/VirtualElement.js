@@ -5,6 +5,7 @@ import {Subject} from 'rxjs/Subject'
 import {patchChildren} from './patchChildren'
 import {patchProperties} from './patchProperties'
 import {emitMount, emitUnmount} from './mountable'
+import {batchInsertMessages} from './batchInsertMessages'
 import {createCompositeSubject} from '../rx/createCompositeSubject'
 import {createObservableFromObject} from '../rx/createObservableFromObject'
 import {createObservableFromArray} from '../rx/createObservableFromArray'
@@ -54,7 +55,10 @@ export class VirtualElement {
     children$
       .map(flatten)
       .subscribe((next: Array<VirtualNode>): void => {
-        previousChildren = patchChildren(node, next, previousChildren)
+
+        batchInsertMessages(() => {
+          previousChildren = patchChildren(node, next, previousChildren)
+        })
       })
   }
 
@@ -67,6 +71,9 @@ export class VirtualElement {
     this.children$.next(next.children)
   }
 
-  predestroy (__node: HTMLElement): void {}
+  predestroy (node: HTMLElement): void {
+    emitUnmount(node, this.props.onUnmount)
+  }
+
   destroy (): void {}
 }

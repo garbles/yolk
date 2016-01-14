@@ -1,6 +1,7 @@
 /* @flow */
 
 import {createElement} from './createElement'
+import {queueInsertMessage} from './batchInsertMessages'
 import {isDefined} from '../util/isDefined'
 
 export const create = (node: HTMLElement, next: VirtualNode, index: number): Function => (children: Array<VirtualNode>): void => {
@@ -15,7 +16,7 @@ export const create = (node: HTMLElement, next: VirtualNode, index: number): Fun
     children.push(next)
   }
 
-  next.insert(child) // queue up
+  queueInsertMessage(next, node)
 }
 
 export const update = (node: HTMLElement, previous: VirtualNode, next: VirtualNode, index: number): Function => (children: Array<VirtualNode>): void => {

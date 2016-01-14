@@ -3,7 +3,6 @@
 import dift, {CREATE, UPDATE, MOVE, REMOVE} from 'dift'
 import {create, update, move, remove} from './actions'
 import {keyIndex} from './keyIndex'
-import {isNumber} from '../util/isNumber'
 
 const keyFn: Function = a => a.key
 
@@ -31,9 +30,9 @@ export function patchChildren (node: HTMLElement, _next: Array<VirtualNode>, _pr
     }
   }
 
-  dift(previousIndex, nextIndex, apply, keyFn)
-
   const children: Array<VirtualNode> = []
+
+  dift(previousIndex, nextIndex, apply, keyFn)
   actions.forEach(fn => fn(children))
 
   return children
