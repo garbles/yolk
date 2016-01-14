@@ -1,12 +1,11 @@
 /* @flow */
 
 import {createElement} from './createElement'
-import {queueInsertMessage, batchInsertMessages} from './batchInsertMessages'
+import {batchInsertMessages, queueInsertMessage} from './batchInsertMessages'
 
 export function render (vnode: VirtualNode, container: HTMLElement): void {
-  const node: HTMLElement = vnode.init()
-
   batchInsertMessages(() => {
+    const node: HTMLElement = vnode.init()
     queueInsertMessage(vnode, node)
     vnode.create(node)
     container.appendChild(node)
