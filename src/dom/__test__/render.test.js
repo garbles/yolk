@@ -20,12 +20,16 @@ function h (...args) {
 
 describe(`render`, () => {
   it.only(`renders a virtual node into a container`, () => {
+    let mountCallbackCount = 0
+    let unmountCallbackCount = 0
+    const onMount = () => mountCallbackCount += 1
+    const onUnmount = () => unmountCallbackCount += 1
     const width = new BehaviorSubject(55)
     const height = new BehaviorSubject(100)
-    const children = new BehaviorSubject([h(`strong`), h(`p`)])
+    const children = new BehaviorSubject([h(`strong`), h(`p`, {onUnmount})])
 
-    const vnode = h(`div`, { className: `cool`}, [
-      h(`span`, {width: width}),
+    const vnode = h(`div`, {className: `cool`, onMount}, [
+      h(`span`, {width: width, onMount}),
       h(`div`, {height: height}, [children]),
     ])
 
@@ -43,10 +47,10 @@ describe(`render`, () => {
     assert.equal(node.children[0].children[1].children[0].tagName, `strong`)
     assert.equal(node.children[0].children[1].children[1].tagName, `p`)
 
-    const width = new BehaviorSubject(550)
-    const height = new BehaviorSubject(1000)
-    const otherChildren = new BehaviorSubject(h(`strong`))
-    const children = new BehaviorSubject([h(`p`), h(`div`, {}, [otherChildren])])
+    const otherChildren = new BehaviorSubject(h(`strong`, {onMount}))
+    width.next(550)
+    height.next(1000)
+    children.next([h(`p`, {onMount}), h(`div`, {}, [otherChildren])])
 
     assert.equal(node.children[0].children[0].width, 550)
     assert.equal(node.children[0].children[1].height, 1000)
@@ -55,5 +59,8 @@ describe(`render`, () => {
     assert.equal(node.children[0].children[1].children[1].tagName, `div`)
     assert.equal(node.children[0].children[1].children[1].children.length, 1)
     assert.equal(node.children[0].children[1].children[1].children[0].tagName, `strong`)
+
+    // assert.equal(mountCallbackCount, 4)
+    // assert.equal(unmountCallbackCount, 1)
   })
 })
