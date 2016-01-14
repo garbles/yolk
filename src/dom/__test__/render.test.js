@@ -45,12 +45,15 @@ describe(`render`, () => {
 
     const width = new BehaviorSubject(550)
     const height = new BehaviorSubject(1000)
-    const children = new BehaviorSubject([h(`p`), h(`div`)])
+    const otherChildren = new BehaviorSubject(h(`strong`))
+    const children = new BehaviorSubject([h(`p`), h(`div`, {}, [otherChildren])])
 
     assert.equal(node.children[0].children[0].width, 550)
     assert.equal(node.children[0].children[1].height, 1000)
     assert.equal(node.children[0].children[1].children.length, 2)
     assert.equal(node.children[0].children[1].children[0].tagName, `p`)
     assert.equal(node.children[0].children[1].children[1].tagName, `div`)
+    assert.equal(node.children[0].children[1].children[1].children.length, 1)
+    assert.equal(node.children[0].children[1].children[1].children[0].tagName, `strong`)
   })
 })
