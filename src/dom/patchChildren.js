@@ -2,6 +2,7 @@
 
 import dift, {CREATE, UPDATE, MOVE, REMOVE} from 'dift'
 import {create, update, move, remove} from './actions'
+import {batchInsertMessages} from './batchInsertMessages'
 import {keyIndex} from './keyIndex'
 
 const keyFn: Function = a => a.key
@@ -32,8 +33,10 @@ export function patchChildren (node: HTMLElement, _next: Array<VirtualNode>, _pr
 
   const children: Array<VirtualNode> = []
 
-  dift(previousIndex, nextIndex, apply, keyFn)
-  actions.forEach(fn => fn(children))
+  batchInsertMessages(() => {
+    dift(previousIndex, nextIndex, apply, keyFn)
+    actions.forEach(fn => fn(children))
+  })
 
   return children
 }

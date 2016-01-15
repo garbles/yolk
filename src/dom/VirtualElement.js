@@ -5,15 +5,12 @@ import {Subject} from 'rxjs/Subject'
 import {patchChildren} from './patchChildren'
 import {patchProperties} from './patchProperties'
 import {emitMount, emitUnmount} from './mountable'
-import {batchInsertMessages} from './batchInsertMessages'
 import {createCompositeSubject} from '../rx/createCompositeSubject'
 import {createObservableFromObject} from '../rx/createObservableFromObject'
 import {createObservableFromArray} from '../rx/createObservableFromArray'
 import {flatten} from '../util/flatten'
 
 import 'rxjs/add/operator/map'
-import 'rxjs/add/operator/combineLatest-static'
-import 'rxjs/add/operator/switchMap'
 
 const NO_PROPERTIES = Object.freeze({})
 const NO_CHILDREN = Object.freeze([])
@@ -57,9 +54,7 @@ export class VirtualElement {
     children$
       .map(flatten)
       .subscribe((next: Array<VirtualNode>): void => {
-        batchInsertMessages(() => {
-          previousChildren = patchChildren(node, next, previousChildren)
-        })
+        previousChildren = patchChildren(node, next, previousChildren)
       })
   }
 
