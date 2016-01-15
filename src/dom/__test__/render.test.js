@@ -1,33 +1,9 @@
-import document from 'global/document'
 import {Observable} from 'rxjs/Observable'
-import {render} from '../render'
-import {createComponent} from '../createComponent'
-import {VirtualElement} from '../VirtualElement'
+import {renderInDocument} from './support/renderInDocument'
+import {h} from '../h'
 import {BehaviorSubject} from 'rxjs/subject/BehaviorSubject'
-import {flatten} from '../../util/flatten'
 
 import 'rxjs/add/operator/startWith'
-
-function renderInDocument (vnode) {
-  const node = document.createElement(`div`)
-  document.body.appendChild(node)
-
-  const cleanup = () => document.body.removeChild(node)
-
-  render(vnode, node)
-
-  return {node, cleanup}
-}
-
-function h (tagName, props = {}, ..._children) {
-  const children = flatten(_children)
-
-  if (typeof tagName === `function`) {
-    return createComponent(tagName, props, children)
-  }
-
-  return new VirtualElement(tagName, props, children)
-}
 
 describe(`render`, () => {
   it(`renders a virtual node into a container`, () => {
@@ -63,7 +39,7 @@ describe(`render`, () => {
     width.next(550)
     height.next(1000)
 
-    const someChild = function () {
+    const someChild = () => {
       return (
         h(`div`, {onMount}, [otherChildren])
       )
@@ -81,6 +57,8 @@ describe(`render`, () => {
 
     assert.equal(mountCallbackCount, 4)
     assert.equal(unmountCallbackCount, 1)
+
+    cleanup()
   })
 
   it(`renders a component`, () => {
@@ -95,5 +73,7 @@ describe(`render`, () => {
     assert.equal(node.children[0].tagName, `div`)
     assert.equal(node.children[0].children.length, 1)
     assert.equal(node.children[0].children[0].tagName, `span`)
+
+    cleanup()
   })
 })

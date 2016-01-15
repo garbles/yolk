@@ -1,9 +1,10 @@
 /* @flow weak */
 
+import document from 'global/document'
+import {renderInDocument} from './support/renderInDocument'
 import {emitMount, emitUnmount} from '../mountable'
-import {addEventListener, removeEventListener} from '../eventDelegator'
-import {VirtualElement} from '../VirtualElement'
-import {render} from '../render'
+import {addEventListener} from '../eventDelegator'
+import {h} from '../h'
 
 describe(`emitMount`, () => {
   it(`emits a mount event in a given node after it is inserted into the DOM`, done => {
@@ -40,16 +41,14 @@ describe(`emitMount`, () => {
     document.body.removeChild(node)
   })
 
-  // it(`calls onMount event when a virtual element is inserted into the DOM`, done => {
-  //   const container = document.createElement(`div`)
-  //   const onMount = () => done()
-  //   const vnode = new VirtualElement(`div`, {onMount})
-  //   document.body.appendChild(container)
+  it(`calls onMount event when a virtual element is inserted into the DOM`, done => {
+    const onMount = () => done()
+    const vnode = h(`div`, {onMount})
 
-  //   render(vnode, container)
+    const {cleanup} = renderInDocument(vnode)
 
-  //   document.body.removeChild(container)
-  // })
+    cleanup()
+  })
 })
 
 describe(`emitUnmount`, () => {

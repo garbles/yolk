@@ -22,6 +22,7 @@
   "scripts": {
     "build": "babel src lib",
     "test": "NODE_ENV=test karma start",
+    "lint": "eslint src",
     "type-check": "flow check --all"
   },
   "homepage": "https://github.com/yolkjs/yolk",

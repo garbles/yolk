@@ -3,7 +3,7 @@
 export const CustomEvent = global.CustomEvent || ((): CustomEvent => {
   const DEFAULT_PARAMS: Object = {bubbles: false, cancelable: false, detail: undefined}
 
-  function CustomEvent (_event: string, _params?: Object) {
+  function _CustomEvent (_event: string, _params?: Object) {
     const params: Object = {...DEFAULT_PARAMS, ..._params}
     const event: CustomEvent = document.createEvent(`CustomEvent`)
 
@@ -11,5 +11,5 @@ export const CustomEvent = global.CustomEvent || ((): CustomEvent => {
     return event
   }
 
-  return CustomEvent
+  return _CustomEvent
 })()

@@ -2,14 +2,14 @@
 
 import document from 'global/document'
 import {patchChildren} from '../patchChildren'
-import {VirtualElement} from '../VirtualElement'
-
-function createEmptyVNodes (tag, mapping) {
-  return mapping.map((key, i) => createEmptyVnode(tag, key))
-}
+import {h} from '../h'
 
 function createEmptyVnode (tag, key) {
-  return new VirtualElement(tag || `p`, {}, [], key)
+  return h(tag || `p`, {key})
+}
+
+function createEmptyVNodes (tag, mapping) {
+  return mapping.map(key => createEmptyVnode(tag, key))
 }
 
 describe(`patchChildren`, () => {
@@ -34,9 +34,9 @@ describe(`patchChildren`, () => {
 
   it(`patches children`, () => {
     const node = document.createElement(`div`)
-    const children: Array<VirtualElement> = [new VirtualElement(`p`)]
-    const next: Array<VirtualElement> = [new VirtualElement(`p`, {id: `next`})]
-    const doubleNext: Array<VirtualElement> = [new VirtualElement(`p`, {id: `double-next`})]
+    const children: Array<VirtualElement> = [h(`p`)]
+    const next: Array<VirtualElement> = [h(`p`, {id: `next`})]
+    const doubleNext: Array<VirtualElement> = [h(`p`, {id: `double-next`})]
 
     let result: Array<VirtualElement> = patchChildren(node, children, [])
     assert.equal(node.firstElementChild.width, undefined)

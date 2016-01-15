@@ -1,7 +1,6 @@
 /* @flow */
 
 import document from 'global/document'
-import {Observable} from 'rxjs/Observable'
 import {Subject} from 'rxjs/Subject'
 import {patchChildren} from './patchChildren'
 import {patchProperties} from './patchProperties'
@@ -58,7 +57,6 @@ export class VirtualElement {
     children$
       .map(flatten)
       .subscribe((next: Array<VirtualNode>): void => {
-
         batchInsertMessages(() => {
           previousChildren = patchChildren(node, next, previousChildren)
         })
@@ -79,4 +77,14 @@ export class VirtualElement {
   }
 
   destroy (): void {}
+}
+
+export function createElement (tagName: string, props: Object, children: Array<VirtualNode | Observable>): VirtualElement {
+  const key: string = props.key
+  const namespace: string = props.namespace
+
+  delete props.key
+  delete props.namespace
+
+  return new VirtualElement(tagName, props, children, key, namespace)
 }

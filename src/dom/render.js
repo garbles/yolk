@@ -1,6 +1,5 @@
 /* @flow */
 
-import {createElement} from './createElement'
 import {batchInsertMessages, queueInsertMessage} from './batchInsertMessages'
 
 export function render (vnode: VirtualNode, container: HTMLElement): void {
