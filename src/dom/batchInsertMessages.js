@@ -17,12 +17,16 @@ export function queueInsertMessage (vnode: VirtualNode, node: HTMLElement): void
 }
 
 export function batchInsertMessages (callback: Function): void {
-  if (scope.batchInProgress === false) {
-    scope.batchInProgress = true
-    callback()
-    flushQueue()
-    scope.batchInProgress = false
-  } else {
-    callback()
+  if (scope.batchInProgress) {
+    return callback()
   }
+
+  scope.batchInProgress = true
+
+  const result = callback()
+  flushQueue()
+
+  scope.batchInProgress = false
+
+  return result
 }

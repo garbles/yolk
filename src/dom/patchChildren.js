@@ -15,16 +15,16 @@ export function patchChildren (node: HTMLElement, _next: Array<VirtualNode>, _pr
   function apply (type: number, previous: Object, next: Object, index: number): void {
     switch (type) {
     case CREATE:
-      actions.push(create(node, next.vnode, index))
+      actions.push(create(next.vnode, index))
       break
     case UPDATE:
-      actions.push(update(node, previous.vnode, next.vnode, index))
+      actions.push(update(previous.vnode, next.vnode, index))
       break
     case MOVE:
-      actions.push(move(node, previous.vnode, next.vnode, previous.index, index))
+      actions.push(move(previous.vnode, next.vnode, previous.index, index))
       break
     case REMOVE:
-      actions.push(remove(node, previous.vnode, previous.index))
+      actions.push(remove(previous.vnode, previous.index))
       break
     default:
       return
@@ -32,11 +32,9 @@ export function patchChildren (node: HTMLElement, _next: Array<VirtualNode>, _pr
   }
 
   const children: Array<VirtualNode> = []
+  dift(previousIndex, nextIndex, apply, keyFn)
 
-  batchInsertMessages(() => {
-    dift(previousIndex, nextIndex, apply, keyFn)
-    actions.forEach(fn => fn(children))
+  return batchInsertMessages(() => {
+    return actions.map(fn => fn(node)).reduce((acc,fn) => fn(acc), [])
   })
-
-  return children
 }

@@ -4,7 +4,7 @@ import {createElement} from './createElement'
 import {queueInsertMessage} from './batchInsertMessages'
 import {isDefined} from '../util/isDefined'
 
-export const create = (node: HTMLElement, next: VirtualNode, index: number): Function => (children: Array<VirtualNode>): void => {
+export const create = (next: VirtualNode, index: number): Function => (node: HTMLElement): Function => (children: Array<VirtualNode>): Array<VirtualNode> => {
   const child: Node = createElement(next)
   const before: Node = node.children[index]
 
@@ -16,19 +16,23 @@ export const create = (node: HTMLElement, next: VirtualNode, index: number): Fun
     children.push(next)
   }
 
-  queueInsertMessage(next, node)
+  queueInsertMessage(next, child)
+
+  return children
 }
 
-export const update = (node: HTMLElement, previous: VirtualNode, next: VirtualNode, index: number): Function => (children: Array<VirtualNode>): void => {
+export const update = (previous: VirtualNode, next: VirtualNode, index: number): Function => (node: HTMLElement): Function => (children: Array<VirtualNode>): Array<VirtualNode> => {
   const child: Node = node.children[index]
   previous.patch(next, child)
   children.splice(index, 0, previous)
+
+  return children
 }
 
-export const move = (node: HTMLElement, previous: VirtualNode, next: VirtualNode, oldIndex: number, newIndex: number): Function => {
+export const move = (previous: VirtualNode, next: VirtualNode, oldIndex: number, newIndex: number): Function => (node: HTMLElement): Function => {
   const child: Node = node.children[oldIndex]
 
-  return (children: Array<VirtualNode>): void => {
+  return (children: Array<VirtualNode>): Array<VirtualNode> => {
     const before: Node = node.children[newIndex]
 
     if (isDefined(before)) {
@@ -40,15 +44,19 @@ export const move = (node: HTMLElement, previous: VirtualNode, next: VirtualNode
     }
 
     previous.patch(next, child)
+
+    return children
   }
 }
 
-export const remove = (node: HTMLElement, previous: VirtualNode, index: number): Function => {
+export const remove = (previous: VirtualNode, index: number): Function => (node: HTMLElement): Function => {
   const child: Node = node.children[index]
 
-  return (): void => {
+  return (children: Array<VirtualNode>): Array<VirtualNode> => {
     previous.predestroy(child)
     node.removeChild(child)
     previous.destroy()
+
+    return children
   }
 }
