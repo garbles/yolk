@@ -1,7 +1,7 @@
 /* @flow */
 
 import {Observable} from 'rxjs/Observable'
-import {isObservable} from './isObservable'
+import {asObservable} from './asObservable'
 
 import 'rxjs/add/observable/fromArray'
 import 'rxjs/add/operator/combineLatest-static'
@@ -11,13 +11,7 @@ export function createObservableFromArray (arr: Array<any>): Observable<Array<an
     return Observable.of([])
   }
 
-  const values: Array<Observable> = arr.map((value: any): Observable<any> => {
-    if (isObservable(value)) {
-      return value
-    }
-
-    return Observable.of(value)
-  })
+  const values: Array<Observable> = arr.map(asObservable)
 
   return Observable.combineLatest(values)
 }

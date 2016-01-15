@@ -1,7 +1,7 @@
 /* @flow */
 
 import {Observable} from 'rxjs/Observable'
-import {isObservable} from './isObservable'
+import {asObservable} from './asObservable'
 import {isEmptyObject} from '../util/isEmptyObject'
 
 import 'rxjs/add/observable/fromArray'
@@ -19,13 +19,7 @@ export function createObservableFromObject (obj: Object): Observable<Object> {
 
   while (++i < len) {
     const key: string = keys[i]
-    const value: any = obj[key]
-
-    if (isObservable(value)) {
-      values[i] = value
-    } else {
-      values[i] = Observable.of(value)
-    }
+    values[i] = asObservable(obj[key])
   }
 
   return Observable.combineLatest(values, function latest (): Object {

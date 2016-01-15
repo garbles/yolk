@@ -1,6 +1,7 @@
 /* @flow */
 
 import document from 'global/document'
+import {Observable} from 'rxjs/Observable'
 import {Subject} from 'rxjs/Subject'
 import {patchChildren} from './patchChildren'
 import {patchProperties} from './patchProperties'
@@ -12,6 +13,8 @@ import {createObservableFromArray} from '../rx/createObservableFromArray'
 import {flatten} from '../util/flatten'
 
 import 'rxjs/add/operator/map'
+import 'rxjs/add/operator/combineLatest-static'
+import 'rxjs/add/operator/switchMap'
 
 const NO_PROPERTIES = Object.freeze({})
 const NO_CHILDREN = Object.freeze([])
