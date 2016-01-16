@@ -3,8 +3,7 @@ import {createElement} from './VirtualElement'
 import {isString} from '../util/isString'
 import {flatten} from '../util/flatten'
 
-export function h (tagName, _props = {}, ..._children) {
-  const props = {..._props}
+export function h (tagName, props = {}, ..._children) {
   const children = flatten(_children)
 
   if (isString(tagName)) {

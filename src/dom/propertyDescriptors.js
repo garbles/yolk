@@ -159,7 +159,7 @@ const props: Object = {
 }
 
 eventsList.forEach(event => {
-  props[`on${event}`] = USE_EVENT_LISTENER | HAS_LOWER_CASE
+  props[event] = USE_EVENT_LISTENER | HAS_LOWER_CASE
 })
 
 const descriptors: Object = {}

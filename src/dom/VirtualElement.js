@@ -4,7 +4,9 @@ import document from 'global/document'
 import {Subject} from 'rxjs/Subject'
 import {patchChildren} from './patchChildren'
 import {patchProperties} from './patchProperties'
+import {parseTag} from './parseTag'
 import {emitMount, emitUnmount} from './mountable'
+import {copyPropsWithWrappedEventHandlers} from './eventHandler'
 import {createCompositeSubject} from '../rx/createCompositeSubject'
 import {createObservableFromObject} from '../rx/createObservableFromObject'
 import {createObservableFromArray} from '../rx/createObservableFromArray'
@@ -12,8 +14,7 @@ import {flatten} from '../util/flatten'
 
 import 'rxjs/add/operator/map'
 
-const NO_PROPERTIES = Object.freeze({})
-const NO_CHILDREN = Object.freeze([])
+const TAG_IS_ONLY_LETTERS = /^[a-zA-Z]*$/
 
 const createCompositeObjectSubject = createCompositeSubject(createObservableFromObject)
 const createCompositeArraySubject = createCompositeSubject(createObservableFromArray)
@@ -26,10 +27,10 @@ export class VirtualElement {
   props$: Subject<Object>;
   children: Array<VirtualNode>;
   children$: Subject<Array<VirtualNode>>;
-  constructor (tagName: string, props?: Object, children?: Array<VirtualNode>, key?: string, namespace?: string) {
+  constructor (tagName: string, props: Object, children: Array<VirtualNode>, key?: string, namespace?: string) {
     this.tagName = tagName
-    this.props = props || NO_PROPERTIES
-    this.children = children || NO_CHILDREN
+    this.props = props
+    this.children = children
     this.key = key
     this.namespace = namespace
   }
@@ -74,12 +75,16 @@ export class VirtualElement {
   destroy (): void {}
 }
 
-export function createElement (tagName: string, props: Object, children: Array<VirtualNode | Observable>): VirtualElement {
+export function createElement (_tagName: string, _props: Object, children: Array<VirtualNode | Observable>): VirtualElement {
+  const props = copyPropsWithWrappedEventHandlers(_props)
+  const tagName = parseTag(_tagName, props)
+
   const key: string = props.key
   const namespace: string = props.namespace
 
   delete props.key
   delete props.namespace
+
 
   return new VirtualElement(tagName, props, children, key, namespace)
 }

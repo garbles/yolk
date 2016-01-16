@@ -1,6 +1,7 @@
 /* @flow */
 
 import {asObservable} from '../rx/asObservable'
+import {createEventHandler} from './eventHandler'
 
 export function createComponent (fn: Function, _props: Object, children: Array<VirtualNode | Observable>): VirtualNode | Observable {
   const keys: Array<string> = Object.keys(_props)
@@ -13,5 +14,5 @@ export function createComponent (fn: Function, _props: Object, children: Array<V
     props[key] = asObservable(_props[key])
   }
 
-  return fn.call(null, {props, children})
+  return fn.call(null, {props, children, createEventHandler})
 }

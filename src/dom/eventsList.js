@@ -79,3 +79,8 @@ export const eventsList: Array<string> = [
   `Mount`,
   `Unmount`,
 ]
+
+export const eventsListUIMap: Object = eventsList.reduce((acc, key) => {
+  acc[`on${key}`] = key.toLowerCase()
+  return acc
+}, {})

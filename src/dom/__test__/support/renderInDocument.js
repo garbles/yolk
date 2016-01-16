@@ -9,5 +9,5 @@ export function renderInDocument (vnode) {
 
   render(vnode, node)
 
-  return {node, cleanup}
+  return {node: node.firstChild, cleanup}
 }
