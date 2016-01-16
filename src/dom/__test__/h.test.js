@@ -18,8 +18,8 @@ describe(`h`, () => {
                     .startWith(0)
 
       return h(`div`, {},
-        h(`button#plus`, {onClick: handlePlus}),
-        h(`button#minus`, {onClick: handleMinus}),
+        h(`button#plus`, {onClick: handlePlus}, `+ `, `PLUS`),
+        h(`button#minus`, {onClick: handleMinus}, `- `, `MINUS`),
         h(`span`, { className: count }),
       )
     }
@@ -34,10 +34,10 @@ describe(`h`, () => {
     assert.equal(node.tagName, `div`)
     assert.equal(node.children[0].tagName, `button`)
     assert.equal(node.children[0].id, `plus`)
-    // assert.equal(node.children[0].innerHTML, `+ PLUSSS`)
+    assert.equal(node.children[0].textContent, `+ PLUS`)
     assert.equal(node.children[1].tagName, `button`)
     assert.equal(node.children[1].id, `minus`)
-    // assert.equal(node.children[1].innerHTML, `- MINUSSS`)
+    assert.equal(node.children[1].textContent, `- MINUS`)
     assert.equal(node.children[2].tagName, `span`)
     assert.equal(node.children[2].className, `0`)
 

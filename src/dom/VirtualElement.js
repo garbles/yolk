@@ -4,6 +4,7 @@ import document from 'global/document'
 import {Subject} from 'rxjs/Subject'
 import {patchChildren} from './patchChildren'
 import {patchProperties} from './patchProperties'
+import {maybeWrapText} from './maybeWrapText'
 import {parseTag} from './parseTag'
 import {emitMount, emitUnmount} from './mountable'
 import {wrapEventHandlers} from './wrapEventHandlers'
@@ -23,9 +24,9 @@ export class VirtualElement {
   namespace: string | void;
   props: Object;
   props$: Subject<Object>;
-  children: Array<VirtualNode>;
-  children$: Subject<Array<VirtualNode>>;
-  constructor (tagName: string, props: Object, children: Array<VirtualNode>, key?: string, namespace?: string) {
+  children: Array<VirtualElement>;
+  children$: Subject<Array<VirtualElement>>;
+  constructor (tagName: string, props: Object, children: Array<VirtualElement>, key?: string, namespace?: string) {
     this.tagName = tagName
     this.props = props
     this.children = children
@@ -39,11 +40,11 @@ export class VirtualElement {
 
   create (node: HTMLElement): void {
     const props$: Subject<Object> = this.props$ = createCompositeObjectSubject(this.props)
-    const children$: Subject<Array<VirtualNode>> = this.children$ = createCompositeArraySubject(this.children)
+    const children$: Subject<Array<VirtualElement>> = this.children$ = createCompositeArraySubject(this.children)
 
     // wrap this
     let previousProps: Object = {}
-    let previousChildren: Array<VirtualNode> = []
+    let previousChildren: Array<VirtualElement> = []
 
     props$
       .subscribe((next: Object): void => {
@@ -52,7 +53,8 @@ export class VirtualElement {
 
     children$
       .map(flatten)
-      .subscribe((next: Array<VirtualNode>): void => {
+      .map(maybeWrapText)
+      .subscribe((next: Array<VirtualElement>): void => {
         previousChildren = patchChildren(node, next, previousChildren)
       })
   }
@@ -73,7 +75,7 @@ export class VirtualElement {
   destroy (): void {}
 }
 
-export function createElement (_tagName: string, _props: Object, children: Array<VirtualNode | Observable>): VirtualElement {
+export function createElement (_tagName: string, _props: Object, children: Array<VirtualElement | Observable>): VirtualElement {
   const props = wrapEventHandlers(_props)
   const tagName = parseTag(_tagName, props)
 
@@ -82,7 +84,6 @@ export function createElement (_tagName: string, _props: Object, children: Array
 
   delete props.key
   delete props.namespace
-
 
   return new VirtualElement(tagName, props, children, key, namespace)
 }

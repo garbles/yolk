@@ -161,9 +161,9 @@ const props: Object = {
   data: IS_STAR,
 }
 
-Object.keys(eventsListUIMap).forEach(event =>
+Object.keys(eventsListUIMap).forEach(event => {
   props[event] = USE_EVENT_LISTENER | HAS_EVENT_CASE
-)
+})
 
 const descriptors: Object = {}
 const keys: Array<string> = Object.keys(props)

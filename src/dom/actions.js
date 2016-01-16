@@ -5,9 +5,9 @@ import {batchInsertMessages} from './batchInsertMessages'
 import {isDefined} from '../util/isDefined'
 
 export const create =
-(next: VirtualNode, index: number): Function =>
+(next: VirtualElement, index: number): Function =>
 (node: HTMLElement): Function =>
-(children: Array<VirtualNode>): Array<VirtualNode> => {
+(children: Array<VirtualElement>): Array<VirtualElement> => {
   return batchInsertMessages(queue => {
     const child: Node = createNode(next)
     const before: Node = node.children[index]
@@ -27,9 +27,9 @@ export const create =
 }
 
 export const update =
-(previous: VirtualNode, next: VirtualNode, index: number): Function =>
+(previous: VirtualElement, next: VirtualElement, index: number): Function =>
 (node: HTMLElement): Function =>
-(children: Array<VirtualNode>): Array<VirtualNode> => {
+(children: Array<VirtualElement>): Array<VirtualElement> => {
   const child: Node = node.children[index]
   previous.patch(next, child)
   children.splice(index, 0, previous)
@@ -38,11 +38,11 @@ export const update =
 }
 
 export const move =
-(previous: VirtualNode, next: VirtualNode, oldIndex: number, newIndex: number): Function =>
+(previous: VirtualElement, next: VirtualElement, oldIndex: number, newIndex: number): Function =>
 (node: HTMLElement): Function => {
   const child: Node = node.children[oldIndex]
 
-  return (children: Array<VirtualNode>): Array<VirtualNode> => {
+  return (children: Array<VirtualElement>): Array<VirtualElement> => {
     const before: Node = node.children[newIndex]
 
     if (isDefined(before)) {
@@ -60,11 +60,11 @@ export const move =
 }
 
 export const remove =
-(previous: VirtualNode, index: number): Function =>
+(previous: VirtualElement, index: number): Function =>
 (node: HTMLElement): Function => {
   const child: Node = node.children[index]
 
-  return (children: Array<VirtualNode>): Array<VirtualNode> => {
+  return (children: Array<VirtualElement>): Array<VirtualElement> => {
     previous.predestroy(child)
     node.removeChild(child)
     previous.destroy()

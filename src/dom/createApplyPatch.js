@@ -3,10 +3,11 @@
 import dift, {CREATE, UPDATE, MOVE, REMOVE} from 'dift'
 import {create, update, move, remove} from './actions'
 import {keyIndex} from './keyIndex'
+import {VirtualElement} from './VirtualElement'
 
 const keyFn: Function = a => a.key
 
-export function createApplyPatch (_previous: Array<VirtualNode>, _next: Array<VirtualNode>): Function {
+export function createApplyPatch (_previous: Array<VirtualElement>, _next: Array<VirtualElement>): Function {
   const previousIndex: Array<Object> = keyIndex(_previous)
   const nextIndex: Array<Object> = keyIndex(_next)
 
