@@ -1,18 +1,18 @@
 /* @flow */
 
-import {batchInsertMessages, queueInsertMessage} from './batchInsertMessages'
+import {createElement} from './createElement'
+import {batchInsertMessages} from './batchInsertMessages'
 import {isDefined} from '../util/isDefined'
 
-export const render = batchInsertMessages.bind(null, (vnode, container) => {
-  const node: HTMLElement = vnode.init()
+export const render = batchInsertMessages.bind(null, (queue, vnode, container) => {
+  const node: HTMLElement = createElement(vnode)
   const replaced = container.children[0]
-
-  queueInsertMessage(vnode, node)
-  vnode.create(node)
 
   if (isDefined(replaced)) {
     container.replaceChild(node, replaced)
   } else {
     container.appendChild(node)
   }
+
+  queue.push({vnode, node})
 })

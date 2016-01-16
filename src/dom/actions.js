@@ -1,24 +1,26 @@
 /* @flow */
 
 import {createElement} from './createElement'
-import {queueInsertMessage} from './batchInsertMessages'
+import {batchInsertMessages} from './batchInsertMessages'
 import {isDefined} from '../util/isDefined'
 
 export const create = (next: VirtualNode, index: number): Function => (node: HTMLElement): Function => (children: Array<VirtualNode>): Array<VirtualNode> => {
-  const child: Node = createElement(next)
-  const before: Node = node.children[index]
+  return batchInsertMessages(queue => {
+    const child: Node = createElement(next)
+    const before: Node = node.children[index]
 
-  if (isDefined(before)) {
-    node.insertBefore(child, before)
-    children.splice(index, 0, next)
-  } else {
-    node.appendChild(child)
-    children.push(next)
-  }
+    if (isDefined(before)) {
+      node.insertBefore(child, before)
+      children.splice(index, 0, next)
+    } else {
+      node.appendChild(child)
+      children.push(next)
+    }
 
-  queueInsertMessage(next, child)
+    queue.push({vnode: next, node: child})
 
-  return children
+    return children
+  })
 }
 
 export const update = (previous: VirtualNode, next: VirtualNode, index: number): Function => (node: HTMLElement): Function => (children: Array<VirtualNode>): Array<VirtualNode> => {

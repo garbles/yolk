@@ -7,27 +7,19 @@ const scope = {
 
 function flushQueue (): void {
   while (scope.queue.length > 0) {
-    const [vnode, node] = scope.queue.pop()
+    const {vnode, node} = scope.queue.pop()
     vnode.insert(node)
   }
 }
 
-export function queueInsertMessage (vnode: VirtualNode, node: HTMLElement): void {
+export function batchInsertMessages (callback: Function, a: any, b: any, c: any): any {
   if (scope.batchInProgress) {
-    scope.queue.push([vnode, node])
-  } else {
-    vnode.insert(node)
-  }
-}
-
-export function batchInsertMessages (callback: Function, ...args: Array<any>): any {
-  if (scope.batchInProgress) {
-    return callback(...args)
+    return callback(scope.queue, a, b, c)
   }
 
   scope.batchInProgress = true
 
-  const result = callback(...args)
+  const result = callback(scope.queue, a, b, c)
   flushQueue()
 
   scope.batchInProgress = false
