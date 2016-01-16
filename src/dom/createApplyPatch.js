@@ -6,7 +6,7 @@ import {keyIndex} from './keyIndex'
 
 const keyFn: Function = a => a.key
 
-export function createApplyPatch (_previous, _next) {
+export function createApplyPatch (_previous: Array<VirtualNode>, _next: Array<VirtualNode>): Function {
   const previousIndex: Array<Object> = keyIndex(_previous)
   const nextIndex: Array<Object> = keyIndex(_next)
 

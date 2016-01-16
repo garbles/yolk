@@ -6,7 +6,7 @@ import {patchChildren} from './patchChildren'
 import {patchProperties} from './patchProperties'
 import {parseTag} from './parseTag'
 import {emitMount, emitUnmount} from './mountable'
-import {copyPropsWithWrappedEventHandlers} from './eventHandler'
+import {wrapEventHandlers} from './wrapEventHandlers'
 import {createCompositeSubject} from '../rx/createCompositeSubject'
 import {createObservableFromObject} from '../rx/createObservableFromObject'
 import {createObservableFromArray} from '../rx/createObservableFromArray'
@@ -76,7 +76,7 @@ export class VirtualElement {
 }
 
 export function createElement (_tagName: string, _props: Object, children: Array<VirtualNode | Observable>): VirtualElement {
-  const props = copyPropsWithWrappedEventHandlers(_props)
+  const props = wrapEventHandlers(_props)
   const tagName = parseTag(_tagName, props)
 
   const key: string = props.key

@@ -2,11 +2,13 @@
 
 import {batchInsertMessages, queueInsertMessage} from './batchInsertMessages'
 
+function appendChild (vnode, node, container) {
+  queueInsertMessage(vnode, node)
+  vnode.create(node)
+  container.appendChild(node)
+}
+
 export function render (vnode: VirtualNode, container: HTMLElement): void {
-  batchInsertMessages(() => {
-    const node: HTMLElement = vnode.init()
-    queueInsertMessage(vnode, node)
-    vnode.create(node)
-    container.appendChild(node)
-  })
+  const node: HTMLElement = vnode.init()
+  batchInsertMessages(appendChild, vnode, node, container)
 }

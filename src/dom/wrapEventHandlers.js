@@ -1,10 +1,9 @@
-import {Subject} from 'rxjs/Subject'
-import {BehaviorSubject} from 'rxjs/subject/BehaviorSubject'
-import {isDefined} from '../util/isDefined'
+/* @flow */
+
 import {isSubject} from '../rx/isSubject'
 import {eventsListUIMap} from './eventsList'
 
-export function copyPropsWithWrappedEventHandlers (_props: Object): void {
+export function wrapEventHandlers (_props: Object): Object {
   const props = {}
   const keys = Object.keys(_props)
   const len = keys.length
@@ -23,8 +22,4 @@ export function copyPropsWithWrappedEventHandlers (_props: Object): void {
   }
 
   return props
-}
-
-export function createEventHandler () {
-  return new Subject()
 }

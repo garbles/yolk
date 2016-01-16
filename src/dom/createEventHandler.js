@@ -1,36 +1,40 @@
-import {ReplaySubject} from 'rxjs/subject/ReplaySubject'
-import {isDefined} from '../util/isDefined'
-import {isFunction} from '../util/isFunction'
+/* @flow */
 
-export function createEventHandler (mapFn, init) {
-  const initIsDefined = isDefined(init)
-  const mapFnIsDefined = isDefined(mapFn)
-  const mapFnIsFunction = isFunction(mapFn)
-  let handler
+import {Observable} from 'rxjs/Observable'
+import {Observer} from 'rxjs/Observer'
+import {Subject} from 'rxjs/Subject'
+import {Subscription} from 'rxjs/Subscription'
+import {ReplaySubject} from 'rxjs/subject/ReplaySubject'
+import {isFunction} from '../util/isFunction'
+import {isDefined} from '../util/isDefined'
+
+import 'rxjs/add/operator/map'
+
+function wrapMapFn (obs: Subject, mapFn?: any): Observable {
+  const mapFnIsDefined: boolean = isDefined(mapFn)
+  const mapFnIsFunction: boolean = isFunction(mapFn)
 
   if (mapFnIsDefined && mapFnIsFunction) {
-    handler = function handlerWithFunctionMap (value) {
-      handler.next(mapFn(value))
-    }
+    return obs.map(mapFn)
   } else if (mapFnIsDefined) {
-    handler = function handlerWithValueMap () {
-      handler.next(mapFn)
+    return obs.map(() => mapFn)
+  }
+
+  return obs
+}
+
+export function createEventHandler (mapFn?: any, init?: any): Subject {
+  const subject: ReplaySubject = new ReplaySubject(1)
+
+  const observable: Observable = Observable.create((observer: Observer): Function => {
+    const subscription: Subscription = wrapMapFn(subject, mapFn).subscribe(observer)
+
+    if (isDefined(init)) {
+      observer.next(init)
     }
-  } else {
-    handler = function handlerWithoutMap (value) {
-      handler.next(value)
-    }
-  }
 
-  for (const key in ReplaySubject.prototype) {
-    handler[key] = ReplaySubject.prototype[key]
-  }
+    return () => subscription.unsubscribe()
+  })
 
-  ReplaySubject.call(handler, 1)
-
-  if (initIsDefined) {
-    handler.next(init)
-  }
-
-  return handler
+  return Subject.create(observable, subject)
 }

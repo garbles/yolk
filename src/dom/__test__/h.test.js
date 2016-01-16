@@ -10,10 +10,10 @@ import 'rxjs/add/operator/startWith'
 describe(`h`, () => {
   it.only(`creates a simple clicker`, () => {
     function Counter ({createEventHandler}) {
-      const handlePlus = createEventHandler()
-      const handleMinus = createEventHandler()
-      const count = handlePlus.map(e => 1)
-                    .merge(handleMinus.map(e => -1))
+      const handlePlus = createEventHandler(1)
+      const handleMinus = createEventHandler(-1)
+      const count = handlePlus
+                    .merge(handleMinus)
                     .scan((x, y) => x + y)
                     .startWith(0)
 
