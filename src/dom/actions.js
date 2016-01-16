@@ -9,7 +9,7 @@ export const create =
 (node: HTMLElement): Function =>
 (children: Array<VirtualElement>): Array<VirtualElement> => {
   return batchInsertMessages(queue => {
-    const child: Node = createNode(next)
+    const child: HTMLElement = createNode(next)
     const before: Node = node.children[index]
 
     if (isDefined(before)) {
