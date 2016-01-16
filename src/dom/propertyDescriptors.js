@@ -1,15 +1,16 @@
 /* @flow */
 
-import {eventsList} from './eventsList'
+import {eventsListUIMap} from './eventsList'
 
 const HAS_LOWER_CASE: number = 0x1 // transform key to all lowercase
 const HAS_DASHED_CASE: number = 0x2 // transform key to dashed case
-const USE_EQUAL_SETTER: number = 0x4 // props only settable with =
-const USE_SET_ATTRIBUTE: number = 0x8 // props only settable with setAttribute
-const USE_EVENT_LISTENER: number = 0x10 // props only settable with addEventListener
-const HAS_BOOLEAN_VALUE: number = 0x20 // props can only be booleans
-const HAS_NUMBER_VALUE: number = 0x40 // props can only be numbers
-const IS_STAR: number = 0x80 // props can be any dashed case, e.g. data-*
+const HAS_EVENT_CASE: number = 0x4 // transform key from onClick to click
+const USE_EQUAL_SETTER: number = 0x8 // props only settable with =
+const USE_SET_ATTRIBUTE: number = 0x10 // props only settable with setAttribute
+const USE_EVENT_LISTENER: number = 0x20 // props only settable with addEventListener
+const HAS_BOOLEAN_VALUE: number = 0x40 // props can only be booleans
+const HAS_NUMBER_VALUE: number = 0x80 // props can only be numbers
+const IS_STAR: number = 0x100 // props can be any dashed case, e.g. data-*
 
 const DASHED_CASE_REGEX: RegExp = /(?:^\w|[A-Z]|\b\w|\s+)/g
 
@@ -29,11 +30,13 @@ function makeDashedCase (letter: string, i: number): string {
   return `-${letter.toLowerCase()}`
 }
 
-function computeName (name: string, hasLowerCase: boolean, hasDashedCase: boolean): string {
+function computeName (name: string, hasLowerCase: boolean, hasDashedCase: boolean, hasEventCase: boolean): string {
   if (hasLowerCase) {
     return name.toLowerCase()
   } else if (hasDashedCase) {
     return name.replace(DASHED_CASE_REGEX, makeDashedCase)
+  } else if (hasEventCase) {
+    return name.substr(2).toLowerCase()
   }
 
   return name
@@ -158,9 +161,9 @@ const props: Object = {
   data: IS_STAR,
 }
 
-eventsList.forEach(event => {
-  props[event] = USE_EVENT_LISTENER | HAS_LOWER_CASE
-})
+Object.keys(eventsListUIMap).forEach(event =>
+  props[event] = USE_EVENT_LISTENER | HAS_EVENT_CASE
+)
 
 const descriptors: Object = {}
 const keys: Array<string> = Object.keys(props)
@@ -172,13 +175,14 @@ while (++i < len) {
   const prop: number = props[key]
   const hasLowerCase: boolean = checkMask(prop, HAS_LOWER_CASE)
   const hasDashedCase: boolean = checkMask(prop, HAS_DASHED_CASE)
+  const hasEventCase: boolean = checkMask(prop, HAS_EVENT_CASE)
   const useEqualSetter: boolean = checkMask(prop, USE_EQUAL_SETTER)
   const useSetAttribute: boolean = checkMask(prop, USE_SET_ATTRIBUTE)
   const useEventListener: boolean = checkMask(prop, USE_EVENT_LISTENER)
   const hasBooleanValue: boolean = checkMask(prop, HAS_BOOLEAN_VALUE)
   const hasNumberValue: boolean = checkMask(prop, HAS_NUMBER_VALUE)
   const isStar: boolean = checkMask(prop, IS_STAR)
-  const computed: string = computeName(key, hasLowerCase, hasDashedCase)
+  const computed: string = computeName(key, hasLowerCase, hasDashedCase, hasEventCase)
 
   descriptors[key] = {
     useEqualSetter,

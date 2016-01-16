@@ -15,14 +15,8 @@ export function copyPropsWithWrappedEventHandlers (_props: Object): void {
     const value = _props[key]
     const event = eventsListUIMap[key]
 
-    if (isDefined(event)) {
-      if (isSubject(value)) {
-        props[event] = v => {
-          value.next(v)
-        }
-      } else {
-        props[event] = value
-      }
+    if (eventsListUIMap[key] && isSubject(value)) {
+        props[event] = ev => value.next(ev)
     } else {
       props[key] = value
     }
