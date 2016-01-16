@@ -14,8 +14,6 @@ import {flatten} from '../util/flatten'
 
 import 'rxjs/add/operator/map'
 
-const TAG_IS_ONLY_LETTERS = /^[a-zA-Z]*$/
-
 const createCompositeObjectSubject = createCompositeSubject(createObservableFromObject)
 const createCompositeArraySubject = createCompositeSubject(createObservableFromArray)
 

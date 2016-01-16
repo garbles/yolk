@@ -4,7 +4,10 @@ import {createElement} from './createElement'
 import {batchInsertMessages} from './batchInsertMessages'
 import {isDefined} from '../util/isDefined'
 
-export const create = (next: VirtualNode, index: number): Function => (node: HTMLElement): Function => (children: Array<VirtualNode>): Array<VirtualNode> => {
+export const create =
+(next: VirtualNode, index: number): Function =>
+(node: HTMLElement): Function =>
+(children: Array<VirtualNode>): Array<VirtualNode> => {
   return batchInsertMessages(queue => {
     const child: Node = createElement(next)
     const before: Node = node.children[index]
@@ -23,7 +26,10 @@ export const create = (next: VirtualNode, index: number): Function => (node: HTM
   })
 }
 
-export const update = (previous: VirtualNode, next: VirtualNode, index: number): Function => (node: HTMLElement): Function => (children: Array<VirtualNode>): Array<VirtualNode> => {
+export const update =
+(previous: VirtualNode, next: VirtualNode, index: number): Function =>
+(node: HTMLElement): Function =>
+(children: Array<VirtualNode>): Array<VirtualNode> => {
   const child: Node = node.children[index]
   previous.patch(next, child)
   children.splice(index, 0, previous)
@@ -31,7 +37,9 @@ export const update = (previous: VirtualNode, next: VirtualNode, index: number):
   return children
 }
 
-export const move = (previous: VirtualNode, next: VirtualNode, oldIndex: number, newIndex: number): Function => (node: HTMLElement): Function => {
+export const move =
+(previous: VirtualNode, next: VirtualNode, oldIndex: number, newIndex: number): Function =>
+(node: HTMLElement): Function => {
   const child: Node = node.children[oldIndex]
 
   return (children: Array<VirtualNode>): Array<VirtualNode> => {
@@ -51,7 +59,9 @@ export const move = (previous: VirtualNode, next: VirtualNode, oldIndex: number,
   }
 }
 
-export const remove = (previous: VirtualNode, index: number): Function => (node: HTMLElement): Function => {
+export const remove =
+(previous: VirtualNode, index: number): Function =>
+(node: HTMLElement): Function => {
   const child: Node = node.children[index]
 
   return (children: Array<VirtualNode>): Array<VirtualNode> => {

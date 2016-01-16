@@ -15,7 +15,7 @@ export function wrapEventHandlers (_props: Object): Object {
     const event = eventsListUIMap[key]
 
     if (eventsListUIMap[key] && isSubject(value)) {
-        props[event] = ev => value.next(ev)
+      props[event] = ev => value.next(ev)
     } else {
       props[key] = value
     }

@@ -33,5 +33,5 @@ export function createApplyPatch (_previous: Array<VirtualNode>, _next: Array<Vi
 
   dift(previousIndex, nextIndex, apply, keyFn)
 
-  return node => patches.map(fn => fn(node)).reduce((acc,fn) => fn(acc), [])
+  return node => patches.map(fn => fn(node)).reduce((acc, fn) => fn(acc), [])
 }
