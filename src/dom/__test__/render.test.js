@@ -22,17 +22,16 @@ describe(`render`, () => {
 
     const {node, cleanup} = renderInDocument(vnode)
 
-    assert.equal(node.children.length, 1)
-    assert.equal(node.children[0].tagName, `div`)
-    assert.equal(node.children[0].className, `cool`)
-    assert.equal(node.children[0].children.length, 2)
-    assert.equal(node.children[0].children[0].tagName, `span`)
-    assert.equal(node.children[0].children[0].width, 55)
-    assert.equal(node.children[0].children[1].tagName, `div`)
-    assert.equal(node.children[0].children[1].height, 100)
-    assert.equal(node.children[0].children[1].children.length, 2)
-    assert.equal(node.children[0].children[1].children[0].tagName, `strong`)
-    assert.equal(node.children[0].children[1].children[1].tagName, `p`)
+    assert.equal(node.tagName, `div`)
+    assert.equal(node.className, `cool`)
+    assert.equal(node.children.length, 2)
+    assert.equal(node.children[0].tagName, `span`)
+    assert.equal(node.children[0].width, 55)
+    assert.equal(node.children[1].tagName, `div`)
+    assert.equal(node.children[1].height, 100)
+    assert.equal(node.children[1].children.length, 2)
+    assert.equal(node.children[1].children[0].tagName, `strong`)
+    assert.equal(node.children[1].children[1].tagName, `p`)
 
 
     const otherChildren = new BehaviorSubject(h(`strong`, {onMount}))
@@ -47,13 +46,13 @@ describe(`render`, () => {
 
     children.next([h(`p`), h(someChild)])
 
-    assert.equal(node.children[0].children[0].width, 550)
-    assert.equal(node.children[0].children[1].height, 1000)
-    assert.equal(node.children[0].children[1].children.length, 2)
-    assert.equal(node.children[0].children[1].children[0].tagName, `p`)
-    assert.equal(node.children[0].children[1].children[1].tagName, `div`)
-    assert.equal(node.children[0].children[1].children[1].children.length, 1)
-    assert.equal(node.children[0].children[1].children[1].children[0].tagName, `strong`)
+    assert.equal(node.children[0].width, 550)
+    assert.equal(node.children[1].height, 1000)
+    assert.equal(node.children[1].children.length, 2)
+    assert.equal(node.children[1].children[0].tagName, `p`)
+    assert.equal(node.children[1].children[1].tagName, `div`)
+    assert.equal(node.children[1].children[1].children.length, 1)
+    assert.equal(node.children[1].children[1].children[0].tagName, `strong`)
 
     assert.equal(mountCallbackCount, 4)
     assert.equal(unmountCallbackCount, 1)
@@ -69,10 +68,9 @@ describe(`render`, () => {
     const vnode = h(`div`, {}, [h(C, {}, [])])
     const {node, cleanup} = renderInDocument(vnode)
 
+    assert.equal(node.tagName, `div`)
     assert.equal(node.children.length, 1)
-    assert.equal(node.children[0].tagName, `div`)
-    assert.equal(node.children[0].children.length, 1)
-    assert.equal(node.children[0].children[0].tagName, `span`)
+    assert.equal(node.children[0].tagName, `span`)
 
     cleanup()
   })

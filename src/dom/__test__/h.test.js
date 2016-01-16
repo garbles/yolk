@@ -8,7 +8,7 @@ import 'rxjs/add/operator/startWith'
 
 // test kitchen sink
 describe(`h`, () => {
-  it.only(`creates a simple clicker`, () => {
+  it(`creates a simple clicker`, () => {
     function Counter ({createEventHandler}) {
       const handlePlus = createEventHandler(1)
       const handleMinus = createEventHandler(-1)

@@ -13,7 +13,11 @@ function flushQueue (): void {
 }
 
 export function queueInsertMessage (vnode: VirtualNode, node: HTMLElement): void {
-  scope.queue.push([vnode, node])
+  if (scope.batchInProgress) {
+    scope.queue.push([vnode, node])
+  } else {
+    vnode.insert(node)
+  }
 }
 
 export function batchInsertMessages (callback: Function, ...args: Array<any>): any {
