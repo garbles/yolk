@@ -1,13 +1,13 @@
 /* @flow weak */
 
 import document from 'global/document'
-import {createElement} from '../createElement'
+import {createNode} from '../createNode'
 import {VirtualElement} from '../VirtualElement'
 
-describe(`createElement`, () => {
+describe(`createNode`, () => {
   it(`creates an HTMLElement that can push props`, done => {
     const vnode: VirtualElement = new VirtualElement(`div`, { id: `first` }, [new VirtualElement(`p`, {}, [], `blurg`)])
-    const node: HTMLElement = createElement(vnode)
+    const node: HTMLElement = createNode(vnode)
 
     document.body.appendChild(node)
 

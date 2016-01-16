@@ -1,6 +1,6 @@
 /* @flow */
 
-import {createElement} from './createElement'
+import {createNode} from './createNode'
 import {batchInsertMessages} from './batchInsertMessages'
 import {isDefined} from '../util/isDefined'
 
@@ -9,7 +9,7 @@ export const create =
 (node: HTMLElement): Function =>
 (children: Array<VirtualNode>): Array<VirtualNode> => {
   return batchInsertMessages(queue => {
-    const child: Node = createElement(next)
+    const child: Node = createNode(next)
     const before: Node = node.children[index]
 
     if (isDefined(before)) {

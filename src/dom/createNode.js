@@ -1,6 +1,6 @@
 /* @flow */
 
-export function createElement (vnode: VirtualElement): HTMLElement {
+export function createNode (vnode: VirtualElement): HTMLElement {
   const node: HTMLElement = vnode.init()
   vnode.create(node)
   return node
