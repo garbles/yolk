@@ -1,6 +1,7 @@
 /* @flow */
 
 import domDelegator from 'dom-delegator'
+import DomDelegator from 'dom-delegator/dom-delegator'
 import {eventsList} from './eventsList'
 
 const delegator: DomDelegator = domDelegator()

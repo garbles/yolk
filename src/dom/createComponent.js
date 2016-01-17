@@ -1,5 +1,7 @@
 /* @flow */
 
+import {Observable} from 'rxjs/Observable'
+import {VirtualElement} from './VirtualElement'
 import {asObservable} from '../rx/asObservable'
 import {createEventHandler} from './createEventHandler'
 

@@ -1,6 +1,7 @@
 /* @flow weak */
 
 import document from 'global/document'
+import {VirtualElement} from '../VirtualElement'
 import {patchChildren} from '../patchChildren'
 import {h} from '../h'
 

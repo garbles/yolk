@@ -35,7 +35,8 @@ describe(`createCompositeSubject`, () => {
       const height = new BehaviorSubject(12)
       const hidden = new BehaviorSubject(true)
       const className = `gabe gabe gabe`
-      const subject = createCompositeSubject(createObservableFromObject)({height, hidden, className})
+      const subject =
+        createCompositeSubject(createObservableFromObject)({height, hidden, className})
 
       subject.subscribe(props => {
         assert.equal(props.height, 12)
@@ -62,4 +63,3 @@ describe(`createCompositeSubject`, () => {
     })
   })
 })
-

@@ -11,14 +11,14 @@ function generateRandomString () {
 
 function falsyString (value) {
   switch (typeof value) {
-  case `undefined`:
-    return `undefined`
-  case `false`:
-    return `false`
-  case `string`:
-    return value.length ? value : `""`
-  default:
-    return false
+    case `undefined`:
+      return `undefined`
+    case `false`:
+      return `false`
+    case `string`:
+      return value.length ? value : `""`
+    default:
+      return false
   }
 }
 
@@ -69,30 +69,30 @@ describe(`propertDescriptors`, () => {
       }
 
       switch (true) {
-      case (prop.useSetAttribute && prop.useEqualSetter || prop.useSetAttribute && prop.useEventListener || prop.useEqualSetter && prop.useEventListener):
-        throw new Error(`${key} can\`t have two setters!`)
-      case (prop.useEqualSetter && prop.hasBooleanValue):
-        setBooleanWithEqualsTest(prop)
-        break
-      case (prop.useEqualSetter && prop.hasNumberValue):
-        setNumberWithEqualsTest(prop)
-        break
-      case (prop.useEqualSetter):
-        setStringWithEqualsTest(prop)
-        break
-      case (prop.useSetAttribute && prop.hasBooleanValue):
-        setBooleanWithFunctionTest(prop)
-        break
-      case (prop.useSetAttribute && prop.hasNumberValue):
-        setNumberWithFunctionTest(prop)
-        break
-      case (prop.useSetAttribute):
-        setStringWithFunctionTest(prop)
-        break
-      case (prop.useEventListener):
-        break // ignore
-      default:
-        throw new Error(`${key} does not have setter!`)
+        case (prop.useSetAttribute && prop.useEqualSetter || prop.useSetAttribute && prop.useEventListener || prop.useEqualSetter && prop.useEventListener):
+          throw new Error(`${key} can\`t have two setters!`)
+        case (prop.useEqualSetter && prop.hasBooleanValue):
+          setBooleanWithEqualsTest(prop)
+          break
+        case (prop.useEqualSetter && prop.hasNumberValue):
+          setNumberWithEqualsTest(prop)
+          break
+        case (prop.useEqualSetter):
+          setStringWithEqualsTest(prop)
+          break
+        case (prop.useSetAttribute && prop.hasBooleanValue):
+          setBooleanWithFunctionTest(prop)
+          break
+        case (prop.useSetAttribute && prop.hasNumberValue):
+          setNumberWithFunctionTest(prop)
+          break
+        case (prop.useSetAttribute):
+          setStringWithFunctionTest(prop)
+          break
+        case (prop.useEventListener):
+          break // ignore
+        default:
+          throw new Error(`${key} does not have setter!`)
       }
     })
   })

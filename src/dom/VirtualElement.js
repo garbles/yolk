@@ -1,6 +1,7 @@
 /* @flow */
 
 import document from 'global/document'
+import {Observable} from 'rxjs/Observable'
 import {Subject} from 'rxjs/Subject'
 import {patchChildren} from './patchChildren'
 import {patchProperties} from './patchProperties'
@@ -22,6 +23,7 @@ export class VirtualElement {
   tagName: string;
   key: string | void;
   namespace: string | void;
+  node: HTMLElement;
   props: Object;
   props$: Subject<Object>;
   children: Array<VirtualElement>;
@@ -34,11 +36,8 @@ export class VirtualElement {
     this.namespace = namespace
   }
 
-  init (): HTMLElement {
-    return document.createElementNS(this.namespace, this.tagName)
-  }
-
-  create (node: HTMLElement): void {
+  create (): HTMLElement {
+    const node: HTMLElement = this.node = document.createElementNS(this.namespace, this.tagName)
     const props$: Subject<Object> = this.props$ = createCompositeObjectSubject(this.props)
     const children$: Subject<Array<VirtualElement>> = this.children$ = createCompositeArraySubject(this.children)
 
@@ -57,19 +56,21 @@ export class VirtualElement {
       .subscribe((next: Array<VirtualElement>): void => {
         previousChildren = patchChildren(node, next, previousChildren)
       })
+
+    return node
   }
 
-  insert (node: HTMLElement): void {
-    emitMount(node, this.props.onMount)
+  insert (): void {
+    emitMount(this.node, this.props.onMount)
   }
 
-  patch (next: Object, __node: HTMLElement): void {
+  patch (next: Object): void {
     this.props$.next(next.props)
     this.children$.next(next.children)
   }
 
-  predestroy (node: HTMLElement): void {
-    emitUnmount(node, this.props.onUnmount)
+  predestroy (): void {
+    emitUnmount(this.node, this.props.onUnmount)
   }
 
   destroy (): void {}

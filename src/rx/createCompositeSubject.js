@@ -8,7 +8,9 @@ import {BehaviorSubject} from 'rxjs/subject/BehaviorSubject'
 
 import 'rxjs/add/operator/switchMap'
 
-export const createCompositeSubject = (switchMapFn: Function): Function => (value: any): Subject<any> => {
+export const createCompositeSubject =
+(switchMapFn: Function): Function =>
+(value: any): Subject<any> => {
   const behavior: BehaviorSubject = new BehaviorSubject(value)
 
   const observable: Observable = Observable.create((observer: Observer): Function => {

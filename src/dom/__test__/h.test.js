@@ -20,7 +20,7 @@ describe(`h`, () => {
       return h(`div`, {},
         h(`button#plus`, {onClick: handlePlus}, `+ `, `PLUS`),
         h(`button#minus`, {onClick: handleMinus}, `- `, `MINUS`),
-        h(`span`, { className: count }),
+        h(`span`, {}, count),
       )
     }
 
@@ -39,7 +39,7 @@ describe(`h`, () => {
     assert.equal(node.children[1].id, `minus`)
     assert.equal(node.children[1].textContent, `- MINUS`)
     assert.equal(node.children[2].tagName, `span`)
-    assert.equal(node.children[2].className, `0`)
+    assert.equal(node.children[2].textContent, `0`)
 
     $plus.trigger(`click`)
     $plus.trigger(`click`)
@@ -47,7 +47,7 @@ describe(`h`, () => {
     $plus.trigger(`click`)
     $minus.trigger(`click`)
 
-    assert.equal(node.children[2].className, `3`)
+    assert.equal(node.children[2].textContent, `3`)
 
     cleanup()
   })

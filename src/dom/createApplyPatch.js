@@ -15,20 +15,20 @@ export function createApplyPatch (_previous: Array<VirtualElement>, _next: Array
 
   function apply (type: number, previous: Object, next: Object, index: number): void {
     switch (type) {
-    case CREATE:
-      patches.push(create(next.vnode, index))
-      break
-    case UPDATE:
-      patches.push(update(previous.vnode, next.vnode, index))
-      break
-    case MOVE:
-      patches.push(move(previous.vnode, next.vnode, previous.index, index))
-      break
-    case REMOVE:
-      patches.push(remove(previous.vnode, previous.index))
-      break
-    default:
-      return
+      case CREATE:
+        patches.push(create(next.vnode, index))
+        break
+      case UPDATE:
+        patches.push(update(previous.vnode, next.vnode, index))
+        break
+      case MOVE:
+        patches.push(move(previous.vnode, next.vnode, index))
+        break
+      case REMOVE:
+        patches.push(remove(previous.vnode))
+        break
+      default:
+        return
     }
   }
 

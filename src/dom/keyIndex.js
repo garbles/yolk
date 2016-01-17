@@ -1,5 +1,7 @@
 /* @flow */
 
+import {VirtualElement} from './VirtualElement'
+
 export function keyIndex (children: Array<VirtualElement>): Array<Object> {
   const len: number = children.length
   const arr: Array<Object> = []

@@ -1,15 +1,15 @@
-/* @flow */
+/* @flow weak */
 
-import {createNode} from './createNode'
+import {VirtualElement} from './VirtualElement'
 import {batchInsertMessages} from './batchInsertMessages'
 import {isDefined} from '../util/isDefined'
 
 export const create =
-(next: VirtualElement, index: number): Function =>
-(node: HTMLElement): Function =>
+(next: VirtualElement, index: number) =>
+(node: HTMLElement) =>
 (children: Array<VirtualElement>): Array<VirtualElement> => {
   return batchInsertMessages(queue => {
-    const child: HTMLElement = createNode(next)
+    const child: HTMLElement = next.create()
     const before: Node = node.children[index]
 
     if (isDefined(before)) {
@@ -27,48 +27,43 @@ export const create =
 }
 
 export const update =
-(previous: VirtualElement, next: VirtualElement, index: number): Function =>
-(node: HTMLElement): Function =>
+(previous: VirtualElement, next: VirtualElement, index: number) =>
+(__node: HTMLElement) =>
 (children: Array<VirtualElement>): Array<VirtualElement> => {
-  const child: Node = node.children[index]
-  previous.patch(next, child)
+  previous.patch(next)
   children.splice(index, 0, previous)
 
   return children
 }
 
 export const move =
-(previous: VirtualElement, next: VirtualElement, oldIndex: number, newIndex: number): Function =>
-(node: HTMLElement): Function => {
-  const child: Node = node.children[oldIndex]
+(previous: VirtualElement, next: VirtualElement, newIndex: number) =>
+(node: HTMLElement) =>
+(children: Array<VirtualElement>): Array<VirtualElement> => {
+  const child: Element = previous.node
+  const before: Node = node.children[newIndex]
 
-  return (children: Array<VirtualElement>): Array<VirtualElement> => {
-    const before: Node = node.children[newIndex]
-
-    if (isDefined(before)) {
-      node.insertBefore(child, before)
-      children.splice(newIndex, 0, previous)
-    } else {
-      node.appendChild(child)
-      children.push(previous)
-    }
-
-    previous.patch(next, child)
-
-    return children
+  if (isDefined(before)) {
+    node.insertBefore(child, before)
+    children.splice(newIndex, 0, previous)
+  } else {
+    node.appendChild(child)
+    children.push(previous)
   }
+
+  previous.patch(next)
+
+  return children
 }
 
 export const remove =
-(previous: VirtualElement, index: number): Function =>
-(node: HTMLElement): Function => {
-  const child: Node = node.children[index]
+(previous: VirtualElement) =>
+(node: HTMLElement) =>
+(children: Array<VirtualElement>): Array<VirtualElement> => {
+  const child: Element = previous.node
+  previous.predestroy(child)
+  node.removeChild(child)
+  previous.destroy()
 
-  return (children: Array<VirtualElement>): Array<VirtualElement> => {
-    previous.predestroy(child)
-    node.removeChild(child)
-    previous.destroy()
-
-    return children
-  }
+  return children
 }

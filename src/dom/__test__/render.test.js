@@ -16,8 +16,8 @@ describe(`render`, () => {
     const children = new BehaviorSubject([h(`strong`, {onUnmount}), h(`p`, {onUnmount})])
 
     const vnode = h(`div`, {className: `cool`, onMount}, [
-      h(`span`, {width: width, onMount}),
-      h(`div`, {height: height}, [children]),
+      h(`span`, {width, onMount}),
+      h(`div`, {height}, [children]),
     ])
 
     const {node, cleanup} = renderInDocument(vnode)

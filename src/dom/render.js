@@ -1,11 +1,10 @@
 /* @flow */
 
-import {createNode} from './createNode'
 import {batchInsertMessages} from './batchInsertMessages'
 import {isDefined} from '../util/isDefined'
 
 export const render = batchInsertMessages.bind(null, (queue, vnode, container) => {
-  const node: HTMLElement = createNode(vnode)
+  const node: HTMLElement = vnode.create()
   const replaced = container.children[0]
 
   if (isDefined(replaced)) {
