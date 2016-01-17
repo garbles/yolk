@@ -14,18 +14,13 @@ module.exports = {
         exclude: /node_modules/,
         loader: `babel`
       },
-      // {
-      //   test: /\.js$/,
-      //   exclude: /node_modules/,
-      //   loader: `eslint`
-      // }
     ],
 
-    // postLoaders: [{
-    //   test: /\.js$/,
-    //   exclude: /(__test__|node_modules)/,
-    //     loader: `istanbul-instrumenter`
-    // }]
+    postLoaders: [{
+      test: /\.js$/,
+      exclude: /(__test__|node_modules)/,
+      loader: `istanbul-instrumenter`,
+    }],
   },
 
   resolve: {
@@ -34,5 +29,5 @@ module.exports = {
       path.join(__dirname, `src`)
     ],
     extensions: [``, `.js`]
-  }
+  },
 }

@@ -1,17 +1,17 @@
 const webpackConfig = require(`./webpack.config.test`)
 
 module.exports = config => {
-  config.set({
+  const options = {
     basePath: ``,
 
     frameworks: [`mocha`, `chai`],
 
-    browsers: [`Chrome`],
+    browsers: [`Chrome`, `Firefox`],
 
     files: [`src/**/*.test.js`],
 
     preprocessors: {
-      'src/**/*.test.js': [`webpack`]
+      'src/**/*.test.js': [`webpack`],
     },
 
     colors: true,
@@ -19,23 +19,28 @@ module.exports = config => {
     webpack: webpackConfig,
 
     webpackMiddleware: {
-      noInfo: true
+      noInfo: true,
     },
 
     eslint: {
       stopOnError: true,
-      stopOnWarning: true
+      stopOnWarning: true,
     },
 
     reporters: [
+      `coverage`,
       `mocha`,
-      // `coverage`,
-      `growl`,
     ],
 
-    // coverageReporter: {
-    //   type: 'text',
-    //   dir: 'coverage/'
-    // }
-  })
+    coverageReporter: {
+      type: 'lcov',
+      dir: 'coverage/',
+    },
+  }
+
+  if (process.env.CIRCLECI) {
+    options.singleRun = true
+  }
+
+  config.set(options)
 }
