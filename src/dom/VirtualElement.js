@@ -7,6 +7,7 @@ import {maybeWrapText} from './maybeWrapText'
 import {parseTag} from './parseTag'
 import {emitMount, emitUnmount} from './mountable'
 import {wrapEventHandlers} from './wrapEventHandlers'
+import {createCatchPatchingError} from './createCatchPatchingError'
 import {createPatchChildren} from './createPatchChildren'
 import {createPatchProperties} from './createPatchProperties'
 import {createCompositeSubject} from '../rx/createCompositeSubject'
@@ -40,16 +41,17 @@ export class VirtualElement {
     const node: HTMLElement = this.node = document.createElementNS(this.namespace, this.tagName)
     const props$: Subject<Object> = this.props$ = createCompositeObjectSubject(this.props)
     const children$: Subject<Array<VirtualElement>> = this.children$ = createCompositeArraySubject(this.children)
-    const patchProperties = createPatchProperties(node)
-    const patchChildren = createPatchChildren(node)
+    const patchProperties: Function = createPatchProperties(node)
+    const patchChildren: Function = createPatchChildren(node)
+    const catchPatchingError: Function = createCatchPatchingError(this)
 
     props$
-      .subscribe(patchProperties)
+      .subscribe(patchProperties, catchPatchingError)
 
     children$
       .map(flatten)
       .map(maybeWrapText)
-      .subscribe(patchChildren)
+      .subscribe(patchChildren, catchPatchingError)
 
     return node
   }
