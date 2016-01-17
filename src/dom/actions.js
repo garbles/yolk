@@ -37,15 +37,15 @@ export const update =
 }
 
 export const move =
-(previous: VirtualElement, next: VirtualElement, newIndex: number) =>
+(previous: VirtualElement, next: VirtualElement, index: number) =>
 (node: HTMLElement) =>
 (children: Array<VirtualElement>): Array<VirtualElement> => {
   const child: Element = previous.node
-  const before: Node = node.children[newIndex]
+  const before: Node = node.children[index]
 
   if (isDefined(before)) {
     node.insertBefore(child, before)
-    children.splice(newIndex, 0, previous)
+    children.splice(index, 0, previous)
   } else {
     node.appendChild(child)
     children.push(previous)

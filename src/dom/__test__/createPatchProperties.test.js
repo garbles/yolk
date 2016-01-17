@@ -1,18 +1,19 @@
 /* @flow weak */
 
 import document from 'global/document'
-import {patchProperties} from '../patchProperties'
+import {createPatchProperties} from '../createPatchProperties'
 
 describe(`patchProperties`, () => {
   it(`sets attributes on a node`, () => {
     const node = document.createElement(`div`)
+    const patchProperties = createPatchProperties(node)
 
     const previous = {
       width: 5,
       mustard: `on the beat`,
     }
 
-    patchProperties(node, previous, {})
+    patchProperties(previous, {})
 
     assert.equal(node.width, 5, `node width prop should be set`)
     assert.equal(node.mustard, `on the beat`, `node custom prop should be set`)
@@ -23,7 +24,7 @@ describe(`patchProperties`, () => {
       hidden: true,
     }
 
-    patchProperties(node, props, previous)
+    patchProperties(props, previous)
 
     assert.equal(node.height, 5, `node height prop should be set`)
     assert.equal(node.width, undefined, `node width prop should not be set`)
@@ -34,7 +35,7 @@ describe(`patchProperties`, () => {
     const next = {
     }
 
-    patchProperties(node, next, props)
+    patchProperties(next, props)
 
     assert.equal(node.height, undefined, `node height prop should be set`)
     assert.equal(node.disabled, false, `node disabled prop should not be set`)

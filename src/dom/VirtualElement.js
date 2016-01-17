@@ -3,12 +3,12 @@
 import document from 'global/document'
 import {Observable} from 'rxjs/Observable'
 import {Subject} from 'rxjs/Subject'
-import {patchChildren} from './patchChildren'
-import {patchProperties} from './patchProperties'
 import {maybeWrapText} from './maybeWrapText'
 import {parseTag} from './parseTag'
 import {emitMount, emitUnmount} from './mountable'
 import {wrapEventHandlers} from './wrapEventHandlers'
+import {createPatchChildren} from './createPatchChildren'
+import {createPatchProperties} from './createPatchProperties'
 import {createCompositeSubject} from '../rx/createCompositeSubject'
 import {createObservableFromObject} from '../rx/createObservableFromObject'
 import {createObservableFromArray} from '../rx/createObservableFromArray'
@@ -40,22 +40,16 @@ export class VirtualElement {
     const node: HTMLElement = this.node = document.createElementNS(this.namespace, this.tagName)
     const props$: Subject<Object> = this.props$ = createCompositeObjectSubject(this.props)
     const children$: Subject<Array<VirtualElement>> = this.children$ = createCompositeArraySubject(this.children)
-
-    // wrap this
-    let previousProps: Object = {}
-    let previousChildren: Array<VirtualElement> = []
+    const patchProperties = createPatchProperties(node)
+    const patchChildren = createPatchChildren(node)
 
     props$
-      .subscribe((next: Object): void => {
-        previousProps = patchProperties(node, next, previousProps)
-      })
+      .subscribe(patchProperties)
 
     children$
       .map(flatten)
       .map(maybeWrapText)
-      .subscribe((next: Array<VirtualElement>): void => {
-        previousChildren = patchChildren(node, next, previousChildren)
-      })
+      .subscribe(patchChildren)
 
     return node
   }

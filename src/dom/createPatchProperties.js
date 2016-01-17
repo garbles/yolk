@@ -3,7 +3,7 @@
 import {descriptors} from './propertyDescriptors'
 import {addEventListener, removeEventListener} from './eventDelegator'
 
-export function patchProperties (node: Object, props: Object, oldProps?: Object = {}): Object {
+function patchProperties (node: Object, props: Object, oldProps?: Object = {}): Object {
   for (const key in props) {
     if (props[key] !== oldProps[key]) {
       const next = props[key]
@@ -66,4 +66,12 @@ export function patchProperties (node: Object, props: Object, oldProps?: Object 
   }
 
   return props
+}
+
+export function createPatchProperties (node: HTMLElement): Function {
+  let previous: Object = {}
+
+  return (next: Object): void => {
+    previous = patchProperties(node, next, previous)
+  }
 }
