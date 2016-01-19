@@ -6,8 +6,7 @@ import {isDefined} from '../util/isDefined'
 
 export const create =
 (next: VirtualElement, index: number) =>
-(node: HTMLElement) =>
-(children: Array<VirtualElement>): Array<VirtualElement> => {
+(node: HTMLElement, children: Array<VirtualElement>): Array<VirtualElement> => {
   return batchInsertMessages(queue => {
     const child: HTMLElement = next.create()
     const before: Node = node.children[index]
@@ -28,8 +27,7 @@ export const create =
 
 export const update =
 (previous: VirtualElement, next: VirtualElement, index: number) =>
-(__node: HTMLElement) =>
-(children: Array<VirtualElement>): Array<VirtualElement> => {
+(__node: HTMLElement, children: Array<VirtualElement>): Array<VirtualElement> => {
   previous.patch(next)
   children.splice(index, 0, previous)
 
@@ -38,8 +36,7 @@ export const update =
 
 export const move =
 (previous: VirtualElement, next: VirtualElement, index: number) =>
-(node: HTMLElement) =>
-(children: Array<VirtualElement>): Array<VirtualElement> => {
+(node: HTMLElement, children: Array<VirtualElement>): Array<VirtualElement> => {
   const child: Element = previous.node
   const before: Node = node.children[index]
 
@@ -58,8 +55,7 @@ export const move =
 
 export const remove =
 (previous: VirtualElement) =>
-(node: HTMLElement) =>
-(children: Array<VirtualElement>): Array<VirtualElement> => {
+(node: HTMLElement, children: Array<VirtualElement>): Array<VirtualElement> => {
   const child: Element = previous.node
   previous.predestroy(child)
   node.removeChild(child)
