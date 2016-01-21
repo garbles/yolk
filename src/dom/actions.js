@@ -19,7 +19,7 @@ export const create =
       children.push(next)
     }
 
-    queue.push({vnode: next, node: child})
+    queue.push(next)
 
     return children
   })

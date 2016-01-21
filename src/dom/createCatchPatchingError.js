@@ -1,3 +1,5 @@
+/* @flow */
+
 export function createCatchPatchingError (vnode: VirtualElement): Function {
   return (err: Error): void => {
     const {name, message} = err

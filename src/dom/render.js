@@ -13,5 +13,5 @@ export const render = batchInsertMessages.bind(null, (queue, vnode, container) =
     container.appendChild(node)
   }
 
-  queue.push({vnode, node})
+  queue.push(vnode)
 })

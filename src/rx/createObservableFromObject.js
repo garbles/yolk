@@ -9,7 +9,7 @@ import 'rxjs/add/operator/combineLatest-static'
 
 export function createObservableFromObject (obj: Object): Observable<Object> {
   if (isEmptyObject(obj)) {
-    return Observable.of({})
+    return Observable.of(obj)
   }
 
   const keys: Array<string> = Object.keys(obj)

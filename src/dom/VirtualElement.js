@@ -16,6 +16,7 @@ import {createObservableFromArray} from '../rx/createObservableFromArray'
 import {flatten} from '../util/flatten'
 
 import 'rxjs/add/operator/map'
+import 'rxjs/add/operator/switchMap'
 
 const createCompositeObjectSubject = createCompositeSubject(createObservableFromObject)
 const createCompositeArraySubject = createCompositeSubject(createObservableFromArray)
@@ -35,6 +36,9 @@ export class VirtualElement {
     this.children = children
     this.key = key
     this.namespace = namespace
+    this.node = null
+    this.props$ = null
+    this.children$ = null
   }
 
   create (): HTMLElement {
@@ -46,12 +50,16 @@ export class VirtualElement {
     const catchPatchingError: Function = createCatchPatchingError(this)
 
     props$
-      .subscribe(patchProperties, catchPatchingError)
+      .map(patchProperties)
+      .subscribe()
+      // .subscribe(patchProperties, catchPatchingError)
 
     children$
       .map(flatten)
       .map(maybeWrapText)
-      .subscribe(patchChildren, catchPatchingError)
+      .map(patchChildren)
+      .subscribe()
+      // .subscribe(patchChildren, catchPatchingError)
 
     return node
   }
@@ -76,11 +84,11 @@ export function createElement (_tagName: string, _props: Object, children: Array
   const props = wrapEventHandlers(_props)
   const tagName = parseTag(_tagName, props)
 
-  const key: string = props.key
-  const namespace: string = props.namespace
+  const key: string = props.key || ``
+  const namespace: string = props.namespace || ``
 
-  delete props.key
-  delete props.namespace
+  props.key = null
+  props.namespace = null
 
   return new VirtualElement(tagName, props, children, key, namespace)
 }

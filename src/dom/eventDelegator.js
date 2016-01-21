@@ -13,5 +13,5 @@ while (++i < len) {
   delegator.listenTo(event)
 }
 
-export const addEventListener = delegator.addEventListener.bind(delegator)
-export const removeEventListener = delegator.removeEventListener.bind(delegator)
+export const addEventListener = ::delegator.addEventListener
+export const removeEventListener = ::delegator.removeEventListener

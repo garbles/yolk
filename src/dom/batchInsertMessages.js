@@ -1,14 +1,21 @@
 /* @flow */
 
-const scope = {
+import {VirtualElement} from './VirtualElement'
+
+type Scope = {
+  batchInProgress: boolean;
+  queue: Array<VirtualElement>;
+}
+
+const scope: Scope = {
   batchInProgress: false,
   queue: [],
 }
 
-function flushQueue (): void {
-  while (scope.queue.length > 0) {
-    const {vnode, node} = scope.queue.pop()
-    vnode.insert(node)
+function flushQueue (queue: Array<VirtualElement>): void {
+  while (queue.length > 0) {
+    const vnode = scope.queue.pop()
+    vnode.insert()
   }
 }
 
@@ -20,7 +27,7 @@ export function batchInsertMessages (callback: Function, a: any, b: any, c: any)
   scope.batchInProgress = true
 
   const result = callback(scope.queue, a, b, c)
-  flushQueue()
+  flushQueue(scope.queue)
 
   scope.batchInProgress = false
 

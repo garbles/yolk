@@ -1,7 +1,12 @@
 /* @flow */
 
+import {Subject} from 'rxjs/Subject'
 import {isSubject} from '../rx/isSubject'
 import {eventsListUIMap} from './eventsList'
+
+function createWrapper (subject: Subject): Function {
+  return ev => subject.next(ev)
+}
 
 export function wrapEventHandlers (_props: Object): Object {
   const props = {}
@@ -15,7 +20,7 @@ export function wrapEventHandlers (_props: Object): Object {
     const event = eventsListUIMap[key]
 
     if (eventsListUIMap[key] && isSubject(value)) {
-      props[event] = ev => value.next(ev)
+      props[event] = createWrapper(value)
     } else {
       props[key] = value
     }
