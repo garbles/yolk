@@ -11,8 +11,6 @@ export function patch (node: HTMLElement, _previous: Array<VirtualElement>, _nex
   const previousIndex: Array<Object> = keyIndex(_previous)
   const nextIndex: Array<Object> = keyIndex(_next)
 
-  const patches: Array<Function> = []
-
   function apply (type: number, previous: Object, next: Object, index: number): void {
     switch (type) {
       case CREATE:
