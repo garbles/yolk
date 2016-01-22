@@ -84,8 +84,8 @@ export function createElement (_tagName: string, _props: Object, children: Array
   const props = wrapEventHandlers(_props)
   const tagName = parseTag(_tagName, props)
 
-  const key: string = props.key || ``
-  const namespace: string = props.namespace || ``
+  const key: string = props.key || null
+  const namespace: string = props.namespace || null
 
   props.key = null
   props.namespace = null
