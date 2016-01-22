@@ -47,7 +47,7 @@ export class VirtualElement {
     const children$: Subject<Array<VirtualElement>> = this.children$ = createCompositeArraySubject(this.children)
     const patchProperties: Function = createPatchProperties(node)
     const patchChildren: Function = createPatchChildren(node)
-    const catchPatchingError: Function = createCatchPatchingError(this)
+    // const catchPatchingError: Function = createCatchPatchingError(this)
 
     props$
       .map(patchProperties)
@@ -68,9 +68,16 @@ export class VirtualElement {
     emitMount(this.node, this.props.onMount)
   }
 
-  patch (next: Object): void {
-    this.props$.next(next.props)
-    this.children$.next(next.children)
+  patch (previous: Object): void {
+    this.node = previous.node
+    this.props$ = previous.props$
+    this.children$ = previous.children$
+    previous.node = null
+    previous.props$ = null
+    previous.children$ = null
+
+    this.props$.next(this.props)
+    this.children$.next(this.children)
   }
 
   predestroy (): void {

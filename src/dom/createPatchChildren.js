@@ -1,12 +1,15 @@
 /* @flow */
 
 import {VirtualElement} from './VirtualElement'
-import {createApplyPatch} from './createApplyPatch'
+import {patch} from './patch'
 
 export function createPatchChildren (node: HTMLElement): Function {
   let previous: Array<VirtualElement> = []
 
   return (next: Array<VirtualElement>): Array<VirtualElement> => {
-    return previous = createApplyPatch(previous, next)(node)
+    patch(node, previous, next)
+    previous = next
+
+    return next
   }
 }
