@@ -15,8 +15,10 @@ function insert (node: HTMLElement, child: Element, index: number): void {
 }
 
 export function create (node: HTMLElement, next: VirtualElement, index: number): void {
+  const child: Element = next.createElement()
+
   return batchInsertMessages(queue => {
-    const child: Element = next.create()
+    next.initialize(child)
     insert(node, child, index)
     queue.push(next)
   })

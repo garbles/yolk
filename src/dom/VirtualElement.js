@@ -41,27 +41,27 @@ export class VirtualElement {
     this.children$ = null
   }
 
-  create (): HTMLElement {
-    const node: HTMLElement = this.node = document.createElementNS(this.namespace, this.tagName)
+  createElement (): HTMLElement {
+    return document.createElementNS(this.namespace, this.tagName)
+  }
+
+  initialize (node: HTMLElement): void {
     const props$: Subject<Object> = this.props$ = createCompositeObjectSubject(this.props)
     const children$: Subject<Array<VirtualElement>> = this.children$ = createCompositeArraySubject(this.children)
     const patchProperties: Function = createPatchProperties(node)
     const patchChildren: Function = createPatchChildren(node)
-    // const catchPatchingError: Function = createCatchPatchingError(this)
 
     props$
       .map(patchProperties)
       .subscribe()
-      // .subscribe(patchProperties, catchPatchingError)
 
     children$
       .map(flatten)
       .map(maybeWrapText)
       .map(patchChildren)
       .subscribe()
-      // .subscribe(patchChildren, catchPatchingError)
 
-    return node
+    this.node = node
   }
 
   insert (): void {
