@@ -15,7 +15,7 @@ const scope: Scope = {
 function flushQueue (queue: Array<VirtualElement>): void {
   while (queue.length > 0) {
     const vnode = scope.queue.pop()
-    vnode.insert()
+    vnode.afterInsert()
   }
 }
 

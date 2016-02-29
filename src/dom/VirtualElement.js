@@ -3,13 +3,13 @@
 import document from 'global/document'
 import {Observable} from 'rxjs/Observable'
 import {Subject} from 'rxjs/Subject'
+import {NodeProxy} from './NodeProxy'
 import {maybeWrapText} from './maybeWrapText'
 import {parseTag} from './parseTag'
 import {emitMount, emitUnmount} from './mountable'
 import {wrapEventHandlers} from './wrapEventHandlers'
-import {createCatchPatchingError} from './createCatchPatchingError'
+import {batchInsertMessages} from './batchInsertMessages'
 import {createPatchChildren} from './createPatchChildren'
-import {createPatchProperties} from './createPatchProperties'
 import {createCompositeSubject} from '../rx/createCompositeSubject'
 import {createObservableFromObject} from '../rx/createObservableFromObject'
 import {createObservableFromArray} from '../rx/createObservableFromArray'
@@ -23,9 +23,9 @@ const createCompositeArraySubject = createCompositeSubject(createObservableFromA
 
 export class VirtualElement {
   tagName: string;
-  key: string | void;
-  namespace: string | void;
-  node: HTMLElement;
+  key: string;
+  namespace: string;
+  nodeProxy: NodeProxy;
   props: Object;
   props$: Subject<Object>;
   children: Array<VirtualElement>;
@@ -36,43 +36,46 @@ export class VirtualElement {
     this.children = children
     this.key = key
     this.namespace = namespace
-    this.node = null
+    this.nodeProxy = null
     this.props$ = null
     this.children$ = null
   }
 
-  createElement (): HTMLElement {
-    return document.createElementNS(this.namespace, this.tagName)
-  }
-
-  initialize (node: HTMLElement): void {
+  initialize (): void {
+    const nodeProxy: NodeProxy = this.nodeProxy = new NodeProxy(this.tagName, this.namespace)
     const props$: Subject<Object> = this.props$ = createCompositeObjectSubject(this.props)
     const children$: Subject<Array<VirtualElement>> = this.children$ = createCompositeArraySubject(this.children)
-    const patchProperties: Function = createPatchProperties(node)
-    const patchChildren: Function = createPatchChildren(node)
 
-    props$
-      .map(patchProperties)
-      .subscribe()
+    props$.subscribe(nodeProxy.patchProperties)
 
     children$
       .map(flatten)
       .map(maybeWrapText)
-      .map(patchChildren)
-      .subscribe()
-
-    this.node = node
+      .subscribe(createPatchChildren(this))
   }
 
-  insert (): void {
-    emitMount(this.node, this.props.onMount)
+  insertChild (next, index): void {
+    return batchInsertMessages(queue => {
+      next.initialize()
+      this.nodeProxy.insertChild(next.nodeProxy, index)
+      queue.push(next)
+    })
+  }
+
+  moveChild (previous, next, index): void {
+    this.nodeProxy.insertChild(previous.nodeProxy, index)
+    next.patch(previous)
+  }
+
+  afterInsert (): void {
+    this.nodeProxy.emitMount(this.props.onMount)
   }
 
   patch (previous: Object): void {
-    this.node = previous.node
+    this.nodeProxy = previous.nodeProxy
     this.props$ = previous.props$
     this.children$ = previous.children$
-    previous.node = null
+    previous.nodeProxy = null
     previous.props$ = null
     previous.children$ = null
 
@@ -80,8 +83,14 @@ export class VirtualElement {
     this.children$.next(this.children)
   }
 
-  predestroy (): void {
-    emitUnmount(this.node, this.props.onUnmount)
+  removeChild (child): void {
+    child.beforeDestroy()
+    this.nodeProxy.removeChild(child.nodeProxy)
+    child.destroy()
+  }
+
+  beforeDestroy (): void {
+    this.nodeProxy.emitUnmount(this.props.onUnmount)
   }
 
   destroy (): void {}

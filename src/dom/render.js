@@ -3,11 +3,11 @@
 import {batchInsertMessages} from './batchInsertMessages'
 import {isDefined} from '../util/isDefined'
 
+// TODO: just use createPatchChildren here
 export function render (vnode, container) {
-  const node: HTMLElement = vnode.createElement()
-
   batchInsertMessages(queue => {
-    vnode.initialize(node)
+    vnode.initialize()
+    const node = vnode.nodeProxy._node // TODO: refactor
 
     if (container.children.length > 1) {
       container.innerHTML = ``
