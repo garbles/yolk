@@ -1,26 +1,15 @@
 /* @flow */
 
 import {batchInsertMessages} from './batchInsertMessages'
+import {NodeProxy} from './NodeProxy'
 import {isDefined} from '../util/isDefined'
 
-// TODO: just use createPatchChildren here
-export function render (vnode, container) {
+export function render (vnode, selector) {
+  const containerProxy = NodeProxy.querySelector(selector)
+
   batchInsertMessages(queue => {
     vnode.initialize()
-    const node = vnode.nodeProxy._node // TODO: refactor
-
-    if (container.children.length > 1) {
-      container.innerHTML = ``
-    }
-
-    const replaced = container.children[0]
-
-    if (isDefined(replaced)) {
-      container.replaceChild(node, replaced)
-    } else {
-      container.appendChild(node)
-    }
-
+    containerProxy.replaceChild(vnode.nodeProxy, 0)
     queue.push(vnode)
   })
 }

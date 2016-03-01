@@ -25,25 +25,23 @@ const createCompositeArraySubject = createCompositeSubject(createObservableFromA
 export class VirtualElement {
   tagName: string;
   key: string;
-  namespace: string;
   nodeProxy: NodeProxy;
   props: Object;
   props$: Subject<Object>;
   children: Array<VirtualElement>;
   children$: Subject<Array<VirtualElement>>;
-  constructor (tagName: string, props: Object, children: Array<VirtualElement>, key?: string, namespace?: string) {
+  constructor (tagName: string, props: Object, children: Array<VirtualElement>, key?: string) {
     this.tagName = tagName
     this.props = props
     this.children = children
     this.key = key
-    this.namespace = namespace
     this.nodeProxy = null
     this.props$ = null
     this.children$ = null
   }
 
   initialize (): void {
-    const nodeProxy: NodeProxy = this.nodeProxy = new NodeProxy(this.tagName, this.namespace)
+    const nodeProxy: NodeProxy = this.nodeProxy = NodeProxy.createElement(this.tagName)
     const props$: Subject<Object> = this.props$ = createCompositeObjectSubject(this.props)
     const children$: Subject<Array<VirtualElement>> = this.children$ = createCompositeArraySubject(this.children)
 

@@ -31,14 +31,14 @@ describe(`h`, () => {
     const $plus = $node.find(`#plus`)
     const $minus = $node.find(`#minus`)
 
-    assert.equal(node.tagName, `div`)
-    assert.equal(node.children[0].tagName, `button`)
+    assert.equal(node.tagName, `DIV`)
+    assert.equal(node.children[0].tagName, `BUTTON`)
     assert.equal(node.children[0].id, `plus`)
     assert.equal(node.children[0].textContent, `+ PLUS`)
-    assert.equal(node.children[1].tagName, `button`)
+    assert.equal(node.children[1].tagName, `BUTTON`)
     assert.equal(node.children[1].id, `minus`)
     assert.equal(node.children[1].textContent, `- MINUS`)
-    assert.equal(node.children[2].tagName, `span`)
+    assert.equal(node.children[2].tagName, `SPAN`)
     assert.equal(node.children[2].textContent, `0`)
 
     $plus.trigger(`click`)
