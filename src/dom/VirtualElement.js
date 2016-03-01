@@ -9,6 +9,7 @@ import {parseTag} from './parseTag'
 import {emitMount, emitUnmount} from './mountable'
 import {wrapEventHandlers} from './wrapEventHandlers'
 import {batchInsertMessages} from './batchInsertMessages'
+import {createPatchProperties} from './createPatchProperties'
 import {createPatchChildren} from './createPatchChildren'
 import {createCompositeSubject} from '../rx/createCompositeSubject'
 import {createObservableFromObject} from '../rx/createObservableFromObject'
@@ -46,7 +47,7 @@ export class VirtualElement {
     const props$: Subject<Object> = this.props$ = createCompositeObjectSubject(this.props)
     const children$: Subject<Array<VirtualElement>> = this.children$ = createCompositeArraySubject(this.children)
 
-    props$.subscribe(nodeProxy.patchProperties)
+    props$.subscribe(createPatchProperties(nodeProxy))
 
     children$
       .map(flatten)

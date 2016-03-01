@@ -1,77 +1,25 @@
 /* @flow */
 
-import {descriptors} from './propertyDescriptors'
-import {addEventListener, removeEventListener} from './eventDelegator'
-
-function patchProperties (node: Object, props: Object, oldProps?: Object = {}): Object {
+function patchProperties (nodeProxy: NodeProxy, props: Object, oldProps?: Object = {}): Object {
   for (const key in props) {
     if (props[key] !== oldProps[key]) {
-      const next = props[key]
-      const descriptor = descriptors[key]
-
-      if (!descriptor) {
-        node[key] = next
-        continue
-      }
-
-      const {computed} = descriptor
-
-      if (descriptor.useEqualSetter) {
-        node[computed] = next
-        continue
-      }
-
-      if (descriptor.hasBooleanValue && !next) {
-        node.removeAttribute(computed)
-        continue
-      }
-
-      if (descriptor.useEventListener) {
-        addEventListener(node, computed, next)
-        continue
-      }
-
-      node.setAttribute(computed, next)
+      nodeProxy.setAttribute(key, props[key])
     }
   }
 
   for (const key in oldProps) {
     if (!(key in props)) {
-      const descriptor = descriptors[key]
-
-      if (!descriptor) {
-        node[key] = undefined
-        continue
-      }
-
-      const {computed} = descriptor
-
-      if (descriptor.useSetAttribute) {
-        node.removeAttribute(computed)
-        continue
-      }
-
-      if (descriptor.hasBooleanValue) {
-        node[computed] = false
-        continue
-      }
-
-      if (descriptor.useEventListener) {
-        removeEventListener(node, computed, oldProps[key])
-        continue
-      }
-
-      node[computed] = undefined
+      nodeProxy.removeAttribute(key)
     }
   }
 
   return props
 }
 
-export function createPatchProperties (node: HTMLElement): Function {
+export function createPatchProperties (nodeProxy: NodeProxy): Function {
   let previous: Object = {}
 
   return (next: Object): void => {
-    previous = patchProperties(node, next, previous)
+    previous = patchProperties(nodeProxy, next, previous)
   }
 }

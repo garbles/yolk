@@ -1,4 +1,5 @@
-import {createPatchProperties} from './createPatchProperties'
+import {descriptors} from './propertyDescriptors'
+import {addEventListener, removeEventListener} from './eventDelegator'
 import {emitMount, emitUnmount} from './mountable'
 import {isDefined} from '../util/isDefined'
 
@@ -7,10 +8,8 @@ export class NodeProxy {
   patchProperties: Function;
   patchChildren: Function;
 
-  constructor(tagName: string, namespace: string) {
+  constructor (tagName: string, namespace: string) {
     const node = this._node = document.createElementNS(namespace, tagName)
-
-    this.patchProperties = createPatchProperties(node)
   }
 
   emitMount (fn) {
@@ -37,5 +36,65 @@ export class NodeProxy {
     const node = this._node
     const child = childProxy._node
     node.removeChild(child)
+  }
+
+  setAttribute (key, value) {
+    const node = this._node
+    const descriptor = descriptors[key]
+
+    if (!descriptor) {
+      node[key] = value
+      return
+    }
+
+    const {computed} = descriptor
+
+    if (descriptor.useEqualSetter) {
+      node[computed] = value
+      return
+    }
+
+    if (descriptor.hasBooleanValue && !value) {
+      node.removeAttribute(computed)
+      return
+    }
+
+    if (descriptor.useEventListener) {
+      // FIXME
+      addEventListener(node, computed, value)
+      return
+    }
+
+    node.setAttribute(computed, value)
+  }
+
+  removeAttribute (key) {
+    const node = this._node
+    const descriptor = descriptors[key]
+
+    if (!descriptor) {
+      node[key] = undefined
+      return
+    }
+
+    const {computed} = descriptor
+
+    if (descriptor.useSetAttribute) {
+      node.removeAttribute(computed)
+      return
+    }
+
+    if (descriptor.hasBooleanValue) {
+      node[computed] = false
+      return
+    }
+
+    if (descriptor.useEventListener) {
+      // FIXME
+      removeEventListener(node, computed)
+      return
+    }
+
+    node[computed] = undefined
   }
 }
