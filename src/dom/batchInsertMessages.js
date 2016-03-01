@@ -1,10 +1,10 @@
 /* @flow */
 
-import {VirtualElement} from './VirtualElement'
+import type {VirtualNode} from './VirtualNode'
 
 type Scope = {
   batchInProgress: boolean;
-  queue: Array<VirtualElement>;
+  queue: Array<VirtualNode>;
 }
 
 const scope: Scope = {
@@ -12,7 +12,7 @@ const scope: Scope = {
   queue: [],
 }
 
-function flushQueue (queue: Array<VirtualElement>): void {
+function flushQueue (queue: Array<VirtualNode>): void {
   while (queue.length > 0) {
     const vnode = scope.queue.pop()
     vnode.afterInsert()

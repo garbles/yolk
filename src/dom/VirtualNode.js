@@ -22,15 +22,15 @@ import 'rxjs/add/operator/switchMap'
 const createCompositeObjectSubject = createCompositeSubject(createObservableFromObject)
 const createCompositeArraySubject = createCompositeSubject(createObservableFromArray)
 
-export class VirtualElement {
+export class VirtualNode {
   tagName: string;
   key: string;
   nodeProxy: NodeProxy;
   props: Object;
   props$: Subject<Object>;
-  children: Array<VirtualElement>;
-  children$: Subject<Array<VirtualElement>>;
-  constructor (tagName: string, props: Object, children: Array<VirtualElement>, key?: string) {
+  children: Array<VirtualNode>;
+  children$: Subject<Array<VirtualNode>>;
+  constructor (tagName: string, props: Object, children: Array<VirtualNode>, key?: string) {
     this.tagName = tagName
     this.props = props
     this.children = children
@@ -43,7 +43,7 @@ export class VirtualElement {
   initialize (): void {
     const nodeProxy: NodeProxy = this.nodeProxy = NodeProxy.createElement(this.tagName)
     const props$: Subject<Object> = this.props$ = createCompositeObjectSubject(this.props)
-    const children$: Subject<Array<VirtualElement>> = this.children$ = createCompositeArraySubject(this.children)
+    const children$: Subject<Array<VirtualNode>> = this.children$ = createCompositeArraySubject(this.children)
 
     props$.subscribe(createPatchProperties(nodeProxy))
 
@@ -95,7 +95,7 @@ export class VirtualElement {
   destroy (): void {}
 }
 
-export function createElement (_tagName: string, _props: Object, children: Array<VirtualElement | Observable>): VirtualElement {
+export function createElement (_tagName: string, _props: Object, children: Array<VirtualNode | Observable>): VirtualNode {
   const props = wrapEventHandlers(_props)
   const tagName = parseTag(_tagName, props)
 
@@ -105,5 +105,5 @@ export function createElement (_tagName: string, _props: Object, children: Array
   props.key = null
   props.namespace = null
 
-  return new VirtualElement(tagName, props, children, key, namespace)
+  return new VirtualNode(tagName, props, children, key, namespace)
 }

@@ -1,5 +1,5 @@
 /* @flow */
 
-import {VirtualElement as VirtualElement_} from '../src/dom/VirtualElement'
+import {VirtualNode as VirtualNode_} from '../src/dom/VirtualNode'
 
-type VirtualElement = VirtualElement_
+type VirtualNode = VirtualNode_

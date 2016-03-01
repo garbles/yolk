@@ -1,11 +1,11 @@
 /* @flow */
 
 import {Observable} from 'rxjs/Observable'
-import {VirtualElement} from './VirtualElement'
+import {VirtualNode} from './VirtualNode'
 import {asObservable} from '../rx/asObservable'
 import {createEventHandler} from './createEventHandler'
 
-export function createComponent (fn: Function, _props: Object, children: Array<VirtualElement | Observable>): VirtualElement | Observable {
+export function createComponent (fn: Function, _props: Object, children: Array<VirtualNode | Observable>): VirtualNode | Observable {
   const keys: Array<string> = Object.keys(_props)
   const len: number = keys.length
   const props: Object = {}

@@ -1,17 +1,17 @@
 /* @flow */
 
 import {h} from './h'
-import {VirtualElement} from './VirtualElement'
-import {isVirtualElement} from './isVirtualElement'
+import {VirtualNode} from './VirtualNode'
+import {isVirtualNode} from './isVirtualNode'
 
-function wrap (obj: any): VirtualElement {
-  if (isVirtualElement(obj)) {
+function wrap (obj: any): VirtualNode {
+  if (isVirtualNode(obj)) {
     return obj
   }
 
   return h(`span`, {textContent: obj.toString()})
 }
 
-export function maybeWrapText (arr: Array<any>): Array<VirtualElement> {
+export function maybeWrapText (arr: Array<any>): Array<VirtualNode> {
   return arr.map(wrap)
 }

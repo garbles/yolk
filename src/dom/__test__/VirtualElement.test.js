@@ -1,9 +1,9 @@
-import {VirtualElement} from '../VirtualElement'
+import {VirtualNode} from '../VirtualNode'
 
-describe(`VirtualElement`, () => {
-  it(`creates a VirtualElement with props`, () => {
+describe(`VirtualNode`, () => {
+  it(`creates a VirtualNode with props`, () => {
     const props = {color: `red`, height: 5}
-    const vnode = new VirtualElement(`span`, props, [])
+    const vnode = new VirtualNode(`span`, props, [])
 
     assert.deepEqual(vnode.props, props)
   })

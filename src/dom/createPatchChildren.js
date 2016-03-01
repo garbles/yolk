@@ -2,11 +2,11 @@
 
 import dift, {CREATE, UPDATE, MOVE, REMOVE} from 'dift'
 import {keyIndex} from './keyIndex'
-import {VirtualElement} from './VirtualElement'
+import {VirtualNode} from './VirtualNode'
 
 const keyFn: Function = a => a.key
 
-export function patch (parent: VirtualElement, _previous: Array<VirtualElement>, _next: Array<VirtualElement>): void {
+export function patch (parent: VirtualNode, _previous: Array<VirtualNode>, _next: Array<VirtualNode>): void {
   const previousIndex: Array<Object> = keyIndex(_previous)
   const nextIndex: Array<Object> = keyIndex(_next)
 
@@ -32,10 +32,10 @@ export function patch (parent: VirtualElement, _previous: Array<VirtualElement>,
   dift(previousIndex, nextIndex, apply, keyFn)
 }
 
-export function createPatchChildren (vnode: VirtualElement): Function {
-  let previous: Array<VirtualElement> = []
+export function createPatchChildren (vnode: VirtualNode): Function {
+  let previous: Array<VirtualNode> = []
 
-  return (next: Array<VirtualElement>): Array<VirtualElement> => {
+  return (next: Array<VirtualNode>): Array<VirtualNode> => {
     patch(vnode, previous, next)
     previous = next
 

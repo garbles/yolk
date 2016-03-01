@@ -1,5 +1,5 @@
 import {createComponent} from './createComponent'
-import {createElement} from './VirtualElement'
+import {createElement} from './VirtualNode'
 import {isString} from '../util/isString'
 import {flatten} from '../util/flatten'
 
