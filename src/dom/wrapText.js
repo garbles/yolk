@@ -12,6 +12,6 @@ function wrap (obj: any): VirtualNode {
   return h(`span`, {textContent: obj.toString()})
 }
 
-export function maybeWrapText (arr: Array<any>): Array<VirtualNode> {
+export function wrapText (arr: Array<any>): Array<VirtualNode> {
   return arr.map(wrap)
 }

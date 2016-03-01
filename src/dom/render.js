@@ -9,7 +9,7 @@ export function render (vnode, selector) {
 
   batchInsertMessages(queue => {
     vnode.initialize()
-    containerProxy.replaceChild(vnode.nodeProxy, 0)
+    containerProxy.replaceChild(vnode.getNodeProxy(), 0)
     queue.push(vnode)
   })
 }

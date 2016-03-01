@@ -4,9 +4,8 @@ import document from 'global/document'
 import {Observable} from 'rxjs/Observable'
 import {Subject} from 'rxjs/Subject'
 import {NodeProxy} from './NodeProxy'
-import {maybeWrapText} from './maybeWrapText'
+import {wrapText} from './wrapText'
 import {parseTag} from './parseTag'
-import {emitMount, emitUnmount} from './mountable'
 import {wrapEventHandlers} from './wrapEventHandlers'
 import {batchInsertMessages} from './batchInsertMessages'
 import {createPatchProperties} from './createPatchProperties'
@@ -16,80 +15,92 @@ import {createObservableFromObject} from '../rx/createObservableFromObject'
 import {createObservableFromArray} from '../rx/createObservableFromArray'
 import {flatten} from '../util/flatten'
 
+import 'rxjs/util/SymbolShim'
 import 'rxjs/add/operator/map'
 import 'rxjs/add/operator/switchMap'
 
 const createCompositeObjectSubject = createCompositeSubject(createObservableFromObject)
 const createCompositeArraySubject = createCompositeSubject(createObservableFromArray)
 
+export const VirtualNodeSymbol = Symbol.for(`@@VirtualNode`)
+
 export class VirtualNode {
-  tagName: string;
   key: string;
-  nodeProxy: NodeProxy;
-  props: Object;
-  props$: Subject<Object>;
-  children: Array<VirtualNode>;
-  children$: Subject<Array<VirtualNode>>;
+  _tagName: string;
+  _nodeProxy: NodeProxy;
+  _props: Object;
+  _props$: Subject<Object>;
+  _children: Array<VirtualNode>;
+  _children$: Subject<Array<VirtualNode>>;
   constructor (tagName: string, props: Object, children: Array<VirtualNode>, key?: string) {
-    this.tagName = tagName
-    this.props = props
-    this.children = children
     this.key = key
-    this.nodeProxy = null
-    this.props$ = null
-    this.children$ = null
+    this._tagName = tagName
+    this._props = props
+    this._children = children
+    this._nodeProxy = null
+    this._props$ = null
+    this._children$ = null
+  }
+
+  get [VirtualNodeSymbol] (): bool {
+    return true
+  }
+
+  getNodeProxy (): NodeProxy {
+    return this._nodeProxy
   }
 
   initialize (): void {
-    const nodeProxy: NodeProxy = this.nodeProxy = NodeProxy.createElement(this.tagName)
-    const props$: Subject<Object> = this.props$ = createCompositeObjectSubject(this.props)
-    const children$: Subject<Array<VirtualNode>> = this.children$ = createCompositeArraySubject(this.children)
+    const nodeProxy: NodeProxy = this._nodeProxy = NodeProxy.createElement(this._tagName)
+    const props$: Subject<Object> = this._props$ = createCompositeObjectSubject(this._props)
+    const children$: Subject<Array<VirtualNode>> = this._children$ = createCompositeArraySubject(this._children)
 
-    props$.subscribe(createPatchProperties(nodeProxy))
+    props$
+      .subscribe(createPatchProperties(nodeProxy))
 
     children$
       .map(flatten)
-      .map(maybeWrapText)
+      .map(wrapText)
       .subscribe(createPatchChildren(this))
   }
 
   insertChild (next, index): void {
     return batchInsertMessages(queue => {
       next.initialize()
-      this.nodeProxy.insertChild(next.nodeProxy, index)
+      this._nodeProxy.insertChild(next.getNodeProxy(), index)
       queue.push(next)
     })
   }
 
   moveChild (previous, next, index): void {
-    this.nodeProxy.insertChild(previous.nodeProxy, index)
+    this._nodeProxy.insertChild(previous.getNodeProxy(), index)
     next.patch(previous)
   }
 
   afterInsert (): void {
-    this.nodeProxy.emitMount(this.props.onMount)
+    this._nodeProxy.emitMount(this._props.onMount)
   }
 
-  patch (previous: Object): void {
-    this.nodeProxy = previous.nodeProxy
-    this.props$ = previous.props$
-    this.children$ = previous.children$
-    previous.nodeProxy = null
-    previous.props$ = null
-    previous.children$ = null
+  patch (previous: VirtualNode): void {
+    this._nodeProxy = previous.getNodeProxy()
+    this._props$ = previous._props$
+    this._children$ = previous._children$
+    previous._nodeProxy = null
+    previous._props$ = null
+    previous._children$ = null
 
-    this.props$.next(this.props)
-    this.children$.next(this.children)
+    this._props$.next(this._props)
+    this._children$.next(this._children)
   }
 
   removeChild (child): void {
     child.beforeDestroy()
-    this.nodeProxy.removeChild(child.nodeProxy)
+    this._nodeProxy.removeChild(child.getNodeProxy())
     child.destroy()
   }
 
   beforeDestroy (): void {
-    this.nodeProxy.emitUnmount(this.props.onUnmount)
+    this._nodeProxy.emitUnmount(this._props.onUnmount)
   }
 
   destroy (): void {}

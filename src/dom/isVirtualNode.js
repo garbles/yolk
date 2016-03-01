@@ -1,7 +1,7 @@
 /* @flow */
 
-import {VirtualNode} from './VirtualNode'
+import {VirtualNodeSymbol} from './VirtualNode'
 
 export function isVirtualNode (obj?: any): boolean {
-  return !!obj && obj instanceof VirtualNode
+  return !!obj && obj[VirtualNodeSymbol]
 }
