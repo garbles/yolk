@@ -3,7 +3,12 @@
 import document from 'global/document'
 import {VirtualSymbol} from './VirtualSymbol'
 import {createEventHandler} from './createEventHandler'
+import {createComponentProps} from './createComponentProps'
 import {uuid} from '../util/uuid'
+import {createCompositeSubject} from '../rx/createCompositeSubject'
+import {createObservableFromArray} from '../rx/createObservableFromArray'
+
+const createCompositeArraySubject = createCompositeSubject(createObservableFromArray)
 
 export class VirtualComponent {
   constructor (fn: string, props: Object, children: Array<VirtualNode>, key?: string) {
@@ -21,24 +26,16 @@ export class VirtualComponent {
   }
 
   initialize (): void {
-    const keys = Object.keys(this._props)
-    const len = keys.length
-    const props = this._props$ = {}
-    const children = this._children
-    let i: number = -1
-
-    while (++i < len) {
-      const key: string = keys[i]
-      props[key] = asObservable(this._props[key])
-    }
-
-    const instance = this._instance = this._fn.call(null, {props, children, createEventHandler})
+    const props = this._props$ = createComponentProps(this._props)
+    const children = this._children$ = createCompositeArraySubject(this._children)
+    const instance = this._instance = this._fn.call(null, {props: props.asObject(), children, createEventHandler})
     instance.initialize()
   }
 
   patch (next): void {
-    // patch props
-    // patch children?
+    // this is called if the component is wrapped in a map/flatMap
+    this._props$.next(next._props)
+    this._children$.next(next._children)
   }
 
   insertChild (child, index): void {
