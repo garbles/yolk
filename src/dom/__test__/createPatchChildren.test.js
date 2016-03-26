@@ -14,7 +14,7 @@ function createEmptyVNodes (tag, mapping) {
 }
 
 describe(`patchChildren`, () => {
-  it(`creates children`, () => {
+  it.only(`creates children`, () => {
     const node = document.createElement(`div`)
     const children: Array<VirtualNode> = createEmptyVNodes(`p`, [null, null])
     const patchChildren = createPatchChildren(node)

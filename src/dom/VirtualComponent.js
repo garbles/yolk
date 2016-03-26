@@ -32,10 +32,18 @@ export class VirtualComponent {
     instance.initialize()
   }
 
+  afterInsert (): void {
+    this._instance.afterInsert()
+  }
+
   patch (next): void {
     // this is called if the component is wrapped in a map/flatMap
     this._props$.next(next._props)
     this._children$.next(next._children)
+  }
+
+  beforeDestroy (): void {
+    this._instance.beforeDestroy()
   }
 
   destroy (): void {
@@ -45,8 +53,6 @@ export class VirtualComponent {
   insertChild (child, index): void {}
   moveChild (child, index): void {}
   removeChild (child): void {}
-  afterInsert (): void {}
-  beforeDestroy (): void {}
 }
 
 VirtualComponent.prototype[VirtualSymbol] = true

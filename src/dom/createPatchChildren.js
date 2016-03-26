@@ -28,7 +28,7 @@ export function patch (parent: VirtualNode, _previous: Array<VirtualNode>, _next
         break
       case REMOVE:
         parent.removeChild(previous.vnode)
-        chilren.splice(index, 1)
+        children.splice(index, 1)
         break
       default:
         return
