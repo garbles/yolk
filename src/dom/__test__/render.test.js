@@ -6,7 +6,7 @@ import {BehaviorSubject} from 'rxjs/subject/BehaviorSubject'
 import 'rxjs/add/operator/startWith'
 
 describe(`render`, () => {
-  it.only(`renders a virtual node into a container`, () => {
+  it(`renders a virtual node into a container`, () => {
     let mountCallbackCount = 0
     let unmountCallbackCount = 0
     const onMount = () => mountCallbackCount += 1

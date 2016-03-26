@@ -2,6 +2,7 @@
 
 import document from 'global/document'
 import {VirtualNode} from '../VirtualNode'
+import {NodeProxy} from '../NodeProxy'
 import {createPatchChildren} from '../createPatchChildren'
 import {h} from '../h'
 
@@ -14,14 +15,16 @@ function createEmptyVNodes (tag, mapping) {
 }
 
 describe(`patchChildren`, () => {
-  it.only(`creates children`, () => {
-    const node = document.createElement(`div`)
+  it(`creates children`, () => {
+    const node = h(`div`)
+    node.initialize()
+
     const children: Array<VirtualNode> = createEmptyVNodes(`p`, [null, null])
     const patchChildren = createPatchChildren(node)
 
     patchChildren(children, [])
 
-    assert.equal(node.children.length, 2)
+    assert.equal(node._nodeProxy._node.children.length, 2)
   })
 
   it(`destroys children`, () => {
