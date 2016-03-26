@@ -42,5 +42,9 @@ module.exports = config => {
     options.singleRun = true
   }
 
+  if (process.env.GROWL) {
+    options.reporters.push(`growl`)
+  }
+
   config.set(options)
 }

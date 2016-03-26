@@ -20,6 +20,10 @@ export class NodeProxy {
     emitUnmount(this._node, fn)
   }
 
+  children () {
+    return this._node.children
+  }
+
   replaceChild (childProxy: NodeProxy, index: number): void {
     const node = this._node
     const child = childProxy._node

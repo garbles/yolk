@@ -2,11 +2,13 @@
 
 import document from 'global/document'
 import {createPatchProperties} from '../createPatchProperties'
+import {NodeProxy} from '../NodeProxy'
 
 describe(`patchProperties`, () => {
   it(`sets attributes on a node`, () => {
-    const node = document.createElement(`div`)
-    const patchProperties = createPatchProperties(node)
+    const proxy = NodeProxy.createElement(`div`)
+    const patchProperties = createPatchProperties(proxy)
+    const node = proxy._node
 
     const previous = {
       width: 5,

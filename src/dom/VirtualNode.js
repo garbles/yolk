@@ -56,31 +56,18 @@ export class VirtualNode {
       .subscribe(createPatchChildren(this))
   }
 
-  insertChild (child, index): void {
-    return batchInsertMessages(queue => {
-      child.initialize()
-      this._nodeProxy.insertChild(child.getNodeProxy(), index)
-      queue.push(child)
-    })
-  }
-
-  patch (next: VirtualNode): void {
-    this._props$.next(next._props)
-    this._children$.next(next._children)
-  }
-
-  moveChild (child, index): void {
-    this._nodeProxy.insertChild(child.getNodeProxy(), index)
-  }
-
   afterInsert (): void {
     this._nodeProxy.emitMount(this._props.onMount)
   }
 
-  removeChild (child): void {
-    child.beforeDestroy()
-    this._nodeProxy.removeChild(child.getNodeProxy())
-    child.destroy()
+  patch (next: VirtualNode): void {
+    // memory leak?
+    next._nodeProxy = this._nodeProxy
+    next._props$ = this._props$
+    next._children$ = this._children$
+
+    next._props$.next(next._props)
+    next._children$.next(next._children)
   }
 
   beforeDestroy (): void {
@@ -89,6 +76,24 @@ export class VirtualNode {
 
   destroy (): void {
     // dispose of observables, children
+  }
+
+  insertChild (child: VirtualNode, index: number): void {
+    return batchInsertMessages(queue => {
+      child.initialize()
+      this._nodeProxy.insertChild(child.getNodeProxy(), index)
+      queue.push(child)
+    })
+  }
+
+  moveChild (child: VirtualNode, index: number): void {
+    this._nodeProxy.insertChild(child.getNodeProxy(), index)
+  }
+
+  removeChild (child: VirtualNode): void {
+    child.beforeDestroy()
+    this._nodeProxy.removeChild(child.getNodeProxy())
+    child.destroy()
   }
 }
 

@@ -37,9 +37,12 @@ export class VirtualComponent {
   }
 
   patch (next): void {
-    // this is called if the component is wrapped in a map/flatMap
-    this._props$.next(next._props)
-    this._children$.next(next._children)
+    next._nodeProxy = this._nodeProxy
+    next._props$ = this._props$
+    next._children$ = this._children$
+
+    next._props$.next(next.props)
+    next._children$.next(next.children)
   }
 
   beforeDestroy (): void {
