@@ -1,36 +1,34 @@
 /* @flow */
 
 import dift, {CREATE, UPDATE, MOVE, REMOVE} from 'dift'
-import {keyIndex} from './keyIndex'
 import {VirtualNode} from './VirtualNode'
 
-const keyFn: Function = a => a.key
+const keyFn: Function = a => (a.key || a.tagName)
 
-export function patch (parent: VirtualNode, _previous: Array<VirtualNode>, _next: Array<VirtualNode>): void {
-  const previousIndex: Array<Object> = keyIndex(_previous)
-  const nextIndex: Array<Object> = keyIndex(_next)
-
+export function patch (parent: VirtualNode, previousChildren: Array<VirtualNode>, nextChildren: Array<VirtualNode>): void {
   function apply (type: number, previous: Object, next: Object, index: number): void {
     switch (type) {
       case CREATE:
-        parent.insertChild(next.vnode, index)
+        parent.insertChild(next, index)
         break
       case UPDATE:
-        previous.vnode.patch(next.vnode)
+        previous.patch(next)
         break
       case MOVE:
-        parent.moveChild(previous.vnode, index)
-        previous.vnode.patch(next.vnode)
+        parent.moveChild(previous, index)
+        previous.patch(next)
         break
       case REMOVE:
-        parent.removeChild(previous.vnode)
+        previous.beforeDestroy()
+        parent.removeChild(previous)
+        previous.destroy()
         break
       default:
         return
     }
   }
 
-  dift(previousIndex, nextIndex, apply, keyFn)
+  dift(previousChildren, nextChildren, apply, keyFn)
 }
 
 export function createPatchChildren (vnode: VirtualNode): Function {
