@@ -7,19 +7,17 @@ import {NodeProxy} from './NodeProxy'
 import {wrapText} from './wrapText'
 import {parseTag} from './parseTag'
 import {VirtualSymbol} from './VirtualSymbol'
-import {wrapEventHandlers} from './wrapEventHandlers'
 import {batchInsertMessages} from './batchInsertMessages'
 import {createPatchProperties} from './createPatchProperties'
 import {createPatchChildren} from './createPatchChildren'
+import {createNodeProps} from './createNodeProps'
 import {createCompositeSubject} from '../rx/createCompositeSubject'
-import {createObservableFromObject} from '../rx/createObservableFromObject'
 import {createObservableFromArray} from '../rx/createObservableFromArray'
 import {flatten} from '../util/flatten'
 
 import 'rxjs/add/operator/map'
-import 'rxjs/add/operator/switchMap'
 
-const createCompositeObjectSubject = createCompositeSubject(createObservableFromObject)
+const createCompositePropSubject = createCompositeSubject(createNodeProps)
 const createCompositeArraySubject = createCompositeSubject(createObservableFromArray)
 
 export class VirtualNode {
@@ -46,7 +44,7 @@ export class VirtualNode {
 
   initialize (): void {
     const nodeProxy: NodeProxy = this._nodeProxy = NodeProxy.createElement(this._tagName)
-    const props$: Subject<Object> = this._props$ = createCompositeObjectSubject(this._props)
+    const props$: Subject<Object> = this._props$ = createCompositePropSubject(this._props)
     const children$: Subject<Array<VirtualNode>> = this._children$ = createCompositeArraySubject(this._children)
 
     props$
@@ -96,13 +94,9 @@ export class VirtualNode {
 
 VirtualNode.prototype[VirtualSymbol] = true
 
-export function createElement (_tagName: string, _props: Object, children: Array<VirtualNode | Observable>): VirtualNode {
-  const props = wrapEventHandlers(_props)
-  const tagName = parseTag(_tagName, props)
-
+export function createElement (_tagName: string, props: Object, children: Array<VirtualNode | Observable>): VirtualNode {
+  const tagName: string = parseTag(_tagName, props)
   const key: string = props.key || null
-
-  props.key = null
 
   return new VirtualNode(tagName, props, children, key)
 }

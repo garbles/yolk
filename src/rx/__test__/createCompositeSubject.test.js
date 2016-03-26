@@ -1,13 +1,13 @@
 import {BehaviorSubject} from 'rxjs/subject/BehaviorSubject'
 import {createCompositeSubject} from '../createCompositeSubject'
-import {createObservableFromObject} from '../createObservableFromObject'
+import {createNodeProps} from '../../dom/createNodeProps'
 import {createObservableFromArray} from '../createObservableFromArray'
 
 import 'rxjs/add/operator/skip'
 
 describe(`createCompositeSubject`, () => {
   it(`ends subscriptions`, () => {
-    const subject = createCompositeSubject(createObservableFromObject)({hidden: true})
+    const subject = createCompositeSubject(createNodeProps)({hidden: true})
 
     subject.subscribe()
 
@@ -20,7 +20,7 @@ describe(`createCompositeSubject`, () => {
 
   it(`does not propegate values after it has been unsubscribed`, () => {
     const hidden = new BehaviorSubject(true)
-    const subject = createCompositeSubject(createObservableFromObject)({hidden})
+    const subject = createCompositeSubject(createNodeProps)({hidden})
     const error = new Error(`ER MER GERD!`)
 
     const subscription = subject.skip(1).subscribe(() => {throw error})
@@ -30,13 +30,13 @@ describe(`createCompositeSubject`, () => {
     assert.doesNotThrow(() => hidden.next(true), error)
   })
 
-  describe(`createObservableFromObject`, () => {
+  describe(`createNodeProps`, () => {
     it(`creates a subject that unwraps an object of observables`, done => {
       const height = new BehaviorSubject(12)
       const hidden = new BehaviorSubject(true)
       const className = `gabe gabe gabe`
       const subject =
-        createCompositeSubject(createObservableFromObject)({height, hidden, className})
+        createCompositeSubject(createNodeProps)({height, hidden, className})
 
       subject.subscribe(props => {
         assert.equal(props.height, 12)

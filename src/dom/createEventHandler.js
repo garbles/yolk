@@ -9,6 +9,7 @@ import {isFunction} from '../util/isFunction'
 import {isDefined} from '../util/isDefined'
 
 import 'rxjs/add/operator/map'
+import 'rxjs/add/operator/mapTo'
 
 function wrapMapFn (obs: Subject, mapFn?: any): Observable {
   const mapFnIsDefined: boolean = isDefined(mapFn)
@@ -17,7 +18,7 @@ function wrapMapFn (obs: Subject, mapFn?: any): Observable {
   if (mapFnIsDefined && mapFnIsFunction) {
     return obs.map(mapFn)
   } else if (mapFnIsDefined) {
-    return obs.map(() => mapFn)
+    return obs.mapTo(mapFn)
   }
 
   return obs

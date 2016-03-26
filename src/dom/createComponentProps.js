@@ -40,7 +40,6 @@ export function createComponentProps (_props) {
           throw new Error(`Observable prop "${key}" changed to different observable`)
         }
       }
-
     }
   }
 }

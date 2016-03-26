@@ -1,6 +1,6 @@
 /* @flow */
 
-import {eventsListUIMap} from './eventsList'
+import {eventsList} from './eventsList'
 
 const HAS_LOWER_CASE: number = 0x1 // transform key to all lowercase
 const HAS_DASHED_CASE: number = 0x2 // transform key to dashed case
@@ -161,8 +161,8 @@ const props: Object = {
   data: IS_STAR,
 }
 
-Object.keys(eventsListUIMap).forEach(event => {
-  props[event] = USE_EVENT_LISTENER | HAS_EVENT_CASE
+eventsList.forEach(event => {
+  props[`on${event}`] = USE_EVENT_LISTENER | HAS_EVENT_CASE
 })
 
 const descriptors: Object = {}

@@ -38,22 +38,13 @@ export class VirtualComponent {
     this._children$.next(next._children)
   }
 
-  insertChild (child, index): void {
-    // append children and push
-  }
-
-  moveChild (child, index): void {
-    // adjust children and push
-  }
-
-  removeChild (child): void {
-    // adjust children and push
-  }
-
   destroy (): void {
-    // dispose of observables, eventhandlers, children
+    // dispose of observables, children
   }
 
+  insertChild (child, index): void {}
+  moveChild (child, index): void {}
+  removeChild (child): void {}
   afterInsert (): void {}
   beforeDestroy (): void {}
 }

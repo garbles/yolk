@@ -3,6 +3,7 @@ import {descriptors} from './propertyDescriptors'
 import {addEventListener, removeEventListener} from './eventDelegator'
 import {emitMount, emitUnmount} from './mountable'
 import {isDefined} from '../util/isDefined'
+import {isFunction} from '../util/isFunction'
 
 export class NodeProxy {
   _node: Element;

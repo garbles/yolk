@@ -1,13 +1,23 @@
 /* @flow */
 
 import {Observable} from 'rxjs/Observable'
-import {asObservable} from './asObservable'
+import {eventListMap} from './eventsList'
+import {asObservable} from '../rx/asObservable'
+import {isSubject} from '../rx/isSubject'
 import {isEmptyObject} from '../util/isEmptyObject'
 
 import 'rxjs/add/observable/fromArray'
 import 'rxjs/add/operator/combineLatest-static'
 
-export function createObservableFromObject (obj: Object): Observable<Object> {
+const wrapValue = (key, value) => {
+  if (eventListMap[key] && isSubject(value)) {
+    return asObservable(::value.next)
+  }
+
+  return asObservable(value)
+}
+
+export function createNodeProps (obj: Object): Observable<Object> {
   if (isEmptyObject(obj)) {
     return Observable.of(obj)
   }
@@ -19,7 +29,8 @@ export function createObservableFromObject (obj: Object): Observable<Object> {
 
   while (++i < len) {
     const key: string = keys[i]
-    values[i] = asObservable(obj[key])
+    const value: any = obj[key]
+    values[i] = wrapValue(key, value)
   }
 
   return Observable.combineLatest(values, function latest (): Object {

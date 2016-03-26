@@ -80,7 +80,7 @@ export const eventsList: Array<string> = [
   `Unmount`,
 ]
 
-export const eventsListUIMap: Object = eventsList.reduce((acc, key) => {
-  acc[`on${key}`] = key.toLowerCase()
+export const eventListMap: Object = eventsList.reduce((acc, event) => {
+  acc[`on${event}`] = true
   return acc
 }, {})

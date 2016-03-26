@@ -1,6 +1,6 @@
 /* @flow */
 
-function patchProperties (nodeProxy: NodeProxy, props: Object, oldProps?: Object = {}): Object {
+function patchProperties (nodeProxy: NodeProxy, props: Object, oldProps: Object): Object {
   for (const key in props) {
     if (props[key] !== oldProps[key]) {
       nodeProxy.setAttribute(key, props[key])
