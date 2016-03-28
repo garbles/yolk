@@ -1,4 +1,9 @@
 {
   "presets": ["es2015", "stage-0"],
-  "plugins": ["transform-flow-comments"]
+  "plugins": [
+    ["transform-flow-comments"],
+    ["module-alias", [
+      { "src": "./src", "expose": "yolk" }
+    ]]
+  ]
 }
