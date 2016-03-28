@@ -37,5 +37,5 @@ export function createEventHandler (mapFn?: any, init?: any): Subject {
     return () => subscription.unsubscribe()
   })
 
-  return Subject.create(observable, subject)
+  return Subject.create(subject, observable)
 }

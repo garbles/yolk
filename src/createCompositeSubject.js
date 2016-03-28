@@ -18,5 +18,5 @@ export const createCompositeSubject =
     return () => subscription.unsubscribe()
   })
 
-  return Subject.create(observable, behavior)
+  return Subject.create(behavior, observable)
 }

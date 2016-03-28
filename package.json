@@ -53,6 +53,7 @@
     "karma-mocha-reporter": "1.1.5",
     "karma-webpack": "1.7.0",
     "mocha": "2.3.4",
+    "sinon": "2.0.0-pre",
     "webpack": "1.12.9"
   },
   "dependencies": {
@@ -62,6 +63,6 @@
     "global": "4.3.0",
     "individual": "3.0.0",
     "parse-tag": "1.0.0",
-    "rxjs": "5.0.0-beta.0"
+    "rxjs": "5.0.0-beta.3"
   }
 }

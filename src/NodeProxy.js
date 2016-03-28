@@ -4,14 +4,12 @@ import {addEventListener, removeEventListener} from 'yolk/eventDelegator'
 import {emitMount, emitUnmount} from 'yolk/mountable'
 import {isDefined} from 'yolk/isDefined'
 import {isFunction} from 'yolk/isFunction'
-import {uuid} from 'yolk/uuid'
 
 export class NodeProxy {
   _node: Element;
 
   constructor (node) {
     this._node = node
-    this._uid = uuid()
   }
 
   emitMount (fn) {

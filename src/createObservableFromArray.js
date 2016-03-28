@@ -3,15 +3,15 @@
 import {Observable} from 'rxjs/Observable'
 import {asObservable} from 'yolk/asObservable'
 
-import 'rxjs/add/observable/fromArray'
-import 'rxjs/add/operator/combineLatest-static'
+import 'rxjs/add/observable/of'
+import 'rxjs/add/observable/combineLatest'
 
 export function createObservableFromArray (arr: Array<any>): Observable<Array<any>> {
   if (arr.length === 0) {
     return Observable.of(arr)
   }
 
-  const values: Array<Observable> = arr.map(asObservable)
+  const observables: Array<Observable> = arr.map(asObservable)
 
-  return Observable.combineLatest(values)
+  return Observable.combineLatest(...observables)
 }

@@ -1,6 +1,6 @@
 /* @flow weak */
 
-import document from 'global/document'
+import sinon from 'sinon'
 import {VirtualNode} from 'yolk/VirtualNode'
 import {NodeProxy} from 'yolk/NodeProxy'
 import {createPatchChildren} from 'yolk/createPatchChildren'
@@ -11,175 +11,138 @@ function createEmptyVNodes (tag, mapping) {
 }
 
 describe(`patchChildren`, () => {
-  it(`creates children`, () => {
-    const node = h(`div`)
-    node.initialize()
+  let decorator
+  let orderedDecorator
 
+  beforeEach(() => {
+    let order = []
+
+    const orderedStub = name => (...args) => {
+      order.push([name, ...args])
+    }
+
+    orderedDecorator = {
+      order,
+      insertChild: orderedStub(`insert`),
+      updateChild: orderedStub(`update`),
+      moveChild: orderedStub(`move`),
+      removeChild: orderedStub(`remove`)
+    }
+
+    decorator = {
+      insertChild: sinon.stub(),
+      updateChild: sinon.stub(),
+      moveChild: sinon.stub(),
+      removeChild: sinon.stub()
+    }
+  })
+
+  it(`creates children`, () => {
     const children: Array<VirtualNode> = createEmptyVNodes(`p`, [null, null])
-    const patchChildren = createPatchChildren(node)
+    const patchChildren = createPatchChildren(decorator)
 
     patchChildren(children, [])
 
-    assert.equal(node.getNodeProxy().children().length, 2)
+    assert.ok(decorator.insertChild.calledTwice)
+    assert.ok(decorator.updateChild.notCalled)
+    assert.ok(decorator.moveChild.notCalled)
+    assert.ok(decorator.removeChild.notCalled)
+
+    assert.ok(decorator.insertChild.calledWith(children[0], 0))
+    assert.ok(decorator.insertChild.calledWith(children[1], 1))
   })
 
   it(`destroys children`, () => {
-    const node = h(`div`)
-    node.initialize()
-
     const children: Array<VirtualNode> = createEmptyVNodes(`p`, [null, null])
-    const patchChildren = createPatchChildren(node)
+    const patchChildren = createPatchChildren(decorator)
 
     patchChildren(children, [])
+
+    assert.ok(decorator.insertChild.calledTwice)
+    assert.ok(decorator.updateChild.notCalled)
+    assert.ok(decorator.moveChild.notCalled)
+    assert.ok(decorator.removeChild.notCalled)
+
+    assert.ok(decorator.insertChild.calledWith(children[0], 0))
+    assert.ok(decorator.insertChild.calledWith(children[1], 1))
+
     patchChildren([], children)
 
-    assert.equal(node.getNodeProxy().children().length, 0)
+    assert.ok(decorator.insertChild.calledTwice)
+    assert.ok(decorator.updateChild.notCalled)
+    assert.ok(decorator.moveChild.notCalled)
+    assert.ok(decorator.removeChild.calledTwice)
+
+    assert.ok(decorator.removeChild.calledWith(children[0]))
+    assert.ok(decorator.removeChild.calledWith(children[1]))
   })
 
   it(`patches children`, () => {
-    const node = h(`div`)
-    node.initialize()
-
     const children: Array<VirtualNode> = [h(`p`)]
     const next: Array<VirtualNode> = [h(`p`, {id: `next`})]
     const doubleNext: Array<VirtualNode> = [h(`p`, {id: `double-next`})]
-    const patchChildren = createPatchChildren(node)
 
-    let result: Array<VirtualNode> = patchChildren(children)
+    const patchChildren = createPatchChildren(decorator)
+
+    patchChildren(children)
+
+    assert.ok(decorator.insertChild.calledOnce)
+    assert.ok(decorator.moveChild.notCalled)
+    assert.ok(decorator.removeChild.notCalled)
+
+    assert.ok(decorator.insertChild.calledWith(children[0], 0))
 
     patchChildren(next)
-    assert.equal(node.getNodeProxy().children()[0].id, `next`)
+
+    assert.ok(decorator.insertChild.calledOnce)
+    assert.ok(decorator.updateChild.calledOnce)
+    assert.ok(decorator.moveChild.notCalled)
+    assert.ok(decorator.removeChild.notCalled)
+
+    assert.ok(decorator.updateChild.calledWith(children[0], next[0], 0))
 
     patchChildren(doubleNext)
-    assert.equal(node.getNodeProxy().children()[0].id, `double-next`)
+
+    assert.ok(decorator.insertChild.calledOnce)
+    assert.ok(decorator.updateChild.calledTwice)
+    assert.ok(decorator.moveChild.notCalled)
+    assert.ok(decorator.removeChild.notCalled)
+
+    assert.ok(decorator.updateChild.calledWith(next[0], doubleNext[0], 0))
   })
 
   it(`rearranges children with keys`, () => {
-    const node = h(`div`)
-    node.initialize()
-
     const children: Array<VirtualNode> = createEmptyVNodes(`p`, [`a`, null, `b`])
     const next: Array<VirtualNode> = createEmptyVNodes(`p`, [null, `b`, `a`])
-    const patchChildren = createPatchChildren(node)
+    const patchChildren = createPatchChildren(orderedDecorator)
 
     patchChildren(children)
 
-    node.getNodeProxy().children()[0].__specialTag__ = `@@first`
-    node.getNodeProxy().children()[1].__specialTag__ = `@@second`
-    node.getNodeProxy().children()[2].__specialTag__ = `@@third`
-
-    assert.equal(node.getNodeProxy().children().length, 3)
-    assert.equal(node.getNodeProxy().children()[0].__specialTag__, `@@first`)
-    assert.equal(node.getNodeProxy().children()[1].__specialTag__, `@@second`)
-    assert.equal(node.getNodeProxy().children()[2].__specialTag__, `@@third`)
+    orderedDecorator.order.map((op, index) => assert.deepEqual(op, [`insert`, children[index], index]))
 
     patchChildren(next)
 
-    assert.equal(node.getNodeProxy().children()[0].__specialTag__, `@@second`)
-    assert.equal(node.getNodeProxy().children()[1].__specialTag__, `@@third`)
-    assert.equal(node.getNodeProxy().children()[2].__specialTag__, `@@first`)
-  })
-
-  it(`removes children but preserves the appropriate keyed elements`, () => {
-    const node = h(`div`)
-    node.initialize()
-
-    const children: Array<VirtualNode> = createEmptyVNodes(`p`, [`a`, null, null, null, `b`])
-    const next: Array<VirtualNode> = createEmptyVNodes(`p`, [`b`, `a`, `c`, null])
-    const doubleNext: Array<VirtualNode> = createEmptyVNodes(`p`, [`c`, `a`, null])
-
-    const patchChildren = createPatchChildren(node)
-
-    let result: Array<VirtualNode> = patchChildren(children)
-
-    node.getNodeProxy().children()[1].__specialTag__ = `@@removed`
-    node.getNodeProxy().children()[3].__specialTag__ = `@@unkeyed`
-    node.getNodeProxy().children()[4].__specialTag__ = `@@keyed`
-
-    assert.equal(node.getNodeProxy().children().length, 5)
-    assert.equal(result.length, 5)
-    assert.equal(result[0].key, `a`)
-    assert.equal(result[1].key, null)
-    assert.equal(result[2].key, null)
-    assert.equal(result[3].key, null)
-    assert.equal(result[4].key, `b`)
-
-    result = patchChildren(next)
-
-    assert.equal(node.getNodeProxy().children().length, 4)
-    assert.equal(result.length, 4)
-    assert.equal(result[0].key, `b`)
-    assert.equal(result[1].key, `a`)
-    assert.equal(result[2].key, `c`)
-    assert.equal(result[3].key, null)
-    assert.equal(node.getNodeProxy().children()[0].__specialTag__, `@@keyed`)
-    assert.equal(node.getNodeProxy().children()[3].__specialTag__, `@@unkeyed`)
-
-    for (let i = 0; i < node.getNodeProxy().children().length; i++) {
-      const child = node.getNodeProxy().children()[i]
-      assert.notEqual(child.__specialTag__, `@@removed`)
-    }
-
-    result = patchChildren(doubleNext)
-
-    assert.equal(node.getNodeProxy().children().length, 3)
-    assert.equal(result.length, 3)
-    assert.equal(result[0].key, `c`)
-    assert.equal(result[1].key, `a`)
-    assert.equal(result[2].key, null)
+    assert.deepEqual(orderedDecorator.order[3], [`move`, children[0], next[2], 3])
+    assert.deepEqual(orderedDecorator.order[4], [`update`, children[2], next[1], 1])
+    assert.deepEqual(orderedDecorator.order[5], [`insert`, next[0], 0])
+    assert.deepEqual(orderedDecorator.order[6], [`remove`, children[1]])
   })
 
   it(`removes children if their key does not match the same tagName`, () => {
-    const node = h(`div`)
-    node.initialize()
+    const children: Array<VirtualNode> = createEmptyVNodes(`p`, [null, null])
+    const next: Array<VirtualNode> = createEmptyVNodes(`div`, [null, null])
 
-    const children: Array<VirtualNode> = createEmptyVNodes(`p`, [null])
-    const next: Array<VirtualNode> = createEmptyVNodes(`div`, [null])
-    const patchChildren = createPatchChildren(node)
-
-    let result: Array<VirtualNode> = patchChildren(children)
-
-    node.getNodeProxy().children()[0].__specialTag__ = `@@paragraph`
-
-    assert.equal(node.getNodeProxy().children().length, 1)
-    assert.equal(node.getNodeProxy().children()[0].tagName, `P`)
-    assert.equal(node.getNodeProxy().children()[0].__specialTag__, `@@paragraph`)
-
-    patchChildren(next)
-
-    assert.equal(node.getNodeProxy().children().length, 1)
-    assert.equal(node.getNodeProxy().children()[0].tagName, `DIV`)
-    assert.equal(node.getNodeProxy().children()[0].__specialTag__, undefined)
-  })
-
-  it(`replaces children of children`, () => {
-    const node = h(`div`)
-    node.initialize()
-
-    const patchChildren = createPatchChildren(node)
-    const children: Array<VirtualNode> = createEmptyVNodes(`p`, [null])
-    children[0]._children = createEmptyVNodes(`span`, [null, `b`])
-
-    const next: Array<VirtualNode> = createEmptyVNodes(`p`, [null])
-    next[0]._children = createEmptyVNodes(`span`, [`b`, `a`, `c`, null])
+    const patchChildren = createPatchChildren(orderedDecorator)
 
     patchChildren(children)
 
-    let childNode = node.getNodeProxy().children()[0]
-
-    assert.equal(node.getNodeProxy().children().length, 1)
-    assert.equal(childNode.tagName, `P`)
-    assert.equal(childNode.children.length, 2)
-
-    childNode.children[1].__specialTag__ = `@@keyed`
+    orderedDecorator.order.map((op, index) => assert.deepEqual(op, [`insert`, children[index], index]))
 
     patchChildren(next)
 
-    childNode = node.getNodeProxy().children()[0]
-
-    assert.equal(node.getNodeProxy().children().length, 1)
-    assert.equal(childNode.tagName, `P`)
-    assert.equal(childNode.children.length, 4)
-    assert.equal(childNode.children[0].__specialTag__, `@@keyed`)
+    assert.deepEqual(orderedDecorator.order[2], [`insert`, next[0], 0])
+    assert.deepEqual(orderedDecorator.order[3], [`insert`, next[1], 1])
+    assert.deepEqual(orderedDecorator.order[4], [`remove`, children[0]])
+    assert.deepEqual(orderedDecorator.order[5], [`remove`, children[1]])
   })
 })

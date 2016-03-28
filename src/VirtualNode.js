@@ -6,7 +6,6 @@ import {Subject} from 'rxjs/Subject'
 import {NodeProxy} from 'yolk/NodeProxy'
 import {wrapText} from 'yolk/wrapText'
 import {parseTag} from 'yolk/parseTag'
-import {VirtualSymbol} from 'yolk/VirtualSymbol'
 import {batchInsertMessages} from 'yolk/batchInsertMessages'
 import {createPatchProperties} from 'yolk/createPatchProperties'
 import {createPatchChildren} from 'yolk/createPatchChildren'
@@ -14,6 +13,7 @@ import {createNodeProps} from 'yolk/createNodeProps'
 import {createCompositeSubject} from 'yolk/createCompositeSubject'
 import {createObservableFromArray} from 'yolk/createObservableFromArray'
 import {flatten} from 'yolk/flatten'
+import {$$virtual} from 'yolk/symbol'
 
 import 'rxjs/add/operator/map'
 
@@ -56,8 +56,13 @@ export class VirtualNode {
         })
       },
 
-      moveChild (child: VirtualNode, index: number): void {
-        nodeProxy.insertChild(child.getNodeProxy(), index)
+      updateChild (previous: VirtualNode, next: VirtualNode): void {
+        previous.patch(next)
+      },
+
+      moveChild (previous: VirtualNode, next: VirtualNode, index: number): void {
+        previous.patch(next)
+        nodeProxy.insertChild(next.getNodeProxy(), index)
       },
 
       removeChild (child: VirtualNode): void {
@@ -100,7 +105,7 @@ export class VirtualNode {
   }
 }
 
-VirtualNode.prototype[VirtualSymbol] = true
+VirtualNode.prototype[$$virtual] = true
 
 export function createElement (_tagName: string, props: Object, children: Array<VirtualNode | Observable>): VirtualNode {
   const tagName: string = parseTag(_tagName, props)

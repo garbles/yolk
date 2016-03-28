@@ -6,8 +6,8 @@ import {asObservable} from 'yolk/asObservable'
 import {isSubject} from 'yolk/isSubject'
 import {isEmptyObject} from 'yolk/isEmptyObject'
 
-import 'rxjs/add/observable/fromArray'
-import 'rxjs/add/operator/combineLatest-static'
+import 'rxjs/add/observable/of'
+import 'rxjs/add/observable/combineLatest'
 
 const wrapValue = (key, value) => {
   if (eventListMap[key] && isSubject(value)) {

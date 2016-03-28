@@ -16,11 +16,10 @@ const patch = (patchOps: Object, previousChildren: Array<VirtualNode>, nextChild
         patchOps.insertChild(next.vnode, index)
         break
       case UPDATE:
-        previous.vnode.patch(next.vnode)
+        patchOps.updateChild(previous.vnode, next.vnode, index)
         break
       case MOVE:
-        previous.vnode.patch(next.vnode)
-        patchOps.moveChild(next.vnode, index)
+        patchOps.moveChild(previous.vnode, next.vnode, index)
         break
       case REMOVE:
         patchOps.removeChild(previous.vnode)

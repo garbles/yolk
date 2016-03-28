@@ -21,7 +21,7 @@ describe(`kitchen sink of tests`, () => {
       return h(`div`, {},
         h(`button#plus`, {onClick: handlePlus}, `+ `, `PLUS`),
         h(`button#minus`, {onClick: handleMinus}, `- `, `MINUS`),
-        h(`span`, {}, count),
+        h(`span#count`, {}, count)
       )
     }
 

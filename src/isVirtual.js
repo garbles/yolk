@@ -1,7 +1,7 @@
 /* @flow */
 
-import {VirtualSymbol} from 'yolk/VirtualSymbol'
+import {$$virtual} from 'yolk/symbol'
 
 export function isVirtual (obj?: any): boolean {
-  return !!obj && obj[VirtualSymbol]
+  return !!obj && obj[$$virtual]
 }

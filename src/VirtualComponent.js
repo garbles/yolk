@@ -1,12 +1,12 @@
 /* @flow */
 
 import document from 'global/document'
-import {VirtualSymbol, VirtualComponentUid} from 'yolk/VirtualSymbol'
+import cuid from 'cuid'
 import {createEventHandler} from 'yolk/createEventHandler'
 import {createComponentProps} from 'yolk/createComponentProps'
-import {uuid} from 'yolk/uuid'
 import {createCompositeSubject} from 'yolk/createCompositeSubject'
 import {createObservableFromArray} from 'yolk/createObservableFromArray'
+import {$$virtual, $$componentUid} from 'yolk/symbol'
 
 const createCompositeArraySubject = createCompositeSubject(createObservableFromArray)
 
@@ -59,14 +59,14 @@ export class VirtualComponent {
   removeChild (child): void {}
 }
 
-VirtualComponent.prototype[VirtualSymbol] = true
+VirtualComponent.prototype[$$virtual] = true
 
 const appendUidToComponent = fn => {
-  if (!fn[VirtualComponentUid]) {
-    fn[VirtualComponentUid] = uuid()
+  if (!fn[$$componentUid]) {
+    fn[$$componentUid] = cuid()
   }
 
-  return fn[VirtualComponentUid]
+  return fn[$$componentUid]
 }
 
 export function createComponent (fn, props, children) {
