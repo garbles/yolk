@@ -67,9 +67,9 @@ export class VirtualComponent {
   }
 
   destroy (): void {
-    // dispose of observables, children
-    this._instance.destroy()
     this._eventHandlers.forEach(h => !h.hasCompleted && h.complete())
+    this._instance.destroy()
+    this._children.forEach(c => c.destroy())
   }
 
   insertChild (child, index): void {}

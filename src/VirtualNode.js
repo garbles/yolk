@@ -9,8 +9,8 @@ import {parseTag} from 'yolk/parseTag'
 import {batchInsertMessages} from 'yolk/batchInsertMessages'
 import {createPatchProperties} from 'yolk/createPatchProperties'
 import {createPatchChildren} from 'yolk/createPatchChildren'
-import {createNodeProps} from 'yolk/createNodeProps'
 import {createCompositeSubject} from 'yolk/createCompositeSubject'
+import {createNodeProps} from 'yolk/createNodeProps'
 import {createObservableFromArray} from 'yolk/createObservableFromArray'
 import {flatten} from 'yolk/flatten'
 import {$$virtual} from 'yolk/symbol'
@@ -36,6 +36,7 @@ export class VirtualNode {
     this._nodeProxy = null
     this._props$ = null
     this._children$ = null
+    this._subscriptions = []
   }
 
   getNodeProxy (): NodeProxy {
@@ -72,13 +73,17 @@ export class VirtualNode {
       },
     };
 
-    props$
-      .subscribe(createPatchProperties(nodeProxy))
+    const propSub =
+      props$.subscribe(createPatchProperties(nodeProxy))
 
-    children$
-      .map(flatten)
-      .map(wrapText)
-      .subscribe(createPatchChildren(nodeProxyDecorator))
+    const childrenSub =
+      children$
+        .map(flatten)
+        .map(wrapText)
+        .subscribe(createPatchChildren(nodeProxyDecorator))
+
+    this._subscriptions.push(propSub)
+    this._subscriptions.push(childrenSub)
   }
 
   afterInsert (): void {
@@ -86,8 +91,6 @@ export class VirtualNode {
   }
 
   patch (next: VirtualNode): void {
-    // TODO: add thing to throw in dev in next is already initialized
-    // - e.g. has a nodeProxy
     next._nodeProxy = this._nodeProxy
     next._props$ = this._props$
     next._children$ = this._children$
@@ -101,7 +104,8 @@ export class VirtualNode {
   }
 
   destroy (): void {
-    // TODO: dispose of observables, children
+    this._subscriptions.forEach(s => s.unsubscribe())
+    this._children.forEach(c => c.destroy())
   }
 }
 

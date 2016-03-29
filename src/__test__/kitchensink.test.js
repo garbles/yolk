@@ -1,3 +1,5 @@
+/* @flow weak */
+
 import $ from 'jquery'
 import {Observable} from 'rxjs/Observable'
 import {BehaviorSubject} from 'rxjs/subject/BehaviorSubject'
@@ -6,9 +8,11 @@ import {noop} from 'yolk/noop'
 import {render} from 'yolk/render'
 import {renderInDocument} from './support/renderInDocument'
 
+import 'rxjs/add/observable/interval'
 import 'rxjs/add/operator/merge'
 import 'rxjs/add/operator/scan'
 import 'rxjs/add/operator/startWith'
+import 'rxjs/add/operator/combineLatest'
 
 describe(`kitchen sink of tests`, () => {
   it(`creates a simple clicker`, () => {
@@ -274,20 +278,66 @@ describe(`kitchen sink of tests`, () => {
     cleanup()
   })
 
-  it(`disposes of event handlers`, () => {
+  it(`disposes of event handlers when removed as a child`, done => {
     let onClick
     let onBlur
 
     function DisposeEventHandlers ({createEventHandler}) {
-        onClick = createEventHandler()
-        onBlur = createEventHandler()
+      onClick = createEventHandler()
+      onBlur = createEventHandler()
 
-        onClick.subscribe(noop)
-        onClick.subscribe(noop)
-        onBlur.subscribe(noop)
+      onClick.subscribe(noop)
+      onClick.subscribe(noop)
+      onBlur.subscribe(noop)
 
-        return h(`div`, {onClick, onBlur})
-      }
+      return h(`div`, {onClick, onBlur})
+    }
+
+    function Parent () {
+      const child = Observable.interval(50).startWith(-1)
+        .map(i => {
+          if (i === -1) {
+            return h(DisposeEventHandlers)
+          } else {
+            return h(`div`) // same element
+          }
+        })
+
+      return h(`p`, {}, child)
+    }
+
+    const {node, cleanup} = renderInDocument(h(Parent))
+
+    assert.equal(onClick.destination.observers.length, 1)
+    assert.equal(onBlur.destination.observers.length, 1)
+    assert.equal(onClick.hasCompleted, false)
+    assert.equal(onBlur.hasCompleted, false)
+
+    setTimeout(() => {
+      assert.equal(onClick.destination.observers, null)
+      assert.equal(onBlur.destination.observers, null)
+      assert.equal(onClick.hasCompleted, true)
+      assert.equal(onBlur.hasCompleted, true)
+
+      cleanup()
+      done()
+    }, 100)
+  })
+
+  it(`disposes of event handlers on new render`, () => {
+    let onClick
+    let onBlur
+
+    function DisposeEventHandlers ({createEventHandler}) {
+      onClick = createEventHandler()
+      onBlur = createEventHandler()
+
+      onClick.subscribe(noop)
+      onClick.subscribe(noop)
+      onBlur.subscribe(noop)
+
+      return h(`div`, {onClick, onBlur})
+    }
 
     const {node, cleanup} = renderInDocument(h(DisposeEventHandlers))
 
@@ -304,5 +354,143 @@ describe(`kitchen sink of tests`, () => {
     assert.equal(onBlur.hasCompleted, true)
 
     cleanup()
+  })
+
+  it(`renders children`, () => {
+    const HasChildren = ({children}) => h(`div`, {className: `wrapper`}, children)
+
+    const vnode =
+      h(HasChildren, {},
+        h(HasChildren, {},
+          h(HasChildren, {},
+            h(HasChildren, {},
+              h(`span`, {className: `child`})
+            )
+          )
+        )
+      )
+
+    const {node, cleanup} = renderInDocument(vnode)
+
+    assert.equal(node.className, `wrapper`)
+    assert.equal(node.firstChild.className, `wrapper`)
+    assert.equal(node.firstChild.firstChild.className, `wrapper`)
+    assert.equal(node.firstChild.firstChild.firstChild.className, `wrapper`)
+    assert.equal(node.firstChild.firstChild.firstChild.firstChild.className, `child`)
+
+    cleanup()
+  })
+
+  it(`can create event handlers with multiple subscribers`, () => {
+    function Counter ({props, createEventHandler}) {
+      const handlePlus = createEventHandler(1)
+      const handleMinus = createEventHandler(-1)
+      const count = handlePlus.merge(handleMinus).scan((x, y) => x + y, 0).startWith(0)
+
+      return (
+        h(`div`, {},
+          h(`button#add`, {onClick: handlePlus}),
+          h(`button#subtract`, {onClick: handleMinus}),
+          h(`div#count1`, {}, count),
+          h(`div#count2`, {}, count),
+          h(`div#count3`, {}, props.count),
+          h(`div#count4`, {}, props.count),
+          h(`div#count5`, {}, props.count.combineLatest(count, (a,b) => a + b)),
+        )
+      )
+    }
+
+    const _count = new BehaviorSubject(5)
+    const {node, cleanup} = renderInDocument(h(Counter, {count: _count}))
+
+    const add = () => $(`#add`).trigger(`click`)
+    const subtract = () => $(`#subtract`).trigger(`click`)
+
+    const count1 = () => $(`#count1`).text()
+    const count2 = () => $(`#count2`).text()
+    const count3 = () => $(`#count3`).text()
+    const count4 = () => $(`#count4`).text()
+    const count5 = () => $(`#count5`).text()
+
+    assert.equal(count1(), 0)
+    assert.equal(count2(), 0)
+    assert.equal(count3(), 5)
+    assert.equal(count4(), 5)
+    assert.equal(count5(), 5)
+
+    add()
+    subtract()
+    add()
+    add()
+    _count.next(12)
+
+    assert.equal(count1(), 2)
+    assert.equal(count2(), 2)
+    assert.equal(count3(), 12)
+    assert.equal(count4(), 12)
+    assert.equal(count5(), 14)
+
+    cleanup()
+  })
+
+  it(`allows you to nest callbacks into children`, () => {
+    function NestedCallback ({createEventHandler}) {
+      const handleInc = createEventHandler(() => 1, 0)
+      const count = handleInc.scan((x, y) => x + y, 0)
+
+      return (
+        h(`div`, {},
+          h(`div#count`, {}, count),
+          h(NestedCallbackChild, {onClick: handleInc})
+        )
+      )
+    }
+
+    function NestedCallbackChild ({props}) {
+      return h(`button#nested`, {onClick: props.onClick})
+    }
+
+    const {node, cleanup} = renderInDocument(h(NestedCallback))
+
+    const click = () => $(`#nested`).trigger(`click`)
+    const count = () => $(`#count`).text()
+
+    assert(count(), 0)
+
+    click()
+    click()
+    click()
+
+    assert(count(), 3)
+
+    cleanup()
+  })
+
+  it(`renders varying number of child components`, () => {
+    function Stub ({props, children, createEventHandler}) {
+      const handleClick = createEventHandler(() => 1, 0)
+      const count = handleClick.scan((acc, next) => acc + next, 0)
+      const id$ = props.num.map(n => `stub-${n}`)
+
+      return h(`button`, {id: id$, onClick: handleClick}, [children, count])
+    }
+
+    function VaryingWidgetChildrenFromProps ({props}) {
+      const numbers = props.numbers.map(nums => nums.map(num => h(Stub, {num}, num)))
+
+      return h(`div`, {}, numbers)
+    }
+
+    const numbers = new BehaviorSubject([1,2,3])
+
+    const {node, cleanup} = renderInDocument(h(VaryingWidgetChildrenFromProps, {numbers}))
+
+    $(`#stub-1`).trigger(`click`).trigger(`click`)
+    $(`#stub-2`).trigger(`click`).trigger(`click`)
+
+    assert.equal(node.children.length, 3)
+    assert.equal($(`#stub-1`).text(), `12`)
+    assert.equal($(`#stub-2`).text(), `22`)
+    assert.equal($(`#stub-3`).text(), `30`)
   })
 })

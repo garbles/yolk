@@ -6,16 +6,12 @@ const symbols = {
   $$root: `@@YOLK_ROOT`
 }
 
-const keys = Object.keys(symbols)
-
 if (typeof Symbol === `function`) {
-  if (!Symbol.observable) {
-    if (typeof Symbol.for === `function`) {
-      keys.forEach(key => exports.$$virtual = Symbol.for(symbols[key]))
-    } else {
-      keys.forEach(key => exports.$$virtual = Symbol(symbols[key]))
-    }
+  if (typeof Symbol.for === `function`) {
+    Object.keys(symbols).forEach(key => symbols[key] = Symbol.for(symbols[key]))
+  } else {
+    Object.keys(symbols).forEach(key => symbols[key] = Symbol(symbols[key]))
   }
-} else {
-  keys.forEach(key => exports.$$virtual = symbols[key])
 }
+
+export const {$$virtual, $$componentUid, $$root} = symbols
