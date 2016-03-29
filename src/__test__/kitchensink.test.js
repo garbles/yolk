@@ -2,6 +2,8 @@ import $ from 'jquery'
 import {Observable} from 'rxjs/Observable'
 import {BehaviorSubject} from 'rxjs/subject/BehaviorSubject'
 import {h} from 'yolk/h'
+import {noop} from 'yolk/noop'
+import {render} from 'yolk/render'
 import {renderInDocument} from './support/renderInDocument'
 
 import 'rxjs/add/operator/merge'
@@ -253,6 +255,53 @@ describe(`kitchen sink of tests`, () => {
     assert.equal(children.children[1].tagName, `B`)
     assert.equal(children.children[2].tagName, `B`)
     assert.equal(children.children[3].tagName, `P`)
+
+    cleanup()
+  })
+
+  it(`toggles the disabled prop`, () => {
+    const disabled = new BehaviorSubject(true)
+
+    const instance = h(`button`, {disabled})
+    const {node, cleanup} = renderInDocument(instance)
+
+    assert.equal(node.disabled, true)
+
+    disabled.next(false)
+
+    assert.equal(node.disabled, false)
+
+    cleanup()
+  })
+
+  it(`disposes of event handlers`, () => {
+    let onClick
+    let onBlur
+
+    function DisposeEventHandlers ({createEventHandler}) {
+        onClick = createEventHandler()
+        onBlur = createEventHandler()
+
+        onClick.subscribe(noop)
+        onClick.subscribe(noop)
+        onBlur.subscribe(noop)
+
+        return h(`div`, {onClick, onBlur})
+      }
+
+    const {node, cleanup} = renderInDocument(h(DisposeEventHandlers))
+
+    assert.equal(onClick.destination.observers.length, 1)
+    assert.equal(onBlur.destination.observers.length, 1)
+    assert.equal(onClick.hasCompleted, false)
+    assert.equal(onBlur.hasCompleted, false)
+
+    render(h(`p`), `#${node.parentNode.id}`)
+
+    assert.equal(onClick.destination.observers, null)
+    assert.equal(onBlur.destination.observers, null)
+    assert.equal(onClick.hasCompleted, true)
+    assert.equal(onBlur.hasCompleted, true)
 
     cleanup()
   })

@@ -4,12 +4,12 @@ import {Observable} from 'rxjs/Observable'
 import {Observer} from 'rxjs/Observer'
 import {Subject} from 'rxjs/Subject'
 import {Subscription} from 'rxjs/Subscription'
-import {ReplaySubject} from 'rxjs/subject/ReplaySubject'
 import {isFunction} from 'yolk/isFunction'
 import {isDefined} from 'yolk/isDefined'
 
 import 'rxjs/add/operator/map'
 import 'rxjs/add/operator/mapTo'
+import 'rxjs/add/operator/share'
 
 function wrapMapFn (obs: Subject, mapFn?: any): Observable {
   const mapFnIsDefined: boolean = isDefined(mapFn)
@@ -25,7 +25,7 @@ function wrapMapFn (obs: Subject, mapFn?: any): Observable {
 }
 
 export function createEventHandler (mapFn?: any, init?: any): Subject {
-  const subject: ReplaySubject = new ReplaySubject(1)
+  const subject: Subject = new Subject()
 
   const observable: Observable = Observable.create((observer: Observer): Function => {
     const subscription: Subscription = wrapMapFn(subject, mapFn).subscribe(observer)
@@ -34,8 +34,10 @@ export function createEventHandler (mapFn?: any, init?: any): Subject {
       observer.next(init)
     }
 
-    return () => subscription.unsubscribe()
+    return () => {
+      subscription.unsubscribe()
+    }
   })
 
-  return Subject.create(subject, observable)
+  return Subject.create(subject, observable.share())
 }

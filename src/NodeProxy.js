@@ -54,6 +54,21 @@ export class NodeProxy {
     node.removeChild(child)
   }
 
+  getAttribute (key) {
+    const node = this._node
+    const descriptor = descriptors[key]
+
+    if (!descriptor) {
+      return node[key]
+    }
+
+    if (descriptor.useEqualSetter) {
+      return node[descriptor.computed]
+    }
+
+    return node.getAttribute(descriptor.computed)
+  }
+
   setAttribute (key, value) {
     const node = this._node
     const descriptor = descriptors[key]

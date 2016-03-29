@@ -1,16 +1,21 @@
 const Symbol = global.Symbol
 
+const symbols = {
+  $$virtual: `@@YOLK_VIRTUAL`,
+  $$componentUid: `@@YOLK_COMPONENT_UID`,
+  $$root: `@@YOLK_ROOT`
+}
+
+const keys = Object.keys(symbols)
+
 if (typeof Symbol === `function`) {
   if (!Symbol.observable) {
     if (typeof Symbol.for === `function`) {
-      exports.$$virtual = Symbol.for(`@@virtual`)
-      exports.$$componentUid = Symbol.for(`@@virtualComponentUid`)
+      keys.forEach(key => exports.$$virtual = Symbol.for(symbols[key]))
     } else {
-      exports.$$virtual = Symbol(`@@virtual`)
-      exports.$$componentUid = Symbol(`@@virtualComponentUid`)
+      keys.forEach(key => exports.$$virtual = Symbol(symbols[key]))
     }
   }
 } else {
-  exports.$$virtual = `@@virtual`
-  exports.$$componentUid = `@@virtualComponentUid`
+  keys.forEach(key => exports.$$virtual = symbols[key])
 }
