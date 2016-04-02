@@ -23,8 +23,8 @@
     "build": "babel src lib",
     "karma": "NODE_ENV=test karma start",
     "lint": "eslint src",
-    "type-check": "flow",
-    "test": "npm run lint && npm run type-check && npm run karma"
+    "flow": "flow",
+    "test": "npm run lint && npm run flow && npm run karma"
   },
   "homepage": "https://github.com/garbles/yolk",
   "devDependencies": {

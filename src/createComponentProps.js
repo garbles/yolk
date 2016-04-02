@@ -1,3 +1,5 @@
+/* @flow */
+
 import {BehaviorSubject} from 'rxjs/subject/BehaviorSubject'
 import {isObservable} from 'yolk/isObservable'
 

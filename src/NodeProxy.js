@@ -1,3 +1,5 @@
+/* @flow */
+
 import document from 'global/document'
 import {descriptors} from 'yolk/propertyDescriptors'
 import {addEventListener, removeEventListener} from 'yolk/eventDelegator'

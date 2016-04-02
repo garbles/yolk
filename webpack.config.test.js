@@ -16,11 +16,11 @@ module.exports = {
       },
     ],
 
-    // postLoaders: [{
-    //   test: /\.js$/,
-    //   exclude: /(__test__|node_modules)/,
-    //   loader: `istanbul-instrumenter`,
-    // }],
+    postLoaders: [{
+      test: /\.js$/,
+      exclude: /(__test__|node_modules)/,
+      loader: `istanbul-instrumenter`,
+    }],
   },
 
   resolve: {

@@ -6,7 +6,7 @@ module.exports = config => {
 
     frameworks: [`mocha`, `chai`],
 
-    browsers: [`Chrome`],
+    browsers: [`Chrome`, `Firefox`],
 
     files: [`src/**/*.test.js`],
 

@@ -10,7 +10,7 @@ function createEmptyVNodes (tag, mapping) {
   return mapping.map(key => h(tag || `p`, {key}))
 }
 
-describe(`patchChildren`, () => {
+describe(`createPatchChildren`, () => {
   let decorator
   let orderedDecorator
 
@@ -112,8 +112,8 @@ describe(`patchChildren`, () => {
   })
 
   it(`rearranges children with keys`, () => {
-    const children: Array<VirtualNode> = createEmptyVNodes(`p`, [`a`, null, `b`])
-    const next: Array<VirtualNode> = createEmptyVNodes(`p`, [null, `b`, `a`])
+    const children: Array<VirtualNode> = createEmptyVNodes(`p`, [`a`, null, null, `b`])
+    const next: Array<VirtualNode> = createEmptyVNodes(`p`, [null, `b`, `a`, null])
     const patchChildren = createPatchChildren(orderedDecorator)
 
     patchChildren(children)
@@ -122,10 +122,10 @@ describe(`patchChildren`, () => {
 
     patchChildren(next)
 
-    assert.deepEqual(orderedDecorator.order[3], [`move`, children[0], next[2], 3])
-    assert.deepEqual(orderedDecorator.order[4], [`update`, children[2], next[1], 1])
-    assert.deepEqual(orderedDecorator.order[5], [`insert`, next[0], 0])
-    assert.deepEqual(orderedDecorator.order[6], [`remove`, children[1]])
+    assert.deepEqual(orderedDecorator.order[4], [`move`, children[1], next[0], 0])
+    assert.deepEqual(orderedDecorator.order[5], [`move`, children[3], next[1], 1])
+    assert.deepEqual(orderedDecorator.order[6], [`move`, children[2], next[3], 2])
+    assert.deepEqual(orderedDecorator.order[7], [`move`, children[0], next[2], 2])
   })
 
   it(`removes children if their key does not match the same tagName`, () => {

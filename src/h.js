@@ -1,3 +1,5 @@
+/* @flow */
+
 import {createComponent} from 'yolk/VirtualComponent'
 import {createElement} from 'yolk/VirtualNode'
 import {isString} from 'yolk/isString'

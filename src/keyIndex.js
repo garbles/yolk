@@ -15,7 +15,7 @@ export function keyIndex (children: Array<VirtualNode>): Array<Object> {
     }
 
     arr.push({
-      key: child.key ? `${child.tagName}-${child.key}` : `${child.tagName}-${i}`,
+      key: child.key ? `${child.tagName}-${child.key}` : child.tagName,
       vnode: child,
     })
   }

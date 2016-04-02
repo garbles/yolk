@@ -108,7 +108,7 @@ describe(`kitchen sink of tests`, () => {
     assert.equal(node.children[1].children[1].children[0].tagName, `STRONG`)
 
     assert.equal(mountCallbackCount, 4)
-    assert.equal(unmountCallbackCount, 2)
+    assert.equal(unmountCallbackCount, 1)
 
     cleanup()
   })
