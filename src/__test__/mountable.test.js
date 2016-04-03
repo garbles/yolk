@@ -2,9 +2,9 @@
 
 import document from 'global/document'
 import {renderInDocument} from './support/renderInDocument'
-import {emitMount, emitUnmount} from 'yolk/mountable'
-import {addEventListener} from 'yolk/eventDelegator'
-import {h} from 'yolk/h'
+import {emitMount, emitUnmount} from '../mountable'
+import {addEventListener} from '../eventDelegator'
+import {h} from '../h'
 
 describe(`emitMount`, () => {
   it(`emits a mount event in a given node after it is inserted into the DOM`, done => {

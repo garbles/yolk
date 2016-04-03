@@ -1,6 +1,6 @@
 /* @flow */
 
-import {eventsList} from 'yolk/eventsList'
+import {eventsList} from './eventsList'
 
 const HAS_LOWER_CASE: number = 0x1 // transform key to all lowercase
 const HAS_DASHED_CASE: number = 0x2 // transform key to dashed case

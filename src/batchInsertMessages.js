@@ -1,6 +1,6 @@
 /* @flow */
 
-import type {VirtualNode} from 'yolk/VirtualNode'
+import type {VirtualNode} from './VirtualNode'
 
 type Scope = {
   batchInProgress: boolean;

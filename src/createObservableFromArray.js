@@ -1,7 +1,8 @@
 /* @flow */
 
 import {Observable} from 'rxjs/Observable'
-import {asObservable} from 'yolk/asObservable'
+
+import {asObservable} from './asObservable'
 
 import 'rxjs/add/observable/of'
 import 'rxjs/add/observable/combineLatest'

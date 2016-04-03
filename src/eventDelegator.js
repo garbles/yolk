@@ -2,7 +2,8 @@
 
 import domDelegator from 'dom-delegator'
 import DomDelegator from 'dom-delegator/dom-delegator'
-import {eventsList} from 'yolk/eventsList'
+
+import {eventsList} from './eventsList'
 
 const delegator: DomDelegator = domDelegator()
 const len: number = eventsList.length
@@ -13,5 +14,5 @@ while (++i < len) {
   delegator.listenTo(event)
 }
 
-export const addEventListener = ::delegator.addEventListener
-export const removeEventListener = ::delegator.removeEventListener
+export const addEventListener = delegator.addEventListener.bind(delegator)
+export const removeEventListener = delegator.removeEventListener.bind(delegator)

@@ -1,7 +1,7 @@
 import {BehaviorSubject} from 'rxjs/subject/BehaviorSubject'
-import {createCompositeSubject} from 'yolk/createCompositeSubject'
-import {createNodeProps} from 'yolk/createNodeProps'
-import {createObservableFromArray} from 'yolk/createObservableFromArray'
+import {createCompositeSubject} from '../createCompositeSubject'
+import {createNodeProps} from '../createNodeProps'
+import {createObservableFromArray} from '../createObservableFromArray'
 
 import 'rxjs/add/operator/skip'
 

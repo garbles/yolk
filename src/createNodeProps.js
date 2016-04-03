@@ -1,17 +1,18 @@
 /* @flow */
 
 import {Observable} from 'rxjs/Observable'
+
 import {eventListMap} from './eventsList'
-import {asObservable} from 'yolk/asObservable'
-import {isSubject} from 'yolk/isSubject'
-import {isEmptyObject} from 'yolk/isEmptyObject'
+import {asObservable} from './asObservable'
+import {isSubject} from './isSubject'
+import {isEmptyObject} from './isEmptyObject'
 
 import 'rxjs/add/observable/of'
 import 'rxjs/add/observable/combineLatest'
 
 const wrapValue = (key, value) => {
   if (eventListMap[key] && isSubject(value)) {
-    return asObservable(::value.next)
+    return asObservable(value.next.bind(value))
   }
 
   return asObservable(value)

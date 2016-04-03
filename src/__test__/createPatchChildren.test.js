@@ -1,10 +1,10 @@
 /* @flow weak */
 
 import sinon from 'sinon'
-import {VirtualNode} from 'yolk/VirtualNode'
-import {NodeProxy} from 'yolk/NodeProxy'
-import {createPatchChildren} from 'yolk/createPatchChildren'
-import {h} from 'yolk/h'
+import {VirtualNode} from '../VirtualNode'
+import {NodeProxy} from '../NodeProxy'
+import {createPatchChildren} from '../createPatchChildren'
+import {h} from '../h'
 
 function createEmptyVNodes (tag, mapping) {
   return mapping.map(key => h(tag || `p`, {key}))

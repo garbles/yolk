@@ -1,4 +1,4 @@
-import {flatten} from 'yolk/flatten'
+import {flatten} from '../flatten'
 
 describe(`flatten`, () => {
   it(`flattens arrays`, () => {

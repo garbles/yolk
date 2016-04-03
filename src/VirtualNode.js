@@ -1,19 +1,24 @@
 /* @flow */
 
 import document from 'global/document'
-import {Observable} from 'rxjs/Observable'
-import {Subject} from 'rxjs/Subject'
-import {NodeProxy} from 'yolk/NodeProxy'
-import {wrapText} from 'yolk/wrapText'
-import {parseTag} from 'yolk/parseTag'
-import {batchInsertMessages} from 'yolk/batchInsertMessages'
-import {createPatchProperties} from 'yolk/createPatchProperties'
-import {createPatchChildren} from 'yolk/createPatchChildren'
-import {createCompositeSubject} from 'yolk/createCompositeSubject'
-import {createNodeProps} from 'yolk/createNodeProps'
-import {createObservableFromArray} from 'yolk/createObservableFromArray'
-import {flatten} from 'yolk/flatten'
-import {$$virtual} from 'yolk/symbol'
+
+import {NodeProxy} from './NodeProxy'
+import {wrapText} from './wrapText'
+import {parseTag} from './parseTag'
+import {batchInsertMessages} from './batchInsertMessages'
+import {createPatchProperties} from './createPatchProperties'
+import {createPatchChildren} from './createPatchChildren'
+import {createCompositeSubject} from './createCompositeSubject'
+import {createNodeProps} from './createNodeProps'
+import {createObservableFromArray} from './createObservableFromArray'
+import {flatten} from './flatten'
+import {$$virtual} from './symbol'
+import {set} from './set'
+
+import type {Observable} from 'rxjs/Observable'
+import type {Subject} from 'rxjs/Subject'
+import type {Subscription} from 'rxjs/Subscription'
+import type {VirtualElement, NodeProxyDecorator} from './types'
 
 import 'rxjs/add/operator/map'
 
@@ -21,22 +26,25 @@ const createCompositePropSubject = createCompositeSubject(createNodeProps)
 const createCompositeArraySubject = createCompositeSubject(createObservableFromArray)
 
 export class VirtualNode {
-  key: string;
+  key: string | void;
   tagName: string;
   _nodeProxy: NodeProxy;
   _props: Object;
-  _props$: Subject<Object>;
-  _children: Array<VirtualNode>;
-  _children$: Subject<Array<VirtualNode>>;
-  constructor (tagName: string, props: Object, children: Array<VirtualNode>, key?: string) {
+  _children: Array<VirtualElement>;
+  _subscriptions: Array<Subscription>;
+  _props$: Subject<Object> | null;
+  _children$: Subject<Array<Observable|VirtualElement>> | null;
+  _nodeProxy: NodeProxy | null;
+
+  constructor (tagName: string, props: Object, children: Array<VirtualElement>, key?: string) {
     this.key = key
     this.tagName = tagName
     this._props = props
     this._children = children
+    this._subscriptions = []
     this._nodeProxy = null
     this._props$ = null
     this._children$ = null
-    this._subscriptions = []
   }
 
   getNodeProxy (): NodeProxy {
@@ -48,7 +56,7 @@ export class VirtualNode {
     const props$: Subject<Object> = this._props$ = createCompositePropSubject(this._props)
     const children$: Subject<Array<VirtualNode>> = this._children$ = createCompositeArraySubject(this._children)
 
-    const nodeProxyDecorator = {
+    const nodeProxyDecorator: NodeProxyDecorator = {
       insertChild (child: VirtualNode, index: number): void {
         return batchInsertMessages(queue => {
           child.initialize()
@@ -107,13 +115,13 @@ export class VirtualNode {
     this._subscriptions.forEach(s => s.unsubscribe())
     this._children.forEach(c => c.destroy())
   }
+
+  static create (_tagName: string, props: Object, children: Array<VirtualNode|Observable>): VirtualNode {
+    const tagName: string = parseTag(_tagName, props)
+    const key: string = props.key || null
+
+    return new VirtualNode(tagName, props, children, key)
+  }
 }
 
-VirtualNode.prototype[$$virtual] = true
-
-export function createElement (_tagName: string, props: Object, children: Array<VirtualNode | Observable>): VirtualNode {
-  const tagName: string = parseTag(_tagName, props)
-  const key: string = props.key || null
-
-  return new VirtualNode(tagName, props, children, key)
-}
+set(VirtualNode.prototype, $$virtual, true)

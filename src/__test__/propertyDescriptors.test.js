@@ -1,5 +1,5 @@
 import document from 'global/document'
-import {descriptors} from 'yolk/propertyDescriptors'
+import {descriptors} from '../propertyDescriptors'
 
 function generateRandomNumber () {
   return (Math.random() * 0x10000000)

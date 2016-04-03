@@ -1,15 +1,20 @@
 /* @flow */
 
 import {BehaviorSubject} from 'rxjs/subject/BehaviorSubject'
-import {isObservable} from 'yolk/isObservable'
+import {isObservable} from './isObservable'
 
-export function createComponentProps (_props) {
-  const keys = Object.keys(_props)
-  const plainValueKeys = {}
+type ComponentProps = {
+  asObject (): Object,
+  next (v: Object): void
+}
 
-  const props = {}
-  const len = keys.length
-  let i = -1
+export function createComponentProps (_props: Object): ComponentProps {
+  const keys: Array<string> = Object.keys(_props)
+  const plainValueKeys: Object = {}
+
+  const props: Object = {}
+  const len: number = keys.length
+  let i: number = -1
 
   while (++i < len) {
     const key = keys[i]
@@ -24,19 +29,19 @@ export function createComponentProps (_props) {
   }
 
   return {
-    asObject () {
+    asObject (): Object {
       return props
     },
 
-    next (next) {
-      let j = -1
+    next (next: Object): void {
+      let j: number = -1
 
       while (++j < len) {
-        const key = keys[j]
-        const value = next[key]
-        const old = props[key]
+        const key: string = keys[j]
+        const value: any = next[key]
+        const old: any = props[key]
 
-        if (plainValueKeys[keys]) {
+        if (plainValueKeys[key]) {
           old.next(value)
         } else if (value !== old) {
           throw new Error(`Observable prop "${key}" changed to different observable`)

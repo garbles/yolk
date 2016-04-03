@@ -1,6 +1,6 @@
 /* @flow */
 
-import {VirtualNode} from 'yolk/VirtualNode'
+import type {VirtualNode} from './VirtualNode'
 
 export function keyIndex (children: Array<VirtualNode>): Array<Object> {
   const len: number = children.length

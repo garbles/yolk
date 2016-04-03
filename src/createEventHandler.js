@@ -4,8 +4,9 @@ import {Observable} from 'rxjs/Observable'
 import {Observer} from 'rxjs/Observer'
 import {Subject} from 'rxjs/Subject'
 import {Subscription} from 'rxjs/Subscription'
-import {isFunction} from 'yolk/isFunction'
-import {isDefined} from 'yolk/isDefined'
+
+import {isFunction} from './isFunction'
+import {isDefined} from './isDefined'
 
 import 'rxjs/add/operator/map'
 import 'rxjs/add/operator/mapTo'

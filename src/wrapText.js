@@ -1,8 +1,8 @@
 /* @flow */
 
-import {h} from 'yolk/h'
-import {VirtualNode} from 'yolk/VirtualNode'
-import {isVirtual} from 'yolk/isVirtual'
+import {h} from './h'
+import {VirtualNode} from './VirtualNode'
+import {isVirtual} from './isVirtual'
 
 function wrap (obj: any): VirtualNode {
   if (isVirtual(obj)) {

@@ -1,7 +1,7 @@
 /* @flow */
 
-import {CustomEvent} from 'yolk/CustomEvent'
-import {isFunction} from 'yolk/isFunction'
+import {CustomEvent} from './CustomEvent'
+import {isFunction} from './isFunction'
 
 export function emitMount (node: HTMLElement, fn: Function | void): void {
   if (isFunction(fn) && node.parentNode) {

@@ -1,28 +1,30 @@
 /* @flow */
 
 import document from 'global/document'
-import {descriptors} from 'yolk/propertyDescriptors'
-import {addEventListener, removeEventListener} from 'yolk/eventDelegator'
-import {emitMount, emitUnmount} from 'yolk/mountable'
-import {isDefined} from 'yolk/isDefined'
-import {isFunction} from 'yolk/isFunction'
+import {descriptors} from './propertyDescriptors'
+import {addEventListener, removeEventListener} from './eventDelegator'
+import {emitMount, emitUnmount} from './mountable'
+import {isDefined} from './isDefined'
+import {isFunction} from './isFunction'
+import {get} from './get'
+import {set} from './set'
 
 export class NodeProxy {
-  _node: Element;
+  _node: HTMLElement;
 
-  constructor (node) {
+  constructor (node: HTMLElement) {
     this._node = node
   }
 
-  emitMount (fn) {
+  emitMount (fn: Function): void {
     emitMount(this._node, fn)
   }
 
-  emitUnmount (fn) {
+  emitUnmount (fn: Function): void {
     emitUnmount(this._node, fn)
   }
 
-  children () {
+  children (): HTMLCollection {
     return this._node.children
   }
 
@@ -50,40 +52,40 @@ export class NodeProxy {
     }
   }
 
-  removeChild (childProxy: NodeProxy) {
+  removeChild (childProxy: NodeProxy): void {
     const node = this._node
     const child = childProxy._node
     node.removeChild(child)
   }
 
-  getAttribute (key) {
+  getAttribute (key: string): any {
     const node = this._node
-    const descriptor = descriptors[key]
+    const descriptor = get(descriptors, key)
 
     if (!descriptor) {
-      return node[key]
+      return get(node, key)
     }
 
     if (descriptor.useEqualSetter) {
-      return node[descriptor.computed]
+      return get(node, descriptor.computed)
     }
 
     return node.getAttribute(descriptor.computed)
   }
 
-  setAttribute (key, value) {
+  setAttribute (key: string, value: any): void {
     const node = this._node
-    const descriptor = descriptors[key]
+    const descriptor = get(descriptors, key)
 
     if (!descriptor) {
-      node[key] = value
+      set(node, key, value)
       return
     }
 
     const {computed} = descriptor
 
     if (descriptor.useEqualSetter) {
-      node[computed] = value
+      set(node, computed, value)
       return
     }
 
@@ -100,12 +102,12 @@ export class NodeProxy {
     node.setAttribute(computed, value)
   }
 
-  removeAttribute (key) {
+  removeAttribute (key: string): void {
     const node = this._node
-    const descriptor = descriptors[key]
+    const descriptor = get(descriptors, key)
 
     if (!descriptor) {
-      node[key] = undefined
+      set(node, key, undefined)
       return
     }
 
@@ -117,7 +119,7 @@ export class NodeProxy {
     }
 
     if (descriptor.hasBooleanValue) {
-      node[computed] = false
+      set(node, computed, false)
       return
     }
 
@@ -126,16 +128,16 @@ export class NodeProxy {
       return
     }
 
-    node[computed] = undefined
+    set(node, computed, undefined)
   }
-}
 
-NodeProxy.createElement = function createElement (tagName) {
-  const node = document.createElement(tagName)
-  return new NodeProxy(node)
-}
+  static createElement (tagName: string): NodeProxy {
+    const node: HTMLElement = document.createElement(tagName)
+    return new NodeProxy(node)
+  }
 
-NodeProxy.querySelector = function querySelector (selector) {
-  const node = document.querySelector(selector)
-  return new NodeProxy(node)
+  static querySelector (selector: string): NodeProxy {
+    const node: HTMLElement = document.querySelector(selector)
+    return new NodeProxy(node)
+  }
 }

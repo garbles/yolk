@@ -1,13 +1,15 @@
 /* @flow */
 
-import {batchInsertMessages} from 'yolk/batchInsertMessages'
-import {NodeProxy} from 'yolk/NodeProxy'
-import {isDefined} from 'yolk/isDefined'
-import {$$root} from 'yolk/symbol'
+import {batchInsertMessages} from './batchInsertMessages'
+import {NodeProxy} from './NodeProxy'
+import {isDefined} from './isDefined'
+import {$$root} from './symbol'
 
-export function render (vnode, selector) {
-  const containerProxy = NodeProxy.querySelector(selector)
-  const previous = containerProxy.getAttribute($$root)
+import {VirtualElement} from './types'
+
+export function render (vnode: VirtualElement, selector: string): void {
+  const containerProxy: NodeProxy = NodeProxy.querySelector(selector)
+  const previous: VirtualElement = containerProxy.getAttribute($$root)
 
   if (isDefined(previous)) {
     previous.destroy()

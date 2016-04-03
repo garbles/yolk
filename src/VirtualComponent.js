@@ -2,16 +2,41 @@
 
 import document from 'global/document'
 import cuid from 'cuid'
-import {createEventHandler} from 'yolk/createEventHandler'
-import {createComponentProps} from 'yolk/createComponentProps'
-import {createCompositeSubject} from 'yolk/createCompositeSubject'
-import {createObservableFromArray} from 'yolk/createObservableFromArray'
-import {$$virtual, $$componentUid} from 'yolk/symbol'
+
+import {createEventHandler} from './createEventHandler'
+import {createComponentProps} from './createComponentProps'
+import {createCompositeSubject} from './createCompositeSubject'
+import {createObservableFromArray} from './createObservableFromArray'
+import {$$virtual, $$componentUid} from './symbol'
+import {set} from './set'
+
+import type {Observable} from 'rxjs/Observable'
+import type {Subject} from 'rxjs/Subject'
+import type {NodeProxy} from './NodeProxy'
+import type {VirtualElement} from './types'
 
 const createCompositeArraySubject = createCompositeSubject(createObservableFromArray)
 
+const appendUidToComponent = (fn: Function): string => {
+  if (!fn[$$componentUid]) {
+    fn[$$componentUid] = cuid()
+  }
+
+  return fn[$$componentUid]
+}
+
 export class VirtualComponent {
-  constructor (fn: string, tagName: string, props: Object, children: Array<VirtualNode>, key?: string) {
+  key: string | void;
+  tagName: string;
+  _props: Object;
+  _children: Array<Observable|VirtualElement>;
+  _fn: Function;
+  _eventHandlers: Array<Subject>;
+  _props$: Subject<Object> | null;
+  _children$: Subject<Array<Observable|VirtualElement>> | null;
+  _instance: VirtualElement | null;
+
+  constructor (fn: Function, tagName: string, props: Object, children: Array<VirtualElement>, key?: string) {
     this.key = key
     this.tagName = tagName
     this._fn = fn
@@ -45,21 +70,19 @@ export class VirtualComponent {
     this._instance.afterInsert()
   }
 
-  patch (next): void {
+  patch (next: VirtualComponent): void {
     next._eventHandlers = this._eventHandlers
-    next._nodeProxy = this._nodeProxy
     next._instance = this._instance
     next._props$ = this._props$
     next._children$ = this._children$
 
-    this._eventHandlers = null
-    this._nodeProxy = null
+    this._eventHandlers = []
     this._instance = null
     this._props$ = null
     this._children$ = null
 
-    next._props$.next(next.props)
-    next._children$.next(next.children)
+    next._props$.next(next._props)
+    next._children$.next(next._children)
   }
 
   beforeDestroy (): void {
@@ -72,23 +95,15 @@ export class VirtualComponent {
     this._children.forEach(c => c.destroy())
   }
 
-  insertChild (child, index): void {}
-  moveChild (child, index): void {}
-  removeChild (child): void {}
-}
+  insertChild (child: any, index: any): void {}
+  moveChild (child: any, index: any): void {}
+  removeChild (child: any): void {}
 
-VirtualComponent.prototype[$$virtual] = true
+  static create (fn: Function, props: Object, children: Array<Observable|VirtualElement>): VirtualComponent {
+    const uid = appendUidToComponent(fn)
 
-const appendUidToComponent = fn => {
-  if (!fn[$$componentUid]) {
-    fn[$$componentUid] = cuid()
+    return new VirtualComponent(fn, uid, props, children, props.key)
   }
-
-  return fn[$$componentUid]
 }
 
-export function createComponent (fn, props, children) {
-  const uid = appendUidToComponent(fn)
-
-  return new VirtualComponent(fn, uid, props, children, props.key)
-}
+set(VirtualComponent.prototype, $$virtual, true)

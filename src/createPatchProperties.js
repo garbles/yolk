@@ -1,5 +1,7 @@
 /* @flow */
 
+import type {NodeProxy} from './NodeProxy'
+
 function patchProperties (nodeProxy: NodeProxy, props: Object, oldProps: Object): Object {
   for (const key in props) {
     if (props[key] !== oldProps[key]) {

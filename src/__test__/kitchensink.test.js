@@ -3,9 +3,9 @@
 import $ from 'jquery'
 import {Observable} from 'rxjs/Observable'
 import {BehaviorSubject} from 'rxjs/subject/BehaviorSubject'
-import {h} from 'yolk/h'
-import {noop} from 'yolk/noop'
-import {render} from 'yolk/render'
+import {h} from '../h'
+import {noop} from '../noop'
+import {render} from '../render'
 import {renderInDocument} from './support/renderInDocument'
 
 import 'rxjs/add/observable/interval'
@@ -60,8 +60,8 @@ describe(`kitchen sink of tests`, () => {
   })
 
   it(`renders a virtual node into a container`, () => {
-    let mountCallbackCount = 0
-    let unmountCallbackCount = 0
+    let mountCallbackCount: number = 0
+    let unmountCallbackCount: number = 0
     const onMount = () => mountCallbackCount += 1
     const onUnmount = () => unmountCallbackCount += 1
     const width = new BehaviorSubject(55)
@@ -195,7 +195,7 @@ describe(`kitchen sink of tests`, () => {
       const handleAdd = createEventHandler(1)
       const handleRemove = createEventHandler(-1)
 
-      const lenToElements = tag => len => {
+      const lenToElements = tag => (len: number) => {
         const els = Array(len)
         let i = -1
 
@@ -279,8 +279,8 @@ describe(`kitchen sink of tests`, () => {
   })
 
   it(`disposes of event handlers when removed as a child`, done => {
-    let onClick
-    let onBlur
+    let onClick = {}
+    let onBlur = {}
 
     function DisposeEventHandlers ({createEventHandler}) {
       onClick = createEventHandler()
@@ -325,8 +325,8 @@ describe(`kitchen sink of tests`, () => {
   })
 
   it(`disposes of event handlers on new render`, () => {
-    let onClick
-    let onBlur
+    let onClick = {}
+    let onBlur = {}
 
     function DisposeEventHandlers ({createEventHandler}) {
       onClick = createEventHandler()
@@ -455,13 +455,13 @@ describe(`kitchen sink of tests`, () => {
     const click = () => $(`#nested`).trigger(`click`)
     const count = () => $(`#count`).text()
 
-    assert(count(), 0)
+    assert.equal(count(), 0)
 
     click()
     click()
     click()
 
-    assert(count(), 3)
+    assert.equal(count(), 3)
 
     cleanup()
   })
