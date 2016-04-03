@@ -31,9 +31,9 @@ export class VirtualComponent {
   _children: Array<Observable|VirtualElement>;
   _fn: Function;
   _eventHandlers: Array<Subject>;
-  _props$: Subject<Object> | null;
-  _children$: Subject<Array<Observable|VirtualElement>> | null;
-  _instance: VirtualElement | null;
+  _props$: Subject<Object>;
+  _children$: Subject<Array<Observable|VirtualElement>>;
+  _instance: VirtualElement;
 
   constructor (fn: Function, tagName: string, props: Object, children: Array<VirtualElement>, key?: string) {
     this.key = key
@@ -42,9 +42,6 @@ export class VirtualComponent {
     this._props = props
     this._children = children
     this._eventHandlers = []
-    this._instance = null
-    this._props$ = null
-    this._children$ = null
   }
 
   getNodeProxy (): NodeProxy {
