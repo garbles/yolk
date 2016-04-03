@@ -3,7 +3,7 @@ const Symbol = global.Symbol
 const symbols = {
   $$virtual: `@@YOLK_VIRTUAL`,
   $$componentUid: `@@YOLK_COMPONENT_UID`,
-  $$root: `@@YOLK_ROOT`
+  $$root: `@@YOLK_ROOT`,
 }
 
 if (typeof Symbol === `function`) {

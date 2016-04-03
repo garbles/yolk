@@ -1,7 +1,5 @@
 /* @flow */
 
-import document from 'global/document'
-
 import {NodeProxy} from './NodeProxy'
 import {wrapText} from './wrapText'
 import {parseTag} from './parseTag'
@@ -79,7 +77,7 @@ export class VirtualNode {
         nodeProxy.removeChild(child.getNodeProxy())
         child.destroy()
       },
-    };
+    }
 
     const propSub =
       props$.subscribe(createPatchProperties(nodeProxy))

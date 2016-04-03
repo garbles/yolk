@@ -125,7 +125,7 @@ describe(`kitchen sink of tests`, () => {
           h(`p`, {id: `2`, key: `22`}),
           h(`p`, {id: `3`, key: `33`}),
           h(`p`, {id: `4`, key: `44`}),
-          h(`p`, {id: `5`, key: `55`})
+          h(`p`, {id: `5`, key: `55`}),
         ]
       )
 
@@ -133,10 +133,10 @@ describe(`kitchen sink of tests`, () => {
         h(`div`, {}, [
           h(`div`, {id: `children`}, [
             addable,
-            removeable
+            removeable,
           ]),
           h(`button#add`, {onClick: handleAdd}),
-          h(`button#remove`, {onClick: handleRemove})
+          h(`button#remove`, {onClick: handleRemove}),
         ])
       )
     }
@@ -214,10 +214,10 @@ describe(`kitchen sink of tests`, () => {
         h(`div`, {}, [
           h(`div`, {id: `children`}, [
             addable,
-            removeable
+            removeable,
           ]),
           h(`button#add`, {onClick: handleAdd}),
-          h(`button#remove`, {onClick: handleRemove})
+          h(`button#remove`, {onClick: handleRemove}),
         ])
       )
     }
@@ -298,15 +298,15 @@ describe(`kitchen sink of tests`, () => {
         .map(i => {
           if (i === -1) {
             return h(DisposeEventHandlers)
-          } else {
-            return h(`div`) // same element
           }
+
+          return h(`div`) // same element
         })
 
       return h(`p`, {}, child)
     }
 
-    const {node, cleanup} = renderInDocument(h(Parent))
+    const {cleanup} = renderInDocument(h(Parent))
 
     assert.equal(onClick.destination.observers.length, 1)
     assert.equal(onBlur.destination.observers.length, 1)
@@ -395,13 +395,13 @@ describe(`kitchen sink of tests`, () => {
           h(`div#count2`, {}, count),
           h(`div#count3`, {}, props.count),
           h(`div#count4`, {}, props.count),
-          h(`div#count5`, {}, props.count.combineLatest(count, (a,b) => a + b)),
+          h(`div#count5`, {}, props.count.combineLatest(count, (a, b) => a + b)),
         )
       )
     }
 
     const _count = new BehaviorSubject(5)
-    const {node, cleanup} = renderInDocument(h(Counter, {count: _count}))
+    const {cleanup} = renderInDocument(h(Counter, {count: _count}))
 
     const add = () => $(`#add`).trigger(`click`)
     const subtract = () => $(`#subtract`).trigger(`click`)
@@ -434,6 +434,10 @@ describe(`kitchen sink of tests`, () => {
   })
 
   it(`allows you to nest callbacks into children`, () => {
+    function NestedCallbackChild ({props}) {
+      return h(`button#nested`, {onClick: props.onClick})
+    }
+
     function NestedCallback ({createEventHandler}) {
       const handleInc = createEventHandler(() => 1, 0)
       const count = handleInc.scan((x, y) => x + y, 0)
@@ -446,11 +450,7 @@ describe(`kitchen sink of tests`, () => {
       )
     }
 
-    function NestedCallbackChild ({props}) {
-      return h(`button#nested`, {onClick: props.onClick})
-    }
-
-    const {node, cleanup} = renderInDocument(h(NestedCallback))
+    const {cleanup} = renderInDocument(h(NestedCallback))
 
     const click = () => $(`#nested`).trigger(`click`)
     const count = () => $(`#count`).text()
@@ -481,7 +481,7 @@ describe(`kitchen sink of tests`, () => {
       return h(`div`, {}, numbers)
     }
 
-    const numbers = new BehaviorSubject([1,2,3])
+    const numbers = new BehaviorSubject([1, 2, 3])
 
     const {node, cleanup} = renderInDocument(h(VaryingWidgetChildrenFromProps, {numbers}))
 
@@ -492,5 +492,7 @@ describe(`kitchen sink of tests`, () => {
     assert.equal($(`#stub-1`).text(), `12`)
     assert.equal($(`#stub-2`).text(), `22`)
     assert.equal($(`#stub-3`).text(), `30`)
+
+    cleanup()
   })
 })

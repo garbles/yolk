@@ -2,7 +2,6 @@
 
 import sinon from 'sinon'
 import {VirtualNode} from '../VirtualNode'
-import {NodeProxy} from '../NodeProxy'
 import {createPatchChildren} from '../createPatchChildren'
 import {h} from '../h'
 
@@ -15,7 +14,7 @@ describe(`createPatchChildren`, () => {
   let orderedDecorator
 
   beforeEach(() => {
-    let order = []
+    const order = []
 
     const orderedStub = name => (...args) => {
       order.push([name, ...args])
@@ -26,14 +25,14 @@ describe(`createPatchChildren`, () => {
       insertChild: orderedStub(`insert`),
       updateChild: orderedStub(`update`),
       moveChild: orderedStub(`move`),
-      removeChild: orderedStub(`remove`)
+      removeChild: orderedStub(`remove`),
     }
 
     decorator = {
       insertChild: sinon.stub(),
       updateChild: sinon.stub(),
       moveChild: sinon.stub(),
-      removeChild: sinon.stub()
+      removeChild: sinon.stub(),
     }
   })
 

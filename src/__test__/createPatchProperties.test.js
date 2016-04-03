@@ -1,6 +1,5 @@
 /* @flow weak */
 
-import document from 'global/document'
 import {createPatchProperties} from '../createPatchProperties'
 import {NodeProxy} from '../NodeProxy'
 import {get} from '../get'

@@ -5,7 +5,6 @@ import {descriptors} from './propertyDescriptors'
 import {addEventListener, removeEventListener} from './eventDelegator'
 import {emitMount, emitUnmount} from './mountable'
 import {isDefined} from './isDefined'
-import {isFunction} from './isFunction'
 import {get} from './get'
 import {set} from './set'
 
@@ -31,7 +30,7 @@ export class NodeProxy {
   replaceChild (childProxy: NodeProxy, index: number): void {
     const node = this._node
     const child = childProxy._node
-    const replaced = node.children[0]
+    const replaced = node.children[index]
 
     if (isDefined(replaced)) {
       node.replaceChild(child, replaced)

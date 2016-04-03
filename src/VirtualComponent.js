@@ -1,6 +1,5 @@
 /* @flow */
 
-import document from 'global/document'
 import cuid from 'cuid'
 
 import {createEventHandler} from './createEventHandler'
@@ -95,9 +94,9 @@ export class VirtualComponent {
     this._children.forEach(c => c.destroy())
   }
 
-  insertChild (child: any, index: any): void {}
-  moveChild (child: any, index: any): void {}
-  removeChild (child: any): void {}
+  insertChild (__child: any, __index: any): void {}
+  moveChild (__child: any, __index: any): void {}
+  removeChild (__child: any): void {}
 
   static create (fn: Function, props: Object, children: Array<Observable|VirtualElement>): VirtualComponent {
     const uid = appendUidToComponent(fn)

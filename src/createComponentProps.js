@@ -5,7 +5,7 @@ import {isObservable} from './isObservable'
 
 type ComponentProps = {
   asObject (): Object,
-  next (v: Object): void
+  next (v: Object): void,
 }
 
 export function createComponentProps (_props: Object): ComponentProps {
@@ -47,6 +47,6 @@ export function createComponentProps (_props: Object): ComponentProps {
           throw new Error(`Observable prop "${key}" changed to different observable`)
         }
       }
-    }
+    },
   }
 }
