@@ -1,2 +1,9 @@
-export {h} from './h'
-export {render} from './render'
+import {h} from './h'
+import {render} from './render'
+
+function Yolk () {}
+Yolk.prototype = {h, render}
+
+export {h}
+export {render}
+export default new Yolk()

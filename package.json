@@ -20,7 +20,7 @@
     "url": "https://github.com/garbles/yolk/issues"
   },
   "scripts": {
-    "build": "babel src/ lib/",
+    "build": "babel src -d lib && rm -rf lib/__test__",
     "karma": "NODE_ENV=test karma start",
     "lint": "eslint src",
     "flow": "flow",
