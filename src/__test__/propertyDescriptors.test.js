@@ -31,26 +31,26 @@ const createTests = setter => (truthy, falsy) => prop => {
 
   assert.notOk(
     value,
-    key + ` is not set truthy by default`
+    `${key} is not set truthy by default`
   )
 
   setter(el, key, truthy)
   value = el.getAttribute(key) || el[key]
   assert.ok(
     value === truthy || value === tString,
-    key + ` is ` + tString + ` when set to ` + tString
+    `${key} is ${tString} when set to ${tString}`
   )
 
   setter(el, key, falsy)
   value = el.getAttribute(key) || el[key]
   assert.notOk(
     value === truthy || value === tString,
-    key + ` is not ` + tString + ` when set to ` + fString
+    `${key} is not ${fString} when set to ${fString}`
   )
 }
 
 const attributeSetter = (el, key, value) => el.setAttribute(key, value)
-const equalSetter = (el, key, value) => el[key] = value
+const equalSetter = (el, key, value) => {el[key] = value}
 
 const setBooleanWithFunctionTest = createTests(attributeSetter)(true, false)
 const setNumberWithFunctionTest = createTests(attributeSetter)(generateRandomNumber(), undefined)

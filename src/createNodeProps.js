@@ -33,13 +33,13 @@ export function createNodeProps (obj: Object): Observable<Object> {
     values[i] = wrapValue(key, value)
   }
 
-  return Observable.combineLatest(values, function latest (): Object {
+  return Observable.combineLatest(values, (...args) => {
     const newObj: Object = {}
     i = -1
 
     while (++i < len) {
       const key: string = keys[i]
-      newObj[key] = arguments[i]
+      newObj[key] = args[i]
     }
 
     return newObj

@@ -8,9 +8,9 @@ const symbols = {
 
 if (typeof Symbol === `function`) {
   if (typeof Symbol.for === `function`) {
-    Object.keys(symbols).forEach(key => symbols[key] = Symbol.for(symbols[key]))
+    Object.keys(symbols).forEach(key => {symbols[key] = Symbol.for(symbols[key])})
   } else {
-    Object.keys(symbols).forEach(key => symbols[key] = Symbol(symbols[key]))
+    Object.keys(symbols).forEach(key => {symbols[key] = Symbol(symbols[key])})
   }
 }
 

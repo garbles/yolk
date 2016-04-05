@@ -9,6 +9,7 @@ import {render} from '../render'
 import {renderInDocument} from './support/renderInDocument'
 
 import 'rxjs/add/observable/interval'
+import 'rxjs/add/operator/map'
 import 'rxjs/add/operator/merge'
 import 'rxjs/add/operator/scan'
 import 'rxjs/add/operator/startWith'
@@ -62,8 +63,8 @@ describe(`kitchen sink of tests`, () => {
   it(`renders a virtual node into a container`, () => {
     let mountCallbackCount: number = 0
     let unmountCallbackCount: number = 0
-    const onMount = () => mountCallbackCount += 1
-    const onUnmount = () => unmountCallbackCount += 1
+    const onMount = () => {mountCallbackCount += 1}
+    const onUnmount = () => {unmountCallbackCount += 1}
     const width = new BehaviorSubject(55)
     const height = new BehaviorSubject(100)
 
@@ -90,11 +91,7 @@ describe(`kitchen sink of tests`, () => {
     width.next(550)
     height.next(1000)
 
-    const someChild = () => {
-      return (
-        h(`div`, {onMount}, [new BehaviorSubject(h(`strong`, {onMount}))])
-      )
-    }
+    const someChild = () => h(`div`, {onMount}, [new BehaviorSubject(h(`strong`, {onMount}))])
 
     children.next([h(`p`), h(someChild)])
 
