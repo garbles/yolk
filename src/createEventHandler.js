@@ -5,8 +5,7 @@ import {Observer} from 'rxjs/Observer'
 import {Subject} from 'rxjs/Subject'
 import {Subscription} from 'rxjs/Subscription'
 
-import {isFunction} from './isFunction'
-import {isDefined} from './isDefined'
+import {isDefined, isFunction} from './is'
 
 import 'rxjs/add/operator/map'
 import 'rxjs/add/operator/mapTo'

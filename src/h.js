@@ -2,7 +2,7 @@
 
 import {VirtualComponent} from './VirtualComponent'
 import {VirtualNode} from './VirtualNode'
-import {isString} from './isString'
+import {isString} from './is'
 import {flatten} from './flatten'
 import {emptyObject} from './emptyObject'
 

@@ -1,7 +1,7 @@
 /* @flow */
 
 import {BehaviorSubject} from 'rxjs/subject/BehaviorSubject'
-import {isObservable} from './isObservable'
+import {isObservable} from './is'
 
 type ComponentProps = {
   asObject (): Object,

@@ -4,8 +4,7 @@ import {Observable} from 'rxjs/Observable'
 
 import {eventListMap} from './eventsList'
 import {asObservable} from './asObservable'
-import {isSubject} from './isSubject'
-import {isEmptyObject} from './isEmptyObject'
+import {isEmptyObject, isSubject} from './is'
 
 import 'rxjs/add/observable/of'
 import 'rxjs/add/observable/combineLatest'

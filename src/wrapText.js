@@ -2,7 +2,7 @@
 
 import {h} from './h'
 import {VirtualNode} from './VirtualNode'
-import {isVirtual} from './isVirtual'
+import {isVirtual} from './is'
 
 function wrap (obj: any): VirtualNode {
   if (isVirtual(obj)) {

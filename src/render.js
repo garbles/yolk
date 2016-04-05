@@ -2,7 +2,7 @@
 
 import {batchInsertMessages} from './batchInsertMessages'
 import {NodeProxy} from './NodeProxy'
-import {isDefined} from './isDefined'
+import {isDefined} from './is'
 import {$$root} from './symbol'
 
 import {VirtualElement} from './types'

@@ -2,7 +2,7 @@
 
 import {Observable} from 'rxjs/Observable'
 
-import {isObservable} from './isObservable'
+import {isObservable} from './is'
 
 import 'rxjs/add/observable/of'
 
