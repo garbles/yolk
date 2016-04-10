@@ -12,8 +12,6 @@ A library for building asynchronous user interfaces.
 
 * __Stateless__: Being able to describe user interactions, control flow and plain values as observable streams means that application design becomes entirely declarative. There is no need to manually subscribe to observables in order to mutate or set component state.
 
-Also see the [Yolk organization](https://github.com/yolkjs) for additional repositories.
-
 ## Example
 
 The following example renders a component with buttons to increment and decrement a counter.
