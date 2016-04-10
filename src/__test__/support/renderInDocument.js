@@ -1,5 +1,4 @@
 import document from 'global/document'
-import cuid from 'cuid'
 import {render} from 'render'
 
 export function renderInDocument (vnode) {
