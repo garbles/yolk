@@ -1,3 +1,5 @@
+:rotating_light: This is the README/source for the proposed Yolk v1. [Go here](https://github.com/garbles/yolk/tree/v0.10.1) to see the README for v0.10.1. :rotating_light:
+
 <h1>Yolk <img src="https://avatars3.githubusercontent.com/u/15056177?v=3&s=50" alt="https://twitter.com/patdryburgh" /></h1>
 
 [![Join the chat at https://gitter.im/yolkjs/yolk](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/yolkjs/yolk?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
@@ -127,6 +129,29 @@ function MyComponent ({createEventHandler}) {
   )
 }
 ```
+
+Alternatively, we could have written,
+
+```js
+import { h, render } from 'yolk'
+
+function MyComponent ({createEventHandler}) {
+  // map all events to 1, and emit a value of 0 first
+  const handleClick = createEventHandler(1, 0)
+
+  const numberOfClicks =
+    handleClick.scan((acc, inc) => acc + inc, 0)
+
+  return (
+    <div>
+      <span>Number of clicks: {numberOfClicks}</span>
+      <button onClick={handleClick}>Click me!</button>
+    </div>
+  )
+}
+```
+
+If the first argument of createEventHandler is a function, it will be invoked with the event as the first argument.
 
 Subscriptions to event handlers are automatically cleaned up when the component is unmounted.
 
