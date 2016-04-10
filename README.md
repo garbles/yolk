@@ -291,5 +291,5 @@ controls loop multiple readOnly selected srcDoc value
 To install Yolk, simply include it in your `package.json`,
 
 ```
-npm install yolk --save
+npm install yolk@1.0.0-beta.0 --save
 ```
