@@ -134,13 +134,13 @@ Subscriptions to event handlers are automatically cleaned up when the component 
 
 ### Top Level API
 
-##### `render(instance: YolkElement, selector: string): void`
+##### `render(instance: YolkElement, node: HTMLElement): void`
 
 Renders an instance of a YolkComponent inside of an HTMLElement.
 
 ```js
 import { render } from 'yolk'
-render(<span>Hello World!</span>, '#container')
+render(<span>Hello World!</span>, document.querySelector(`#container`))
 ```
 
 ##### `h(component: string|Function , [props: Object<any>], [...children: Array<any>]): YolkElement`

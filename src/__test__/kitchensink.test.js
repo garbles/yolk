@@ -343,7 +343,7 @@ describe(`kitchen sink of tests`, () => {
     assert.equal(onClick.hasCompleted, false)
     assert.equal(onBlur.hasCompleted, false)
 
-    render(h(`p`), `#${node.parentNode.id}`)
+    render(h(`p`), node.parentNode)
 
     assert.equal(onClick.destination.observers, null)
     assert.equal(onBlur.destination.observers, null)

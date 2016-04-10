@@ -139,4 +139,8 @@ export class NodeProxy {
     const node: HTMLElement = document.querySelector(selector)
     return new NodeProxy(node)
   }
+
+  static fromElement (node: HTMLElement): NodeProxy {
+    return new NodeProxy(node)
+  }
 }

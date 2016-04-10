@@ -7,8 +7,8 @@ import {$$root} from './symbol'
 
 import {VirtualElement} from './types'
 
-export function render (vnode: VirtualElement, selector: string): void {
-  const containerProxy: NodeProxy = NodeProxy.querySelector(selector)
+export function render (vnode: VirtualElement, node: HTMLElement): void {
+  const containerProxy: NodeProxy = NodeProxy.fromElement(node)
   const previous: VirtualElement = containerProxy.getAttribute($$root)
 
   if (isDefined(previous)) {

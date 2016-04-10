@@ -4,13 +4,11 @@ import {render} from 'render'
 
 export function renderInDocument (vnode) {
   const node = document.createElement(`div`)
-  const selector = `app-${cuid()}`
   document.body.appendChild(node)
-  node.setAttribute(`id`, selector)
 
   const cleanup = () => document.body.removeChild(node)
 
-  render(vnode, `#${selector}`)
+  render(vnode, node)
 
   return {node: node.firstChild, cleanup}
 }
