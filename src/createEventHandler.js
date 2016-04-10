@@ -1,34 +1,43 @@
-import { Rx } from './yolk'
-import { default as isDefined } from './isDefined'
-import { default as isFunction } from './isFunction'
-import { default as addProperties } from './addProperties'
+/* @flow */
 
-export default function createEventHandler (mapFn, init) {
-  const initIsDefined = isDefined(init)
-  const mapFnIsDefined = isDefined(mapFn)
-  const mapFnIsFunction = isFunction(mapFn)
-  let handler
+import {Observable} from 'rxjs/Observable'
+import {Observer} from 'rxjs/Observer'
+import {Subject} from 'rxjs/Subject'
+import {Subscription} from 'rxjs/Subscription'
+
+import {isDefined, isFunction} from './is'
+
+import 'rxjs/add/operator/map'
+import 'rxjs/add/operator/mapTo'
+import 'rxjs/add/operator/share'
+
+function wrapMapFn (obs: Subject, mapFn?: any): Observable {
+  const mapFnIsDefined: boolean = isDefined(mapFn)
+  const mapFnIsFunction: boolean = isFunction(mapFn)
 
   if (mapFnIsDefined && mapFnIsFunction) {
-    handler = function handlerWithFunctionMap (value) {
-      handler.onNext(mapFn(value))
-    }
+    return obs.map(mapFn)
   } else if (mapFnIsDefined) {
-    handler = function handlerWithValueMap () {
-      handler.onNext(mapFn)
-    }
-  } else {
-    handler = function handlerWithoutMap (value) {
-      handler.onNext(value)
-    }
+    return obs.mapTo(mapFn)
   }
 
-  addProperties(handler, Rx.ReplaySubject.prototype)
-  Rx.ReplaySubject.call(handler, 1)
+  return obs
+}
 
-  if (initIsDefined) {
-    handler.onNext(init)
-  }
+export function createEventHandler (mapFn?: any, init?: any): Subject {
+  const subject: Subject = new Subject()
 
-  return handler
+  const observable: Observable = Observable.create((observer: Observer): Function => {
+    const subscription: Subscription = wrapMapFn(subject, mapFn).subscribe(observer)
+
+    if (isDefined(init)) {
+      observer.next(init)
+    }
+
+    return () => {
+      subscription.unsubscribe()
+    }
+  })
+
+  return Subject.create(subject, observable.share())
 }

@@ -1,7 +1,7 @@
-export default global.CustomEvent || (() => {
+export const CustomEvent = global.CustomEvent || (() => {
   const DEFAULT_PARAMS = {bubbles: false, cancelable: false, detail: undefined}
 
-  function CustomEvent (_event, _params) {
+  function _CustomEvent (_event, _params) {
     const params = {...DEFAULT_PARAMS, ..._params}
     const event = document.createEvent(`CustomEvent`)
 
@@ -9,5 +9,5 @@ export default global.CustomEvent || (() => {
     return event
   }
 
-  return CustomEvent
+  return _CustomEvent
 })()

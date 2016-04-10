@@ -1,16 +1,18 @@
-import { default as isFunction } from './isFunction'
-import { default as CustomEvent } from './CustomEvent'
+/* @flow */
 
-export function emitMount (node, fn) {
+import {CustomEvent} from './CustomEvent'
+import {isFunction} from './is'
+
+export function emitMount (node: HTMLElement, fn: Function | void): void {
   if (isFunction(fn) && node.parentNode) {
-    const event = new CustomEvent(`mount`)
+    const event: CustomEvent = new CustomEvent(`mount`)
     node.dispatchEvent(event)
   }
 }
 
-export function emitUnmount (node, fn) {
-  if (isFunction(fn)) {
-    const event = new CustomEvent(`unmount`)
+export function emitUnmount (node: HTMLElement, fn: Function | void): void {
+  if (isFunction(fn) && node.parentNode) {
+    const event: CustomEvent = new CustomEvent(`unmount`)
     node.dispatchEvent(event)
   }
 }

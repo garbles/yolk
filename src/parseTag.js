@@ -1,7 +1,13 @@
-import { default as parseTag_ } from 'parse-tag'
+import parseTag_ from 'parse-tag'
 
-export default function parseTag (_tag) {
-  const classIds = {}
-  const tag = parseTag_(_tag, classIds).toLowerCase()
-  return {tag, classIds}
+const TAG_IS_ONLY_LETTERS = /^[a-zA-Z]*$/
+
+export function parseTag (_tagName, props) {
+  let tagName = _tagName
+
+  if (!TAG_IS_ONLY_LETTERS.test(tagName)) {
+    tagName = parseTag_(_tagName, props).toLowerCase()
+  }
+
+  return tagName
 }

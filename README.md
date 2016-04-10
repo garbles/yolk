@@ -1,3 +1,5 @@
+:rotating_light: This is the README/source for the proposed Yolk v1. [Go here](https://github.com/garbles/yolk/tree/v0.10.1) to see the README for v0.10.1. :rotating_light:
+
 <h1>Yolk <img src="https://avatars3.githubusercontent.com/u/15056177?v=3&s=50" alt="https://twitter.com/patdryburgh" /></h1>
 
 [![Join the chat at https://gitter.im/yolkjs/yolk](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/yolkjs/yolk?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
@@ -15,8 +17,6 @@ A library for building asynchronous user interfaces.
 * __Everything is an observable__: Yolk components consume RxJS observable streams as if they were plain values. From a websocket connection to a generator function to an event handler. If it can be represented as an observable, then it can be rendered directly into your markup.
 
 * __Stateless__: Being able to describe user interactions, control flow and plain values as observable streams means that application design becomes entirely declarative. There is no need to manually subscribe to observables in order to mutate or set component state.
-
-Also see the [Yolk organization](https://github.com/yolkjs) for additional repositories.
 
 ## Example
 
@@ -63,7 +63,7 @@ Additionally, see the Yolk implementation of [TodoMVC](https://github.com/yolkjs
 
 ## API
 
-The Yolk API is intentionally very limited so that you don't have to spend weeks getting up to speed. With an understanding of [RxJS](https://github.com/Reactive-Extensions/RxJS), you can begin building with Yolk immediately.
+The Yolk API is intentionally very limited so that you don't have to spend weeks getting up to speed. With an understanding of [RxJS](https://github.com/ReactiveX/RxJS), you can begin building with Yolk immediately.
 
 ### Instance API
 
@@ -71,26 +71,23 @@ Yolk components inject a single object as an argument. The object has three keys
 
 ##### `props: Object<Observable>`
 
-An object who's keys are the props passed into the component. These props are wrapped in observables.
-Yolk supports infinite nesting of observable properties, so it doesn't matter whether you pass in a plain
-value or a Subject of Subjects, the result will be an observable of plain values. We do this intentionally
-so that components are less dependent on the scenario which they are consumed.
+An object who's keys are the props passed into the component. These props are wrapped in observables if they are not already observables.
 
 ```js
 import { h, render } from 'yolk'
 
 function MyComponent({props}) {
-  return <h1>{props.title}</h1>
+  return <h1>{props.title.map(t => `${t}!`)}</h1>
 }
 
-// both of the following will render the same result
+// both of the following will render the same result: `<h1>Hello!</h1>`
 
 // render MyComponent with an observable as the title prop
-const title$ = new Rx.BehaviorSubject("Hello!")
+const title$ = new Rx.BehaviorSubject("Hello")
 render(<MyComponent title={title$} />, document.querySelector(`#container`))
 
 // render MyComponent with a plain value as the title prop
-render(<MyComponent title="Hello!" />, document.querySelector(`#container`))
+render(<MyComponent title="Hello" />, document.querySelector(`#container`))
 ```
 
 ##### `children: Observable`
@@ -113,8 +110,7 @@ render(
 
 ##### `createEventHandler(mapping: any, initialValue: any): Function`
 
-Creates an exotic function that can also be used as an observable. If the function is called, the input value is pushed to the observable as it's latest value.
-In other words, when this function is used as an event handler, the result is an observable stream of events from that handler. For example,
+Creates a custom subject to be used as an event handler. If the event is invoked, it is pushed to the subject as it's latest value. For example,
 
 ```js
 import { h, render } from 'yolk'
@@ -138,20 +134,43 @@ function MyComponent ({createEventHandler}) {
 }
 ```
 
-When custom components are destroyed, we want to make sure that all of our event handlers are properly cleaned up.
+Alternatively, we could have written,
+
+```js
+import { h, render } from 'yolk'
+
+function MyComponent ({createEventHandler}) {
+  // map all events to 1, and emit a value of 0 first
+  const handleClick = createEventHandler(1, 0)
+
+  const numberOfClicks =
+    handleClick.scan((acc, inc) => acc + inc, 0)
+
+  return (
+    <div>
+      <span>Number of clicks: {numberOfClicks}</span>
+      <button onClick={handleClick}>Click me!</button>
+    </div>
+  )
+}
+```
+
+If the first argument of createEventHandler is a function, it will be invoked with the event as the first argument.
+
+Subscriptions to event handlers are automatically cleaned up when the component is unmounted.
 
 ### Top Level API
 
-##### `render(instance: Component, node: HTMLElement): Component`
+##### `render(instance: YolkElement, node: HTMLElement): void`
 
 Renders an instance of a YolkComponent inside of an HTMLElement.
 
 ```js
 import { render } from 'yolk'
-render(<span>Hello World!</span>, document.getElementById('container'))
+render(<span>Hello World!</span>, document.querySelector(`#container`))
 ```
 
-##### `h(component: string|Function , [props: Object<any>], [...children: Array<any>]): Component`
+##### `h(component: string|Function , [props: Object<any>], [...children: Array<any>]): YolkElement`
 
 If you prefer hyperscript over JSX, Yolk exposes a function `h` which can be used to write your components with hyperscript.
 `h` also parses tags for brevity. For example, `p.my-class` will append a `my-class` class to a `p` tag, `#some-id` will
@@ -173,93 +192,7 @@ function MyComponent ({createEventHandler}) {
 }
 ```
 
-##### `registerElement(name: string, fn: Function): void`
-
-Registers a [custom HTML element](http://www.html5rocks.com/en/tutorials/webcomponents/customelements/) using `document.registerElement` (polyfill included).
-This is especially useful if you're not building a single page application. For example,
-
-```js
-import { h, registerElement } from 'yolk'
-function BigRedText ({props}) {
-  return <h1 style={{color: 'red'}}>{props.content}</h1>
-}
-
-registerElement(`big-red-text`, BigRedText)
-```
-
-will allow you to use `<big-red-text content="Hello!"></big-red-text>` in your `.html` files and will render out to
-
-```html
-<big-red-text content="Hello!">
-  <h1 style="color: red;">Hello!</h1>
-</big-red-text>
-```
-
-##### `CustomComponent`
-
-Yolk.CustomComponent makes it easy to wrap non-Yolk behavior as a component, e.g. jQuery plugin or React component.
-Each component expects three (optional) methods,
-
-- `onMount(props: object, node: HTMLElement): void`
-- `onUpdate(props: object, node: HTMLElement): void`
-- `onUnmount (node: HTMLElement): void`
-
-These methods pass in the latest values of your props so that you don't need to deal with subscribing to and disposing of Observables. For example,
-
-```js
-import { CustomComponent } from 'yolk'
-class MyjQueryWrapper extends CustomComponent {
-  onMount (props, node) {
-    this._instance = $(node).myjQueryThing(props)
-  }
-
-  onUpdate (props, node) {
-    this._instance.update(props)
-  }
-
-  onUnmount () {
-    this._instance.destroy()
-  }
-}
-```
-
-And then in your component markup,
-
-```js
-import { h } from 'yolk'
-function MyComponent ({createEventHandler}) {
-  const handleClick = createEventHandler()
-
-  return (
-    <div>
-      <MyjQueryWrapper onClick={handleClick} />
-    </div>
-  )
-}
-```
-
-CustomComponent expects a single child element to use as the node; otherwise, it will default to an empty `div`.
-For example, you can specify the child like so,
-
-```js
-import { h } from 'yolk'
-
-function MyComponent ({createEventHandler}) {
-  const handleClick = createEventHandler()
-
-  return (
-    <div>
-      <MyjQueryWrapper onClick={handleClick}>
-        <ul className="my-child-node">
-          <li>Point 1</li>
-          <li>Point 2</li>
-          <li>Point 3</li>
-        </ul>
-      </MyjQueryWrapper>
-    </div>
-  )
-}
-```
+See [#using-jsx](Using JSX) for how to write Yolk components with JSX.
 
 ## Using JSX
 
@@ -312,12 +245,6 @@ If you want to additionally transpile ES2015 code into ES5 code you should insta
 
 See [`yolk-todomvc`](https://github.com/yolkjs/yolk-todomvc) for a complete working example.
 
-## Support for Immutable Objects and #toJS
-
-Yolk will not attempt to 'unwrap' objects that have a `toJS` function defined on them. This method is only called when a plain
-value is required to render something. It is particularly useful when used with libraries like
-[Immutable.js](https://github.com/facebook/immutable-js/) or [Freezer.js](https://github.com/arqex/freezer).
-
 ## Supported Events
 
 Yolk supports the following list of standard browser events,
@@ -359,31 +286,10 @@ maxLength media minLength role rows seamless size sizes srcSet width checked
 controls loop multiple readOnly selected srcDoc value
 ```
 
-Adding `aria-*` or `data-*` attributes requires passing an object to the attribute. For example,
-
-```js
-const aria = {hidden: false}
-const data = {cool: `dude`, veryRad: `gal`}
-
-<div aria={aria} data={data} />
-```
-
-will render,
-
-```html
-<div aria-hidden="false" data-cool="dude" data-very-rad="gal"></div>
-```
-
 ## Setup
 
 To install Yolk, simply include it in your `package.json`,
 
 ```
 npm install yolk --save
-```
-
-Or instead with Bower,
-
-```
-bower install yolk --save
 ```
