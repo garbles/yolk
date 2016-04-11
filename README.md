@@ -6,10 +6,6 @@
 [![circle-ci](https://circleci.com/gh/garbles/yolk/tree/master.png?style=shield)](https://circleci.com/gh/garbles/yolk)
 [![npm version](https://badge.fury.io/js/yolk.svg)](https://badge.fury.io/js/yolk)
 
-__Rewrite in progress!!!__ While most of the API for Yolk will remain the same, it is currently being rewritten to accomodate various internal improvements that need to be made. [You can follow along here](https://github.com/garbles/yolk/pull/67). :neckbeard:
-
-Anyway...
-
 A library for building asynchronous user interfaces.
 
 * __Familiar__: Yolk is a small library built on top of [Virtual DOM](https://github.com/Matt-Esch/virtual-dom) and [RxJS](https://github.com/Reactive-Extensions/RxJS). It exposes a very limited API so that you don't have to spend weeks getting up to speed. Yolk components are just plain functions that return JSX or hyperscript.
