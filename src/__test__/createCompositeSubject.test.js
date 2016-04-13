@@ -1,4 +1,4 @@
-import {BehaviorSubject} from 'rxjs/subject/BehaviorSubject'
+import {BehaviorSubject} from 'rxjs/BehaviorSubject'
 import {createCompositeSubject} from '../createCompositeSubject'
 import {createNodeProps} from '../createNodeProps'
 import {createObservableFromArray} from '../createObservableFromArray'

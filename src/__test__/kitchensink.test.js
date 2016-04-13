@@ -2,7 +2,7 @@
 
 import $ from 'jquery'
 import {Observable} from 'rxjs/Observable'
-import {BehaviorSubject} from 'rxjs/subject/BehaviorSubject'
+import {BehaviorSubject} from 'rxjs/BehaviorSubject'
 import {Subject} from 'rxjs/Subject'
 import {h} from '../h'
 import {noop} from '../noop'
