@@ -3,6 +3,7 @@
 import $ from 'jquery'
 import {Observable} from 'rxjs/Observable'
 import {BehaviorSubject} from 'rxjs/subject/BehaviorSubject'
+import {Subject} from 'rxjs/Subject'
 import {h} from '../h'
 import {noop} from '../noop'
 import {render} from '../render'
@@ -64,9 +65,11 @@ describe(`kitchen sink of tests`, () => {
     let mountCallbackCount: number = 0
     let unmountCallbackCount: number = 0
     const onMount = () => {mountCallbackCount += 1}
-    const onUnmount = () => {unmountCallbackCount += 1}
+    const onUnmount = new Subject()
+    onUnmount.subscribe(() => {unmountCallbackCount += 1})
     const width = new BehaviorSubject(55)
     const height = new BehaviorSubject(100)
+
 
     const children = new BehaviorSubject([h(`strong`, {onUnmount}), h(`p`, {onUnmount})])
 
