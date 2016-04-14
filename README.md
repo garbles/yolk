@@ -21,6 +21,7 @@ The following example renders a component with buttons to increment and decremen
 ```js
 import { h, render } from 'yolk'
 
+import 'rxjs/add/operator/map'
 import 'rxjs/add/operator/merge'
 import 'rxjs/add/operator/scan'
 import 'rxjs/add/operator/startWith'
