@@ -130,6 +130,11 @@ export class NodeProxy {
     set(node, computed, undefined)
   }
 
+  static createTextNode (content: string): NodeProxy {
+    const node: Text = document.createTextNode(content)
+    return new NodeProxy(node)
+  }
+
   static createElement (tagName: string): NodeProxy {
     const node: HTMLElement = document.createElement(tagName)
     return new NodeProxy(node)
