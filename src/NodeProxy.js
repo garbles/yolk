@@ -65,7 +65,7 @@ export class NodeProxy {
       return isString(key) ? node.getAttribute(key) : node[key]
     }
 
-    if (isDefined(descriptor) && descriptor.useEqualSetter) {
+    if (descriptor.useEqualSetter) {
       return get(node, descriptor.computed)
     }
 
