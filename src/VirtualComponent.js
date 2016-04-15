@@ -44,8 +44,8 @@ export class VirtualComponent {
     this._eventHandlers = []
   }
 
-  getNodeProxy (): NodeProxy {
-    return this._instance.getNodeProxy()
+  getProxy (): NodeProxy {
+    return this._instance.getProxy()
   }
 
   initialize (): void {

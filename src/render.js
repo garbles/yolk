@@ -5,7 +5,7 @@ import {NodeProxy} from './NodeProxy'
 import {isDefined} from './is'
 import {$$root} from './symbol'
 
-import {VirtualElement} from './types'
+import type {VirtualElement} from './types'
 
 export function render (vnode: VirtualElement, node: HTMLElement): void {
   const containerProxy: NodeProxy = NodeProxy.fromElement(node)
@@ -21,7 +21,7 @@ export function render (vnode: VirtualElement, node: HTMLElement): void {
 
   batchInsertMessages(queue => {
     vnode.initialize()
-    containerProxy.replaceChild(vnode.getNodeProxy(), 0)
+    containerProxy.replaceChild(vnode.getProxy(), 0)
     queue.push(vnode)
   })
 

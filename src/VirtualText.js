@@ -7,23 +7,24 @@ import {set} from './set'
 export class VirtualText {
   key: void;
   tagName: string;
-  _nodeProxy: NodeProxy;
+  _content: string;
+  _proxy: NodeProxy;
 
   constructor (content: string) {
     this._content = content
   }
 
-  getNodeProxy (): NodeProxy {
-    return this._nodeProxy
+  getProxy (): NodeProxy {
+    return this._proxy
   }
 
   initialize (): void {
-    const nodeProxy: NodeProxy = this._nodeProxy = NodeProxy.createTextNode(this._content)
+    this._proxy = NodeProxy.createTextNode(this._content)
   }
 
   patch (next: VirtualText): void {
-    const nodeProxy = next._nodeProxy = this._nodeProxy
-    nodeProxy.setAttribute(`textContent`, next._content)
+    const proxy: NodeProxy = next._proxy = this._proxy
+    proxy.setAttribute(`textContent`, next._content)
   }
 
   afterInsert (): void {}

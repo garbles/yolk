@@ -9,9 +9,9 @@ import {get} from './get'
 import {set} from './set'
 
 export class NodeProxy {
-  _node: HTMLElement;
+  _node: HTMLElement | Text;
 
-  constructor (node: HTMLElement) {
+  constructor (node: HTMLElement | Text) {
     this._node = node
   }
 
@@ -62,7 +62,7 @@ export class NodeProxy {
     const descriptor = get(descriptors, key)
 
     if (!descriptor) {
-      return isString(key) ? node.getAttribute(key) : node[key]
+      return isString(key) ? node.getAttribute(key) : get(node, key)
     }
 
     if (descriptor.useEqualSetter) {
@@ -72,12 +72,17 @@ export class NodeProxy {
     return node.getAttribute(descriptor.computed)
   }
 
-  setAttribute (key: string, value: any): void {
+  setAttribute (key: string | Symbol, value: any): void {
     const node = this._node
     const descriptor = get(descriptors, key)
 
     if (!descriptor) {
-      isString(key) ? node.setAttribute(key, value) : node[key] = value
+      if (isString(key)) {
+        node.setAttribute(key, value)
+      } else {
+        set(node, key, value)
+      }
+
       return
     }
 
@@ -101,12 +106,17 @@ export class NodeProxy {
     node.setAttribute(computed, value)
   }
 
-  removeAttribute (key: string): void {
+  removeAttribute (key: string | Symbol): void {
     const node = this._node
     const descriptor = get(descriptors, key)
 
     if (!descriptor) {
-      isString(key) ? node.removeAttribute(key) : node[key] = undefined
+      if (isString(key)) {
+        node.removeAttribute(key)
+      } else {
+        set(node, key, undefined)
+      }
+
       return
     }
 

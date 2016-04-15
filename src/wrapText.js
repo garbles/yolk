@@ -1,6 +1,5 @@
 /* @flow */
 
-import {h} from './h'
 import {VirtualText} from './VirtualText'
 import {isVirtual} from './is'
 
