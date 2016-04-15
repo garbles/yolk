@@ -495,4 +495,19 @@ describe(`kitchen sink of tests`, () => {
 
     cleanup()
   })
+
+  it(`will include data tags`, () => {
+    const instance = h(`div`, {'data-something': 12345, 'aria-something': `HELLO`})
+    const {node, cleanup} = renderInDocument(instance)
+
+    assert.equal(node.dataset.something, `12345`)
+    assert.equal(node.getAttribute(`aria-something`), `HELLO`)
+
+    render(h(`div`), node.parentNode)
+
+    assert.equal(node.dataset.something, undefined)
+    assert.equal(node.getAttribute(`aria-something`), undefined)
+
+    cleanup()
+  })
 })

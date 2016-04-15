@@ -12,7 +12,11 @@ export function render (vnode: VirtualElement, node: HTMLElement): void {
   const previous: VirtualElement = containerProxy.getAttribute($$root)
 
   if (isDefined(previous)) {
-    previous.destroy()
+    if (previous.tagName === vnode.tagName) {
+      previous.patch(vnode)
+    } else {
+      previous.destroy()
+    }
   }
 
   batchInsertMessages(queue => {

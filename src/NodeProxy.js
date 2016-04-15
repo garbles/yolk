@@ -4,7 +4,7 @@ import document from 'global/document'
 import {descriptors} from './propertyDescriptors'
 import {addEventListener, removeEventListener} from './eventDelegator'
 import {emitMount, emitUnmount} from './mountable'
-import {isDefined} from './is'
+import {isDefined, isString} from './is'
 import {get} from './get'
 import {set} from './set'
 
@@ -57,15 +57,15 @@ export class NodeProxy {
     node.removeChild(child)
   }
 
-  getAttribute (key: string): any {
+  getAttribute (key: string | Symbol): any {
     const node = this._node
     const descriptor = get(descriptors, key)
 
     if (!descriptor) {
-      return get(node, key)
+      return isString(key) ? node.getAttribute(key) : node[key]
     }
 
-    if (descriptor.useEqualSetter) {
+    if (isDefined(descriptor) && descriptor.useEqualSetter) {
       return get(node, descriptor.computed)
     }
 
@@ -77,7 +77,7 @@ export class NodeProxy {
     const descriptor = get(descriptors, key)
 
     if (!descriptor) {
-      set(node, key, value)
+      isString(key) ? node.setAttribute(key, value) : node[key] = value
       return
     }
 
@@ -106,7 +106,7 @@ export class NodeProxy {
     const descriptor = get(descriptors, key)
 
     if (!descriptor) {
-      set(node, key, undefined)
+      isString(key) ? node.removeAttribute(key) : node[key] = undefined
       return
     }
 

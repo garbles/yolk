@@ -121,6 +121,7 @@ const props: Object = {
   summary: USE_EQUAL_SETTER,
   tabIndex: USE_EQUAL_SETTER | HAS_LOWER_CASE,
   target: USE_EQUAL_SETTER,
+  textContent: USE_EQUAL_SETTER,
   title: USE_EQUAL_SETTER,
   type: USE_EQUAL_SETTER,
   useMap: USE_EQUAL_SETTER | HAS_LOWER_CASE,
