@@ -57,12 +57,12 @@ export class NodeProxy {
     node.removeChild(child)
   }
 
-  getAttribute (key: string | Symbol): any {
+  getAttribute (key: string): any {
     const node = this._node
     const descriptor = get(descriptors, key)
 
     if (!descriptor) {
-      return isString(key) ? node.getAttribute(key) : get(node, key)
+      return node.getAttribute(key)
     }
 
     if (descriptor.useEqualSetter) {
@@ -72,17 +72,12 @@ export class NodeProxy {
     return node.getAttribute(descriptor.computed)
   }
 
-  setAttribute (key: string | Symbol, value: any): void {
+  setAttribute (key: string, value: any): void {
     const node = this._node
     const descriptor = get(descriptors, key)
 
     if (!descriptor) {
-      if (isString(key)) {
-        node.setAttribute(key, value)
-      } else {
-        set(node, key, value)
-      }
-
+      node.setAttribute(key, value)
       return
     }
 
@@ -106,17 +101,12 @@ export class NodeProxy {
     node.setAttribute(computed, value)
   }
 
-  removeAttribute (key: string | Symbol): void {
+  removeAttribute (key: string): void {
     const node = this._node
     const descriptor = get(descriptors, key)
 
     if (!descriptor) {
-      if (isString(key)) {
-        node.removeAttribute(key)
-      } else {
-        set(node, key, undefined)
-      }
-
+      node.removeAttribute(key)
       return
     }
 
