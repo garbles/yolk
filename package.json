@@ -21,6 +21,7 @@
   },
   "scripts": {
     "build": "babel src -d lib && rm -rf lib/__test__",
+    "dist": "webpack",
     "karma": "NODE_ENV=test karma start",
     "lint": "NODE_ENV=test eslint src",
     "flow": "NODE_ENV=test flow",
