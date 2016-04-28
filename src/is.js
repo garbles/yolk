@@ -1,6 +1,5 @@
 /* @flow */
 
-import {Observable} from 'rxjs/Observable'
 import {Subject} from 'rxjs/Subject'
 import {$$virtual} from './symbol'
 
@@ -18,10 +17,6 @@ export function isFunction (obj: any): boolean {
 
 export function isNumber (obj: any): boolean {
   return (typeof obj === `number`)
-}
-
-export function isObservable (obj: any): boolean {
-  return obj instanceof Observable
 }
 
 export function isString (obj: any): boolean {
