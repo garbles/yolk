@@ -1,10 +1,8 @@
-/* @flow */
-
 import document from 'global/document'
 import {descriptors} from './propertyDescriptors'
 import {addEventListener, removeEventListener} from './eventDelegator'
 import {emitMount, emitUnmount} from './mountable'
-import {isDefined, isString} from './is'
+import {isDefined} from './is'
 import {get} from './get'
 import {set} from './set'
 
