@@ -1,17 +1,15 @@
-/* @flow */
-
 import document from 'global/document'
 import {descriptors} from './propertyDescriptors'
 import {addEventListener, removeEventListener} from './eventDelegator'
 import {emitMount, emitUnmount} from './mountable'
-import {isDefined, isString} from './is'
+import {isDefined} from './is'
 import {get} from './get'
 import {set} from './set'
 
 export class NodeProxy {
-  _node: HTMLElement;
+  _node: HTMLElement | Text;
 
-  constructor (node: HTMLElement) {
+  constructor (node: HTMLElement | Text) {
     this._node = node
   }
 
@@ -57,12 +55,12 @@ export class NodeProxy {
     node.removeChild(child)
   }
 
-  getAttribute (key: string | Symbol): any {
+  getAttribute (key: string): any {
     const node = this._node
     const descriptor = get(descriptors, key)
 
     if (!descriptor) {
-      return isString(key) ? node.getAttribute(key) : node[key]
+      return node.getAttribute(key)
     }
 
     if (descriptor.useEqualSetter) {
@@ -77,7 +75,7 @@ export class NodeProxy {
     const descriptor = get(descriptors, key)
 
     if (!descriptor) {
-      isString(key) ? node.setAttribute(key, value) : node[key] = value
+      node.setAttribute(key, value)
       return
     }
 
@@ -106,7 +104,7 @@ export class NodeProxy {
     const descriptor = get(descriptors, key)
 
     if (!descriptor) {
-      isString(key) ? node.removeAttribute(key) : node[key] = undefined
+      node.removeAttribute(key)
       return
     }
 
@@ -128,6 +126,11 @@ export class NodeProxy {
     }
 
     set(node, computed, undefined)
+  }
+
+  static createTextNode (content: string): NodeProxy {
+    const node: Text = document.createTextNode(content)
+    return new NodeProxy(node)
   }
 
   static createElement (tagName: string): NodeProxy {
