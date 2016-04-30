@@ -1,3 +1,5 @@
+/* @flow */
+
 import document from 'global/document'
 import {descriptors} from './propertyDescriptors'
 import {addEventListener, removeEventListener} from './eventDelegator'
@@ -5,11 +7,12 @@ import {emitMount, emitUnmount} from './mountable'
 import {isDefined} from './is'
 import {get} from './get'
 import {set} from './set'
+import {NodeProxy} from './types'
 
-export class NodeProxy {
-  _node: HTMLElement | Text;
+export class ElementProxy {
+  _node: HTMLElement;
 
-  constructor (node: HTMLElement | Text) {
+  constructor (node: HTMLElement) {
     this._node = node
   }
 
@@ -128,22 +131,17 @@ export class NodeProxy {
     set(node, computed, undefined)
   }
 
-  static createTextNode (content: string): NodeProxy {
-    const node: Text = document.createTextNode(content)
-    return new NodeProxy(node)
-  }
-
-  static createElement (tagName: string): NodeProxy {
+  static createElement (tagName: string): ElementProxy {
     const node: HTMLElement = document.createElement(tagName)
-    return new NodeProxy(node)
+    return new ElementProxy(node)
   }
 
-  static querySelector (selector: string): NodeProxy {
+  static querySelector (selector: string): ElementProxy {
     const node: HTMLElement = document.querySelector(selector)
-    return new NodeProxy(node)
+    return new ElementProxy(node)
   }
 
-  static fromElement (node: HTMLElement): NodeProxy {
-    return new NodeProxy(node)
+  static fromElement (node: HTMLElement): ElementProxy {
+    return new ElementProxy(node)
   }
 }

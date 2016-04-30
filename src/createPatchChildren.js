@@ -4,11 +4,11 @@ import dift, {CREATE, UPDATE, MOVE, REMOVE} from 'dift'
 
 import {keyIndex} from './keyIndex'
 
-import type {VirtualElement, NodeProxyDecorator} from './types'
+import type {VirtualNode, ElementProxyDecorator} from './types'
 
 const keyFn: Function = a => a.key
 
-const patch = (decorator: NodeProxyDecorator, previousChildren: Array<VirtualElement>, nextChildren: Array<VirtualElement>): void => {
+const patch = (decorator: ElementProxyDecorator, previousChildren: Array<VirtualNode>, nextChildren: Array<VirtualNode>): void => {
   const previousIndex = keyIndex(previousChildren)
   const nextIndex = keyIndex(nextChildren)
 
@@ -34,10 +34,10 @@ const patch = (decorator: NodeProxyDecorator, previousChildren: Array<VirtualEle
   dift(previousIndex, nextIndex, apply, keyFn)
 }
 
-export const createPatchChildren = (decorator: NodeProxyDecorator): Function => {
-  let previous: Array<VirtualElement> = []
+export const createPatchChildren = (decorator: ElementProxyDecorator): Function => {
+  let previous: Array<VirtualNode> = []
 
-  return (next: Array<VirtualElement>): Array<VirtualElement> => {
+  return (next: Array<VirtualNode>): Array<VirtualNode> => {
     if (previous.length !== 0 || next.length !== 0) {
       patch(decorator, previous, next)
     }

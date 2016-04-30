@@ -1,16 +1,15 @@
 /* @flow */
 
 import {batchInsertMessages} from './batchInsertMessages'
-import {NodeProxy} from './NodeProxy'
+import {ElementProxy} from './ElementProxy'
+import {VirtualElement} from './VirtualElement'
 import {isDefined} from './is'
 import {$$root} from './symbol'
 import {get} from './get'
 import {set} from './set'
 
-import type {VirtualElement} from './types'
-
 export function render (vnode: VirtualElement, node: HTMLElement): void {
-  const containerProxy: NodeProxy = NodeProxy.fromElement(node)
+  const containerProxy: ElementProxy = ElementProxy.fromElement(node)
   const previous: VirtualElement = get(node, $$root)
 
   if (isDefined(previous)) {
