@@ -1,8 +1,7 @@
 /* @flow */
 
 import {Observable} from 'rxjs/Observable'
-
-import {isObservable} from './is'
+import isObservable from 'is-observable'
 
 import 'rxjs/add/observable/of'
 

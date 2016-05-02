@@ -31,7 +31,7 @@ export class VirtualNode {
   _subscriptions: Array<Subscription>;
   _props$: Subject<Object>;
   _children$: Subject<Array<Observable|VirtualElement>>;
-  _nodeProxy: NodeProxy;
+  _proxy: NodeProxy;
 
   constructor (tagName: string, props: Object, children: Array<VirtualElement>, key?: string) {
     this.key = key
@@ -41,20 +41,20 @@ export class VirtualNode {
     this._subscriptions = []
   }
 
-  getNodeProxy (): NodeProxy {
-    return this._nodeProxy
+  getProxy (): NodeProxy {
+    return this._proxy
   }
 
   initialize (): void {
-    const nodeProxy: NodeProxy = this._nodeProxy = NodeProxy.createElement(this.tagName)
+    const proxy: NodeProxy = this._proxy = NodeProxy.createElement(this.tagName)
     const props$: Subject<Object> = this._props$ = createCompositePropSubject(this._props)
     const children$: Subject<Array<VirtualNode>> = this._children$ = createCompositeArraySubject(this._children)
 
-    const nodeProxyDecorator: NodeProxyDecorator = {
+    const proxyDecorator: NodeProxyDecorator = {
       insertChild (child: VirtualNode, index: number): void {
         return batchInsertMessages(queue => {
           child.initialize()
-          nodeProxy.insertChild(child.getNodeProxy(), index)
+          proxy.insertChild(child.getProxy(), index)
           queue.push(child)
         })
       },
@@ -65,35 +65,35 @@ export class VirtualNode {
 
       moveChild (previous: VirtualNode, next: VirtualNode, index: number): void {
         previous.patch(next)
-        nodeProxy.insertChild(next.getNodeProxy(), index)
+        proxy.insertChild(next.getProxy(), index)
       },
 
       removeChild (child: VirtualNode): void {
         child.beforeDestroy()
-        nodeProxy.removeChild(child.getNodeProxy())
+        proxy.removeChild(child.getProxy())
         child.destroy()
       },
     }
 
     const propSub =
-      props$.subscribe(createPatchProperties(nodeProxy))
+      props$.subscribe(createPatchProperties(proxy))
 
     const childrenSub =
       children$
         .map(flatten)
         .map(wrapText)
-        .subscribe(createPatchChildren(nodeProxyDecorator))
+        .subscribe(createPatchChildren(proxyDecorator))
 
     this._subscriptions.push(propSub)
     this._subscriptions.push(childrenSub)
   }
 
   afterInsert (): void {
-    this._nodeProxy.emitMount(this._props.onMount)
+    this._proxy.emitMount(this._props.onMount)
   }
 
   patch (next: VirtualNode): void {
-    next._nodeProxy = this._nodeProxy
+    next._proxy = this._proxy
     next._props$ = this._props$
     next._children$ = this._children$
 
@@ -102,7 +102,7 @@ export class VirtualNode {
   }
 
   beforeDestroy (): void {
-    this._nodeProxy.emitUnmount(this._props.onUnmount)
+    this._proxy.emitUnmount(this._props.onUnmount)
   }
 
   destroy (): void {

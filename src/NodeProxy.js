@@ -1,5 +1,3 @@
-/* @flow */
-
 import document from 'global/document'
 import {descriptors} from './propertyDescriptors'
 import {addEventListener, removeEventListener} from './eventDelegator'
@@ -9,9 +7,9 @@ import {get} from './get'
 import {set} from './set'
 
 export class NodeProxy {
-  _node: HTMLElement;
+  _node: HTMLElement | Text;
 
-  constructor (node: HTMLElement) {
+  constructor (node: HTMLElement | Text) {
     this._node = node
   }
 
@@ -62,7 +60,7 @@ export class NodeProxy {
     const descriptor = get(descriptors, key)
 
     if (!descriptor) {
-      return get(node, key)
+      return node.getAttribute(key)
     }
 
     if (descriptor.useEqualSetter) {
@@ -77,7 +75,7 @@ export class NodeProxy {
     const descriptor = get(descriptors, key)
 
     if (!descriptor) {
-      set(node, key, value)
+      node.setAttribute(key, value)
       return
     }
 
@@ -106,7 +104,7 @@ export class NodeProxy {
     const descriptor = get(descriptors, key)
 
     if (!descriptor) {
-      set(node, key, undefined)
+      node.removeAttribute(key)
       return
     }
 
@@ -128,6 +126,11 @@ export class NodeProxy {
     }
 
     set(node, computed, undefined)
+  }
+
+  static createTextNode (content: string): NodeProxy {
+    const node: Text = document.createTextNode(content)
+    return new NodeProxy(node)
   }
 
   static createElement (tagName: string): NodeProxy {

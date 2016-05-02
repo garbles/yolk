@@ -2,7 +2,7 @@
 
 import $ from 'jquery'
 import {Observable} from 'rxjs/Observable'
-import {BehaviorSubject} from 'rxjs/subject/BehaviorSubject'
+import {BehaviorSubject} from 'rxjs/BehaviorSubject'
 import {Subject} from 'rxjs/Subject'
 import {h} from '../h'
 import {noop} from '../noop'
@@ -492,6 +492,21 @@ describe(`kitchen sink of tests`, () => {
     assert.equal($(`#stub-1`).text(), `12`)
     assert.equal($(`#stub-2`).text(), `22`)
     assert.equal($(`#stub-3`).text(), `30`)
+
+    cleanup()
+  })
+
+  it(`will include data tags`, () => {
+    const instance = h(`div`, {'data-something': 12345, 'aria-something': `HELLO`})
+    const {node, cleanup} = renderInDocument(instance)
+
+    assert.equal(node.dataset.something, `12345`)
+    assert.equal(node.getAttribute(`aria-something`), `HELLO`)
+
+    render(h(`div`), node.parentNode)
+
+    assert.equal(node.dataset.something, undefined)
+    assert.equal(node.getAttribute(`aria-something`), undefined)
 
     cleanup()
   })

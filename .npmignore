@@ -1,0 +1,7 @@
+coverage/
+interfaces/
+node_modules/
+circle.yml
+karma.conf.js
+src/__test__
+webpack.config.test.js

@@ -1,17 +1,18 @@
 /* @flow */
 
-import {h} from './h'
-import {VirtualNode} from './VirtualNode'
+import {VirtualText} from './VirtualText'
 import {isVirtual} from './is'
 
-function wrap (obj: any): VirtualNode {
+import type {VirtualElement} from './types'
+
+function wrap (obj: any): VirtualElement {
   if (isVirtual(obj)) {
     return obj
   }
 
-  return h(`span`, {textContent: obj.toString()})
+  return VirtualText.create(obj.toString())
 }
 
-export function wrapText (arr: Array<any>): Array<VirtualNode> {
+export function wrapText (arr: Array<any>): Array<VirtualElement> {
   return arr.map(wrap)
 }

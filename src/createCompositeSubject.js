@@ -4,7 +4,7 @@ import {Observable} from 'rxjs/Observable'
 import {Observer} from 'rxjs/Observer'
 import {Subject} from 'rxjs/Subject'
 import {Subscription} from 'rxjs/Subscription'
-import {BehaviorSubject} from 'rxjs/subject/BehaviorSubject'
+import {BehaviorSubject} from 'rxjs/BehaviorSubject'
 
 import 'rxjs/add/operator/switchMap'
 
