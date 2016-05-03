@@ -1,6 +1,6 @@
 /* @flow */
 
-import {NodeProxy} from './NodeProxy'
+import {ElementProxy} from './ElementProxy'
 import {wrapText} from './wrapText'
 import {parseTag} from './parseTag'
 import {batchInsertMessages} from './batchInsertMessages'
@@ -16,24 +16,24 @@ import {set} from './set'
 import type {Observable} from 'rxjs/Observable'
 import type {Subject} from 'rxjs/Subject'
 import type {Subscription} from 'rxjs/Subscription'
-import type {VirtualElement, NodeProxyDecorator} from './types'
+import type {VirtualNode, ElementProxyDecorator} from './types'
 
 import 'rxjs/add/operator/map'
 
 const createCompositePropSubject = createCompositeSubject(createNodeProps)
 const createCompositeArraySubject = createCompositeSubject(createObservableFromArray)
 
-export class VirtualNode {
+export class VirtualElement {
   key: string | void;
   tagName: string;
   _props: Object;
-  _children: Array<VirtualElement>;
+  _children: Array<VirtualNode>;
   _subscriptions: Array<Subscription>;
   _props$: Subject<Object>;
-  _children$: Subject<Array<Observable|VirtualElement>>;
-  _proxy: NodeProxy;
+  _children$: Subject<Array<Observable|VirtualNode>>;
+  _proxy: ElementProxy;
 
-  constructor (tagName: string, props: Object, children: Array<VirtualElement>, key?: string) {
+  constructor (tagName: string, props: Object, children: Array<VirtualNode>, key?: string) {
     this.key = key
     this.tagName = tagName
     this._props = props
@@ -41,16 +41,16 @@ export class VirtualNode {
     this._subscriptions = []
   }
 
-  getProxy (): NodeProxy {
+  getProxy (): ElementProxy {
     return this._proxy
   }
 
   initialize (): void {
-    const proxy: NodeProxy = this._proxy = NodeProxy.createElement(this.tagName)
+    const proxy: ElementProxy = this._proxy = ElementProxy.createElement(this.tagName)
     const props$: Subject<Object> = this._props$ = createCompositePropSubject(this._props)
     const children$: Subject<Array<VirtualNode>> = this._children$ = createCompositeArraySubject(this._children)
 
-    const proxyDecorator: NodeProxyDecorator = {
+    const proxyDecorator: ElementProxyDecorator = {
       insertChild (child: VirtualNode, index: number): void {
         return batchInsertMessages(queue => {
           child.initialize()
@@ -114,8 +114,8 @@ export class VirtualNode {
     const tagName: string = parseTag(_tagName, props)
     const key: string = props.key || null
 
-    return new VirtualNode(tagName, props, children, key)
+    return new VirtualElement(tagName, props, children, key)
   }
 }
 
-set(VirtualNode.prototype, $$virtual, true)
+set(VirtualElement.prototype, $$virtual, true)

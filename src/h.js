@@ -1,19 +1,19 @@
 /* @flow weak */
 
 import {VirtualComponent} from './VirtualComponent'
-import {VirtualNode} from './VirtualNode'
+import {VirtualElement} from './VirtualElement'
 import {isString} from './is'
 import {flatten} from './flatten'
 import {emptyObject} from './emptyObject'
 
-import type {VirtualElement} from './types'
+import type {VirtualNode} from './types'
 
-export function h (tagName, _props, ..._children): VirtualElement {
+export function h (tagName, _props, ..._children): VirtualNode {
   const children = flatten(_children)
   const props = _props || emptyObject
 
   if (isString(tagName)) {
-    return VirtualNode.create(tagName, props, children)
+    return VirtualElement.create(tagName, props, children)
   }
 
   return VirtualComponent.create(tagName, props, children)

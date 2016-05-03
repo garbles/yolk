@@ -1,12 +1,12 @@
 /* @flow weak */
 
 import {createPatchProperties} from '../createPatchProperties'
-import {NodeProxy} from '../NodeProxy'
+import {ElementProxy} from '../ElementProxy'
 import {get} from '../get'
 
 describe(`patchProperties`, () => {
   it(`sets attributes on a node`, () => {
-    const proxy = NodeProxy.createElement(`div`)
+    const proxy = ElementProxy.createElement(`div`)
     const patchProperties = createPatchProperties(proxy)
     const node = proxy._node
 

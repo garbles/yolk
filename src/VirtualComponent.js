@@ -11,8 +11,8 @@ import {set} from './set'
 
 import type {Observable} from 'rxjs/Observable'
 import type {Subject} from 'rxjs/Subject'
-import type {NodeProxy} from './NodeProxy'
-import type {VirtualElement} from './types'
+import type {ElementProxy} from './ElementProxy'
+import type {VirtualNode} from './types'
 
 const createCompositeArraySubject = createCompositeSubject(createObservableFromArray)
 
@@ -28,14 +28,14 @@ export class VirtualComponent {
   key: string | void;
   tagName: string;
   _props: Object;
-  _children: Array<Observable|VirtualElement>;
+  _children: Array<Observable|VirtualNode>;
   _fn: Function;
   _eventHandlers: Array<Subject>;
   _props$: Subject<Object>;
-  _children$: Subject<Array<Observable|VirtualElement>>;
-  _instance: VirtualElement;
+  _children$: Subject<Array<Observable|VirtualNode>>;
+  _instance: VirtualNode;
 
-  constructor (fn: Function, tagName: string, props: Object, children: Array<VirtualElement>, key?: string) {
+  constructor (fn: Function, tagName: string, props: Object, children: Array<VirtualNode>, key?: string) {
     this.key = key
     this.tagName = tagName
     this._fn = fn
@@ -44,7 +44,7 @@ export class VirtualComponent {
     this._eventHandlers = []
   }
 
-  getProxy (): NodeProxy {
+  getProxy (): ElementProxy {
     return this._instance.getProxy()
   }
 
@@ -95,7 +95,7 @@ export class VirtualComponent {
   moveChild (__child: any, __index: any): void {}
   removeChild (__child: any): void {}
 
-  static create (fn: Function, props: Object, children: Array<Observable|VirtualElement>): VirtualComponent {
+  static create (fn: Function, props: Object, children: Array<Observable|VirtualNode>): VirtualComponent {
     const uid = appendUidToComponent(fn)
 
     return new VirtualComponent(fn, uid, props, children, props.key)

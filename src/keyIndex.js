@@ -1,6 +1,6 @@
 /* @flow */
 
-import type {VirtualNode} from './VirtualNode'
+import type {VirtualNode} from './types'
 
 export function keyIndex (children: Array<VirtualNode>): Array<Object> {
   const len: number = children.length

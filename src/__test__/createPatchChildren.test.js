@@ -1,7 +1,7 @@
 /* @flow weak */
 
 import sinon from 'sinon/pkg/sinon'
-import {VirtualNode} from '../VirtualNode'
+import {VirtualNode} from '../types'
 import {createPatchChildren} from '../createPatchChildren'
 import {h} from '../h'
 

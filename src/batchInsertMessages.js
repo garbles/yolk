@@ -1,6 +1,6 @@
 /* @flow */
 
-import type {VirtualNode} from './VirtualNode'
+import type {VirtualNode} from './types'
 
 type Scope = {
   batchInProgress: boolean;
