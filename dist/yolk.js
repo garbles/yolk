@@ -1,5 +1,14 @@
-var Yolk =
-/******/ (function(modules) { // webpackBootstrap
+(function webpackUniversalModuleDefinition(root, factory) {
+	if(typeof exports === 'object' && typeof module === 'object')
+		module.exports = factory(require("Rx"));
+	else if(typeof define === 'function' && define.amd)
+		define(["Rx"], factory);
+	else if(typeof exports === 'object')
+		exports["Yolk"] = factory(require("Rx"));
+	else
+		root["Yolk"] = factory(root["Rx"]);
+})(this, function(__WEBPACK_EXTERNAL_MODULE_5__) {
+return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
 
@@ -424,7 +433,7 @@ var Yolk =
 /* 5 */
 /***/ function(module, exports) {
 
-	module.exports = Rx;
+	module.exports = __WEBPACK_EXTERNAL_MODULE_5__;
 
 /***/ },
 /* 6 */
@@ -5150,4 +5159,6 @@ var Yolk =
 	} /* @flow */
 
 /***/ }
-/******/ ]);
+/******/ ])
+});
+;
