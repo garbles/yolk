@@ -1,11 +1,11 @@
 var path = require("path");
 var webpack = require("webpack");
 
-module.exports = {
+var config = {
   entry: path.resolve(__dirname, "./src/index.js"),
   output: {
     path: path.resolve(__dirname, "./dist"),
-    filename: "yolk.min.js",
+    filename: "yolk.js",
     libraryTarget: 'var',
     library: "Yolk"
   },
@@ -22,12 +22,19 @@ module.exports = {
       loader: "babel-loader",
       exclude: /(node_modules)/
     }]
-  },
-  plugins: [
+  }
+};
+
+if(process.env.MINIFY){
+  config.output.filename = "yolk.min.js";
+  config.plugins = [
     new webpack.optimize.UglifyJsPlugin({
       compress: {
         warnings: false
       }
     })
-  ]
-};
+  ];
+}
+
+
+module.exports = config;
