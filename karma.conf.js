@@ -1,6 +1,6 @@
 const path = require(`path`)
 
-webpackConfig = {
+const webpackConfig = {
   devtool: `inline-source-map`,
 
   node: {
