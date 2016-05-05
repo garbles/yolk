@@ -35,6 +35,9 @@ if (process.env.MINIFY) {
     })
   ]
 }
+else {
+    config.devtool = "cheap-source-map"
+}
 
 
 module.exports = config
