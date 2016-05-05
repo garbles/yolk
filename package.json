@@ -21,7 +21,7 @@
   },
   "scripts": {
     "build": "babel src -d lib && rm -rf lib/__test__",
-    "dist": "webpack && MINIFY=true webpack",
+    "dist": " webpack --config webpack.config.dev.js && webpack --config webpack.config.prod.js",
     "karma": "NODE_ENV=test karma start",
     "lint": "NODE_ENV=test eslint src",
     "flow": "NODE_ENV=test flow",
