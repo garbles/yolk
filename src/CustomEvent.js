@@ -1,3 +1,5 @@
+import document from 'global/document'
+
 export const CustomEvent = global.CustomEvent || (() => {
   const DEFAULT_PARAMS = {bubbles: false, cancelable: false, detail: undefined}
 
