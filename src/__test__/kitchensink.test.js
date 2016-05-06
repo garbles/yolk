@@ -263,6 +263,84 @@ describe(`kitchen sink of tests`, () => {
     cleanup()
   })
 
+/*
+  it(`removes jsx children after clicking without keys`, () => {
+    function DestroyChildren ({createEventHandler}) {
+      const handleAdd = createEventHandler(1)
+      const handleRemove = createEventHandler(-1)
+
+      const lenToElements = tag => (len: number) => {
+        const els = Array(len)
+        let i = -1
+
+        let elem = null
+        if (tag === `b`) elem = <b>foo</b>
+        else if (tag === `div`) elem = <div>foo</div>
+
+        while (++i < len) {
+          els[i] = elem
+        }
+
+        return els
+      }
+
+      const addable = handleAdd.scan((acc, i) => acc + i, 1).startWith(1).map(lenToElements(`b`))
+      const removeable = handleRemove.scan((acc, i) => acc + i, 4).startWith(4).map(lenToElements(`div`))
+
+      return (
+        <div>
+          <div id="children">
+            {addable}
+            {removeable}
+          </div>
+          <button id="add" onClick={handleAdd} />
+          <button id="remove" onClick={handleRemove} />
+        </div>
+      )
+    }
+
+    const component = <DestroyChildren />
+    const {node, cleanup} = renderInDocument(component)
+
+    const adder = $(`#add`)
+    const remover = $(`#remove`)
+    const children = node.querySelector(`#children`)
+
+    assert.equal(children.children.length, 5)
+    assert.equal(children.children[0].tagName, `B`)
+    assert.equal(children.children[1].tagName, `DIV`)
+    assert.equal(children.children[2].tagName, `DIV`)
+    assert.equal(children.children[3].tagName, `DIV`)
+    assert.equal(children.children[4].tagName, `DIV`)
+
+    remover.trigger(`click`)
+
+    assert.equal(children.children.length, 4)
+    assert.equal(children.children[0].tagName, `B`)
+    assert.equal(children.children[1].tagName, `DIV`)
+    assert.equal(children.children[2].tagName, `DIV`)
+    assert.equal(children.children[3].tagName, `DIV`)
+
+    remover.trigger(`click`)
+    remover.trigger(`click`)
+
+    assert.equal(children.children.length, 2)
+    assert.equal(children.children[0].tagName, `B`)
+    assert.equal(children.children[1].tagName, `DIV`)
+
+    adder.trigger(`click`)
+    adder.trigger(`click`)
+
+    assert.equal(children.children.length, 4)
+    assert.equal(children.children[0].tagName, `B`)
+    assert.equal(children.children[1].tagName, `B`)
+    assert.equal(children.children[2].tagName, `B`)
+    assert.equal(children.children[3].tagName, `DIV`)
+
+    cleanup()
+  })
+*/
+
   it(`toggles the disabled prop`, () => {
     const disabled = new BehaviorSubject(true)
 
@@ -511,3 +589,5 @@ describe(`kitchen sink of tests`, () => {
     cleanup()
   })
 })
+
+/* eslint react/prop-types: 0 */
