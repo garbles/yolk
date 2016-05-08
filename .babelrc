@@ -1,6 +1,12 @@
 {
   "presets": ["es2015", "stage-0"],
   "plugins": [
-    ["transform-flow-comments"]
+    ["transform-flow-comments"],
+    [
+     "transform-react-jsx",
+     {
+       "pragma": "h"
+     }
+   ]
   ]
 }
