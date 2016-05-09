@@ -63,24 +63,6 @@ describe(`kitchen sink of tests`, () => {
     cleanup()
   })
 
-  it(`Adds jsx null/empty elements`, () => {
-    function NullChildren () {
-      return h(`div`, {id: `children`}, [
-        null,
-        Observable.from([null]),
-        ``,
-        Observable.from([``]),
-        Observable.of(h(`p`, null, `actual child`)),
-      ])
-    }
-
-    const vnode = h(NullChildren)
-    const {node, cleanup} = renderInDocument(vnode)
-
-    assert.equal(node.children.length, 1)
-    cleanup()
-  })
-
   it(`renders a virtual node into a container`, () => {
     let mountCallbackCount: number = 0
     let unmountCallbackCount: number = 0
