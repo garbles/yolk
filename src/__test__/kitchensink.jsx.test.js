@@ -16,30 +16,6 @@ import 'rxjs/add/operator/startWith'
 import 'rxjs/add/operator/combineLatest'
 
 describe(`kitchen sink of jsx tests`, () => {
-  it(`Adds jsx null/empty elements`, () => {
-    function NullChildren () {
-      return (
-        <div id="layer1">
-          <div id="children">
-            {null}
-            {Observable.from([null])}
-            {``}
-            {Observable.from([``])}
-            {Observable.of(<p>actual child</p>)}
-          </div>
-        </div>
-      )
-    }
-
-    const component = h(NullChildren)
-    const {node, cleanup} = renderInDocument(component)
-
-    const children = node.querySelector(`#children`)
-
-    assert.equal(children.children.length, 1)
-    cleanup()
-  })
-
   it(`removes jsx children after clicking without keys`, () => {
     function DestroyChildren ({createEventHandler}) {
       const handleAdd = createEventHandler(1)
@@ -65,6 +41,7 @@ describe(`kitchen sink of jsx tests`, () => {
 
       return (
         <div id="layer1">
+          {Observable.of(``)}
           <div id="children">
             {addable}
             {removeable}
@@ -75,7 +52,7 @@ describe(`kitchen sink of jsx tests`, () => {
       )
     }
 
-    const component = <DestroyChildren />
+    const component = h(DestroyChildren)
     const {node, cleanup} = renderInDocument(component)
 
     const adder = $(`#add`)

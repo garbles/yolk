@@ -9,9 +9,11 @@ import {noop} from '../noop'
 import {render} from '../render'
 import {renderInDocument} from './support/renderInDocument'
 
+import 'rxjs/add/observable/from'
 import 'rxjs/add/observable/interval'
 import 'rxjs/add/operator/map'
 import 'rxjs/add/operator/merge'
+import 'rxjs/add/observable/of'
 import 'rxjs/add/operator/scan'
 import 'rxjs/add/operator/startWith'
 import 'rxjs/add/operator/combineLatest'
@@ -58,6 +60,24 @@ describe(`kitchen sink of tests`, () => {
 
     assert.equal(node.children[2].textContent, `3`)
 
+    cleanup()
+  })
+
+  it(`Adds jsx null/empty elements`, () => {
+    function NullChildren () {
+      return h(`div`, {id: `children`}, [
+        null,
+        Observable.from([null]),
+        ``,
+        Observable.from([``]),
+        Observable.of(h(`p`, null, `actual child`)),
+      ])
+    }
+
+    const vnode = h(NullChildren)
+    const {node, cleanup} = renderInDocument(vnode)
+
+    assert.equal(node.children.length, 1)
     cleanup()
   })
 
