@@ -15,32 +15,26 @@ import 'rxjs/add/operator/scan'
 import 'rxjs/add/operator/startWith'
 import 'rxjs/add/operator/combineLatest'
 
-describe(`kitchen sink of jsx tests`, () => {
+describe(`Issues regression tests`, () => {
   it(`Adds jsx null/empty elements`, () => {
     function NullChildren () {
-      return (
-        <div id="layer1">
-          <div id="children">
-            {null}
-            {Observable.from([null])}
-            {``}
-            {Observable.from([``])}
-            {Observable.of(<p>actual child</p>)}
-          </div>
-        </div>
-      )
+      return h(`div`, {id: `children`}, [
+        null,
+        Observable.from([null]),
+        ``,
+        Observable.from([``]),
+        Observable.of(h(`p`, null, `actual child`)),
+      ])
     }
 
-    const component = h(NullChildren)
-    const {node, cleanup} = renderInDocument(component)
+    const vnode = h(NullChildren)
+    const {node, cleanup} = renderInDocument(vnode)
 
-    const children = node.querySelector(`#children`)
-
-    assert.equal(children.children.length, 1)
+    assert.equal(node.children.length, 1)
     cleanup()
   })
 
-  it(`removes jsx children after clicking without keys`, () => {
+  it(`Removes simple children with text after clicking without keys: #101`, () => {
     function DestroyChildren ({createEventHandler}) {
       const handleAdd = createEventHandler(1)
       const handleRemove = createEventHandler(-1)
@@ -51,8 +45,8 @@ describe(`kitchen sink of jsx tests`, () => {
 
         while (++i < len) {
           let elem = null
-          if (tag === `b`) elem = <b>b element</b>
-          else if (tag === `p`) elem = <p>p element</p>
+          if (tag === `b`) elem = h(`b`, {}, `b element`)
+          else if (tag === `p`) elem = h(`p`, {}, `element`)
 
           els[i] = elem
         }
@@ -63,19 +57,18 @@ describe(`kitchen sink of jsx tests`, () => {
       const addable = handleAdd.scan((acc, i) => acc + i, 1).startWith(1).map(lenToElements(`b`))
       const removeable = handleRemove.scan((acc, i) => acc + i, 4).startWith(4).map(lenToElements(`p`))
 
-      return (
-        <div id="layer1">
-          <div id="children">
-            {addable}
-            {removeable}
-          </div>
-          <button id="add" onClick={handleAdd}>add</button>
-          <button id="remove" onClick={handleRemove}>remove</button>
-        </div>
-      )
+      return h(`div`, {id: `layer1`},
+        Observable.of(``),
+        h(`div`, {id: `children`}, [
+          addable,
+          removeable,
+        ]),
+        h(`button`, {id: `add`, onClick: handleAdd}),
+        h(`button`, {id: `remove`, onClick: handleRemove})
+        )
     }
 
-    const component = <DestroyChildren />
+    const component = h(DestroyChildren)
     const {node, cleanup} = renderInDocument(component)
 
     const adder = $(`#add`)
@@ -116,6 +109,3 @@ describe(`kitchen sink of jsx tests`, () => {
     cleanup()
   })
 })
-
-/* eslint react/prop-types: 0 */
-/* eslint react/react-in-jsx-scope: 0 */
