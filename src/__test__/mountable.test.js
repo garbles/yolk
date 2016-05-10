@@ -1,6 +1,7 @@
 /* @flow weak */
 
 import document from 'global/document'
+import sinon from 'sinon/pkg/sinon'
 import {renderInDocument} from './support/renderInDocument'
 import {emitMount, emitUnmount} from '../mountable'
 import {addEventListener} from '../eventDelegator'
@@ -20,23 +21,29 @@ describe(`emitMount`, () => {
     document.body.removeChild(node)
   })
 
-  it(`does not emit a mount event if it is not mounted`, () => {
+  it(`does not emit a mount event if it is not mounted`, done => {
     const node = document.createElement(`div`)
 
     // ensure that callback does not get called
-    const callback = () => assert.notOk(true)
+    const callback = sinon.spy()
     addEventListener(node, `mount`, callback)
     emitMount(node, callback)
+    setTimeout(() => {
+      done(callback.called ? new Error(`emitted mount event`) : null)
+    }, 0)
   })
 
-  it(`does not emit a mount event if a function is not given`, () => {
+  it(`does not emit a mount event if a function is not given`, done => {
     const node = document.createElement(`div`)
     document.body.appendChild(node)
 
     // ensure that callback does not get called
-    const callback = () => assert.notOk(true)
+    const callback = sinon.spy()
     addEventListener(node, `mount`, callback)
     emitMount(node)
+    setTimeout(() => {
+      done(callback.called ? new Error(`emitted mount event`) : null)
+    }, 0)
 
     document.body.removeChild(node)
   })
@@ -52,7 +59,7 @@ describe(`emitMount`, () => {
 })
 
 describe(`emitUnmount`, () => {
-  it(`emits a mount event in a given node after it is inserted into the DOM`, done => {
+  it(`emits an unmount event in a given node after it is inserted into the DOM`, done => {
     const node = document.createElement(`div`)
     document.body.appendChild(node)
 
@@ -64,23 +71,29 @@ describe(`emitUnmount`, () => {
     document.body.removeChild(node)
   })
 
-  it(`does not emit a mount event if it is not mounted`, () => {
+  it(`does not emit an unmount event if it is not mounted`, done => {
     const node = document.createElement(`div`)
 
     // ensure that callback does not get called
-    const callback = () => assert.notOk(true)
+    const callback = sinon.spy()
     addEventListener(node, `unmount`, callback)
     emitUnmount(node, callback)
+    setTimeout(() => {
+      done(callback.called ? new Error(`emitted unmount event`) : null)
+    }, 0)
   })
 
-  it(`does not emit a mount event if a function is not given`, () => {
+  it(`does not emit an unmount event if a function is not given`, done => {
     const node = document.createElement(`div`)
     document.body.appendChild(node)
 
     // ensure that callback does not get called
-    const callback = () => assert.notOk(true)
+    const callback = sinon.spy()
     addEventListener(node, `unmount`, callback)
     emitUnmount(node)
+    setTimeout(() => {
+      done(callback.called ? new Error(`emitted unmount event`) : null)
+    }, 0)
 
     document.body.removeChild(node)
   })
