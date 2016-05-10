@@ -51,6 +51,7 @@
     "karma-growl-reporter": "0.1.1",
     "karma-mocha": "0.2.2",
     "karma-mocha-reporter": "2.0.0",
+    "karma-sourcemap-loader": "0.3.7",
     "karma-webpack": "1.7.0",
     "mocha": "2.4.5",
     "sinon": "2.0.0-pre",
