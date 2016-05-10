@@ -43,7 +43,7 @@ module.exports = config => {
     files: [`src/**/*.test.js`],
 
     preprocessors: {
-      'src/**/*.test.js': [`webpack`],
+      'src/**/*.test.js': [`webpack`, `sourcemap`],
     },
 
     colors: true,
