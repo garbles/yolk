@@ -9,7 +9,7 @@ declare type Assert = {
 }
 
 declare function describe (description: string, fn: Function): void
-declare function it (description: string, fn: Function): void
+declare function it (description: string, fn: ?Function): void
 declare function beforeEach (): void
 declare function afterEach (): void
 declare var assert: Assert
