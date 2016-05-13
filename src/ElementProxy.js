@@ -24,14 +24,14 @@ export class ElementProxy {
     emitUnmount(this._node, fn)
   }
 
-  children (): HTMLCollection {
-    return this._node.children
+  childNodes (): NodeList {
+    return this._node.childNodes
   }
 
   replaceChild (childProxy: NodeProxy, index: number): void {
     const node = this._node
     const child = childProxy._node
-    const replaced = node.children[index]
+    const replaced = node.childNodes[index]
 
     if (isDefined(replaced)) {
       node.replaceChild(child, replaced)
@@ -43,7 +43,7 @@ export class ElementProxy {
   insertChild (childProxy: NodeProxy, index: number): void {
     const node = this._node
     const child = childProxy._node
-    const before: Node = node.children[index]
+    const before: Node = node.childNodes[index]
 
     if (isDefined(before)) {
       node.insertBefore(child, before)

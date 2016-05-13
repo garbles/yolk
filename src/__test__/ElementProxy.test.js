@@ -22,21 +22,21 @@ describe(`ElementProxy`, () => {
   it(`appends a child`, () => {
     const testAppend = (createTestProxy, createTestProxy2) => {
       const parentProxy = ElementProxy.createElement(`div`)
-      const children = parentProxy.children()
+      const childNodes = parentProxy.childNodes()
 
-      assert.equal(children.length, 0)
+      assert.equal(childNodes.length, 0)
 
       const childProxy = createTestProxy()
-      parentProxy.insertChild(childProxy, children.length)
+      parentProxy.insertChild(childProxy, childNodes.length)
 
-      assert.equal(children.length, 1)
-      assert.equal(children[0], childProxy._node)
+      assert.equal(childNodes.length, 1)
+      assert.equal(childNodes[0], childProxy._node)
 
       const childProxy2 = createTestProxy2()
-      parentProxy.insertChild(childProxy2, children.length)
+      parentProxy.insertChild(childProxy2, childNodes.length)
 
-      assert.equal(children.length, 2)
-      assert.equal(children[1], childProxy2._node)
+      assert.equal(childNodes.length, 2)
+      assert.equal(childNodes[1], childProxy2._node)
     }
 
     testAppend(createTestElement, createTestElement)
@@ -48,21 +48,21 @@ describe(`ElementProxy`, () => {
   it(`inserts a child before another child`, () => {
     const testInsertBefore = (createBeforeNode, createInsertedNode) => {
       const parentProxy = ElementProxy.createElement(`div`)
-      const children = parentProxy.children()
+      const childNodes = parentProxy.childNodes()
 
       const beforeNodeProxy = createBeforeNode()
       parentProxy.insertChild(beforeNodeProxy, 0)
 
       // Confirm assumptions
-      assert.equal(children.length, 1)
-      assert.equal(children[0], beforeNodeProxy._node)
+      assert.equal(childNodes.length, 1)
+      assert.equal(childNodes[0], beforeNodeProxy._node)
 
       const insertedNodeProxy = createInsertedNode()
       parentProxy.insertChild(insertedNodeProxy, 0)
 
-      assert.equal(children.length, 2)
-      assert.equal(children[0], insertedNodeProxy._node)
-      assert.equal(children[1], beforeNodeProxy._node)
+      assert.equal(childNodes.length, 2)
+      assert.equal(childNodes[0], insertedNodeProxy._node)
+      assert.equal(childNodes[1], beforeNodeProxy._node)
     }
 
     testInsertBefore(createTestElement, createTestElement)
@@ -75,17 +75,17 @@ describe(`ElementProxy`, () => {
     const testReplaceChild = (createNodeProxy, createReplacementProxy) => {
       const parentProxy = ElementProxy.createElement(`div`)
       const childProxies = [createNodeProxy(), createNodeProxy(), createNodeProxy()]
-      const children = parentProxy.children()
+      const childNodes = parentProxy.childNodes()
 
       childProxies.forEach((childProxy, i) => parentProxy.insertChild(childProxy, i))
 
       // Confirm assumptions
-      assert.ok(childProxies.every((childProxy, i) => childProxy._node === children[i]))
+      assert.ok(childProxies.every((childProxy, i) => childProxy._node === childNodes[i]))
 
       const replacementNode = createReplacementProxy()
       parentProxy.replaceChild(replacementNode, 1)
       const expectedChildProxies = [childProxies[0], replacementNode, childProxies[2]]
-      assert.ok(expectedChildProxies.every((expectedProxy, i) => expectedProxy._node === children[i]))
+      assert.ok(expectedChildProxies.every((expectedProxy, i) => expectedProxy._node === childNodes[i]))
     }
 
     testReplaceChild(createTestElement, createTestElement)
@@ -97,39 +97,39 @@ describe(`ElementProxy`, () => {
   it(`removes a child`, () => {
     const testRemoveChild = (createTestProxy, createTestProxy2) => {
       const parentProxy = ElementProxy.createElement(`div`)
-      const children = parentProxy.children()
+      const childNodes = parentProxy.childNodes()
 
       const childProxy = createTestProxy()
 
-      parentProxy.insertChild(childProxy, children.length)
-      assert.equal(children.length, 1)
-      assert.equal(children[0], childProxy._node)
+      parentProxy.insertChild(childProxy, childNodes.length)
+      assert.equal(childNodes.length, 1)
+      assert.equal(childNodes[0], childProxy._node)
       parentProxy.removeChild(childProxy)
-      assert.equal(children.length, 0)
+      assert.equal(childNodes.length, 0)
 
       const childProxy2 = createTestProxy2()
 
-      parentProxy.insertChild(childProxy, children.length)
-      parentProxy.insertChild(childProxy2, children.length)
-      assert.equal(children.length, 2)
+      parentProxy.insertChild(childProxy, childNodes.length)
+      parentProxy.insertChild(childProxy2, childNodes.length)
+      assert.equal(childNodes.length, 2)
 
       parentProxy.removeChild(childProxy)
-      assert.equal(children.length, 1)
-      assert.equal(children[0], childProxy2._node)
+      assert.equal(childNodes.length, 1)
+      assert.equal(childNodes[0], childProxy2._node)
 
       parentProxy.removeChild(childProxy2)
-      assert.equal(children.length, 0)
+      assert.equal(childNodes.length, 0)
 
-      parentProxy.insertChild(childProxy, children.length)
-      parentProxy.insertChild(childProxy2, children.length)
-      assert.equal(children.length, 2)
+      parentProxy.insertChild(childProxy, childNodes.length)
+      parentProxy.insertChild(childProxy2, childNodes.length)
+      assert.equal(childNodes.length, 2)
 
       parentProxy.removeChild(childProxy2)
-      assert.equal(children.length, 1)
-      assert.equal(children[0], childProxy._node)
+      assert.equal(childNodes.length, 1)
+      assert.equal(childNodes[0], childProxy._node)
 
       parentProxy.removeChild(childProxy)
-      assert.equal(children.length, 0)
+      assert.equal(childNodes.length, 0)
     }
 
     testRemoveChild(createTestElement, createTestElement)
@@ -138,23 +138,23 @@ describe(`ElementProxy`, () => {
     testRemoveChild(createTestTextNode, createTestTextNode)
   })
 
-  it(`provides access to the children of its DOM node`, () => {
+  it(`provides access to the child nodes of its DOM node`, () => {
     const parentNode = document.createElement(`div`)
-    const expectedChildren = [
+    const expectedChildNodes = [
       document.createElement(`a`),
       document.createElement(`p`),
       document.createTextNode(`nested-text`),
       document.createElement(`span`),
     ]
 
-    expectedChildren.forEach(childNode => parentNode.appendChild(childNode))
+    expectedChildNodes.forEach(childNode => parentNode.appendChild(childNode))
 
     const elementProxy = new ElementProxy(parentNode)
-    const actualChildren = elementProxy.children()
+    const actualChildNodes = elementProxy.childNodes()
 
-    assert.equal(actualChildren.length, expectedChildren.length)
-    expectedChildren.forEach((expectedChildNode, i) => {
-      assert.equal(actualChildren[i], expectedChildNode)
+    assert.equal(actualChildNodes.length, expectedChildNodes.length)
+    expectedChildNodes.forEach((expectedChildNode, i) => {
+      assert.equal(actualChildNodes[i], expectedChildNode)
     })
   })
 })
