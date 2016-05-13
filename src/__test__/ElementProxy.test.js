@@ -16,6 +16,23 @@ describe(`ElementProxy`, () => {
     assert.equal(node.tagName, expectedTagName)
   })
 
+  it(`provides proxied querySelector access to its document`, () => {
+    const elementNode = document.createElement(`div`)
+    elementNode.className = `testClass`
+    document.body.appendChild(elementNode)
+
+    try {
+      const elementProxy = ElementProxy.querySelector(`.testClass`)
+      assert.ok(elementProxy instanceof ElementProxy)
+      assert.equal(elementProxy && elementProxy._node, elementNode)
+
+      const nonexistentElementProxy = ElementProxy.querySelector(`.nonexistentClass`)
+      assert.equal(nonexistentElementProxy, null)
+    } finally {
+      elementNode.parentNode.removeChild(elementNode)
+    }
+  })
+
   const createTestElement = () => ElementProxy.createElement(`div`)
   const createTestTextNode = () => TextProxy.createTextNode(`some-text`)
 

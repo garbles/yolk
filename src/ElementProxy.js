@@ -136,9 +136,9 @@ export class ElementProxy {
     return new ElementProxy(node)
   }
 
-  static querySelector (selector: string): ElementProxy {
+  static querySelector (selector: string): ?ElementProxy {
     const node: HTMLElement = document.querySelector(selector)
-    return new ElementProxy(node)
+    return node ? new ElementProxy(node) : null
   }
 
   static fromElement (node: HTMLElement): ElementProxy {
