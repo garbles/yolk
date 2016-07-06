@@ -24,14 +24,14 @@ export class ElementProxy {
     emitUnmount(this._node, fn)
   }
 
-  children (): HTMLCollection {
-    return this._node.children
+  childNodes (): NodeList {
+    return this._node.childNodes
   }
 
   replaceChild (childProxy: NodeProxy, index: number): void {
     const node = this._node
     const child = childProxy._node
-    const replaced = node.children[index]
+    const replaced = node.childNodes[index]
 
     if (isDefined(replaced)) {
       node.replaceChild(child, replaced)
@@ -43,7 +43,7 @@ export class ElementProxy {
   insertChild (childProxy: NodeProxy, index: number): void {
     const node = this._node
     const child = childProxy._node
-    const before: Node = node.children[index]
+    const before: Node = node.childNodes[index]
 
     if (isDefined(before)) {
       node.insertBefore(child, before)
@@ -136,9 +136,9 @@ export class ElementProxy {
     return new ElementProxy(node)
   }
 
-  static querySelector (selector: string): ElementProxy {
+  static querySelector (selector: string): ?ElementProxy {
     const node: HTMLElement = document.querySelector(selector)
-    return new ElementProxy(node)
+    return node ? new ElementProxy(node) : null
   }
 
   static fromElement (node: HTMLElement): ElementProxy {
