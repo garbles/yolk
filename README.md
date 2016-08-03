@@ -1,3 +1,5 @@
+:rotating_light: This library is no longer being maintained :rotating_light:
+
 :rotating_light: This is the README/source for the proposed Yolk v1. [Go here](https://github.com/garbles/yolk/tree/v0.10.1) to see the README for v0.10.1. :rotating_light:
 
 <h1>Yolk <img src="https://avatars3.githubusercontent.com/u/15056177?v=3&s=50" alt="https://twitter.com/patdryburgh" /></h1>
