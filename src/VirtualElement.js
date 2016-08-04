@@ -107,7 +107,9 @@ export class VirtualElement {
 
   destroy (): void {
     this._subscriptions.forEach(s => s.unsubscribe())
-    this._children.forEach(c => c.destroy())
+    this._children.forEach(c => {
+      if (c && c.destroy !== undefined) c.destroy()
+    })
   }
 
   static create (_tagName: string, props: Object, children: Array<VirtualNode|Observable>): VirtualNode {
