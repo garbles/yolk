@@ -510,4 +510,17 @@ describe(`kitchen sink of tests`, () => {
 
     cleanup()
   })
+
+  it(`sets colspan attribute`, () => {
+    const instance = h(`div`, {colSpan: 1})
+    const {node, cleanup} = renderInDocument(instance)
+
+    assert.equal(node.getAttribute(`colspan`), 1)
+
+    render(h(`div`), node.parentNode)
+
+    assert.equal(node.getAttribute(`colspan`), undefined)
+
+    cleanup()
+  })
 })
